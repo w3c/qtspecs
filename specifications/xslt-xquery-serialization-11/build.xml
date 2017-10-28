@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<project name="serialization" default="all" basedir=".">
+
+<!-- Import a bunch of global property definitions -->
+  <dirname property="etc.dir" file="../../etc/*"/>
+  <import file="${etc.dir}/build-constants.xml"/>
+
+<!-- Set properties for "this" document's build requirements -->
+  <property name="generic-shortname" value="xslt-xquery-serialization"/>
+  <property name="spec.code" value="SER11"/>
+  <property name="this-spec-version-code" value="11"/>
+  <property name="xquery-version-code" value="11"/>
+  <property name="shortname" value="${generic-shortname}-${this-spec-version-code}"/>
+  <property name="spec.uri" value="${W3C.TR}/${shortname}/"/>
+  <property name="spec.xml" value="${src.dir}/${generic-shortname}.xml"/>
+  <!-- 2008-09-03, Jim: The following property has no meaning at present,     -->
+  <!--   because we do not build errata in the qtspecs tree. Maybe later...   -->
+<!--  <property name="errata.xml" value="${src.dir}/${generic-shortname}-errata.xml"/> -->
+
+  <property name="spec.style" value="${local.style.dir}/serialization-diff.xsl"/>
+
+<!-- Import target, etc. definitions that work globally -->
+  <import file="${etc.dir}/build-impl.xml"/>
+
+<!-- Recall that any targets defined herein override targets of the same name -->
+<!--   that are defined in build-impl.xml.  If you cannot find a target of a  -->
+<!--   given name in this file, look in build-impl.xml.                       -->
+
+<!-- ======================================================================== -->
+
+  <!-- additional properties -->
+
+  <property name="color-changes" value="no"/>
+<!-- This spec doesn't require an assembly step, so this property is undefined-->
+<!--  <property name="assemble-spec-file" value="????"/> -->
+
+  <!-- Baseline date from which to show differences. -->
+  <!-- Value is in the form of an ISO 8601 date.     -->
+  <property name="baseline" value="0001-01-01"/>
+
+<!-- ======================================================================== -->
+
+  <!-- Overrides global template to omit ",errata" -->
+  <target name="all" depends="spec,diffspec"
+          description="This is the default target."/>
+
+  <!-- ====================================================================== -->
+
+  <target name="chk.spec" depends="init">
+    <uptodate property="spec.exists"
+              targetfile="${spec.html}">
+      <srcfiles file="${base.dir}/build.xml"/>
+      <srcfiles file="${etc.dir}/build-constants.xml"/>
+      <srcfiles file="${etc.dir}/build-impl.xml"/>
+      <srcfiles file="${etc.dir}/status-entities.dtd"/>
+      <srcfiles file="${etc.dir}/status-general.xml"/>
+      <srcfiles dir="${src.dir}" includes="**/*.xml"/>
+      <srcfiles dir="${shared.style.dir}" includes="xsl-query.xsl"/>
+      <srcfiles dir="${shared.style.dir}" includes="xmlspec.xsl"/>
+      <srcfiles file="${shared.schema.dir}/xsl-query.dtd"/>
+      <srcfiles file="${shared.schema.dir}/xmlspec.dtd"/>
+      <srcfiles file="${shared.schema.dir}/elements.dtd"/>
+      <srcfiles file="${shared.schema.dir}/tree-diagram.dtd"/>
+    </uptodate>
+  </target>
+
+
+  <target name="-style-spec" depends="init,validate-spec">
+    <echo message="Building Serialization 1.1..." />
+
+    <java fork="true" classname="net.sf.saxon.Transform">
+      <classpath refid="saxon9.classpath"/>
+      <arg value="-o"/>
+      <arg value="${build.dir}/${generic-shortname}-html.html"/>
+      <arg value="${spec.xml}"/>
+      <arg value="${spec.style}"/>
+      <arg value="baseline=${baseline}"/>
+      <arg value="specdoc=${spec.code}"/>
+      <arg value="show.diff.markup=0"/>
+    </java>
+
+<!-- 2009-11-25, Jim: Added HTML fixup -->
+<echo message="Fixing up ${generic-shortname}.html"/>
+    <xslt in="${build.dir}/${generic-shortname}-html.html"
+          out="${spec.html}"
+          style="${shared.style.dir}/html-fix.xsl"
+          classpathref="saxon9.classpath" force="yes">
+      <param name="currentDateTime" expression="${DSTAMP} ${TSTAMP}"/>
+    </xslt>
+
+  </target>
+
+  <target name="diffspec" depends="init,chk.diffs.spec,tidy-diffs-spec"/>
+
+  <target name="chk.diffs.spec" depends="init,chk.spec">
+    <condition property="diffs.spec.exists">
+      <uptodate srcfile="${spec.xml}" targetfile="${spec.diffs.html}"/>
+    </condition>
+  </target>
+
+  <target name="tidy-diffs-spec" depends="init,style-diffs-spec,chk.runtidy"
+          if="run.tidy">
+    <antcall target="tidy">
+      <param name="html.file" value="${spec.diffs.html}"/>
+    </antcall>
+  </target>
+
+  <target name="style-diffs-spec" depends="init,validate-spec">
+    <echo message="Building Serialization 1.1 Diff..." />
+
+    <java fork="true" classname="net.sf.saxon.Transform">
+      <classpath refid="saxon9.classpath"/>
+      <arg value="-o"/>
+      <arg value="${spec.diffs.html}"/>
+      <arg value="${spec.xml}"/>
+      <arg value="style/serialization-diff.xsl"/>
+      <arg value="baseline=${baseline}"/>
+      <arg value="specdoc=${spec.code}"/>
+      <arg value="show.diff.markup=1"/>
+    </java>
+  </target>
+</project>

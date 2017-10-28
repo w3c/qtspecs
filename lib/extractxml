@@ -1,0 +1,19 @@
+#!/usr/bin/perl -- # -*- Perl -*-
+
+use strict;
+
+my $infile = shift;
+my $outfile = shift;
+
+open (F, $infile);
+read (F, $_, -s $infile);
+close (F);
+
+if (/^\s*<!\[CDATA\[\s*/) {
+    s/^\s*<!\[CDATA\[\s*//s;
+    s/\s*\]\]>\s*$//s;
+}
+
+open (F, ">$outfile");
+print F $_;
+close (F);

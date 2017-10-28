@@ -1,0 +1,640 @@
+<!--XSLT Processor: Apache Software Foundation--><spec id="spec-top" w3c-doctype="wd">
+	<header id="spec-header">
+		<title>XQuery 1.1 Requirements</title>
+		<w3c-designation>WD-xquery-11-requirements</w3c-designation>
+		<w3c-doctype>W3C Working Draft</w3c-doctype>
+		<pubdate>
+			<day>15</day>
+			<month>December</month>
+			<year>2009</year>
+		</pubdate>
+		<publoc>
+			<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/2009/WD-xquery-11-requirements-20091215/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://www.w3.org/TR/2009/WD-xquery-11-requirements-20091215/</loc>
+		</publoc>
+		<latestloc>
+      <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/xquery-11-requirements/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://www.w3.org/TR/xquery-11-requirements/</loc>
+		</latestloc>
+		<prevlocs>
+      <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/2007/WD-xquery-11-requirements-20070323" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://www.w3.org/TR/2007/WD-xquery-11-requirements-20070323</loc>
+		</prevlocs>
+		<authlist>
+			<author>
+				<name>Daniel Engovatov</name>
+				<affiliation>BEA Systems</affiliation>
+				<email xmlns:xlink="http://www.w3.org/1999/xlink" href="mailto:dengovatov@bea.com" xlink:type="simple" xlink:show="new" xlink:actuate="onRequest">dengovatov@bea.com</email>
+			</author>
+      <author>
+        <name>Jonathan Robie</name>
+        <affiliation>Red Hat</affiliation>
+      </author>
+		</authlist>
+
+<!--* Common status section for QT specs.
+    * Use is currently not required, but it simplifies things.
+    * 
+    * Revisions:
+    * 2007-01-15 : CMSMcQ : made file, to simplify publication of Rec.
+    * 2008-02-15 : JimMelton : cloned from MSM's REC-only material
+                     to generalize for all stages
+    *-->
+
+    <status id="status">
+
+<!-- ************************************************************************** -->
+<!-- * All Status sections must start with the standard boilerplate paragraph * -->
+<!-- *   This entity is defined in status-entities.dtd                        * -->
+<!-- ************************************************************************** -->
+      <p><emph>This section describes the status of this
+         document at the time of its publication.
+         Other documents may supersede this document.
+         A list of current W3C publications and the latest
+         revision of this technical report can be found in the
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">W3C technical reports index</loc>
+         at http://www.w3.org/TR/.</emph></p>
+
+<!-- ************************************************************************** -->
+<!-- * QT publishes suites of documents, which must be described in the       * -->
+<!--     Status section of each document within such a suite.                 * -->
+<!-- *   This entity is defined in the host document.                         * -->
+<!-- ************************************************************************** -->
+      
+
+<!-- ************************************************************************** -->
+<!-- * There is a lot of detailed customization based on the document stage   * -->
+<!-- *   This entity is defined in the host document.                         * -->
+<!-- ************************************************************************** -->
+      <p>This is a <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/2005/10/Process-20051014/tr.html#maturity-levels" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Working Draft</loc> as described in the <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/2005/10/Process-20051014/tr.html" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Process Document</loc>.
+It has been developed by the W3C <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/XML/Query/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XML Query Working Group</loc>,
+which is part of the <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/XML/Activity" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XML Activity</loc>.
+The Working Group expects to eventually publish this document as a Working Group Note.</p>
+
+<!-- ************************************************************************** -->
+<!-- * CR documents must cite features at risk                                * -->
+<!-- *   This entity is defined in the host document.                         * -->
+<!-- ************************************************************************** -->
+      
+
+<!-- ************************************************************************** -->
+<!-- * Every Status section must have a customized paragraph                  * -->
+<!-- *   This entity is defined completely in the host document.              * -->
+<!-- ************************************************************************** -->
+      <p>These Requirements identify extensions to the
+<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/xquery/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery 1.0 Recommendation</loc>,
+published 23 January 2007, that have been requested by WG participants
+and by reviewers who do not participate in the W3C activities. 
+The XML Query WG has reviewed these requirements extensively and
+has reached a very high level of agreement (but not necessarily unanimity)
+on the desirability of each of them.</p>
+
+<!-- ************************************************************************** -->
+<!-- * CR docs should, and PR docs must, have a pointer to an implementation  * -->
+<!-- *   report.  We also want to point to the test suite.                    * -->
+<!-- *   This entity is defined in the host document.                         * -->
+<!-- ************************************************************************** -->
+      
+
+<!-- ************************************************************************** -->
+<!-- * The Status section should point to a changelog                         * -->
+<!-- *   This entity is defined in the host document.                         * -->
+<!-- ************************************************************************** -->
+      
+
+<!-- ************************************************************************** -->
+<!-- * The Status section must tell readers where to send comments            * -->
+<!-- *   This entity is defined in status-entities.dtd                        * -->
+<!-- ************************************************************************** -->
+      <p>Please report errors in this document using W3C's
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/Bugs/Public/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">public Bugzilla system</loc>
+         (instructions can be found at
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/XML/2005/04/qt-bugzilla" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://www.w3.org/XML/2005/04/qt-bugzilla</loc>).
+         If access to that system is not feasible, you may send your comments
+         to the W3C XSLT/XPath/XQuery public comments mailing list,
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="mailto:public-qt-comments@w3.org" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">public-qt-comments@w3.org</loc>.
+         It will be very helpful if you include the string 
+         “[XQuery11Req]”
+         in the subject line of your report, whether made in Bugzilla or in email.
+         Please use multiple Bugzilla entries (or, if necessary, multiple email messages)
+         if you have more than one comment to make.
+         Archives of the comments and responses are available at
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://lists.w3.org/Archives/Public/public-qt-comments/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://lists.w3.org/Archives/Public/public-qt-comments/</loc>. </p>
+
+<!-- ************************************************************************** -->
+<!-- Status sections must state the stability (not stable, or REC) of the document -->
+<!-- *   This entity is defined in the host document.                         * -->
+<!-- ************************************************************************** -->
+      <p>Publication as a Working Draft
+does not imply endorsement by the W3C Membership. 
+This is a draft document and may be updated, replaced or obsoleted
+by other documents at any time. 
+It is inappropriate to cite this document as other than work in progress.</p>
+
+<!-- ************************************************************************** -->
+<!-- * Finally, all Status sections must end with the appropriate IPR para    * -->
+<!-- *   This entity is defined in status-entities.dtd                        * -->
+<!-- ************************************************************************** -->
+       <p>This document was produced by a group operating under the
+  <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/Consortium/Patent-Policy-20040205/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">5 February 2004
+  W3C Patent Policy</loc>.
+  W3C maintains a 
+  <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/2004/01/pp-impl/18797/status#disclosures" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">public list of any patent disclosures</loc>
+  made in connection with the deliverables of the group; 
+  that page also includes instructions for disclosing a patent.
+  An individual who has actual knowledge of a patent 
+  which the individual believes contains
+  <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/Consortium/Patent-Policy-20040205/#def-essential" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Essential Claim(s)</loc>
+  must disclose the information in accordance with
+  <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/Consortium/Patent-Policy-20040205/#sec-Disclosure" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">
+  section 6 of the W3C Patent Policy</loc>. </p>
+
+
+    </status>
+
+		<abstract>
+			<p>This document specifies goals and requirements for XML Query (XQuery) 1.1. 
+			</p>
+		</abstract>
+		<langusage>
+			<language id="en">English</language>
+		</langusage>
+		<revisiondesc>
+			<p>Engovatov, 02 Feb 2007.  First working draft version.</p>
+			<p>Engovatov, 07 Mar 2007.  First public working draft.</p>
+			<p>Melton, 14 Mar 2008.  Changed source file to incorporate generated status section;
+           no other changes.</p>
+			<p>Melton, 11 Nov 2009.  Revised title to correspond to XQuery 1.1's title</p>
+		</revisiondesc>
+	</header>
+	<body>
+		<!--  ***** GOALS   ************************-->
+		<div1 id="goals">
+			<head>Goals</head>
+			<p>The goal of XML Query 1.1 is to extend XML Query 1.0 with additional functionality in response to requests from users and implementors.</p>
+			<p>Satisfying these goals may require changes to the set of seven documents that have progressed to Recommendation together (Data Model, Functions and Operators, Serialization, XPath 2.0, XQuery 1.0, XQueryX, and XSLT 2.0).</p>
+		</div1>
+		<!--*****REQUIREMENTS**************************************************-->
+		<div1 id="Requirements">
+			<head>Requirements</head>
+			<!-- TERMINOLOGY-->
+			<div2 id="terminology">
+				<head>Terminology</head>
+				<p>The following keywords are used throughout the document to specify the extent to which an item is a requirement for the work of the XML Query Working Group:</p>
+				<glist>
+					<gitem>
+						<label id="terminology-must">MUST</label>
+						<def>
+							<p>The item is an absolute requirement.</p>
+						</def>
+					</gitem>
+					<gitem>
+						<label id="terminology-should">SHOULD</label>
+						<def>
+							<p>There may exist valid reasons not to treat this item as a requirement, but the full implications should be understood and the case carefully weighed before discarding this item.</p>
+						</def>
+					</gitem>
+					<gitem>
+						<label id="terminology-may">MAY</label>
+						<def>
+							<p>An item deserves attention, but further study is needed to determine whether the item should be treated as a requirement.</p>
+						</def>
+					</gitem>
+				</glist>
+				<p>When the words  <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>, <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-should" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">SHOULD</loc>, or <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-may" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MAY</loc> are used in this technical sense [<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.ietf.org/rfc/rfc2119.txt" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">IETF RFC 2119</loc>], they occur as a hyperlink to these definitions. These words will also be used with their conventional English meaning, in which case there is no hyperlink. For instance, the phrase "the full implications should be understood" uses the word "should" in its conventional English sense, and therefore occurs without the hyperlink.</p>
+
+
+<p id="req-status">Each requirement also includes a status section,
+indicating its current situation in the XQuery/XPath/XSLT family of specifications.
+Three status levels are used:</p>
+<glist>
+<gitem>
+<label>"Green" status</label>
+<def>
+<p>
+<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/> This indicates that the requirement, according to its
+original formulation, has been completely met. Optional clarifying text
+may follow.</p></def></gitem>
+<gitem>
+<label>"Yellow" status</label>
+<def>
+<p>
+<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/yellow-ball.gif" alt="yellow status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/> This indicates that the requirement has been partially met
+according to its original formulation. When this happens, explanatory text is
+provided to better clarify the current scope of the
+requirement.</p></def></gitem>
+<gitem>
+<label>"Red" status</label>
+<def>
+<p>
+<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/red-ball.gif" alt="red status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/> This indicates that the requirement, according to its
+original formulation, has not been met. If this is the case, explanatory text
+is provided.</p></def></gitem></glist>
+
+			</div2>
+			<!-- GENERAL REQUIREMENTS-->
+			<div2 id="general-requirements">
+				<head>General Requirements</head>
+				<div3 id="backward-compatibility">
+					<head>Backward compatibility</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> be backward compatible. </p>
+								<p>Every valid XQuery 1.0 expression <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> be valid in XQuery 1.1 and it <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>  evaluate to the same result.</p>
+
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has been met.</p>
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+				<div3 id="extension-compatibility">
+					<head>Extension compatibility</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> be compatible with XQuery 1.0 extensions developed by the <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/XML/Query/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XML Query Working Group</loc>, including <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#UpdateRequirements" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery Update Facility</loc> and <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#FullTextRequirements" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery 1.0 and XPath 2.0 Full-Text</loc>.</p>
+
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has been met.</p>
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+			</div2>
+			<!--  REQUIREMENTS ***********************************-->
+			<div2 id="xml-query-functionality">
+				<head>XML Query Functionality</head>
+				<div3>
+					<head>Value-based grouping</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> include a language facility to specify value-based grouping.</p>
+
+
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has been met.</p>
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+				<div3 id="error-processing-and-recovery">
+					<head>Error processing and recovery</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> provide a mechanism to process errors raised by an expression and to return an alternative value. </p>
+								<p>This <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-may" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MAY</loc> be implemented by introducing a <emph>try-catch</emph> expression. </p>
+
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has been met.</p>
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+				<div3 id="numeric-formatting">
+					<head>Numeric formatting</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> include additional library functions or an equivalent mechanism to perform formatting of numeric values.</p>
+								<p>It <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-should" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">SHOULD</loc> be similar to the functionality provided in <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#XSLT20" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XSLT 2.0</loc>, such as by function <code>format-number()</code>.</p>
+
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has been met.</p>
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+				<div3 id="date-formatting">
+					<head>Date formatting</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> include additional library functions or an equivalent mechanism to perform formatting of date and time values.  </p>
+								<p>It <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-should" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">SHOULD</loc> be similar to the functionality provided in <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#XSLT20" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XSLT 2.0</loc>, such as by functions  <code>format-date()</code>, <code>format-time()</code>, <code>format-dateTime()</code>.</p>
+
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has been met.</p>
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+				<div3 id="default-values-for-external-variables">
+					<head>Default values for external variables</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> have a mechanism to specify default values for external variables.</p>
+
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has been met.</p>
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+				<div3 id="non-deterministic-external-functions">
+					<head>Non-deterministic external functions</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> provide a way to denote that an external function is non-deterministic.</p>
+
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has been met.</p>
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+				<div3 id="positional-grouping">
+					<head>Positional grouping</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-should" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">SHOULD</loc> provide a facility for positional grouping of items in a sequence according to specified partitioning conditions. </p>
+
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has been met.</p>
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+				<div3 id="windowing">
+					<head>Windowing</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-should" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">SHOULD</loc> provide a way to iterate over a sequence by several values at a time.</p>
+
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has been met.</p>
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+				<div3 id="output-numbering">
+					<head>Output numbering</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-should" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">SHOULD</loc> provide a mechanism to associate ordinal numbers with the items returned by a FLWOR expression.</p>
+
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has been met.</p>
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+				<div3 id="dynamic-creation-of-namespace-bindings">
+					<head>Dynamic creation of namespace bindings</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-should" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">SHOULD</loc> allow dynamic creation of namespace bindings.</p>
+
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has been met.</p>
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+				<div3 id="declaration-of-serialization-parameters">
+					<head>Declaration of serialization parameters</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-should" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">SHOULD</loc> have a mechanism to specify serialization parameters in the query prolog.</p>
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has been met.</p>
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+				<div3 id="node-references">
+					<head>Node references</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-should" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">SHOULD</loc> support creation of a reference to an existing node having the following properties: </p>
+								<p>a) the reference could be included in a constructed element </p>
+								<p>b) the reference can be dereferenced, returning the original node with the original node id.</p>
+
+
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+				<div3 id="outer-for">
+					<head>Outer for</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-should" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">SHOULD</loc> provide additional mechanisms to specify joins between sequences.   A possible approach would be to add an "<emph>outer-for</emph>" clause to the FLWOR expression to specify variable binding which is guaranteed to be bound to an empty sequence if there are no other bindings generated.</p>
+
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has been met.</p>
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+				<div3 id="type-declaration-for-context-item">
+					<head>Type declaration for context item</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-should" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">SHOULD</loc> allow explicit type declaration for the context item.</p>
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has been met.</p>
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+				<div3 id="support-for-new-data-types">
+					<head>Support for new data types</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-should" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">SHOULD</loc> support new data types introduced in <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#XMLSchema11rec" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XML Schema 1.1</loc>.</p>
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+				<div3 id="higher-order-functions">
+					<head>Higher order functions</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-may" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MAY</loc> provide an ability to pass a function as an argument to another function and to invoke a function that has been passed as an argument. </p>
+
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has been met. (The proposal is not yet integrated into our internal Working Draft.)</p>
+
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-may" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MAY</loc> also provide the ability to define anonymous functions e.g., lambda expressions. </p>
+
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has been met. (The proposal is not yet integrated into our internal Working Draft.)</p>
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+				<div3 id="conditional-constructors">
+					<head>Conditional constructors</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-may" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MAY</loc> add a language extension to the node constructors to specify, in a compact notation, that a node should be constructed only if its typed value would not be an empty sequence or if it would satisfy some other condition.</p>
+
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement is already met by XQuery 1.0, there is no need to introduce new syntax. Either of the following solutions works:</p>
+<eg xml:space="preserve">if ($mentor) then attribute mentor { $mentor } else ()</eg>
+<eg xml:space="preserve">(attribute mentor { $mentor })[$mentor]</eg>
+
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+				<div3 id="validation">
+					<head>Validation</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-may" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MAY</loc> provide a mechanism to validate an element or document node with respect to a global named type</p>
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has been met.</p>
+<p>or against
+							  non-global element declarations or types.</p>
+
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/red-ball.gif" alt="red status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has not been met.</p>
+
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-may" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MAY</loc> provide a mechanism to validate an element or document node against a named schema without importing the schema.</p>
+
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/red-ball.gif" alt="red status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has not been met.</p>
+
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+				<div3 id="type-expressions">
+					<head>Type expressions</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-may" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MAY</loc> provide a way to compare the type of an expression to the type of another expression without 
+							exposing the type itself.</p>
+
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/red-ball.gif" alt="red status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has not been met.</p>
+
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+				<div3 id="module-composition-restrictions">
+					<head>Module composition restrictions</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-may" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MAY</loc> relax the restrictions on the module import feature relating to forward references and circular imports.</p>
+
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has been met.</p>
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+				<div3 id="invocation-of-external-functionality">
+					<head>Invocation of external functionality</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-may" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MAY</loc> provide a normative way to invoke external functions and modules that are not implemented in XQuery,  such as functions defined as web services or XSLT functions and templates.</p>
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+				<div3 id="static-typing-extensions">
+					<head>Static typing extensions</head>
+					<glist>
+						<gitem>
+							<label/>
+							<def>
+								<p>XQuery 1.1 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-may" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MAY</loc> extend static typing rules.</p>
+
+
+<p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/red-ball.gif" alt="red status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has not been met. Static typing is no longer a normative part of XQuery 1.1.</p>
+							</def>
+						</gitem>
+					</glist>
+				</div3>
+			</div2>
+		</div1>
+		<div1 id="references">
+			<head>References</head>
+			<div2 id="normative-references">
+				<head>Normative</head>
+				<blist>
+					<bibl xmlns:xlink="http://www.w3.org/1999/xlink" id="XQ10" key="XQuery 1.0" href="http://www.w3.org/TR/xquery" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">
+						<loc href="http://www.w3.org/TR/xquery/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery 1.0: An XML Query Language</loc>, W3C Recommendation, 23 January 2007 and references therein.</bibl>
+					<bibl xmlns:xlink="http://www.w3.org/1999/xlink" id="XSLT20" key="XSLT 2.0" href="http://www.w3.org/TR/xslt20/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">
+						<loc href="http://www.w3.org/TR/xslt20/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XSL Transformations (XSLT) Version 2.0</loc>, W3C Recommendation, 23 January 2007 and references therein.</bibl>
+					<bibl xmlns:xlink="http://www.w3.org/1999/xlink" id="XDM" key="XDM" href="http://www.w3.org/TR/xpath-datamodel/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">
+						<loc href="http://www.w3.org/TR/xpath-datamodel/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery 1.0 and XPath 2.0 Data Model (XDM)</loc>, W3C Recommendation, 23 January 2007</bibl>
+					<bibl xmlns:xlink="http://www.w3.org/1999/xlink" id="XQ10R" key="XQuery 1.0 requirements" href="http://www.w3.org/TR/xquery-requirements" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">
+						<loc href="http://www.w3.org/TR/xquery-requirements/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XML Query (XQuery) Requirements</loc>, W3C Working Draft 3 June 2005
+						</bibl>
+					<bibl xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/xquery-update-requirements" id="UpdateRequirements" key="Update Requirements" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">
+						<loc href="http://www.w3.org/TR/xquery-update-requirements/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery Update Facility Requirements</loc>, W3C Working Draft, Feb. 2005.</bibl>
+					<bibl xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/xquery-full-text-requirements" id="FullTextRequirements" key="Full-Text Requirements" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">
+						<loc href="http://www.w3.org/TR/xquery-full-text-requirements/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery and XPath Full-Text Requirements</loc>, W3C Working Draft, May 2003.</bibl>
+				</blist>
+			</div2>
+			<div2 id="non-normative-references">
+				<head>Non-normative</head>
+				<p>The following references are some of the works considered by the WG in deriving its requirements.</p>
+				<blist>
+					<bibl xmlns:xlink="http://www.w3.org/1999/xlink" id="XML" key="XML" href="http://www.w3.org/TR/1998/REC-xml-19980210" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">
+						<loc href="http://www.w3.org/TR/REC-xml/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Extensible Markup Language (XML) 1.0 (Fourth Edition)</loc>. W3C Recommendation, 29 September 2006.</bibl>
+					<bibl xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/xmlschema-0/" id="XMLSchema0" key="XML Schema Part 0" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">
+						<loc href="http://www.w3.org/TR/xmlschema-0/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XML Schema Part 0: Primer Second Edition</loc>, W3C Recommendation 28 October 2004.</bibl>
+					<bibl xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/xmlschema-1/" id="XMLSchema1" key="XML Schema Part 1" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">
+						<loc href="http://www.w3.org/TR/xmlschema-1/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XML Schema Part 1: Structures Second Edition</loc>, W3C Recommendation 28 October 2004.</bibl>
+					<bibl xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/xmlschema-2/" id="XMLSchema2" key="XML Schema Part 2" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">
+						<loc href="http://www.w3.org/TR/xmlschema-2/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XML Schema Part 2: Datatypes Second Edition</loc>, W3C Recommendation 28 October 2004.</bibl>
+					<bibl xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/xmlschema-11-req/" id="XMLSchema11rec" key="XML Schema 1.1 requirements" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">
+						<loc href="http://www.w3.org/TR/xmlschema-11-req/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Requirements for XML Schema 1.1</loc>, W3C Working Draft, 2003.</bibl>
+					<bibl xmlns:xlink="http://www.w3.org/1999/xlink" id="Kay06" key="Kay06" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">
+						"Positional Grouping in XQuery", Kay, M.H.  XIME-P International workshop proceedings, 2006</bibl>
+					<bibl xmlns:xlink="http://www.w3.org/1999/xlink" id="Colby05" key="Colby05" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">
+						"Extending XQuery for Analytics", Beyer K., Chamberlin D. et al.  SIGMOD 2005</bibl>
+					<bibl xmlns:xlink="http://www.w3.org/1999/xlink" id="Borkar04" key="Borkar04" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">
+	                   "Extending XQuery for Grouping, Duplicate Elimination, and Outer Joins.", Borkar V. and Carey M.  XML 2004, Idealliance</bibl>
+				</blist>
+			</div2>
+		</div1>
+	</body>
+</spec>

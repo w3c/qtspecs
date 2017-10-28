@@ -1,0 +1,286 @@
+<div2 id="NamespaceNode">
+  <head>&namespaceNode;s</head>
+
+<div3 id="NamespaceNodeOverview">
+  <head>Overview</head>
+
+<p>Each &namespaceNode; represents the binding of a namespace URI to a 
+namespace prefix or to the default namespace. Implementations that do not 
+use &namespaceNode;s may represent the same information using the 
+<emph role='dm-node-property'>namespaces</emph> property of
+an element node.
+Namespaces have the
+following properties:</p>
+
+<ulist>
+<item><p>&dm.prop.prefix;, possibly empty
+</p></item>
+<item><p>&dm.prop.uri;
+</p></item>
+<item><p>&dm.prop.parent;, possibly empty
+</p></item>
+</ulist>
+
+<p>&namespaceNode;s <rfc2119>must</rfc2119> satisfy the following constraints.</p>
+
+<olist>
+<item><p>If a &namespaceNode; <emph>N</emph> is among the namespaces
+of an element <emph>E</emph>, then the parent of <emph>N</emph>
+<rfc2119>must</rfc2119> be <emph>E</emph>.</p>
+</item>
+<item><p>If a &namespaceNode; <emph>N</emph> has a parent element
+<emph>E</emph>, then <emph>N</emph> <rfc2119>must</rfc2119> be among
+the namespaces of <emph>E</emph>.</p>
+</item>
+<item><p>A &namespaceNode; <rfc2119>must</rfc2119> not have the
+name <code>xmlns</code> nor the string-value
+<code>http://www.w3.org/2000/xmlns/</code>.</p>
+</item>   
+</olist>
+
+<p>The data model permits &namespaceNode;s without parents, see below.
+</p>
+
+<p>In XPath 1.0, &namespaceNode;s were directly accessible by applications, by
+means of the namespace axis. In XPath <phrase diff="chg" at="2013-12-06">3.1</phrase> the namespace axis is deprecated,
+and it is not available at all in XQuery <phrase diff="chg" at="2013-12-06">3.1</phrase>. 
+XPath <phrase diff="chg" at="2013-12-06">3.1</phrase> implementations are
+not required to expose the namespace axis, though they may do so if they
+wish to offer backwards compatibility.</p>
+
+<p>The information held in namespace
+nodes is instead made available to applications using functions defined
+in <bibref diff="chg" at="2013-12-06" ref="xpath-functions-31"/>. Some properties of &namespaceNode;s are
+not exposed by these functions: in particular, properties related to the
+identity of &namespaceNode;s, their parentage, and their position in document
+order. Implementations that do not expose the namespace axis can therefore
+avoid the overhead of maintaining this information.</p>
+
+<p>Implementations that expose the namespace axis <rfc2119>must</rfc2119> provide unique
+&namespaceNode;s for each element.
+Each element has an associated set of &namespaceNode;s, one for each
+distinct namespace prefix that is in scope for the element (including
+the <code>xml</code> prefix, which is implicitly declared by
+<bibref ref="xml-names"/> and one for the default
+namespace if one is in scope for the element. The element is the
+parent of each of these &namespaceNode;s; however, a &namespaceNode; is
+not a child of its parent element. In implementations that expose the
+namespace axis, elements never share namespace
+nodes.</p>
+
+<note>
+<p>In implementations that do not expose the namespace axis, there is no
+means by which the host language can tell if namespace nodes are shared or not
+and, in such circumstances, sharing namespace nodes may be a very reasonable
+implementation strategy.</p>
+</note>
+
+</div3>
+
+<div3 id="NamespaceNodeAccessors">
+  <head>Accessors</head>
+
+<glist role="accessors">
+<gitem>
+<label><function>attributes</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>base-uri</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>children</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>document-uri</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>is-id</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>is-idrefs</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>namespace-nodes</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>nilled</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>node-kind</function></label>
+<def>
+<p>Returns “<code>namespace</code>”.</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>node-name</function></label>
+<def>
+<p>If the &dm.prop.prefix; is not empty,
+returns an <code>xs:QName</code> with the value of the &dm.prop.prefix; property
+in the local-name and an empty namespace name, otherwise returns
+the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>parent</function></label>
+<def>
+<p>Returns the value of the &dm.prop.parent; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>string-value</function></label>
+<def>
+<p>Returns the value of the &dm.prop.uri; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>type-name</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>typed-value</function></label>
+<def>
+<p>Returns the value of the &dm.prop.uri; property as an
+<code>xs:string</code>.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>unparsed-entity-public-id</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>unparsed-entity-system-id</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+</glist>
+</div3>
+
+<div3 id="const-infoset-namespace">
+<head>Construction from an Infoset</head>
+
+<p>The <emph role="info-item">namespace information items</emph> are
+required.</p>
+
+<p>The following infoset properties are required:
+<emph role="infoset-property">prefix</emph>,
+<emph role="infoset-property">namespace name</emph>.</p>
+
+<p>&namespaceNode; properties are derived from the infoset as
+follows:</p>
+
+<glist>
+<gitem>
+  <label>&dm.prop.prefix;</label>
+  <def>
+    <p>The <emph role="infoset-property">prefix</emph> property.</p>
+  </def>
+</gitem>
+<gitem>
+  <label>&dm.prop.uri;</label>
+  <def>
+    <p>The <emph role="infoset-property">namespace name</emph> property.</p>
+  </def>
+</gitem>
+<gitem>
+  <label>&dm.prop.parent;</label>
+  <def>
+    <p>The element in whose <emph role="infoset-property">in-scope namespaces</emph> 
+property the <emph role="info-item">namespace information item</emph> appears, if the implementation
+exposes any mechanism for accessing the <function>parent</function>
+accessor of &namespaceNode;s.</p>
+  </def>
+</gitem>
+</glist>
+</div3>
+
+<div3 id="const-psvi-namespace">
+<head>Construction from a PSVI</head>
+<p>Construction from a PSVI is identical to construction
+from the Infoset.</p>
+</div3>
+
+<div3 id="infoset-mapping-namespace">
+<head>Infoset Mapping</head>
+
+<p>A &namespaceNode; maps to a <emph role="info-item">namespace information item</emph>.</p> 
+
+<p>The following properties are specified by this mapping:</p>
+
+<glist>
+<gitem>
+<label><emph role="infoset-property">prefix</emph></label>
+<def>
+<p>The prefix associated with the namespace.
+</p>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">namespace name</emph></label>
+<def>
+<p>The value of <function>string-value</function>.
+</p>
+</def>
+</gitem>
+</glist>
+</div3>
+
+</div2>

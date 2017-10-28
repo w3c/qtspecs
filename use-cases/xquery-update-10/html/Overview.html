@@ -1,0 +1,2401 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--{xsl-query} XSLT Processor: SAXON 9.1.0.5 from Saxonica SAXON 9.1.0.5--><!--$show.diff.markup = 0--><!--{xmlspec} XSLT Processor: SAXON 9.1.0.5 from SaxonicaSAXON9.1.0.5 $show.diff.markup = 0-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:xs="http://www.w3.org/2001/XMLSchema" lang="EN" xmlns=
+"http://www.w3.org/1999/xhtml" xml:lang="EN">
+<head>
+<meta name="generator" content=
+"HTML Tidy for Windows (vers 14 February 2006), see www.w3.org" />
+<title>XQuery Update Facility 1.0 Use Cases</title>
+
+<style type="text/css">
+/*<![CDATA[*/
+code           { font-family: monospace; }
+
+div.constraint,
+div.issue,
+div.note,
+div.notice     { margin-left: 2em; }
+
+div.issue
+p.title        { margin-left: -2em; }
+
+ol.enumar      { list-style-type: decimal; }
+ol.enumla      { list-style-type: lower-alpha; }
+ol.enumlr      { list-style-type: lower-roman; }
+ol.enumua      { list-style-type: upper-alpha; }
+ol.enumur      { list-style-type: upper-roman; }
+
+li p           { margin-top: 0.3em;
+                 margin-bottom: 0.3em; }
+
+sup small      { font-style: italic;
+                 color: #8F8F8F;
+               }
+    
+div.exampleInner pre { margin-left: 1em;
+                       margin-top: 0em; margin-bottom: 0em}
+div.exampleOuter {border: 4px double gray;
+                  margin: 0em; padding: 0em}
+div.exampleInner { background-color: #d5dee3;
+                   border-top-width: 4px;
+                   border-top-style: double;
+                   border-top-color: #d3d3d3;
+                   border-bottom-width: 4px;
+                   border-bottom-style: double;
+                   border-bottom-color: #d3d3d3;
+                   padding: 4px; margin: 0em }
+div.exampleWrapper { margin: 4px }
+div.exampleHeader { font-weight: bold;
+                    margin: 4px}
+
+div.issue { border-bottom-color: black;
+            border-bottom-style: solid;
+            border-bottom-width: 1pt;
+            margin-bottom: 20pt;
+}
+
+th.issue-toc-head { border-bottom-color: black;
+                    border-bottom-style: solid;
+                    border-bottom-width: 1pt;
+}
+
+      table.small                             { font-size: x-small; }
+a.judgment:visited, a.judgment:link     { font-family: sans-serif;
+                                          color: black; 
+                                          text-decoration: none }
+a.processing:visited, a.processing:link { color: black; 
+                                                text-decoration: none }
+a.env:visited, a.env:link               { color: black; 
+                                          text-decoration: none }
+/*]]>*/
+</style>
+<link rel="stylesheet" type="text/css" href=
+"http://www.w3.org/StyleSheets/TR/W3C-WG-NOTE.css" />
+</head>
+<body>
+<div class="head">
+<p><a href="http://www.w3.org/"><img src=
+"http://www.w3.org/Icons/w3c_home" alt="W3C" height="48" width=
+"72" /></a></p>
+<h1><a name="title" id="title"></a>XQuery Update Facility 1.0 Use
+Cases</h1>
+<h2><a name="w3c-doctype" id="w3c-doctype"></a>W3C Working Group
+Note 25 January 2011</h2>
+<dl>
+<dt>This version:</dt>
+<dd><a href=
+"http://www.w3.org/TR/2011/NOTE-xquery-update-10-use-cases-20110125/">
+http://www.w3.org/TR/2011/NOTE-xquery-update-10-use-cases-20110125/</a></dd>
+<dt>Latest version:</dt>
+<dd><a href=
+"http://www.w3.org/TR/xquery-update-10-use-cases/">http://www.w3.org/TR/xquery-update-10-use-cases/</a></dd>
+<dt>Previous version:</dt>
+<dd><a href=
+"http://www.w3.org/TR/2008/CR-xquery-update-10-use-cases-20080314/">
+http://www.w3.org/TR/2008/CR-xquery-update-10-use-cases-20080314/</a></dd>
+<dt>Editors:</dt>
+<!--xmlspec, match="author"-->
+<dd>Ioana Manolescu, INRIA <a href=
+"mailto:ioana.manolescu@inria.fr">&lt;ioana.manolescu@inria.fr&gt;</a></dd>
+<!--xmlspec, match="author"-->
+<dd>Jonathan Robie, Red Hat <a href=
+"mailto:jonathan.robie@redhat.com">&lt;jonathan.robie@redhat.com&gt;</a></dd>
+</dl>
+<p class="copyright"><a href=
+"http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a>&#160;©&#160;2011&#160;<a href="http://www.w3.org/"><acronym title="World Wide Web Consortium">W3C</acronym></a><sup>®</sup>
+(<a href="http://www.csail.mit.edu/"><acronym title=
+"Massachusetts Institute of Technology">MIT</acronym></a>, <a href=
+"http://www.ercim.eu/"><acronym title=
+"European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>,
+<a href="http://www.keio.ac.jp/">Keio</a>), All Rights Reserved.
+W3C <a href=
+"http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>,
+<a href=
+"http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a>
+and <a href=
+"http://www.w3.org/Consortium/Legal/copyright-documents">document
+use</a> rules apply.</p>
+</div>
+<hr />
+<div>
+<h2><a name="abstract" id="abstract"></a>Abstract</h2>
+<p>This document specifies usage scenarios for the XQuery Update
+Facility.</p>
+</div>
+<div>
+<h2><a name="status" id="status"></a>Status of this Document</h2>
+<p><em>This section describes the status of this document at the
+time of its publication. Other documents may supersede this
+document. A list of current W3C publications and the latest
+revision of this technical report can be found in the <a href=
+"http://www.w3.org/TR/">W3C technical reports index</a> at
+http://www.w3.org/TR/.</em></p>
+<p>This is a <a href=
+"http://www.w3.org/2005/10/Process-20051014/tr.html#tr-end">Working
+Group Note</a> as described in the <a href=
+"http://www.w3.org/2005/10/Process-20051014/tr.html">Process
+Document</a>. It has been developed by the W3C <a href=
+"http://www.w3.org/XML/Query/">XML Query Working Group</a>, which
+is part of the <a href="http://www.w3.org/XML/Activity">XML
+Activity</a>.</p>
+<p>This document incorporates a number of use cases that guided the
+development of <a href=
+"http://www.w3.org/TR/xquery-update-10/">XQuery Update Facility
+1.0</a> during its design and development.</p>
+<p>Please report errors in this document using W3C's <a href=
+"http://www.w3.org/Bugs/Public/">public Bugzilla system</a>
+(instructions can be found at <a href=
+"http://www.w3.org/XML/2005/04/qt-bugzilla">http://www.w3.org/XML/2005/04/qt-bugzilla</a>).
+If access to that system is not feasible, you may send your
+comments to the W3C XSLT/XPath/XQuery public comments mailing list,
+<a href=
+"mailto:public-qt-comments@w3.org">public-qt-comments@w3.org</a>.
+It will be very helpful if you include the string “[UPDUC]” in the
+subject line of your report, whether made in Bugzilla or in email.
+Please use multiple Bugzilla entries (or, if necessary, multiple
+email messages) if you have more than one comment to make. Archives
+of the comments and responses are available at <a href=
+"http://lists.w3.org/Archives/Public/public-qt-comments/">http://lists.w3.org/Archives/Public/public-qt-comments/</a>.</p>
+<p>Publication as a <a href=
+"http://www.w3.org/2005/10/Process-20051014/tr.html#tr-end">Working
+Group Note</a> does not imply endorsement by the W3C Membership. At
+the time of publication, work on this document was considered
+complete and no further revisions are anticipated. It is a stable
+document and may be used as reference material or cited from
+another document. However, this document may be updated, replaced,
+or made obsolete by other documents at any time.</p>
+<p>This document was produced by a group operating under the
+<a href="http://www.w3.org/Consortium/Patent-Policy-20040205/">5
+February 2004 W3C Patent Policy</a>. W3C maintains a <a href=
+"http://www.w3.org/2004/01/pp-impl/18797/status#disclosures">public
+list of any patent disclosures</a> made in connection with the
+deliverables of the group; that page also includes instructions for
+disclosing a patent. An individual who has actual knowledge of a
+patent which the individual believes contains <a href=
+"http://www.w3.org/Consortium/Patent-Policy-20040205/#def-essential">
+Essential Claim(s)</a> must disclose the information in accordance
+with <a href=
+"http://www.w3.org/Consortium/Patent-Policy-20040205/#sec-Disclosure">
+section 6 of the W3C Patent Policy</a>.</p>
+</div>
+<div class="toc">
+<h2><a name="contents" id="contents"></a>Table of Contents</h2>
+<p class="toc">1 <a href="#use-cases-for-xquery-updates">Use Cases
+for XQuery Updates</a><br />
+&#160;&#160;&#160;&#160;1.1 <a href="#rdb">Use Case "R" - Updating
+Relational Data</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.1.1 <a href=
+"#rdb-description">Description</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.1.2 <a href=
+"#rdb-dtd">Document Type Definition (DTD)</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.1.2.1
+<a href="#schema-for-users.xml">Schema for users.xml</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.1.2.2
+<a href="#schema-for-items.xml">Schema for items.xml</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.1.2.3
+<a href="#schema-for-bids.xml">Schema for bids.xml</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.1.3 <a href=
+"#rdb-data">Input Data</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.1.4 <a href=
+"#rdb-updates-results">Updates and Results</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.1.4.1
+<a href="#rdb-updates-results-u1">Q1</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.1.4.2
+<a href="#rdb-updates-results-u2">Q2</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.1.4.3
+<a href="#rdb-updates-results-u3">Q3</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.1.4.4
+<a href="#rdb-updates-results-u4">Q4</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.1.4.5
+<a href="#rdb-updates-results-u5">Q5</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.1.4.6
+<a href="#rdb-updates-results-u6">Q6</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.1.4.7
+<a href="#rdb-updates-results-u7">Q7</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.1.4.8
+<a href="#rdb-updates-results-q8">Q8</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.1.4.9
+<a href="#rdb-updates-results-u9">Q9</a><br />
+&#160;&#160;&#160;&#160;1.2 <a href="#use-case-sync-addrbook">Use
+Case "Address Book" - synchronizing address book entries</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.2.1 <a href=
+"#use-case-sync-addrbook-input-data">Input Data</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.2.2 <a href=
+"#addrbook-q1">Q1</a><br />
+&#160;&#160;&#160;&#160;1.3 <a href="#use-case-soap">Use Case
+"SOAP" - processing messages</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.3.1 <a href=
+"#use-case-soap-input-data">Input Data</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.3.2 <a href=
+"#soap-q1">Q1</a><br />
+&#160;&#160;&#160;&#160;1.4 <a href="#use-case-namespaces">Use Case
+"Namespaces" - moving elements from one namespace to
+another</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.4.1 <a href=
+"#use-case-ns-desc">Description</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.4.2 <a href=
+"#use-case-ns-schema-grant-app">Schema for the grant
+application</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.4.3 <a href=
+"#ns-input-data">Input Data</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.4.4 <a href=
+"#ns-q1">Q1</a><br />
+&#160;&#160;&#160;&#160;1.5 <a href="#use-case-parts">Use case
+"Parts" - modifying recursive documents</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.5.1 <a href=
+"#use-case-parts-input">Input data</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.5.2 <a href=
+"#use-case-parts-q1">Q1</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.5.3 <a href=
+"#use-case-parts-q2">Q2</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.5.4 <a href=
+"#use-case-parts-q3">Q3</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.5.5 <a href=
+"#use-case-parts-q4">Q4</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.5.6 <a href=
+"#use-case-parts-q6">Q6</a><br />
+&#160;&#160;&#160;&#160;1.6 <a href="#use-case-nil">Use case
+"Nil"</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.6.1 <a href=
+"#use-case-nil-schema">XML Schema</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.6.2 <a href=
+"#use-case-nil-input-data">Sample input data
+("employees.xml")</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.6.3 <a href=
+"#use-case-nil-q1">Q1</a><br /></p>
+<h3><a name="appendices" id="appendices"></a>Appendices</h3>
+<p class="toc">A <a href="#references">Normative
+References</a><br />
+B <a href="#id-revisions-log">Revision Log</a>
+(Non-Normative)<br />
+&#160;&#160;&#160;&#160;B.1 <a href="#id-log-pending">Changes in
+internal WD</a><br />
+&#160;&#160;&#160;&#160;B.2 <a href="#id-log-28aug2007">28 Aug 2007
+Publication</a><br /></p>
+</div>
+<hr />
+<div class="body">
+<div class="div1">
+<h2><a name="use-cases-for-xquery-updates" id=
+"use-cases-for-xquery-updates"></a>1 Use Cases for XQuery
+Updates</h2>
+<p>The use cases listed below were created by the <a href=
+"http://www.w3.org/XML/Query/">XML Query Working Group</a> to
+illustrate important applications for an XML update facility. Each
+use case is focused on a specific application area, and contains a
+Document Type Definition (DTD) and example input data. Each use
+case specifies a set of updates that might be applied to the input
+data, and the expected resulting value of the modified input for
+each update. Since the English description of each query is
+concise, the expected results form an important part of the
+definition of each update directive. These use cases are inspired
+by the <a href=
+"http://www.w3.org/TR/2011/NOTE-xquery-update-10-requirements-20110125/">
+W3C XQuery Update Facility Requirements</a> document.</p>
+<p>These use cases represent a snapshot of an ongoing work. Some
+important application areas and important operations are not yet
+adequately covered by a use case. The XML Query Working Group
+reserves the right to add, delete, or modify individual queries or
+whole use cases as the work progresses. The presence of a query in
+this set of use cases does not necessarily indicate that the query
+will be expressible in the XQuery Update Facility to be created by
+the XML Query Working Group.</p>
+<div class="div2">
+<h3><a name="rdb" id="rdb"></a>1.1 Use Case "R" - Updating
+Relational Data</h3>
+<p>One important use of an XML update language will be to update
+data stored in relational databases. This use case describes a set
+of such possible updates.</p>
+<div class="div3">
+<h4><a name="rdb-description" id="rdb-description"></a>1.1.1
+Description</h4>
+<p>This use case is based on performing updates on the data used in
+Use Case "R" from the <a href="#xquery-use-cases">[XML Query Use
+Cases]</a>. The sample data from this Use Case is copied below for
+convenience, and exactly match the data found in the XQuery 1.0 Use
+Cases. Instead of DTDs, we describe this data with W3C XML
+Schemas.</p>
+<p>The data represents a relational database used by an online
+auction. The auction maintains a USERS table containing information
+on registered users, each identified by a unique userid, who can
+either offer items for sale or bid on items. An ITEMS table lists
+items currently or recently for sale, with the userid of the user
+who offered each item. A BIDS table contains all bids on record,
+keyed by the userid of the bidder and the item number of the item
+to which the bid applies.</p>
+<p>The three tables used by the online auction are below, with
+their column-names indicated in parentheses.</p>
+<div class="exampleInner">
+<pre>
+USERS ( USERID, NAME, RATING )
+ITEMS ( ITEMNO, DESCRIPTION, OFFERED_BY, 
+        START_DATE, END_DATE, RESERVE_PRICE ) 
+BIDS ( USERID, ITEMNO, BID, BID_DATE )
+</pre></div>
+</div>
+<div class="div3">
+<h4><a name="rdb-dtd" id="rdb-dtd"></a>1.1.2 Document Type
+Definition (DTD)</h4>
+<p>This use case is based on three separate input documents named
+users.xml, items.xml, and bids.xml. Each of the documents
+represents one of the tables in the relational database described
+above, using the following DTDs:</p>
+<div class="div4">
+<h5><a name="schema-for-users.xml" id=
+"schema-for-users.xml"></a>1.1.2.1 Schema for users.xml</h5>
+<div class="exampleInner">
+<pre>
+                                            
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"&gt;
+  &lt;xs:element name="users"&gt;
+    &lt;xs:complexType&gt;
+      &lt;xs:sequence&gt;
+        &lt;xs:element minOccurs="0" maxOccurs="unbounded" ref="user_tuple"/&gt;
+      &lt;/xs:sequence&gt;
+    &lt;/xs:complexType&gt;
+  &lt;/xs:element&gt;
+  &lt;xs:element name="user_tuple"&gt;
+    &lt;xs:complexType&gt;
+      &lt;xs:sequence&gt;
+        &lt;xs:element ref="userid"/&gt;
+        &lt;xs:element ref="name"/&gt;
+        &lt;xs:element minOccurs="0" ref="rating"/&gt;
+      &lt;/xs:sequence&gt;
+    &lt;/xs:complexType&gt;
+  &lt;/xs:element&gt;
+  &lt;xs:element name="userid" type="xs:string"/&gt;
+  &lt;xs:element name="name" type="xs:string"/&gt;
+  &lt;xs:element name="rating" type="xs:string"/&gt;
+&lt;/xs:schema&gt;
+ 
+</pre></div>
+</div>
+<div class="div4">
+<h5><a name="schema-for-items.xml" id=
+"schema-for-items.xml"></a>1.1.2.2 Schema for items.xml</h5>
+<div class="exampleInner">
+<pre>
+                  
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"&gt;
+  &lt;xs:element name="items"&gt;
+    &lt;xs:complexType&gt;
+      &lt;xs:sequence&gt;
+        &lt;xs:element minOccurs="0" maxOccurs="unbounded" ref="item_tuple"/&gt;
+      &lt;/xs:sequence&gt;
+    &lt;/xs:complexType&gt;
+  &lt;/xs:element&gt;
+  &lt;xs:element name="item_tuple"&gt;
+    &lt;xs:complexType&gt;
+      &lt;xs:sequence&gt;
+        &lt;xs:element ref="itemno"/&gt;
+        &lt;xs:element ref="description"/&gt;
+        &lt;xs:element ref="offered_by"/&gt;
+        &lt;xs:element minOccurs="0" ref="start_date"/&gt;
+        &lt;xs:element minOccurs="0" ref="end_date"/&gt;
+        &lt;xs:element minOccurs="0" ref="reserve_price"/&gt;
+      &lt;/xs:sequence&gt;
+    &lt;/xs:complexType&gt;
+  &lt;/xs:element&gt;
+  &lt;xs:element name="itemno" type="xs:string"/&gt;
+  &lt;xs:element name="description" type="xs:string"/&gt;
+  &lt;xs:element name="offered_by" type="xs:string"/&gt;
+  &lt;xs:element name="start_date" type="xs:string"/&gt;
+  &lt;xs:element name="end_date" type="xs:string"/&gt;
+  &lt;xs:element name="reserve_price" type="xs:string"/&gt;
+&lt;/xs:schema&gt;
+
+</pre></div>
+</div>
+<div class="div4">
+<h5><a name="schema-for-bids.xml" id=
+"schema-for-bids.xml"></a>1.1.2.3 Schema for bids.xml</h5>
+<div class="exampleInner">
+<pre>
+                      
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"&gt;
+  &lt;xs:element name="bids"&gt;
+    &lt;xs:complexType&gt;
+      &lt;xs:sequence&gt;
+        &lt;xs:element minOccurs="0" maxOccurs="unbounded" ref="bid_tuple"/&gt;
+      &lt;/xs:sequence&gt;
+    &lt;/xs:complexType&gt;
+  &lt;/xs:element&gt;
+  &lt;xs:element name="bid_tuple"&gt;
+    &lt;xs:complexType&gt;
+      &lt;xs:sequence&gt;
+        &lt;xs:element ref="userid"/&gt;
+        &lt;xs:element ref="itemno"/&gt;
+        &lt;xs:element ref="bid"/&gt;
+        &lt;xs:element ref="bid_date"/&gt;
+      &lt;/xs:sequence&gt;
+    &lt;/xs:complexType&gt;
+  &lt;/xs:element&gt;
+  &lt;xs:element name="userid" type="xs:string"/&gt;
+  &lt;xs:element name="itemno" type="xs:string"/&gt;
+  &lt;xs:element name="bid" type="xs:string"/&gt;
+  &lt;xs:element name="bid_date" type="xs:string"/&gt;
+&lt;/xs:schema&gt;
+
+                      
+</pre></div>
+</div>
+</div>
+<div class="div3">
+<h4><a name="rdb-data" id="rdb-data"></a>1.1.3 Input Data</h4>
+<p>The following data is an excerpt of the initial state for Q1. In
+this particular use case, each update begins with the state
+resulting from the prior update.</p>
+<div class="exampleInner">
+<pre>
+&lt;items&gt;
+  &lt;item_tuple&gt;
+    &lt;itemno&gt;1001&lt;/itemno&gt;
+    &lt;description&gt;Red Bicycle&lt;/description&gt;
+    &lt;offered_by&gt;U01&lt;/offered_by&gt;
+    &lt;start_date&gt;1999-01-05&lt;/start_date&gt;
+    &lt;end_date&gt;1999-01-20&lt;/end_date&gt;
+    &lt;reserve_price&gt;40&lt;/reserve_price&gt;
+  &lt;/item_tuple&gt;
+  <em>  ... Snip ... </em>
+&lt;/items&gt;
+&lt;users&gt;
+  &lt;user_tuple&gt;
+    &lt;userid&gt;U01&lt;/userid&gt;
+    &lt;name&gt;Tom Jones&lt;/name&gt;
+    &lt;rating&gt;B&lt;/rating&gt;
+  &lt;/user_tuple&gt;
+  <em>  ... Snip ... </em>
+&lt;/users&gt;
+&lt;bids&gt;
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U02&lt;/userid&gt; 
+    &lt;itemno&gt;1001&lt;/itemno&gt; 
+    &lt;bid&gt;35&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-01-07&lt;/bid_date&gt; 
+    &lt;/bid_tuple&gt; 
+  &lt;bid_tuple&gt; 
+  <em>  ... Snip ... </em>
+&lt;/bids&gt;
+                    
+</pre></div>
+<p>The entire data set is represented by the following tables:</p>
+<table border="1" summary="Data set table">
+<caption>USERS</caption>
+<thead>
+<tr>
+<td>USERID</td>
+<td>NAME</td>
+<td>RATING</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>U01</td>
+<td>Tom Jones</td>
+<td>B</td>
+</tr>
+<tr>
+<td>U02</td>
+<td>Mary Doe</td>
+<td>A</td>
+</tr>
+<tr>
+<td>U03</td>
+<td>Dee Linquent</td>
+<td>D</td>
+</tr>
+<tr>
+<td>U04</td>
+<td>Roger Smith</td>
+<td>C</td>
+</tr>
+<tr>
+<td>U05</td>
+<td>Jack Sprat</td>
+<td>B</td>
+</tr>
+<tr>
+<td>U06</td>
+<td>Rip Van Winkle</td>
+<td>B</td>
+</tr>
+</tbody>
+</table>
+<table border="1" summary="Data set table">
+<caption>ITEMS</caption>
+<thead>
+<tr>
+<td>ITEMNO</td>
+<td>DESCRIPTION</td>
+<td>OFFERED_BY</td>
+<td>START_DATE</td>
+<td>END_DATE</td>
+<td>RESERVE_PRICE</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1001</td>
+<td>Red Bicycle</td>
+<td>U01</td>
+<td>1999-01-05</td>
+<td>1999-01-20</td>
+<td>40</td>
+</tr>
+<tr>
+<td>1002</td>
+<td>Motorcycle</td>
+<td>U02</td>
+<td>1999-02-11</td>
+<td>1999-03-15</td>
+<td>500</td>
+</tr>
+<tr>
+<td>1003</td>
+<td>Old Bicycle</td>
+<td>U02</td>
+<td>1999-01-10</td>
+<td>1999-02-20</td>
+<td>25</td>
+</tr>
+<tr>
+<td>1004</td>
+<td>Tricycle</td>
+<td>U01</td>
+<td>1999-02-25</td>
+<td>1999-03-08</td>
+<td>15</td>
+</tr>
+<tr>
+<td>1005</td>
+<td>Tennis Racket</td>
+<td>U03</td>
+<td>1999-03-19</td>
+<td>1999-04-30</td>
+<td>20</td>
+</tr>
+<tr>
+<td>1006</td>
+<td>Helicopter</td>
+<td>U03</td>
+<td>1999-05-05</td>
+<td>1999-05-25</td>
+<td>50000</td>
+</tr>
+<tr>
+<td>1007</td>
+<td>Racing Bicycle</td>
+<td>U04</td>
+<td>1999-01-20</td>
+<td>1999-02-20</td>
+<td>200</td>
+</tr>
+<tr>
+<td>1008</td>
+<td>Broken Bicycle</td>
+<td>U01</td>
+<td>1999-02-05</td>
+<td>1999-03-06</td>
+<td>25</td>
+</tr>
+</tbody>
+</table>
+<table border="1" summary="Data set table">
+<caption>BIDS</caption>
+<thead>
+<tr>
+<td>USERID</td>
+<td>ITEMNO</td>
+<td>BID</td>
+<td>BID_DATE</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>U02</td>
+<td>1001</td>
+<td>35</td>
+<td>1999-01-07</td>
+</tr>
+<tr>
+<td>U04</td>
+<td>1001</td>
+<td>40</td>
+<td>1999-01-08</td>
+</tr>
+<tr>
+<td>U02</td>
+<td>1001</td>
+<td>45</td>
+<td>1999-01-11</td>
+</tr>
+<tr>
+<td>U04</td>
+<td>1001</td>
+<td>50</td>
+<td>1999-01-13</td>
+</tr>
+<tr>
+<td>U02</td>
+<td>1001</td>
+<td>55</td>
+<td>1999-01-15</td>
+</tr>
+<tr>
+<td>U01</td>
+<td>1002</td>
+<td>400</td>
+<td>1999-02-14</td>
+</tr>
+<tr>
+<td>U02</td>
+<td>1002</td>
+<td>600</td>
+<td>1999-02-16</td>
+</tr>
+<tr>
+<td>U03</td>
+<td>1002</td>
+<td>800</td>
+<td>1999-02-17</td>
+</tr>
+<tr>
+<td>U04</td>
+<td>1002</td>
+<td>1000</td>
+<td>1999-02-25</td>
+</tr>
+<tr>
+<td>U02</td>
+<td>1002</td>
+<td>1200</td>
+<td>1999-03-02</td>
+</tr>
+<tr>
+<td>U04</td>
+<td>1003</td>
+<td>15</td>
+<td>1999-01-22</td>
+</tr>
+<tr>
+<td>U05</td>
+<td>1003</td>
+<td>20</td>
+<td>1999-02-03</td>
+</tr>
+<tr>
+<td>U01</td>
+<td>1004</td>
+<td>40</td>
+<td>1999-03-05</td>
+</tr>
+<tr>
+<td>U03</td>
+<td>1007</td>
+<td>175</td>
+<td>1999-01-25</td>
+</tr>
+<tr>
+<td>U05</td>
+<td>1007</td>
+<td>200</td>
+<td>1999-02-08</td>
+</tr>
+<tr>
+<td>U04</td>
+<td>1007</td>
+<td>225</td>
+<td>1999-02-12</td>
+</tr>
+</tbody>
+</table>
+<p>The underlying database system has the following referential
+integrity constraints:</p>
+<ul>
+<li>
+<p>A foreign key on the BIDS table requires that BIDS.USERID
+contains a value that is found in USERS.USERID</p>
+</li>
+<li>
+<p>A foreign key on the BIDS table requires that BIDS.ITEMNO
+contains a value that is found in ITEMS.ITEMNO</p>
+</li>
+</ul>
+</div>
+<div class="div3">
+<h4><a name="rdb-updates-results" id=
+"rdb-updates-results"></a>1.1.4 Updates and Results</h4>
+<div class="div4">
+<h5><a name="rdb-updates-results-u1" id=
+"rdb-updates-results-u1"></a>1.1.4.1 Q1</h5>
+<p>Add a new user (with no rating) to the users.xml view.</p>
+<p><em>Solution in the XQuery Update Facility:</em></p>
+<div class="exampleInner">
+<pre>
+insert nodes 
+  &lt;user_tuple&gt;
+    &lt;userid&gt;U07&lt;/userid&gt;
+    &lt;name&gt;Annabel Lee&lt;/name&gt;
+  &lt;/user_tuple&gt;
+into doc("users.xml")/users
+
+</pre></div>
+<p><em>Expected resulting content of users.xml:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;users&gt;
+  &lt;user_tuple&gt;
+    &lt;userid&gt;U01&lt;/userid&gt;
+    &lt;name&gt;Tom Jones&lt;/name&gt;
+    &lt;rating&gt;B&lt;/rating&gt;
+  &lt;/user_tuple&gt;
+  &lt;user_tuple&gt;
+    &lt;userid&gt;U02&lt;/userid&gt;
+    &lt;name&gt;Mary Doe&lt;/name&gt;
+    &lt;rating&gt;A&lt;/rating&gt;
+  &lt;/user_tuple&gt;
+  <em>  ... Snip ... </em>
+&lt;user_tuple&gt;
+   &lt;userid&gt;U06&lt;/userid&gt;
+   &lt;name&gt;Rip Van Winkle&lt;/name&gt;
+   &lt;rating&gt;B&lt;/rating&gt;
+  &lt;/user_tuple&gt;
+  &lt;user_tuple&gt;
+    &lt;userid&gt;U07&lt;/userid&gt;
+    &lt;name&gt;Annabel Lee&lt;/name&gt;
+  &lt;/user_tuple&gt;
+&lt;/users&gt;
+                                                
+</pre></div>
+</div>
+<div class="div4">
+<h5><a name="rdb-updates-results-u2" id=
+"rdb-updates-results-u2"></a>1.1.4.2 Q2</h5>
+<p>Enter a bid for user Annabel Lee on February 1st, 1999 for 60
+dollars on item 1001.</p>
+<p><em>Solution in the XQuery Update Facility:</em></p>
+<div class="exampleInner">
+<pre>
+let $uid := 
+doc("users.xml")/users/user_tuple[name="Annabel Lee"]/userid
+return 
+  insert nodes
+    &lt;bid_tuple&gt; 
+      &lt;userid&gt;{data($uid)}&lt;/userid&gt; 
+      &lt;itemno&gt;1001&lt;/itemno&gt; 
+      &lt;bid&gt;60&lt;/bid&gt; 
+      &lt;bid_date&gt;1999-02-01&lt;/bid_date&gt; 
+    &lt;/bid_tuple&gt;
+  into doc("bids.xml")/bids 
+</pre></div>
+<p><em>Expected resulting content of bids.xml:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;bids&gt;
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U02&lt;/userid&gt; 
+    &lt;itemno&gt;1001&lt;/itemno&gt; 
+    &lt;bid&gt;35&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-01-07&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U04&lt;/userid&gt; 
+    &lt;itemno&gt;1001&lt;/itemno&gt; 
+    &lt;bid&gt;40&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-01-08&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt;
+<em>  ... Snip ... </em>
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U01&lt;/userid&gt; 
+    &lt;itemno&gt;1002&lt;/itemno&gt; 
+    &lt;bid&gt;400&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-02-14&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+  <em>  ... Snip ... </em>
+    &lt;bid_tuple&gt; 
+    &lt;userid&gt;U04&lt;/userid&gt; 
+    &lt;itemno&gt;1007&lt;/itemno&gt; 
+    &lt;bid&gt;225&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-02-12&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U07&lt;/userid&gt; 
+    &lt;itemno&gt;1001&lt;/itemno&gt; 
+    &lt;bid&gt;60&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-02-01&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+&lt;/bids&gt;
+                                                
+</pre></div>
+</div>
+<div class="div4">
+<h5><a name="rdb-updates-results-u3" id=
+"rdb-updates-results-u3"></a>1.1.4.3 Q3</h5>
+<p>Insert a new bid for Annabel Lee on item 1002, adding 10% to the
+best bid received so far for this item.</p>
+<p><em>Solution in the XQuery Update Facility:</em></p>
+<div class="exampleInner">
+<pre>
+let $uid := doc("users.xml")/users/user_tuple[name="Annabel Lee"]/userid
+let $topbid := max(doc("bids.xml")/bids/bid_tuple[itemno=1002]/bid)
+return 
+  insert nodes 
+    &lt;bid_tuple&gt; 
+      &lt;userid&gt;{data($uid)}&lt;/userid&gt; 
+      &lt;itemno&gt;1002&lt;/itemno&gt; 
+      &lt;bid&gt;{$topbid*1.1}&lt;/bid&gt; 
+      &lt;bid_date&gt;1999-02-01&lt;/bid_date&gt; 
+    &lt;/bid_tuple&gt;
+  into doc("bids.xml")/bids
+
+</pre></div>
+<p><em>Expected resulting content of bids.xml:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;bids&gt;
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U02&lt;/userid&gt; 
+    &lt;itemno&gt;1001&lt;/itemno&gt; 
+    &lt;bid&gt;35&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-01-07&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+  <em>  ... Snip ... </em>
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U01&lt;/userid&gt; 
+    &lt;itemno&gt;1002&lt;/itemno&gt; 
+    &lt;bid&gt;400&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-02-14&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+  <em>  ... Snip ... </em>
+   &lt;bid_tuple&gt; 
+    &lt;userid&gt;U04&lt;/userid&gt; 
+    &lt;itemno&gt;1007&lt;/itemno&gt; 
+    &lt;bid&gt;225&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-02-12&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+  <em>  ... Snip ... </em>
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U07&lt;/userid&gt; 
+    &lt;itemno&gt;1002&lt;/itemno&gt; 
+    &lt;bid&gt;1320&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-03-05&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+&lt;/bids&gt;
+                                                
+</pre></div>
+<p>The best bid for item 1002 had been at 1200, thus Annabel's bid
+is at 1320.</p>
+</div>
+<div class="div4">
+<h5><a name="rdb-updates-results-u4" id=
+"rdb-updates-results-u4"></a>1.1.4.4 Q4</h5>
+<p>Set Annabel Lee's rating to B.</p>
+<p><em>Solution in the XQuery Update Facility:</em></p>
+<div class="exampleInner">
+<pre>
+let $user := doc("users.xml")/users/user_tuple[name="Annabel Lee"]
+return 
+  if ($user/rating)
+    then replace value of node $user/rating with "B"
+    else insert node &lt;rating&gt;B&lt;/rating&gt; into $user
+</pre></div>
+<p><em>Expected resulting content of users.xml:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;users&gt;
+  &lt;user_tuple&gt;
+    &lt;userid&gt;U01&lt;/userid&gt;
+    &lt;name&gt;Tom Jones&lt;/name&gt;
+    &lt;rating&gt;B&lt;/rating&gt;
+  &lt;/user_tuple&gt;
+  &lt;user_tuple&gt;
+    &lt;userid&gt;U02&lt;/userid&gt;
+    &lt;name&gt;Mary Doe&lt;/name&gt;
+    &lt;rating&gt;A&lt;/rating&gt;
+  &lt;/user_tuple&gt;
+  <em>  ... Snip ... </em>
+  &lt;user_tuple&gt;
+   &lt;userid&gt;U06&lt;/userid&gt;
+   &lt;name&gt;Rip Van Winkle&lt;/name&gt;
+   &lt;rating&gt;B&lt;/rating&gt;
+  &lt;/user_tuple&gt;
+  &lt;user_tuple&gt;
+    &lt;userid&gt;U07&lt;/userid&gt;
+    &lt;name&gt;Annabel Lee&lt;/name&gt;
+    &lt;rating&gt;B&lt;/rating&gt;
+  &lt;/user_tuple&gt;
+&lt;/users&gt;
+                                                
+</pre></div>
+</div>
+<div class="div4">
+<h5><a name="rdb-updates-results-u5" id=
+"rdb-updates-results-u5"></a>1.1.4.5 Q5</h5>
+<p>Place a bid for Annabel Lee on item 1007, adding 10% to the best
+bid received so far on that item, but only if the bid amount does
+not exceed a given limit. The first query illustrates the desired
+behavior if the limit is exceeded.</p>
+<p><em>Solution in the XQuery Update Facility:</em></p>
+<div class="exampleInner">
+<pre>
+let $uid := doc("users.xml")/users/user_tuple[name="Annabel Lee"]/userid
+let $topbid := max(doc("bids.xml")/bids/bid_tuple[itemno=1007]/bid)
+where $topbid*1.1 &lt;= 200
+return 
+  insert nodes 
+    &lt;bid_tuple&gt; 
+      &lt;userid&gt;{data($uid)}&lt;/userid&gt; 
+      &lt;itemno&gt;1007&lt;/itemno&gt; 
+      &lt;bid&gt;{$topbid*1.1}&lt;/bid&gt; 
+      &lt;bid_date&gt;1999-02-01&lt;/bid_date&gt; 
+    &lt;/bid_tuple&gt;
+  into doc("bids.xml")/bids
+</pre></div>
+<p><em>Expected resulting content of bids.xml:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;bids&gt;
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U02&lt;/userid&gt; 
+    &lt;itemno&gt;1001&lt;/itemno&gt; 
+    &lt;bid&gt;35&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-01-07&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+  <em>  ... Snip ... </em>
+    &lt;bid_tuple&gt; 
+    &lt;userid&gt;U04&lt;/userid&gt; 
+    &lt;itemno&gt;1007&lt;/itemno&gt; 
+    &lt;bid&gt;225&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-02-12&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+&lt;/bids&gt;
+</pre></div>
+<p>In the above, adding 10% to the best bid on item 1007 would have
+required a bid of 237, which is more than the allowed limit of 200.
+Thus, the bids.xml document does not change.</p>
+<p>Place a bid for Annabel Lee on item 1007, adding 10% to the best
+bid received so far on that item, but only if the bid amount does
+not exceed 500. This illustrates the behavior when the resulting
+value is within the limit.</p>
+<p><em>Solution in the XQuery Update Facility:</em></p>
+<div class="exampleInner">
+<pre>
+let $uid := doc("users.xml")/users/user_tuple[name="Annabel Lee"]/userid
+let $topbid := max(doc("bids.xml")/bids/bid_tuple[itemno=1007]/bid)
+where $topbid*1.1 &lt;= 500
+return 
+  insert nodes 
+    &lt;bid_tuple&gt; 
+      &lt;userid&gt;{data($uid)}&lt;/userid&gt; 
+      &lt;itemno&gt;1007&lt;/itemno&gt; 
+      &lt;bid&gt;{$topbid*1.1}&lt;/bid&gt; 
+      &lt;bid_date&gt;1999-02-01&lt;/bid_date&gt; 
+    &lt;/bid_tuple&gt;
+  into doc("bids.xml")/bids
+</pre></div>
+<p><em>Expected resulting content of bids.xml</em></p>
+<div class="exampleInner">
+<pre>
+&lt;bids&gt;
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U02&lt;/userid&gt; 
+    &lt;itemno&gt;1001&lt;/itemno&gt; 
+    &lt;bid&gt;35&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-01-07&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+  <em>  ... Snip ... </em>
+   &lt;bid_tuple&gt; 
+    &lt;userid&gt;U04&lt;/userid&gt; 
+    &lt;itemno&gt;1007&lt;/itemno&gt; 
+    &lt;bid&gt;225&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-02-12&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U07&lt;/userid&gt; 
+    &lt;itemno&gt;1007&lt;/itemno&gt; 
+    &lt;bid&gt;237&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-04-01&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+&lt;/bids&gt;
+</pre></div>
+</div>
+<div class="div4">
+<h5><a name="rdb-updates-results-u6" id=
+"rdb-updates-results-u6"></a>1.1.4.6 Q6</h5>
+<p>Erase user Dee Linquent and the corresponding associated items
+and bids.</p>
+<p><em>Solution in the XQuery Update Facility:</em></p>
+<div class="exampleInner">
+<pre>
+let $user := doc("users.xml")/users/user_tuple[name="Dee Linquent"]
+let $items := doc("items.xml")/items/item_tuple[offered_by=$user/userid]
+let $bids := doc("bids.xml")/bids/bid_tuple[userid=$user/userid]
+return (
+  delete nodes $user,
+  delete nodes $items,
+  delete nodes $bids
+)
+
+</pre></div>
+<p>An alternative solution is:</p>
+<div class="exampleInner">
+<pre>
+let $user := doc("users.xml")/users/user_tuple[name="Dee Linquent"]
+let $items := doc("items.xml")/items/item_tuple[offered_by=$user/userid]
+let $bids := doc("bids.xml")/bids/bid_tuple[userid=$user/userid]
+return 
+  delete nodes $user, $items, $bids
+
+</pre></div>
+<p>The two solutions above highlight the fact that a list of delete
+operations is equivalent to deleting the list of nodes obtained by
+concatenating the operands on which the deletes applied.</p>
+<p><em>Expected resulting content of items.xml:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;items&gt;
+  &lt;item_tuple&gt;
+    &lt;itemno&gt;1001&lt;/itemno&gt;
+    &lt;description&gt;Red Bicycle&lt;/description&gt;
+    &lt;offered_by&gt;U01&lt;/offered_by&gt;
+    &lt;start_date&gt;1999-01-05&lt;/start_date&gt;
+    &lt;end_date&gt;1999-01-20&lt;/end_date&gt;
+    &lt;reserve_price&gt;40&lt;/reserve_price&gt;
+  &lt;/item_tuple&gt;
+  <em>  ... Snip ... </em>
+  &lt;item_tuple&gt;
+    &lt;itemno&gt;1004&lt;/itemno&gt;
+    &lt;description&gt;Tricycle&lt;/description&gt;
+    &lt;offered_by&gt;U01&lt;/offered_by&gt;
+    &lt;start_date&gt;1999-02-25&lt;/start_date&gt;
+    &lt;end_date&gt;1999-03-08&lt;/end_date&gt;
+    &lt;reserve_price&gt;15&lt;/reserve_price&gt;
+  &lt;/item_tuple&gt;
+  &lt;item_tuple&gt;
+    &lt;itemno&gt;1007&lt;/itemno&gt;
+    &lt;description&gt;Racing bicycle&lt;/description&gt;
+    &lt;offered_by&gt;U04&lt;/offered_by&gt;
+    &lt;start_date&gt;1999-01-20&lt;/start_date&gt;
+    &lt;end_date&gt;1999-02-20&lt;/end_date&gt;
+    &lt;reserve_price&gt;200&lt;/reserve_price&gt;
+  &lt;/item_tuple&gt;
+  &lt;item_tuple&gt;
+    &lt;itemno&gt;1008&lt;/itemno&gt;
+    &lt;description&gt;Broken bicycle&lt;/description&gt;
+    &lt;offered_by&gt;U01&lt;/offered_by&gt;
+    &lt;start_date&gt;1999-02-05&lt;/start_date&gt;
+    &lt;end_date&gt;1999-03-06&lt;/end_date&gt;
+    &lt;reserve_price&gt;25&lt;/reserve_price&gt;
+  &lt;/item_tuple&gt;
+&lt;/items&gt;
+</pre></div>
+<p>In the above, items 1005 and 1006, offered by user Dee Linquent,
+have been erased; item 1007 now directly follows item 1004. Notice
+that the whole subtrees rooted at the corresponding
+&lt;item_tuple&gt; elements have been erased.</p>
+<p><em>Expected resulting content of users.xml:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;users&gt;
+  &lt;user_tuple&gt;
+    &lt;userid&gt;U01&lt;/userid&gt;
+    &lt;name&gt;Tom Jones&lt;/name&gt;
+    &lt;rating&gt;B&lt;/rating&gt;
+  &lt;/user_tuple&gt;
+  &lt;user_tuple&gt;
+    &lt;userid&gt;U02&lt;/userid&gt;
+    &lt;name&gt;Mary Doe&lt;/name&gt;
+    &lt;rating&gt;A&lt;/rating&gt;
+  &lt;/user_tuple&gt;
+   &lt;user_tuple&gt;
+    &lt;userid&gt;U04&lt;/userid&gt;
+    &lt;name&gt;Roger Smith&lt;/name&gt;
+    &lt;rating&gt;C&lt;/rating&gt;
+  &lt;/user_tuple&gt;
+<em>  ... Snip ... </em>
+  &lt;user_tuple&gt;
+   &lt;userid&gt;U06&lt;/userid&gt;
+   &lt;name&gt;Rip Van Winkle&lt;/name&gt;
+   &lt;rating&gt;B&lt;/rating&gt;
+  &lt;/user_tuple&gt;
+&lt;/users&gt;
+</pre></div>
+<p>In the above, user Dee Linquent has been erased.</p>
+<p><em>Expected resulting content of bids.xml:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;bids&gt;
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U02&lt;/userid&gt; 
+    &lt;itemno&gt;1001&lt;/itemno&gt; 
+    &lt;bid&gt;35&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-01-07&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U04&lt;/userid&gt; 
+    &lt;itemno&gt;1001&lt;/itemno&gt; 
+    &lt;bid&gt;40&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-01-08&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+<em>  ... Snip ... </em>
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U02&lt;/userid&gt; 
+    &lt;itemno&gt;1002&lt;/itemno&gt; 
+    &lt;bid&gt;600&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-02-16&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U04&lt;/userid&gt; 
+    &lt;itemno&gt;1002&lt;/itemno&gt; 
+    &lt;bid&gt;1000&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-02-25&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+<em>  ... Snip ... </em>
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U04&lt;/userid&gt; 
+    &lt;itemno&gt;1007&lt;/itemno&gt; 
+    &lt;bid&gt;225&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-02-12&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+&lt;/bids&gt;
+
+</pre></div>
+<p>No bids had been placed on items 1005 and 1006 offered by user
+Dee Linquent. However, Dee Linquent had placed a bid on item 1002;
+this bid has been erased.</p>
+</div>
+<div class="div4">
+<h5><a name="rdb-updates-results-u7" id=
+"rdb-updates-results-u7"></a>1.1.4.7 Q7</h5>
+<p>Add the element &lt;comment&gt;This is a bargain
+!&lt;/comment&gt; as the last child of the &lt;item&gt; element
+describing item 1002.</p>
+<p><em>Solution in the XQuery Update Facility</em></p>
+<div class="exampleInner">
+<pre>
+declare revalidation strict;
+
+insert nodes
+  &lt;comment&gt;This is a bargain !&lt;/comment&gt;
+as last into doc("items.xml")/items/item_tuple[itemno=1002] 
+</pre></div>
+<p><em>Expected resulting content of items.xml:</em> The same as
+the original contents.</p>
+<p>The items.xml document is unchanged and an error is raised. This
+update can not be applied without rendering the document invalid
+with respect to its schema.</p>
+</div>
+<div class="div4">
+<h5><a name="rdb-updates-results-q8" id=
+"rdb-updates-results-q8"></a>1.1.4.8 Q8</h5>
+<p>Place a bid for Annabel Lee on item 1010, which does not exist
+in "items.xml". In this query, we assume that a referential
+integrity constraint in the underlying database system requires
+that no bid can be placed on an item unless it exists in the
+database.</p>
+<p><em>Solution in XQuery:</em></p>
+<div class="exampleInner">
+<pre>
+let $uid := doc("users.xml")/users/user_tuple[name="Annabel Lee"]/userid
+return 
+  insert nodes
+    &lt;bid_tuple&gt; 
+      &lt;userid&gt;{data($uid)}&lt;/userid&gt; 
+      &lt;itemno&gt;1010&lt;/itemno&gt; 
+      &lt;bid&gt;60&lt;/bid&gt; 
+      &lt;bid_date&gt;2006-04-23&lt;/bid_date&gt; 
+    &lt;/bid_tuple&gt;
+  into doc("bids.xml")/bids 
+</pre></div>
+<p><em>Expected resulting content of bids.xml:</em>the same as the
+original contents.</p>
+<p>This update violates the previously-mentioned referential
+integrity constraint. Therefore, its execution raises a dynamic
+error (see <a href=
+"http://www.w3.org/TR/xquery/#id-kinds-of-errors">Kinds of
+Errors</a> in the XQuery specification).</p>
+</div>
+<div class="div4">
+<h5><a name="rdb-updates-results-u9" id=
+"rdb-updates-results-u9"></a>1.1.4.9 Q9</h5>
+<p>Add a bid for Annabel Lee on item 1002, at a price 5 dollars
+below the current highest bid. A trigger in the underlying database
+ensures that a bid cannot be made at a lower price than the highest
+bid made so far on that item.</p>
+<p><em>Solution in XQuery:</em></p>
+<div class="exampleInner">
+<pre>
+let $uid := doc("users.xml")/users/user_tuple[name="Annabel Lee"]/userid
+let $topbid := max(doc("bids.xml")//bid_tuple[itemno=1002]/bid)
+return 
+  insert nodes
+    &lt;bid_tuple&gt; 
+      &lt;userid&gt;{data($uid)}&lt;/userid&gt; 
+      &lt;itemno&gt;1002&lt;/itemno&gt; 
+      &lt;bid&gt;{$topbid - 5.00}&lt;/bid&gt; 
+      &lt;bid_date&gt;2006-04-23&lt;/bid_date&gt; 
+    &lt;/bid_tuple&gt;
+  into doc("bids.xml")/bids 
+</pre></div>
+<p><em>Expected resulting content of bids.xml:</em> the same as the
+original contents.</p>
+<p>This update causes the previously mentioned trigger to return an
+error. Therefore, its execution will raise a dynamic error (see
+<a href="http://www.w3.org/TR/xquery/#id-kinds-of-errors">Kinds of
+Errors</a> in the XQuery specification).</p>
+</div>
+</div>
+</div>
+<div class="div2">
+<h3><a name="use-case-sync-addrbook" id=
+"use-case-sync-addrbook"></a>1.2 Use Case "Address Book" -
+synchronizing address book entries</h3>
+<p>In this scenario, an address book is synchronized among a
+central archive and two local copies. This scenario is inspired by
+the Unison file synchronizer. During synchronization, Address book
+entries with the same <em>name</em> element are considered to be
+the same entry. The order of entries is irrelevant. For simplicity,
+we assume that entries may be modified, but not inserted or
+deleted. When the two copies are synchronized, their state is saved
+into an archival version. Synchronization is performed as
+follows:</p>
+<ul>
+<li>
+<p>If an entry in one of the two copies is different from the
+archived one, but the other copy matches the archive, the modified
+copy is propagated to the archive and to the other copy.</p>
+</li>
+<li>
+<p>If both copies differ from the archive, but they do not both
+modify the same element in the entry, or they modify the same
+element but the modified elements have the same value, then the
+changes from each copy are propagated to both the archive and the
+other copy.</p>
+</li>
+<li>
+<p>If the copies have each modified the same entry, but modified it
+in different ways, a problem is reported in the log, and neither
+the archive nor the copies are changed. (For simplicity, we do not
+attempt to merge updates.)</p>
+</li>
+</ul>
+<p>The XQuery Update Facility is sufficient for the problem as
+scoped above. For more complex scenarios, the XQuery Scripting
+Extensions will simplify programming by allowing variable
+assignment and the ability to view the results of prior updates
+within a query.</p>
+<div class="div3">
+<h4><a name="use-case-sync-addrbook-input-data" id=
+"use-case-sync-addrbook-input-data"></a>1.2.1 Input Data</h4>
+<p>This section describes the data prior to synchronization.</p>
+<p><em>archive.xml</em>: The central archive, before
+synchronization.</p>
+<div class="exampleInner">
+<pre>
+&lt;archived-agenda&gt;
+  &lt;last-synch-time&gt;2005-10-05T10:00&lt;/last-synch-time&gt;
+  &lt;entry&gt;
+    &lt;name&gt;Benjamin&lt;/name&gt;
+    &lt;contact&gt;benjamin@inria.fr&lt;/contact&gt;
+  &lt;/entry&gt;
+  &lt;entry&gt;
+    &lt;name&gt;Dario&lt;/name&gt;
+    &lt;contact&gt;dario@uni-pisa.it&lt;/contact&gt;
+  &lt;/entry&gt;
+  &lt;entry&gt;
+    &lt;name&gt;Anthony&lt;/name&gt;
+    &lt;contact&gt;tony@uni-toulon.fr&lt;/contact&gt;
+  &lt;/entry&gt;
+&lt;/archived-agenda&gt;
+
+</pre></div>
+<p><em>log.xml</em>: The central log, before synchronization.</p>
+<div class="exampleInner">
+<pre>
+&lt;log&gt;
+&lt;/log&gt;
+
+</pre></div>
+<p><em>copy1.xml</em>: The first modified copy of the address
+book.</p>
+<p>In this copy, Benjamin's contact has changed from INRIA to
+University of Versailles, Dario has moved from University of Pisa
+to University of Paris Sud, and Anthony has moved from University
+of Toulon to the ENA.</p>
+<div class="exampleInner">
+<pre>
+&lt;agenda-version&gt;
+  &lt;entry&gt;
+    &lt;name&gt;Benjamin&lt;/name&gt;
+    &lt;contact&gt;benjamin@uni-versailles.fr&lt;/contact&gt;
+  &lt;/entry&gt;
+  &lt;entry&gt;
+    &lt;name&gt;Dario&lt;/name&gt;
+    &lt;contact&gt;dario@uni-parissud.fr&lt;/contact&gt;
+  &lt;/entry&gt;
+  &lt;entry&gt;
+    &lt;name&gt;Anthony&lt;/name&gt;
+    &lt;contact&gt;tony@ena.fr&lt;/contact&gt;
+  &lt;/entry&gt;
+&lt;/agenda-version&gt;
+
+</pre></div>
+<p><em>copy2.xml</em>: The second modified copy of the address
+book.</p>
+<p>In this copy, Benjamin has also moved to University of
+Versailles, Dario has not moved, and Anthony has moved to the EHESS
+instead of the ENA:</p>
+<div class="exampleInner">
+<pre>
+&lt;agenda-version&gt;  
+  &lt;entry&gt;
+    &lt;name&gt;Benjamin&lt;/name&gt;
+    &lt;contact&gt;benjamin@uni-versailles.fr&lt;/contact&gt;
+  &lt;/entry&gt;
+  &lt;entry&gt;
+    &lt;name&gt;Dario&lt;/name&gt;
+    &lt;contact&gt;dario@uni-pisa.it&lt;/contact&gt;
+  &lt;/entry&gt;
+  &lt;entry&gt;
+    &lt;name&gt;Anthony&lt;/name&gt;
+    &lt;contact&gt;tony@ehess.fr&lt;/contact&gt;
+  &lt;/entry&gt;
+ &lt;/agenda-version&gt;
+
+</pre></div>
+</div>
+<div class="div3">
+<h4><a name="addrbook-q1" id="addrbook-q1"></a>1.2.2 Q1</h4>
+<p>Synchronize the three logs as described in the description of
+this use case.</p>
+<p><em>Solution in the XQuery Update Facility:</em></p>
+<div class="exampleInner">
+<pre>
+for $a in doc("archive.xml")/archived-agenda/entry, 
+    $v1 in doc("copy1.xml")/agenda-version/entry, 
+    $v2 in doc("copy2.xml")/agenda-version/entry
+where $a/name = $v1/name
+  and $v1/name = $v2/name
+return 
+  if ($a/contact = $v1/contact and $v1/contact=$v2/contact)
+  then ()
+  else 
+    if ($v1/contact = $v2/contact)
+    then replace value of node $a/contact with $v1/contact
+    else 
+      if ($a/contact = $v1/contact)
+      then (
+            replace value of node $a/contact with $v2/contact,
+            replace value of node $v1/contact with $v2/contact
+      )
+      else 
+        if ($a/contact = $v2/contact)
+        then (
+            replace value of node $a/contact with $v1/contact,
+            replace value of node $v2/contact with $v1/contact
+        )
+        else (
+          insert node
+            &lt;fail&gt;
+               &lt;arch&gt;{ $a }&lt;/arch&gt;
+               &lt;v1&gt;{ $v1 }&lt;/v1&gt;
+               &lt;v2&gt;{ $v2 }&lt;/v2&gt;
+            &lt;/fail&gt;
+          into doc("log.xml")/log
+        )
+,
+replace value of node doc("archive.xml")/*/last-synch-time
+        with current-dateTime()
+
+          
+</pre></div>
+<p><em>Expected Results:</em></p>
+<p><em>Expected results of the agenda synchronization</em>: A
+synchronization of the two versions of the agenda made on April
+23th, 2006, at noon, should have the following impact on the
+archive, versions, and log.</p>
+<div class="note">
+<p class="prefix"><b>Note:</b></p>
+<p>In the following XML results, the comments (shown in italic
+font) were not created by the update directives, and are not part
+of the result documents. They have been added to explain where each
+part of a result document comes from.</p>
+</div>
+<p><em>archive.xml</em></p>
+<div class="exampleInner">
+<pre>
+&lt;archived-agenda&gt;
+  &lt;last-synch-time&gt;2006-04-23T12:00&lt;/last-synch-time&gt;
+  &lt;entry&gt;
+    &lt;name&gt;Benjamin&lt;/name&gt;
+    
+            <em> copied from the modified entries </em>
+
+    &lt;contact&gt;benjamin@uni-versailles.fr&lt;/contact&gt;
+  &lt;/entry&gt;
+  &lt;entry&gt;
+    &lt;name&gt;Dario&lt;/name&gt;
+    <em> copied from first modified version </em>
+
+    &lt;contact&gt;dario@uni-parissud.fr&lt;/contact&gt;
+  &lt;/entry&gt;
+  &lt;entry&gt;
+    &lt;name&gt;Anthony&lt;/name&gt;
+    <em>unchanged due to conflict </em>
+
+    &lt;contact&gt;tony@uni-toulon.fr&lt;/contact&gt;
+  &lt;/entry&gt;
+&lt;/archived-agenda&gt;
+
+</pre></div>
+<p><em>log.xml</em></p>
+<div class="exampleInner">
+<pre>
+&lt;log&gt;
+  <em> update failure details </em>
+  &lt;fail&gt;
+     &lt;arch&gt;
+       <em> archived agenda version </em>
+
+       &lt;entry&gt;
+         &lt;name&gt;Anthony&lt;/name&gt;
+         &lt;contact&gt;tony@uni-toulon.fr&lt;/contact&gt;
+       &lt;/entry&gt;
+     &lt;/arch&gt;
+     &lt;v1&gt;
+       <em> first modified version </em>
+
+       &lt;entry&gt;
+         &lt;name&gt;Anthony&lt;/name&gt;
+         &lt;contact&gt;tony@ena.fr&lt;/contact&gt;
+       &lt;/entry&gt;
+     &lt;/v1&gt;
+     &lt;v2&gt;
+       <em> second modified version </em>
+
+       &lt;entry&gt;
+         &lt;name&gt;Anthony&lt;/name&gt;
+         &lt;contact&gt;tony@ehess.fr&lt;/contact&gt;
+       &lt;/entry&gt;
+     &lt;/v2&gt;
+  &lt;/fail&gt;
+&lt;/log&gt;
+
+</pre></div>
+<p><em>copy1.xml</em></p>
+<div class="exampleInner">
+<pre>
+&lt;agenda-version&gt;
+  &lt;entry&gt;
+    &lt;name&gt;Benjamin&lt;/name&gt;
+    
+            <em> kept after synchronization </em>
+ 
+   &lt;contact&gt;benjamin@uni-versailles.fr&lt;/contact&gt;
+  &lt;/entry&gt;
+  &lt;entry&gt;
+    <em> kept after synchronization </em>
+
+    &lt;name&gt;Dario&lt;/name&gt;
+    &lt;contact&gt;dario@uni-parissud.fr&lt;/contact&gt;
+  &lt;/entry&gt;
+  &lt;entry&gt;
+    <em> kept after synchronization failure </em>
+
+    &lt;name&gt;Anthony&lt;/name&gt;
+    &lt;contact&gt;tony@ena.fr&lt;/contact&gt;
+  &lt;/entry&gt;
+&lt;/agenda-version&gt;
+
+</pre></div>
+<p><em>copy2.xml</em></p>
+<div class="exampleInner">
+<pre>
+&lt;agenda-version&gt;  
+  &lt;entry&gt;
+    
+            <em> kept after synchronization </em>
+
+    &lt;name&gt;Benjamin&lt;/name&gt;
+    &lt;contact&gt;benjamin@uni-versailles.fr&lt;/contact&gt;
+  &lt;/entry&gt;
+  &lt;entry&gt;
+    <em> value taken from the other modified version </em>
+
+    &lt;name&gt;Dario&lt;/name&gt;
+    &lt;contact&gt;dario@uni-parissud.fr&lt;/contact&gt;
+  &lt;/entry&gt;
+  &lt;entry&gt;
+    <em> kept after synchronization failure </em>
+
+    &lt;name&gt;Anthony&lt;/name&gt;
+    &lt;contact&gt;tony@ehess.fr&lt;/contact&gt;
+  &lt;/entry&gt;
+&lt;/agenda-version&gt;
+
+</pre></div>
+</div>
+</div>
+<div class="div2">
+<h3><a name="use-case-soap" id="use-case-soap"></a>1.3 Use Case
+"SOAP" - processing messages</h3>
+<p>This use case processes the message found in Example 1 of the
+<a href="#SOAPPrimer">[SOAP Version 1.2 Part 0:Primer]</a> to
+produce the message found in Example 2. The original message is not
+modified, but the new message is a modified copy of the
+original.</p>
+<div class="div3">
+<h4><a name="use-case-soap-input-data" id=
+"use-case-soap-input-data"></a>1.3.1 Input Data</h4>
+<p>The input data is taken directly from Example 1 of the <a href=
+"#SOAPPrimer">[SOAP Version 1.2 Part 0:Primer]</a>.</p>
+<div class="exampleInner">
+<pre>
+&lt;?xml version='1.0' ?&gt;
+&lt;env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope"&gt; 
+ &lt;env:Header&gt;
+  &lt;m:reservation 
+     xmlns:m="http://travelcompany.example.org/reservation" 
+     env:role="http://www.w3.org/2003/05/soap-envelope/role/next"
+     env:mustUnderstand="true"&gt;
+   &lt;m:reference&gt;uuid:093a2da1-q345-739r-ba5d-pqff98fe8j7d
+   &lt;/m:reference&gt;
+   &lt;m:dateAndTime&gt;2001-11-29T13:20:00.000-05:00
+   &lt;/m:dateAndTime&gt;
+  &lt;/m:reservation&gt;
+  &lt;n:passenger 
+    xmlns:n="http://mycompany.example.com/employees"
+    env:role="http://www.w3.org/2003/05/soap-envelope/role/next"
+    env:mustUnderstand="true"&gt;
+   &lt;n:name&gt;Åke Jógvan Øyvind&lt;/n:name&gt;
+  &lt;/n:passenger&gt;
+ &lt;/env:Header&gt;
+ &lt;env:Body&gt;
+  &lt;p:itinerary
+    xmlns:p="http://travelcompany.example.org/reservation/travel"&gt;
+   &lt;p:departure&gt;
+     &lt;p:departing&gt;New York&lt;/p:departing&gt;
+     &lt;p:arriving&gt;Los Angeles&lt;/p:arriving&gt;
+     &lt;p:departureDate&gt;2001-12-14&lt;/p:departureDate&gt;
+     &lt;p:departureTime&gt;late afternoon&lt;/p:departureTime&gt;
+     &lt;p:seatPreference&gt;aisle&lt;/p:seatPreference&gt;
+   &lt;/p:departure&gt;
+   &lt;p:return&gt;
+     &lt;p:departing&gt;Los Angeles&lt;/p:departing&gt;
+     &lt;p:arriving&gt;New York&lt;/p:arriving&gt;
+     &lt;p:departureDate&gt;2001-12-20&lt;/p:departureDate&gt;
+     &lt;p:departureTime&gt;mid-morning&lt;/p:departureTime&gt;
+     &lt;p:seatPreference/&gt;
+   &lt;/p:return&gt;
+  &lt;/p:itinerary&gt;
+  &lt;q:lodging
+   xmlns:q="http://travelcompany.example.org/reservation/hotels"&gt;
+   &lt;q:preference&gt;none&lt;/q:preference&gt;
+  &lt;/q:lodging&gt;
+ &lt;/env:Body&gt;
+&lt;/env:Envelope&gt;
+
+</pre></div>
+<p>Moreover, we assume the dynamic context associates to "airports"
+the following sequence:</p>
+<div class="exampleInner">
+<pre>
+&lt;AIRPORT&gt;&lt;CITY&gt;New York&lt;/CITY&gt;&lt;CODE&gt;JFK&lt;/CODE&gt;&lt;/AIRPORT&gt;
+&lt;AIRPORT&gt;&lt;CITY&gt;New York&lt;/CITY&gt;&lt;CODE&gt;LGA&lt;/CODE&gt;&lt;/AIRPORT&gt;
+&lt;AIRPORT&gt;&lt;CITY&gt;New York&lt;/CITY&gt;&lt;CODE&gt;EWR&lt;/CODE&gt;&lt;/AIRPORT&gt;
+&lt;AIRPORT&gt;&lt;CITY&gt;Los Angeles&lt;/CITY&gt;&lt;CODE&gt;LAX&lt;/CODE&gt;&lt;/AIRPORT&gt;
+&lt;AIRPORT&gt;&lt;CITY&gt;San Francisco&lt;/CITY&gt;&lt;CODE&gt;SFO&lt;/CODE&gt;&lt;/AIRPORT&gt;
+
+</pre></div>
+</div>
+<div class="div3">
+<h4><a name="soap-q1" id="soap-q1"></a>1.3.2 Q1</h4>
+<p>Check to see if the airports are unambiguously specified in the
+incoming message. Produce a SOAP response by transforming the
+incoming message, modifying the time and date to the current time,
+and replacing the body with a request to clarify which airport
+should be used for New York City.</p>
+<p><em>Solution in the XQuery Update Facility:</em></p>
+<div class="exampleInner">
+<pre>
+declare namespace 
+  env="http://www.w3.org/2003/05/soap-envelope";
+declare namespace 
+  m="http://travelcompany.example.org/reservation";
+declare namespace 
+  n="http://mycompany.example.com/employees";
+declare namespace 
+  p="http://travelcompany.example.org/reservation/travel";
+
+(:  A clarification is needed only if there are no
+ :  airports or more than one for a given city. If
+ :  there is precisely one, there is no need to
+ :  ask for information on that city.
+ :)
+
+declare function local:airportChoices($city as xs:string)
+{
+  let $airports := collection("airports")[CITY = $city]
+  return
+    if (count($airports) = 0)
+    then 
+       &lt;error&gt; No airports found for {$city}!&lt;/error&gt;
+    else if (count($airports) &gt; 1) 
+    then 
+       &lt;airportChoices&gt;
+        { 
+          for $c in $airports/CODE
+          return (string( $c ), " ")
+        }
+       &lt;/airportChoices&gt;
+    else ()
+};
+
+(:  Make sure that each airport is unambiguous. If there is
+ :  more than one airport for a city, ask for clarification.
+ :
+ :  The primer only shows the error condition, so it is not
+ :  clear what to do if there are no errors. Here, we simply
+ :  return the airports in the itinerary.
+ :)
+
+declare function local:airports($in as element(env:Envelope))
+{
+    let $departureDeparting := 
+      $in//p:departure/p:departing
+    let $departureDepartingAirports := 
+      collection("airports")[CITY = $departureDeparting]
+    let $departureArriving := 
+      $in//p:departure/p:arriving
+    let $departureArrivingAirports := 
+      collection("airports")[CITY = $departureArriving]
+    let $returnDeparting := 
+      $in//p:return/p:departing
+    let $returnDepartingAirports := 
+      collection("airports")[CITY = $returnDeparting]
+    let $returnArriving := 
+      $in//p:return/p:arriving
+    let $returnArrivingAirports := 
+      collection("airports")[CITY = $returnArriving]
+    return
+       if ( count($departureDepartingAirports)=0 or 
+            count($departureDepartingAirports)&gt;1 or 
+            count($departureArrivingAirports)=0 or 
+            count($departureArrivingAirports)&gt;1 or 
+            count($returnDepartingAirports)=0 or 
+            count($returnDepartingAirports)&gt;1 or 
+            count($returnArrivingAirports)=0 or 
+            count($returnArrivingAirports)&gt;1 )
+         then
+          &lt;p:itineraryClarification&gt;
+            &lt;p:departure&gt;
+              &lt;p:departing&gt;
+                { local:airportChoices($departureDeparting) }
+              &lt;/p:departing&gt;
+              &lt;p:arriving&gt;
+                { local:airportChoices($departureArriving) }
+              &lt;/p:arriving&gt; 
+            &lt;/p:departure&gt;
+            &lt;p:return&gt;
+              &lt;p:departing&gt;
+                { local:airportChoices($returnDeparting) }
+              &lt;/p:departing&gt;
+              &lt;p:arriving&gt;
+                { local:airportChoices($returnArriving) }
+              &lt;/p:arriving&gt;
+            &lt;/p:return&gt;
+          &lt;/p:itineraryClarification&gt;
+         else 
+          &lt;p:itinerary&gt;
+            &lt;p:departure&gt;
+              &lt;p:departing&gt;{$departureDeparting}&lt;/p:departing&gt;
+              &lt;p:arriving&gt;{$departureArriving}&lt;/p:arriving&gt;
+            &lt;/p:departure&gt;
+            &lt;p:return&gt;
+              &lt;p:departing&gt;{$returnDeparting}&lt;/p:departing&gt;
+              &lt;p:arriving&gt;{$returnArriving}&lt;/p:arriving&gt;
+            &lt;/p:return&gt;
+          &lt;/p:itinerary&gt;
+};
+
+declare variable $msg external;
+
+copy $out := $msg/env:Envelope
+modify (
+  replace value of node $out//m:dateAndTime 
+     with fn:current-dateTime(),
+  replace node $out//env:Body 
+  with &lt;env:Body&gt;
+        { local:airports($out) }
+       &lt;/env:Body&gt;
+)
+return $out
+</pre></div>
+<p><em>Expected Result (from <a href="#SOAPPrimer">[SOAP Version
+1.2 Part 0:Primer]</a>):</em></p>
+<div class="exampleInner">
+<pre>
+
+&lt;env:Envelope 
+   xmlns:env="http://www.w3.org/2003/05/soap-envelope"&gt; 
+ &lt;env:Header&gt;
+  &lt;m:reservation 
+    xmlns:m="http://travelcompany.example.org/reservation" 
+    env:role="http://www.w3.org/2003/05/soap-envelope/role/next"
+    env:mustUnderstand="true"&gt;
+   &lt;m:reference&gt;uuid:093a2da1-q345-739r-ba5d-pqff98fe8j7d
+   &lt;/m:reference&gt;
+   &lt;m:dateAndTime&gt;2001-11-29T13:35:00.000-05:00
+   &lt;/m:dateAndTime&gt; 
+  &lt;/m:reservation&gt;
+  &lt;n:passenger xmlns:n="http://mycompany.example.com/employees"
+    env:role="http://www.w3.org/2003/05/soap-envelope/role/next"
+    env:mustUnderstand="true"&gt;
+   &lt;n:name&gt;Åke Jógvan Øyvind&lt;/n:name&gt;
+  &lt;/n:passenger&gt;
+ &lt;/env:Header&gt;
+ &lt;env:Body&gt;
+  &lt;p:itineraryClarification 
+    xmlns:p="http://travelcompany.example.org/reservation/travel"&gt;
+   &lt;p:departure&gt;
+     &lt;p:departing&gt;
+       &lt;p:airportChoices&gt;
+          JFK LGA EWR 
+       &lt;/p:airportChoices&gt;
+     &lt;/p:departing&gt;
+   &lt;/p:departure&gt;
+   &lt;p:return&gt;
+     &lt;p:arriving&gt;
+       &lt;p:airportChoices&gt;
+         JFK LGA EWR 
+       &lt;/p:airportChoices&gt;
+     &lt;/p:arriving&gt;
+   &lt;/p:return&gt;  
+  &lt;/p:itineraryClarification&gt;
+ &lt;/env:Body&gt;
+&lt;/env:Envelope&gt;
+
+</pre></div>
+</div>
+</div>
+<div class="div2">
+<h3><a name="use-case-namespaces" id="use-case-namespaces"></a>1.4
+Use Case "Namespaces" - moving elements from one namespace to
+another</h3>
+<p>This use case shows how (parts of) the elements in a document
+may be moved from one namespace to another.</p>
+<div class="div3">
+<h4><a name="use-case-ns-desc" id="use-case-ns-desc"></a>1.4.1
+Description</h4>
+<p>An agriculture company and an university research lab are making
+a joint proposal to the National Agricultural Research Agency. An
+initial proposal has been made by cut and paste out of snippets
+provided by the two partners. Before being submitted, the proposal
+has to be moved to the National Agricultural Research Agency (NARA)
+namespace.</p>
+</div>
+<div class="div3">
+<h4><a name="use-case-ns-schema-grant-app" id=
+"use-case-ns-schema-grant-app"></a>1.4.2 Schema for the grant
+application</h4>
+<p>The grant application document must conform to the following
+schema:</p>
+<div class="exampleInner">
+<pre>
+&lt;xsd:schema xmlns:xsd='http://www.w3.org/2001/XMLSchema' 
+           targetNamespace="http://www.anr.fr/nara" 
+           elementFormDefault="qualified"&gt;
+ &lt;xsd:element name='grant'&gt;
+  &lt;xsd:complexType&gt;
+   &lt;xsd:sequence&gt;
+    &lt;xsd:element ref='name'/&gt;
+    &lt;xsd:element ref='lab' minOccurs='0' maxOccurs='unbounded'/&gt;
+   &lt;/xsd:sequence&gt;
+  &lt;/xsd:complexType&gt;
+ &lt;/xsd:element&gt;
+
+ &lt;xsd:element name='lab'&gt;
+  &lt;xsd:complexType&gt;
+   &lt;xsd:sequence&gt;
+    &lt;xsd:element ref='address' minOccurs='0' maxOccurs='1'/&gt;
+    &lt;xsd:choice minOccurs='0' maxOccurs='unbounded'&gt;
+     &lt;xsd:element ref='researcher'/&gt;
+     &lt;xsd:element ref='PhD'/&gt;
+     &lt;xsd:element ref='engineer'/&gt;
+     &lt;xsd:element ref='lab' minOccurs="0" maxOccurs="unbounded"/&gt;
+    &lt;/xsd:choice&gt;
+   &lt;/xsd:sequence&gt;
+   &lt;xsd:attribute name='name' type='xsd:string' use='required'/&gt;
+  &lt;/xsd:complexType&gt;
+ &lt;/xsd:element&gt;
+
+ &lt;xsd:element name='PhD'&gt;
+  &lt;xsd:complexType&gt;
+   &lt;xsd:attribute name='advisor' type='xsd:IDREF' use='required'/&gt;
+  &lt;/xsd:complexType&gt;
+ &lt;/xsd:element&gt;
+
+ &lt;xsd:element name='researcher'&gt;
+  &lt;xsd:complexType&gt;
+   &lt;xsd:attribute name='rid' type='xsd:ID' use='required'/&gt;
+   &lt;xsd:attribute name='name' type='xsd:string' use='required'/&gt;
+   &lt;xsd:attribute name='position' type='xsd:string' use='required'/&gt;
+  &lt;/xsd:complexType&gt;
+ &lt;/xsd:element&gt;
+
+ &lt;xsd:element name='engineer'&gt;
+  &lt;xsd:complexType&gt;
+   &lt;xsd:attribute name='name' type='xsd:string' use='required'/&gt;
+  &lt;/xsd:complexType&gt;
+ &lt;/xsd:element&gt;
+&lt;/xsd:schema&gt;
+
+          
+</pre></div>
+</div>
+<div class="div3">
+<h4><a name="ns-input-data" id="ns-input-data"></a>1.4.3 Input
+Data</h4>
+<p>The initial draft produced by the participants, "grant.xml", has
+the following content. The use of namespaces reflects the
+cut-and-paste approach used to create it:</p>
+<div class="exampleInner">
+<pre>
+&lt;?xml version='1.0' ?&gt;
+&lt;grant xmlns:nara="http://www.anr.fr/nara"&gt; 
+  &lt;nara:lab name="AgroPlus"&gt; 
+     &lt;nara:address&gt;Saclay, France&lt;/nara:address&gt; 
+     &lt;nara:researcher rid="r1" name="Fred" 
+       position="technical staff"/&gt; 
+     &lt;nara:researcher rid="r2" name="Liz" 
+       position="lab assistant" /&gt; 
+     &lt;coop:PhD 
+       xmlns:coop="http://www.gouv.fr/univ-industry-coop/" 
+       name="Marie" advisor="r1"/&gt; 
+     &lt;agro:lab xmlns:agro="http://www.agroplus.com" 
+       name="Dairy Dept"&gt; 
+       &lt;agro:engineer name="Marc"/&gt; 
+     &lt;/agro:lab&gt; 
+  &lt;/nara:lab&gt; 
+  &lt;univ:lab xmlns:univ="http://www.education.gouv.fr" 
+    name="Food Engineering Dept, Orsay U."&gt; 
+    &lt;univ:address&gt;Orsay, France&lt;/univ:address&gt; 
+    &lt;univ:researcher rid="r3" name="Henry" 
+      position="associate professor"/&gt; 
+    &lt;univ:PhD name="Robert" advisor="r3"/&gt; 
+    &lt;PhD name="Julia" advisor="r1"/&gt; 
+  &lt;/univ:lab&gt; 
+&lt;/grant&gt;  
+</pre></div>
+</div>
+<div class="div3">
+<h4><a name="ns-q1" id="ns-q1"></a>1.4.4 Q1</h4>
+<p>Move all elements into the NARA namespace
+("http://www.anr.fr/nara").</p>
+<p><em>Solution in the XQuery Update Facility:</em></p>
+<div class="exampleInner">
+<pre>
+                                        
+declare namespace nara = "http://www.anr.fr/nara";
+
+for $e in doc("grant.xml")//*
+where not (namespace-uri($e) eq "http://www.anr.fr/nara")
+return 
+  rename node $e 
+      as QName("http://www.anr.fr/nara", 
+               concat("nara:",local-name($e)))
+
+</pre></div>
+<p><em>Expected Result:</em></p>
+<div class="exampleInner">
+<pre>
+
+&lt;nara:grant xmlns:nara="http://www.anr.fr/nara"&gt;
+ &lt;nara:lab name="AgroPlus"&gt;
+   &lt;nara:address&gt;Saclay, France&lt;/nara:address&gt;
+   &lt;nara:researcher rid="r1" name="Fred" 
+     position="technical staff"/&gt;
+   &lt;nara:researcher rid="r2" name="Liz" 
+     position="lab assistant" /&gt;
+   &lt;nara:PhD 
+     xmlns:coop="http://www.gouv.fr/univ-industry-coop/"
+     name="Marie" advisor="r1"/&gt;
+    &lt;nara:lab name="Dairy Dept"&gt;
+      &lt;nara:engineer name="Marc"/&gt;
+   &lt;/nara:lab&gt;
+ &lt;/nara:lab&gt;
+ &lt;nara:lab name="Food Engineering Dept, Orsay U."&gt;
+  &lt;nara:address&gt;Orsay, France&lt;/nara:address&gt;
+  &lt;nara:researcher rid="r3" name="Henry" 
+    position="associate professor"/&gt;
+  &lt;nara:PhD name="Robert" advisor="r3"/&gt;
+  &lt;nara:PhD name="Julia" advisor="r1"/&gt;
+ &lt;/nara:lab&gt;
+&lt;/nara:grant&gt;
+
+</pre></div>
+</div>
+</div>
+<div class="div2">
+<h3><a name="use-case-parts" id="use-case-parts"></a>1.5 Use case
+"Parts" - modifying recursive documents</h3>
+<p>This use case illustrates modifications to documents having a
+recursive structure.</p>
+<div class="div3">
+<h4><a name="use-case-parts-input" id=
+"use-case-parts-input"></a>1.5.1 Input data</h4>
+<p>Each update in this use case applies on the following documents.
+In these examples, we assume each update is applied to a fresh copy
+of the original data.</p>
+<p>Document "part-tree.xml":</p>
+<div class="exampleInner">
+<pre>
+&lt;parttree&gt;
+    &lt;part partid="0" name="car"&gt;
+        &lt;part partid="1" name="engine"&gt;
+            &lt;part partid="3" name="piston"/&gt;
+        &lt;/part&gt;
+        &lt;part partid="2" name="door"&gt;
+            &lt;part partid="4" name="window"/&gt;
+            &lt;part partid="5" name="lock"/&gt;
+        &lt;/part&gt;
+    &lt;/part&gt;
+    &lt;part partid="10" name="skateboard"&gt;
+        &lt;part partid="11" name="board"/&gt;
+        &lt;part partid="12" name="wheel"/&gt;
+    &lt;/part&gt;
+    &lt;part partid="20" name="canoe"/&gt;
+&lt;/parttree&gt;
+          
+</pre></div>
+<p>Document "part-list.xml":</p>
+<div class="exampleInner">
+<pre>
+&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+&lt;partlist&gt;
+  &lt;part partid="0" name="car"/&gt;
+  &lt;part partid="1" partof="0" name="engine"/&gt;
+  &lt;part partid="2" partof="0" name="door"/&gt;
+  &lt;part partid="3" partof="1" name="piston"/&gt;
+  &lt;part partid="4" partof="2" name="window"/&gt;
+  &lt;part partid="5" partof="2" name="lock"/&gt;
+  &lt;part partid="10" name="skateboard"/&gt;
+  &lt;part partid="11" partof="10" name="board"/&gt;
+  &lt;part partid="12" partof="10" name="wheel"/&gt;
+  &lt;part partid="20" name="canoe"/&gt;
+&lt;/partlist&gt;
+          
+</pre></div>
+</div>
+<div class="div3">
+<h4><a name="use-case-parts-q1" id="use-case-parts-q1"></a>1.5.2
+Q1</h4>
+<p>Delete all parts in "part-tree.xml".</p>
+<p><em>Solution in the XQuery Update Facility:</em></p>
+<div class="exampleInner">
+<pre>
+delete nodes doc("part-tree.xml")//part
+</pre></div>
+<p><em>Expected resulting document "part-tree.xml":</em></p>
+<div class="exampleInner">
+<pre>
+&lt;parttree/&gt;
+</pre></div>
+</div>
+<div class="div3">
+<h4><a name="use-case-parts-q2" id="use-case-parts-q2"></a>1.5.3
+Q2</h4>
+<p>Delete all parts belonging to a car in "part-tree.xml", leaving
+the car itself.</p>
+<p><em>Solution in the XQuery Update Facility:</em></p>
+<div class="exampleInner">
+<pre>
+delete nodes doc("part-tree.xml")//part[@name="car"]//part
+</pre></div>
+<p><em>Expected resulting document "part-tree.xml":</em></p>
+<div class="exampleInner">
+<pre>
+&lt;parttree&gt;
+    &lt;part partid="0" name="car"/&gt;
+    &lt;part partid="10" name="skateboard"&gt;
+        &lt;part partid="11" name="board"/&gt;
+        &lt;part partid="12" name="wheel"/&gt;
+    &lt;/part&gt;
+    &lt;part partid="20" name="canoe"/&gt;
+&lt;/parttree&gt;
+          
+</pre></div>
+</div>
+<div class="div3">
+<h4><a name="use-case-parts-q3" id="use-case-parts-q3"></a>1.5.4
+Q3</h4>
+<p>Delete all parts belonging to a car in "part-list.xml", leaving
+the car itself.</p>
+<p><em>Solution 1 in the XQuery Update Facility (leveraging
+"part-tree.xml"):</em></p>
+<div class="exampleInner">
+<pre>
+for $pt in doc("part-tree.xml")//part[@name="car"]//part, 
+    $pl in doc("part-list.xml")//part
+where $pt/@partid eq $pl/@partid
+return 
+  delete nodes $pl
+          
+</pre></div>
+<p><em>Solution 2 (using a recursive updating function):</em></p>
+<div class="exampleInner">
+<pre>
+declare updating function 
+    local:delete-subtree($p as element(part))
+  {
+      for $child in doc("part-list.xml")//part
+      where $p/@partid eq $child/@partof
+      return (
+        delete nodes $child,
+        local:delete-subtree($child)
+      )
+  };
+
+for $p in doc("part-list.xml")//part[@name="car"]
+return 
+  local:delete-subtree($p)
+
+          
+</pre></div>
+<div class="note">
+<p class="prefix"><b>Note:</b></p>
+<p>Because this data is not covered by a schema, an implementation
+that supports static typing will raise an error for the comparison
+<code>$p/@partid eq $child/@partof</code>. This can be solved by
+creating a schema for the data and importing it into the query.</p>
+</div>
+<p><em>Expected Result:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;partlist&gt;
+  &lt;part partid="0" name="car"/&gt;
+  &lt;part partid="10" name="skateboard"/&gt;
+  &lt;part partid="11" partof="10" name="board"/&gt;
+  &lt;part partid="12" partof="10" name="wheel"/&gt;
+  &lt;part partid="20" name="canoe"/&gt;
+&lt;/partlist&gt;
+          
+</pre></div>
+</div>
+<div class="div3">
+<h4><a name="use-case-parts-q4" id="use-case-parts-q4"></a>1.5.5
+Q4</h4>
+<p>Add a radio to the car in "part-tree.xml", using a part number
+that hasn't been taken.</p>
+<p><em>Solution in the XQuery Update Facility:</em></p>
+<div class="exampleInner">
+<pre>
+let $next := max(doc("part-tree.xml")//@partid) + 1
+  return
+    insert nodes &lt;part partid="{$next}" name="radio"/&gt;
+       into 
+       doc("part-tree.xml")//part[@partid=0 and @name="car"]
+
+          
+</pre></div>
+<p><em>Expected Result:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;parttree&gt;
+    &lt;part partid="0" name="car"&gt;
+        &lt;part partid="21" name="radio"/&gt;
+        &lt;part partid="1" name="engine"&gt;
+            &lt;part partid="3" name="piston"/&gt;
+        &lt;/part&gt;
+        &lt;part partid="2" name="door"&gt;
+            &lt;part partid="4" name="window"/&gt;
+            &lt;part partid="5" name="lock"/&gt;
+        &lt;/part&gt;
+    &lt;/part&gt;
+    &lt;part partid="10" name="skateboard"&gt;
+        &lt;part partid="11" name="board"/&gt;
+        &lt;part partid="12" name="wheel"/&gt;
+    &lt;/part&gt;
+    &lt;part partid="20" name="canoe"/&gt;
+&lt;/parttree&gt;
+
+          
+</pre></div>
+<p><em>Note:</em>The position of the new element with respect to
+its siblings is implementation-dependent. If position is
+significant, and the user wants to ensure the element appears last,
+for example, "as last" should be used, as in the following
+query:</p>
+<div class="exampleInner">
+<pre>
+let $next := max(doc("part-tree.xml")//@partid) + 1
+  return
+    insert nodes &lt;part partid="{$next}" name="radio"/&gt;
+       as last
+       into doc("part-tree.xml")//part[@partid=0 and @name="car"]
+          
+</pre></div>
+</div>
+<div class="div3">
+<h4><a name="use-case-parts-q6" id="use-case-parts-q6"></a>1.5.6
+Q6</h4>
+<p>The head office has adopted a new numbering scheme. In
+"part-tree.xml", add 1000 to all part numbers for cars, 2000 to all
+part numbers for skateboards, and 3000 to all part numbers for
+canoes.</p>
+<p><em>Solution in the XQuery Update Facility:</em></p>
+<div class="exampleInner">
+<pre>
+for $keyword at $i in ("car", "skateboard", "canoe"),
+    $parent in doc("part-tree.xml")//part[@name=$keyword]
+let $descendants := $parent//part
+for $p in ($parent, $descendants)
+return 
+  replace value of node $p/@partid with $i*1000+$p/@partid
+
+          
+</pre></div>
+<p><em>Expected result:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;parttree&gt;
+    &lt;part partid="1000" name="car"&gt;
+        &lt;part partid="1021" name="radio"/&gt;
+        &lt;part partid="1001" name="engine"&gt;
+            &lt;part partid="1003" name="piston"/&gt;
+        &lt;/part&gt;
+        &lt;part partid="1002" name="door"&gt;
+            &lt;part partid="1004" name="window"/&gt;
+            &lt;part partid="1005" name="lock"/&gt;
+        &lt;/part&gt;
+    &lt;/part&gt;
+    &lt;part partid="2010" name="skateboard"&gt;
+        &lt;part partid="2011" name="board"/&gt;
+        &lt;part partid="2012" name="wheel"/&gt;
+    &lt;/part&gt;
+    &lt;part partid="3020" name="canoe"/&gt;
+&lt;/parttree&gt;
+          
+</pre></div>
+</div>
+</div>
+<div class="div2">
+<h3><a name="use-case-nil" id="use-case-nil"></a>1.6 Use case
+"Nil"</h3>
+<p>This use case demonstrates transform expressions which construct
+modified copies of some data, which must remain valid according to
+the original schema. In this use case, keeping the modified copy
+valid requires adding an xsi:nil attribute.</p>
+<div class="div3">
+<h4><a name="use-case-nil-schema" id=
+"use-case-nil-schema"></a>1.6.1 XML Schema</h4>
+<p>A employees data set is described by the following XML
+Schema:</p>
+<div class="exampleInner">
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;xsd:schema 
+  targetNamespace="http://www.example.com/employees"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;xsd:element name="employees"&gt;
+    &lt;xsd:complexType&gt;
+      &lt;xsd:element name="employee" minOccurs="0" 
+        maxOccurs="unbounded"&gt;
+        &lt;xsd:complexType&gt;
+          &lt;xsd:attribute name="mgr" type="xsd:boolean" 
+          default="false"/&gt;
+          &lt;xsd:attribute name="dept" type="xsd:string"/&gt;
+          &lt;xsd:sequence&gt;
+            &lt;xsd:element name="name" type="xsd:string"/&gt;
+            &lt;xsd:element name="salary" type="xsd:decimal" 
+              nillable="true"/&gt;
+          &lt;/xsd:sequence&gt;
+        &lt;/xsd:complexType&gt;
+      &lt;/xsd:element&gt;
+    &lt;/xsd:complexType&gt;
+  &lt;/xsd:element&gt;
+&lt;/xsd:schema&gt;
+
+          
+</pre></div>
+</div>
+<div class="div3">
+<h4><a name="use-case-nil-input-data" id=
+"use-case-nil-input-data"></a>1.6.2 Sample input data
+("employees.xml")</h4>
+<div class="exampleInner">
+<pre>
+&lt;employees&gt;
+  &lt;employee mgr="true" dept="Toys"&gt;
+    &lt;name&gt;Smith&lt;/name&gt;
+    &lt;salary&gt;100000&lt;/salary&gt;
+  &lt;/employee&gt;
+  &lt;employee dept="Toys"&gt;
+    &lt;name&gt;Jones&lt;/name&gt;
+    &lt;salary&gt;60000&lt;/salary&gt;
+  &lt;/employee&gt;
+  &lt;employee mgr="true" dept="Shoes"&gt;
+    &lt;name&gt;Roberts&lt;/name&gt;
+    &lt;salary&gt;150000&lt;/salary&gt;
+  &lt;/employee&gt;
+&lt;/employees&gt;
+          
+</pre></div>
+</div>
+<div class="div3">
+<h4><a name="use-case-nil-q1" id="use-case-nil-q1"></a>1.6.3
+Q1</h4>
+<p>Return all managers, omitting their salaries for confidentiality
+reasons. The returned document must be valid according to its XML
+Schema, so the query adds an xsi:nil attribute with value "true" to
+the salary element.</p>
+<p><em>Solution in the XQuery Update Facility:</em></p>
+<div class="exampleInner">
+<pre>
+for $e in doc("employees.xml")//employee
+where $e/@manager = true()
+return
+   copy $emp := $e
+   modify (
+     replace value of node $emp/salary with "" ,
+     insert nodes (attribute xsi:nil {"true"}) 
+        into $emp/salary
+   )
+   return $emp
+          
+</pre></div>
+<p><em>Expected result:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;employee mgr="true" dept="Toys"&gt;
+  &lt;name&gt;Smith&lt;/name&gt;
+  &lt;salary xsi:nil="true"/&gt;
+&lt;/employee&gt;
+&lt;employee mgr="true" dept="Shoes"&gt;
+  &lt;name&gt;Roberts&lt;/name&gt;
+  &lt;salary xsi:nil="true"/&gt;
+&lt;/employee&gt;
+          
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="back">
+<div class="div1">
+<h2><a name="references" id="references"></a>A Normative
+References</h2>
+<dl>
+<dt class="label"><span><a name="xquery" id="xquery"></a>XQuery
+1.0</span></dt>
+<dd>
+<div><a href="http://www.w3.org/TR/xquery/"><cite>XQuery 1.0: An
+XML Query Language (Second Edition)</cite></a>, Don Chamberlin,
+Anders Berglund, Scott Boag, <em>et. al.</em>, Editors. World Wide
+Web Consortium, 14 December 2010. This version is
+http://www.w3.org/TR/2010/REC-xquery-20101214/. The <a href=
+"http://www.w3.org/TR/xquery/">latest version</a> is available at
+http://www.w3.org/TR/xquery/.</div>
+</dd>
+<dt class="label"><span><a name="xquery-use-cases" id=
+"xquery-use-cases"></a>XML Query Use Cases</span></dt>
+<dd>
+<div><a href="http://www.w3.org/TR/xquery-use-cases/"><cite>XML
+Query Use Cases</cite></a>, Jonathan Robie, Don Chamberlin, Peter
+Fankhauser, <em>et. al.</em>, Editors. World Wide Web Consortium,
+23 March 2007. This version is
+http://www.w3.org/TR/2007/NOTE-xquery-use-cases-20070323/. The
+<a href="http://www.w3.org/TR/xquery-use-cases/">latest version</a>
+is available at http://www.w3.org/TR/xquery-use-cases/.</div>
+</dd>
+<dt class="label"><span><a name="xquery-update-10-requirements" id=
+"xquery-update-10-requirements"></a>XQuery Update Facility 1.0
+Requirements</span></dt>
+<dd>
+<div><a href=
+"http://www.w3.org/TR/xquery-update-10-requirements/"><cite>XQuery
+Update Facility 1.0 Requirements</cite></a>, Don Chamberlin and
+Jonathan Robie, Editors. World Wide Web Consortium, 25 January
+2011. This version is
+http://www.w3.org/TR/2011/NOTE-xquery-update-10-requirements-20110125/.
+The <a href=
+"http://www.w3.org/TR/xquery-update-10-requirements/">latest
+version</a> is available at
+http://www.w3.org/TR/xquery-update-10-requirements/.</div>
+</dd>
+<dt class="label"><span><a name="xquery-update-10" id=
+"xquery-update-10"></a>XQuery Update Facility 1.0</span></dt>
+<dd>
+<div><a href="http://www.w3.org/TR/xquery-update-10/"><cite>XQuery
+Update Facility 1.0</cite></a>, Don Chamberlin, Jonathan Robie,
+Michael Dyck, <em>et. al.</em>, Editors. World Wide Web Consortium,
+25 January 2011. This version is
+http://www.w3.org/TR/2011/PR-xquery-update-10-20110125/. The
+<a href="http://www.w3.org/TR/xquery-update-10/">latest version</a>
+is available at http://www.w3.org/TR/xquery-update-10/.</div>
+</dd>
+<dt class="label"><span><a name="SOAPPrimer" id=
+"SOAPPrimer"></a>SOAP Version 1.2 Part 0:Primer</span></dt>
+<dd>
+<div>World Wide Web Consortium. <em>SOAP Version 1.2 Part 0:
+Primer</em> W3C Recommendation 24 June 2003. See <a href=
+"http://www.w3.org/TR/2003/REC-soap12-part0-20030624/">http://www.w3.org/TR/2003/REC-soap12-part0-20030624/</a>.</div>
+</dd>
+</dl>
+</div>
+<div class="div1">
+<h2><a name="id-revisions-log" id="id-revisions-log"></a>B Revision
+Log (Non-Normative)</h2>
+<p>This log records the substantive changes that have been made to
+this document since the Working Draft of 8 May 2006. Minor
+editorial changes are not included in this log.</p>
+<div class="div2">
+<h3><a name="id-log-pending" id="id-log-pending"></a>B.1 Changes in
+internal WD</h3>
+<ul>
+<li>
+<p>Clarified that the "application constraint" in 1.1.4.8 Q8 is a
+database integrity constraint, and added the constraint to the
+description of the data, in response to
+http://www.w3.org/Bugs/Public/show_bug.cgi?id=3796#add_comment.</p>
+</li>
+</ul>
+</div>
+<div class="div2">
+<h3><a name="id-log-28aug2007" id="id-log-28aug2007"></a>B.2 28 Aug
+2007 Publication</h3>
+<ul>
+<li>
+<p>Clarified that updates for Use Case "R" are cumulative (see
+http://www.w3.org/Bugs/Public/show_bug.cgi?id=3567#c1).</p>
+</li>
+<li>
+<p>Fixed update conflict in Use Case "Address", and clarified that
+some things would be easier using updates together with the
+Scripting Extensions (see
+http://www.w3.org/Bugs/Public/show_bug.cgi?id=3578#c1).</p>
+</li>
+<li>
+<p>Fixed several errors in Use Case "SOAP" (see
+http://www.w3.org/Bugs/Public/show_bug.cgi?id=3578#c3).</p>
+</li>
+<li>
+<p>Fixed Use Case "R" Q4 so that it tests to see whether a rating
+already exists (see
+http://www.w3.org/Bugs/Public/show_bug.cgi?id=3578#c4).</p>
+</li>
+<li>
+<p>Fixed Use Case "Parts" Q3, fixing several bugs, see
+(http://www.w3.org/Bugs/Public/show_bug.cgi?id=3578#c6).</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>

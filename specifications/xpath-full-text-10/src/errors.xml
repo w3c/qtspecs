@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<div1 id="id-errors">	
+  <head>Error Conditions</head>	
+
+<error-list>
+
+<error spec="FT" code="0001" class="ST" type="static">
+<p>
+An implementation that does not support the FTMildNot operator must raise 
+a static error if a full-text query contains a mild not.</p>
+</error>
+
+<error spec="FT" code="0002" class="ST" type="static">
+<p>
+An implementation that enforces one of the restrictions on FTUnaryNot must
+raise a static error if a full-text query does not obey the restriction.</p>
+</error>
+
+<error spec="FT" code="0003" class="ST" type="static">
+<p>
+An implementation that does not support one or more of the choices on FTUnit
+and FTBigUnit must
+raise a static error if a full-text query contains one of those choices.</p>
+</error>
+
+<error spec="FT" code="0004" class="ST" type="static">
+<p>
+An implementation that does not support the FTScope operator must raise
+a static error if a full-text query contains a scope.</p>
+</error>
+
+<error spec="FT" code="0005" class="ST" type="static">
+<p>
+An implementation that does not support the FTTimes operator must raise
+a static error if a full-text query contains a times.</p>
+</error>
+
+<error spec="FT" code="0006" class="ST" type="static">
+<p>
+An implementation that restricts the use of FTStopWordOption must raise
+a static error if a full-text query contains a stop word option that does not
+meet the restriction.</p>
+</error>
+
+<error spec="FT" code="0007" class="ST" type="static">
+<p>
+An implementation that restricts the use of FTIgnoreOption must raise
+a static error if a full-text query contains an ignore option that does not
+meet the restriction.</p>
+</error>
+
+<error spec="FT" code="0008" class="ST" type="static">
+<p>It is a static error if, during the static analysis phase, the query is
+found to contain a stop word option that refers to a stop word list that is not
+found in the statically known stop word lists.
+</p>
+</error>
+
+<error spec="FT" code="0009" class="ST" type="static">
+<p>It may be a static error if, during the static analysis phase, the query is
+found to contain a language identifier in a language option that the
+implementation does not support. The implementation may choose not to raise
+this error and instead provide some other implementation-defined behavior.
+</p>
+</error>
+
+<error spec="FT" code="0010" class="ST" type="static">
+<p>It is a static error if, during the static analysis phase,
+an expression is found to use an FTOrder operator that does not appear
+directly succeeding an FTWindow or an FTDistance operator and the
+implementation enforces this restriction.
+</p>
+</error>
+
+<error spec="FT" code="0011" class="ST" type="static">
+<p>An implementation may restrict the use of FTWindow and FTDistance to an FTOr
+that is either a single FTWords or a combination of FTWords involving
+only the operators <phrase diff="chg">ftand and ftor</phrase>. 
+If it a static error if, during the
+static analysis phase, an expression is found that violates this restriction
+and the implementation enforces this restriction.
+</p>
+</error>
+
+<error spec="FT" code="0012" class="ST" type="static">
+<p>
+An implementation that does not support the FTContent operator must raise
+a static error if a full-text query contains one.
+</p>
+</error>
+
+<error spec="FT" code="0013" class="ST" type="static">
+<p>
+It is a static error if, during the static analysis phase, 
+an implementation that restricts the use of FTLanguageOption to a single
+language, encounters more than one distinct language option.
+</p>
+</error>
+
+<error spec="FT" code="0014" class="ST" type="static">
+<p>An implementation may constrain the form of the expression used to compute
+scores. It is a static error if, during the static analysis phase, 
+such an implementation encounters a scoring expression that does not meet
+the restriction.
+</p>
+</error>
+
+<error spec="FT" code="0015" class="ST" type="static">
+<p>
+It is a static error if, during the static analysis phase, 
+an implementation that restricts the choices of FTCaseOption
+encounters the "lowercase" or "uppercase" option.
+</p>
+</error>
+
+<error spec="FT" code="0016" class="DY" type="dynamic">
+<p>
+It is a dynamic error if a weight value is not within the required range of values;
+it is also a dynamic error if an implementation that does not support negative weights
+encounters a negative weight value. 
+</p>
+</error>
+
+<error spec="FT" code="0017" class="DY" type="dynamic">
+<p>
+It is a dynamic error if an implementation encounters a mild not 
+selection, one of whose operands evaluates to an &AllMatches; that contains a
+&StringExclude; 
+</p>
+</error>
+
+<error spec="FT" code="0018" class="ST" type="static">
+<p>
+It is a static error if, during the static analysis phase, the query is found
+to contain a thesaurus option that refers to a thesaurus that is not found in
+the statically known thesauri.
+</p>
+</error>
+
+<error spec="FT" code="0019" class="ST" type="static">
+<p>
+It is a static error if,
+within a single <nt def="FTMatchOptions">FTMatchOptions</nt>,
+there is more than one match option of any given 
+<termref def="dt-match-option-group">match option group</termref>.
+</p>
+</error>
+
+<error spec="FT" code="0020" class="DY" type="dynamic">
+<p>
+It is a dynamic error if,
+when "wildcards" is in effect,
+a query string violates wildcard syntax.
+</p>
+</error>
+
+<error spec="FO" code="0002" class="CH" type="dynamic">
+<p>It is a dynamic error if, in a function invocation, the argument corresponding to
+the specified function's collation parameter does not identify a supported collation.</p></error>
+
+<error spec="XP" code="0003" class="ST" type="static">
+<p>It is a static error if an expression is not a valid instance of the grammar defined in
+<specref ref="id-grammar"/> or of the grammar defined in <specref ref="id-xpath-grammar"/>.</p></error>
+
+<error spec="XP" code="0004" class="TY" type="type">
+<p>It is a type error if, during the static analysis phase,
+an expression is found to have a static type
+that is not appropriate for the context in which the expression occurs, or during the
+dynamic evaluation phase, the dynamic type of a value does not match a required type as
+specified by the matching rules in <xspecref spec="XP" ref="id-sequencetype-matching"/>.</p></error>
+
+<error spec="XQ" code="0013" class="ST" type="static">
+<p>It is a static error if an implementation recognizes a pragma but determines that its content is invalid.</p></error>
+
+<error spec="XQ" code="0079" class="ST" type="static">
+<p>It is a static error if an extension expression contains neither
+   a pragma that is recognized by the implementation nor
+   an expression enclosed in curly braces.</p></error>
+
+</error-list>
+
+</div1>

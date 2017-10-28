@@ -1,0 +1,289 @@
+<!-- *********************************************************************
+      Section 1. Introduction
+     ********************************************************************* -->
+
+<div1 id="introduction">
+  <head>Introduction</head>
+
+  <p>This document defines the language and the formal semantics of
+  &language;. This language is designed to meet the requirements
+  identified in, and to support the queries in, W3C XQuery and XPath Full Text Requirements and Use Cases
+  <phrase diff="chg"><bibref ref="xpath-full-text-31-requirements-use-cases"/></phrase>. </p> 
+
+  <p>In this document, examples and material labeled as <quote>Note</quote> are provided for
+     explanatory purposes and are not normative. </p>
+
+  <p>&language; extends the syntax and semantics of XQuery <phrase diff="chg">3.1</phrase> and
+  XPath <phrase diff="chg">3.1</phrase>. </p>
+
+  <p diff="chg">Additionally, this document defines an XML syntax for &language;. 
+  The most recent versions of the two XQueryX XML Schemas and the
+  XQueryX XSLT stylesheet for &language; are available at
+  <loc href="http://www.w3.org/2014/09/xpath-full-text/xpath-full-text-31-xqueryx.xsd">http://www.w3.org/2014/09/xpath-full-text/xpath-full-text-31-xqueryx.xsd</loc>,
+  <loc href="http://www.w3.org/2014/09/xpath-full-text/xpath-full-text-31-xqueryx-ftmatchoption-extensions.xsd">http://www.w3.org/2014/09/xpath-full-text/xpath-full-text-31-xqueryx-ftmatchoption-extensions.xsd</loc>,
+  and <loc href="http://www.w3.org/2014/09/xpath-full-text/xpath-full-text-31-xqueryx.xsl">http://www.w3.org/2014/09/xpath-full-text/xpath-full-text-31-xqueryx.xsl</loc>,
+  respectively.</p>
+
+	<div2 id="tq-ftsearch-xml">
+		<head>Full-Text Search and XML</head> 
+
+<p>As XML becomes mainstream, users expect to be able to 
+search their XML documents. This requires a standard way to do
+full-text search, as well as structured searches, against XML
+documents.  A similar requirement for full-text search led ISO to
+define the SQL/MM-FT <bibref ref="sqlmm"/> standard.
+SQL/MM-FT defines extensions to SQL to express
+full-text searches providing functionality similar to that defined in this full-text
+language extension to XQuery <phrase diff="chg">3.1</phrase> and XPath <phrase diff="chg">3.1</phrase>.
+</p>
+
+<p>XML documents may contain highly structured data (fixed schemas, known types
+such as numbers, dates), semi-structured data (flexible schemas and types),
+markup data (text with embedded tags), and unstructured data (untagged
+free-flowing text). Where a document contains unstructured
+or semi-structured data, it is important to be able to search using
+Information Retrieval techniques such as scoring and weighting.</p>
+
+<p>Full-text search is different from substring search in many ways:</p>
+
+<olist>
+<item><p>A full-text search searches for tokens and phrases
+rather than substrings. A substring search for news items that contain
+the string "lease" will return a news item that contains "Foobar
+Corporation releases version 20.9 ...". A full-text search for the
+token "lease" will not. </p>
+</item>
+
+<item><p>There is an expectation that a full-text search will support
+language-based searches which substring search cannot. An
+example of a language-based search is "find me all the news items that
+contain a token with the same linguistic stem as 'mouse'" (finds "mouse"
+and "mice"). Another example based on token proximity is "find me all
+the news items that contain the tokens 'XML' and
+'Query' allowing up to 3 intervening tokens".</p>
+</item>
+
+<item>
+<p>Full-text search must address the vagaries and nuances of
+language. Search results  are often of varying usefulness. When
+you search a web site for cameras that cost less than $100, this
+is an exact search.  There is a set of cameras that matches this search,
+and a set that does not.  Similarly, when you do a string search across
+news items for "mouse", there is only 1 expected result set. When you
+do a full-text search for all the news items that contain the
+token "mouse", you probably expect to find news items containing the token
+"mice", and possibly "rodents", or possibly "computers".  Not
+all results are equal. Some results are more "mousey" than others.
+Because full-text search may be inexact, we have the notion of score
+or relevance. We generally expect to see the most relevant results at
+the top of the results list.</p>
+</item>
+</olist>
+
+<note><p>As XQuery and XPath evolve, they may apply the notion of
+score to querying structured data. For example, when making travel
+plans or shopping for cameras, it is sometimes useful to get an
+ordered list of near matches in addition to exact matches. 
+If XQuery and XPath define a generalized 
+inexact match, we expect XQuery and XPath to utilize the scoring
+framework provided by &language;.
+</p></note>
+
+<p><termdef id="Full-TextQueriesDef" term="Full-TextQueries"><term>Full-text queries</term> are 
+   performed on tokens and phrases. Tokens and phrases are produced via
+   tokenization.</termdef> Informally, tokenization breaks a character string into a 
+    sequence of tokens, units of punctuation, and spaces.</p>
+    
+ <p>
+Tokenization, in general terms, is the process of converting a text
+string into smaller units that are used in query processing. Those
+units, called tokens, are the most basic text units that a full-text
+search can refer to. Full-text operators typically work on sequences
+of tokens found in the target text of a
+search. These tokens are characterized by
+integers that capture the relative position(s) of the token inside the
+string, the relative position(s) of the sentence containing the token,
+and the relative position(s) of the paragraph containing the token.  The
+positions typically comprise a start and an end position.</p>
+
+<p>
+Tokenization, including the definition of the term "tokens", <termref def="should">SHOULD</termref> be
+&ref-implementation-defined;. 
+Implementations <termref def="should">SHOULD</termref> expose the rules and sample
+results of tokenization as much as possible to enable users to predict and
+interpret the results of tokenization. 
+Tokenization operates on the string
+value of an item; for element nodes this does not include the content of
+attribute nodes, but for attribute nodes it does.
+Tokenization is defined more formally in
+<specref ref="TokenizationSec"/>.
+</p>
+     
+
+<p>
+<termdef id="TokenDef" term="Token">A <term>token</term> is a non-empty sequence of characters
+returned by a tokenizer as a basic unit to be searched. 
+Beyond that, tokens are &ref-implementation-defined;.</termdef>
+<termdef id="PhraseDef" term="Phrase">A <term>phrase</term> is an ordered sequence of any number of tokens. 
+Beyond that, phrases are &ref-implementation-defined;.</termdef>
+ </p> 
+
+<note><p>Consecutive tokens need not be separated by either punctuation or
+space, and tokens may overlap.</p></note>
+
+<note><p>In some natural languages, tokens and words can be used
+interchangeably.</p></note>
+
+<!--<note><p>Tokens are distinct if they are at different positions in the tokenization, regardless of whether they comprise the same sequence of characters.</p></note>-->
+
+<!--<p>Tokenization also uniquely identifies sentences and paragraphs in which tokens appear.</p>-->
+ 
+<p><termdef id="SentenceDef" term="Sentence">A <term>sentence</term> is an ordered sequence
+of any number of tokens. 
+Beyond that, sentences are &ref-implementation-defined;. 
+A tokenizer is not required to support sentences.</termdef></p>
+
+<p><termdef id="ParagraphDef" term="Paragraph">A <term>paragraph</term> is an ordered sequence
+of any number of tokens. 
+Beyond that, paragraphs are &ref-implementation-defined;. 
+A tokenizer is not required to support paragraphs.</termdef></p>
+
+
+<p>
+Some XML elements represent semantic markup, e.g., &lt;title&gt;. 
+Others represent formatting markup, e.g., &lt;b&gt; to indicate bold. 
+Semantic markup serves well as token boundaries. 
+Some formatting markup serves well as token boundaries;
+for example, paragraphs are most commonly delimited by formatting markup. 
+Other formatting markup may not serve well as token boundaries. 
+Implementations are free to provide &ref-implementation-defined; ways to differentiate between 
+the markup's effect on token boundaries during tokenization. 
+In the absence of an implementation-defined way to differentiate, element markup
+(start tags, end tags, and empty-element tags) creates token boundaries.
+</p>
+
+<p>
+A sample tokenization is used for the examples in this document. 
+The results might be different for other tokenizations. </p>   
+
+<p>Tokenization enables functions and operators that operate on a
+part or the root of the token (e.g., wildcards, stemming). </p>
+
+<p>Tokenization enables functions and operators which work with the
+relative positions of tokens (e.g., proximity operators). </p>
+
+<p>
+This specification focuses on functionality that serves all
+languages. It also selectively includes functionalities useful within
+specific families of languages. For example, searching within
+sentences and paragraphs is useful to many western languages and to
+some non-western languages, so that functionality is incorporated into
+this specification.
+</p>
+
+
+		<p>Certain aspects of language
+		processing are described in this specification as
+		<term>implementation-defined</term> or
+		<term>implementation-dependent</term>.</p>
+
+<ulist>
+  <item>
+    <p><termdef id="dt-implementation-defined" term="implementation defined"><term>Implementation-defined</term>
+		indicates an aspect that may differ between
+		implementations, but must be specified by the
+		implementor for each particular
+		implementation.</termdef></p>
+  </item>
+  <item>
+    <p>
+      <termdef id="dt-implementation-dependent" term="implementation
+		dependent"><term>Implementation-dependent</term>
+		indicates an aspect that may differ between
+		implementations, is not specified by this or any W3C
+		specification, and is not required to be specified by
+		the implementor for any particular
+		implementation.</termdef></p>
+  </item>
+</ulist>
+
+
+</div2>
+
+<div2 id="tq-ft-organization">
+ <head>Organization of this document</head> 
+
+<p>This document is organized as follows. We first present a <loc
+href="#tq-extensions">high level syntax</loc> for the &language;
+language along with some examples. Then, we present the <loc
+href="#ftselections">syntax and examples</loc> of the
+basic primitives in the &language; language. This is followed by the
+<loc href="#tq-semantics">semantics</loc> of the &language;
+language. The appendix contains a section that provides an <loc
+href="#id-xpath-grammar">EBNF for the XPath <phrase diff="chg">3.1</phrase> Grammar with Full-Text
+Extensions</loc>, an <loc href="#id-grammar">EBNF for XQuery <phrase diff="chg">3.1</phrase>
+Grammar with Full-Text Extensions</loc>, <loc
+href="#ft-acknowledgements">acknowledgements</loc> and a <loc
+href="#ft-glossary">glossary</loc>.</p>
+
+	</div2>
+
+<div2 id="tq-ft-namespaces">
+  <head>A word about namespaces</head>
+
+<p>Certain namespace prefixes are predeclared by XQuery <phrase diff="chg">3.1</phrase> and, by implication, by this specification,
+and bound to fixed namespace URIs. These namespace prefixes are as follows:
+</p>
+
+<ulist>
+
+<item>
+<p>
+<code>xml = http://www.w3.org/XML/1998/namespace</code>
+</p>
+</item>
+
+<item>
+<p>
+<code>xs = http://www.w3.org/2001/XMLSchema</code>
+</p>
+</item>
+
+<item>
+<p>
+<code>xsi = http://www.w3.org/2001/XMLSchema-instance</code>
+</p>
+</item>
+
+<item>
+<p>
+<code>fn = http://www.w3.org/2005/xpath-functions</code>
+</p>
+</item>
+
+<item>
+<p>
+<code>local = http://www.w3.org/2005/xquery-local-functions</code>
+</p>
+</item>
+
+</ulist>
+
+<p>
+In addition to the prefixes in the above list, this document uses the prefix
+<code>err</code> to represent the namespace URI <code>http://www.w3.org/2005/xqt-errors</code>, 
+This namespace prefix is not predeclared and its use in this document is not normative. 
+Error codes that are not defined in this document are defined in other XQuery <phrase diff="chg">3.1</phrase> and XPath <phrase diff="chg">3.1</phrase>
+specifications, particularly <phrase diff="chg"><bibref ref="xpath-31"/> and <bibref ref="xpath-functions-31"/></phrase>. 
+</p>
+
+<p>
+Finally, this document uses the prefix <code>fts</code> to represent a namespace
+containing a number of functions used in this document to describe the semantics
+of XQuery and XPath Full Text functions. There is no
+requirement that these functions be implemented, therefore no URI is associated with that prefix. 
+</p>
+
+</div2>
+  
+</div1>

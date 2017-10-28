@@ -1,0 +1,308 @@
+<div2 id="ProcessingInstructionNode">
+  <head>&processingInstructionNode;s</head>
+
+<div3 id="ProcessingInstructionNodeOverview">
+<head>Overview</head>
+
+<p>&processingInstructionNode;s encapsulate XML processing instructions.
+Processing instructions have the following properties:</p>
+
+<ulist>
+<item><p>&dm.prop.target;
+</p></item>
+<item><p>&dm.prop.content;
+</p></item>
+<item><p>&dm.prop.base-uri;, possibly empty
+</p></item>
+<item><p>&dm.prop.parent;, possibly empty
+</p></item>
+</ulist>
+
+<p>&processingInstructionNode;s <rfc2119>must</rfc2119> satisfy the following constraints.</p>
+
+<olist>
+<item><p>The string <quote>?&gt;</quote> <rfc2119>must not</rfc2119> occur within the
+&dm.prop.content;.</p>
+</item>
+<item><p>The &dm.prop.target; <rfc2119>must</rfc2119> be an <code>NCName</code>.
+</p>
+</item>
+</olist>
+
+</div3>
+
+<div3 id="ProcessingInstructionNodeAccessors">
+<head>Accessors</head>
+
+<glist role="accessors">
+<gitem>
+<label><function>attributes</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>base-uri</function></label>
+<def>
+<p>Returns the value of the &dm.prop.base-uri; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>children</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>document-uri</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>is-id</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>is-idrefs</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>namespace-nodes</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>nilled</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>node-kind</function></label>
+<def>
+<p>Returns “<code>processing-instruction</code>”.</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>node-name</function></label>
+<def>
+<p>Returns an <code>xs:QName</code> with the value of the &dm.prop.target;
+property in the local-name and an empty namespace URI and empty prefix.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>parent</function></label>
+<def>
+<p>Returns the value of the &dm.prop.parent; property.</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>string-value</function></label>
+<def>
+<p>Returns the value of the &dm.prop.content; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>type-name</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>typed-value</function></label>
+<def>
+<p>Returns the value of the &dm.prop.content; property as a
+<code>xs:string</code>.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>unparsed-entity-public-id</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>unparsed-entity-system-id</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+</glist>
+</div3>
+<div3 id="const-infoset-pi">
+<head>Construction from an Infoset</head>
+
+<p>A &processingInstructionNode; is constructed for each
+<emph role="info-item">processing instruction information item</emph> that
+is not ignored.</p>
+
+<p>The following infoset properties are required:
+<emph role="infoset-property">target</emph>,
+<emph role="infoset-property">content</emph>,
+<emph role="infoset-property">base URI</emph>, and
+<emph role="infoset-property">parent</emph>.</p>
+
+<p>&processingInstructionNode; properties are derived from the infoset as
+follows:</p>
+
+<glist>
+<gitem>
+<label>&dm.prop.target;</label>
+<def>
+<p>The value of the <emph role="infoset-property">target</emph> property.</p>
+</def>
+</gitem>
+<gitem>
+<label>&dm.prop.content;</label>
+<def>
+<p>The value of the <emph role="infoset-property">content</emph> property.</p>
+</def>
+</gitem>
+<gitem>
+<label>&dm.prop.base-uri;</label>
+<def>
+<!--
+<p>The value of the <emph role="infoset-property">base URI</emph>
+property. Note that the base URI property is always an absolute URI
+(if an absolute URI can be computed) though it may contain Unicode
+characters that are not allowed in URIs. These characters, if they
+occur, are present in the &dm.prop.base-uri; property and will have to
+be encoded and escaped by the application to obtain a URI suitable for
+retrieval, if retrieval is required.
+</p>
+-->
+<p>The value of the <emph role="infoset-property">base URI</emph>
+property, if available.
+Note that the base URI property, if available,
+is always an absolute URI
+(if an absolute URI can be computed) though it may contain Unicode
+characters that are not allowed in URIs. These characters, if they
+occur, are present in the &dm.prop.base-uri; property and will have to
+be encoded and escaped by the application to obtain a URI suitable for
+retrieval, if retrieval is required.
+</p>
+<p>In practice a <emph role="infoset-property">base URI</emph>
+is not always known. In this case the value of the
+&dm.prop.base-uri; property of the document node will be the empty
+sequence. This is not intrinsically an error, though it may cause some
+operations that depend on the base URI to fail.
+</p>
+</def>
+</gitem>
+<gitem>
+<label>&dm.prop.parent;</label>
+<def>
+<p>The node corresponding to the value of the
+<emph role="infoset-property">parent</emph> property.</p>
+</def>
+</gitem>
+</glist>
+
+<p>There are no &processingInstructionNode;s for processing instructions
+that are children of a
+<emph role="info-item">document type declaration information item</emph>.</p>
+
+</div3>
+
+<div3 id="const-psvi-pi">
+<head>Construction from a PSVI</head>
+<p>Construction from a PSVI is identical to construction
+from the Infoset.</p>
+</div3>
+
+<div3 id="infoset-mapping-processing-instruction">
+<head>Infoset Mapping</head>
+
+<p>An &processingInstructionNode; maps to a
+<emph role="info-item">processing instruction information item</emph>.</p> 
+
+<p>The following properties are specified by this mapping:</p>
+
+<glist>
+<gitem>
+<label><emph role="infoset-property">target</emph></label>
+<def>
+<p>The local part of the value of <function>node-name</function>.
+</p>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">content</emph></label>
+<def>
+<p>The value of <function>string-value</function>.
+</p>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">base URI</emph></label>
+<def>
+<p>The value of <function>base-uri</function>.
+</p>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">parent</emph></label>
+<def>
+<ulist>
+<item>
+<p>If this node is the root of the infoset mapping operation,
+<emph>unknown</emph>.</p>
+</item>
+<item>
+<p>If this node has a parent, the information item that corresponds
+to the node returned by <function>parent</function>.
+</p>
+</item>
+<item>
+<p>Otherwise <emph>no value</emph>.
+</p>
+</item>
+</ulist>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">notation</emph></label>
+<def>
+<p><emph>no value</emph>.
+</p>
+</def>
+</gitem>
+</glist>
+</div3>
+
+</div2>

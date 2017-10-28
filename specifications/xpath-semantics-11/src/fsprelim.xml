@@ -1,0 +1,2117 @@
+<!-- ===================================================================== -->
+<!--  Section 2. Preliminaries                                             -->
+<!-- ===================================================================== -->
+
+<div1 id="sec_preliminaries">
+  <head>Preliminaries</head>
+
+  <p>This section provides the background necessary to understand the
+  Formal Semantics, introduces the notations that are used, and
+  explains its relationship to other documents.</p>
+
+  <div2 id="sec_intro">
+    <head>Introduction to the Formal Semantics</head>
+
+    <p><term>Why a Formal Semantics?</term> The goal of the formal
+    semantics is to complement the &language; specification
+    (&xq_xquerydoc; and &xq_xpath;), by defining the meaning of
+    &language; expressions with mathematical rigor.</p>
+
+    <p>A rigorous formal semantics clarifies the intended meaning of
+    the English specification, ensures that no corner cases are left
+    out, and provides a reference for implementation.</p>
+
+    <p><term>Why use formal notations?</term> Rigor is achieved by the
+    use of formal notations to represent &language; objects such as
+    expressions, XML values, and XML Schema types, and by the
+    systematic definition of the relationships between those objects
+    to reflect the meaning of the language.  In particular, the
+    dynamic semantics relates &language; expressions to the XML value
+    to which they evaluate, and the static semantics relates
+    &language; expressions to the XML Schema type that is inferred for
+    that expression.</p>
+
+    <p>The Formal Semantics uses several kinds of formal notations to
+    define the relationships between &language; expressions, XML
+    values, and XML Schema types. This section introduces the
+    notations for judgments, inference rules, and mapping rules as
+    well as the notation for environments, which implement the dynamic
+    and static contexts. The reader already familiar with these
+    notations can skip this section and continue with <specref
+    ref="sec_values"/>.</p>
+
+    <!-- ***************** Grammar productions    ****** -->
+
+    <div3 id="sec_grammar_notations">
+      <head>Notations from grammar productions</head>
+
+      <p>Grammar productions are used to describe
+      <quote>objects</quote> (values, types, &language; expressions,
+      etc.) manipulated by the Formal Semantics. The Formal Semantics
+      makes use of several kinds of grammar productions: productions
+      from the &language; grammar itself, productions for a subset of
+      the &language; language called the XQuery Core which is used
+      throughout this document, and other productions used for formal
+      specification only such as for the XQuery type system.</p>
+
+      <p>XQuery grammar productions describe the XQuery language and
+      expressions. XQuery productions are identified by a number,
+      which corresponds to their number in the &xq_xquerydoc;
+      document, and are marked with <quote>(XQuery)</quote>. For
+      instance, the following production describes FLWOR expressions
+      in XQuery.</p>
+        
+      <scrap>
+        <head>&for-name; Expressions</head>
+        <prodrecap ref="FLWORExpr" orig="xquery" test="Example"/>
+      </scrap>
+      
+      <p>For the purpose of this document, the differences between the
+      XQuery 1.0 and the XPath 2.0 grammars are mostly irrelevant. By
+      default, this document uses XQuery 1.0 grammar
+      productions. Whenever the grammar for XPath 2.0 differs from the
+      one for XQuery 1.0, the corresponding XPath 2.0 productions are
+      also given. XPath productions are identified by a number, which
+      corresponds to their number in &xq_xpath;, and are marked with
+      <quote>(XPath)</quote>. For instance, the following production
+      describes for expressions in XPath.</p>
+
+      <scrap>
+        <head>&for-name; Expressions</head>
+        <prodrecap ref="ForExpr" orig="xpath" test="Example"/>
+      </scrap>
+      
+      <p>XQuery Core grammar productions describe the XQuery Core. The
+      Core grammar is given in <specref ref="sec_core"/>. Core
+      productions are identified by a number, which corresponds to
+      their number in <specref ref="sec_core"/>, and are marked with
+      <quote>(Core)</quote>. For instance, the following production
+      describes the simpler form of the <quote>FLWOR</quote>
+      expression in the XQuery Core.</p>
+
+      <scrap>
+        <head>Core FLWOR Expressions</head>
+        <prodrecap ref="FLWORExpr" orig="core" test="Example"/>
+      </scrap>
+      
+      <p>The Formal Semantics manipulates <quote>objects</quote>
+      (values, types, expressions, etc.)  for which there is no
+      existing grammar production in the &xq_xquerydoc; document. In
+      these cases, specific grammar productions are
+      introduced. Notably, additional productions are used to describe
+      values in the &xq_datamodel;, and to describe the &language;
+      type system. Formal Semantics productions are identified by a
+      number, and are marked by <quote>(Formal)</quote>. For instance,
+      the following production describes global type definitions in
+      the &language; type system.</p>
+      
+      <scrap>
+        <head>Type Definitions</head>
+      
+        <prodrecap ref="Definition" id="test-Definition" orig="formal" test="Example"/>
+      </scrap>
+
+      <p>Note that grammar productions that are specific to the Formal
+      Semantics (i.e., marked with <quote>(Formal)</quote>) are not
+      part of &language;. They are not accessible to the user and are
+      only used in the course of defining the languages'
+      semantics.</p>
+
+      <p>Grammar non-terminals are used extensively in this document
+      to represent objects in judgments (see the next section). As a
+      convenience, non-terminals used in judgments link to the
+      appropriate grammar production.</p>
+    </div3>
+
+    <!-- ***************** Judgments              ****** -->
+
+    <div3 id="sec_judgments">
+      <head>Notations for judgments</head>
+
+      <p>The basic building block of the formal specification is
+      called a <emph>judgment</emph>. A judgment expresses whether a
+      property holds or not.</p>
+
+      <p>For example:</p>
+
+      <smnotation>
+        <p>The judgment</p>
+
+        <display>
+          <clause>
+          <expression><emph>Object</emph> <term>is a positive
+          integer</term></expression>
+          </clause>
+        </display>
+
+        <p>holds if the object <emph>Object</emph> is a positive
+        integer.</p>
+      </smnotation>
+
+      <p>A judgment may hold (if it is true) or not hold (if it is
+      false). For instance '1 <term>is a positive integer</term>'
+      holds and '-1 <term>is a positive integer</term>' does not
+      hold.</p>
+
+      <smnotation>
+        <p>Here are two other example judgments.</p>
+
+        <p>The judgment</p>
+
+        <display>
+          <clause>
+          <expression>&gr_Expr; &jd_yields; &gr_Value;</expression>
+          </clause>
+        </display>
+
+        <p>holds if the expression &gr_Expr; yields (or evaluates to)
+        the value &gr_Value;.</p>
+
+        <p>The judgment</p>
+
+        <display>
+        <clause>
+          <expression>&gr_Expr; &jd_has_type; &gr_Type;</expression>
+        </clause>
+        </display>
+
+        <p>holds if the expression &gr_Expr; has the type
+        &gr_Type;.</p>
+
+        <p>Most other judgments used in this document are short
+        English sentences intended to reflect their meaning. For
+        instance, the judgment</p>
+
+        <display>
+        <clause>
+          <expression>&gr_Axis; &jd_principal; &gr_PrincipalNodeKind;</expression>
+        </clause>
+        </display>
+
+        <p>holds if &gr_PrincipalNodeKind; is the principal node kind
+        for the axis &gr_Axis;.</p>
+      </smnotation>
+
+      <p>A judgment can contain <emph>symbols</emph> and
+      <emph>patterns</emph>.</p>
+
+      <p>Symbols are purely syntactic and are used to write the
+      judgment itself. Symbols are chosen to reflect a judgment's
+      meaning, and are written in bold fonts. For example, '<term>is a
+      positive integer</term>', '<term>&rArr;</term>' and
+      '<term>:</term>' are symbols, the second and third of which
+      should be read <quote>yields</quote>, and <quote>has
+      type</quote> respectively.</p>
+
+      <p>Patterns are used to represent objects, constructed from a
+      given grammar production. In patterns, italicized words usually
+      correspond to non-terminals in the grammar. The name of those
+      non-terminals is significant, and may be instantiated only to an
+      <quote>object</quote> (a value, a type, an expression, etc.)
+      that can be substituted legally for that non-terminal. For
+      example, '&gr_Expr;' is a pattern that stands for every
+      &language; expressions, '&gr_Expr1; + &gr_Expr2;' is a pattern
+      that stands for every addition expression, 'element a {
+      &gr_Value; }' is a pattern that stands for every value in the
+      &language; data model that is an 'a' element.</p>
+
+      <p>Non-terminals in a pattern may appear with subscripts
+      (e.g. &gr_Expr1;, &gr_Expr2;) to distinguish different instances
+      of the same sort of pattern. In some cases, non-terminals in a
+      pattern may have a name that is not exactly the name of that non
+      terminal, but is based on it. For instance, a &gr_BaseTypeName;
+      is a pattern that stands for a type name, as would
+      &gr_TypeName;, or &gr_TypeName2;. This usage is limited, and
+      only occurs to improve the readability of some of the inference
+      rules.</p>
+
+      <p>When <emph>instantiating</emph> the judgment, each pattern
+      must be instantiated to an appropriate sort of
+      <quote>object</quote> (value, type, expression, etc). For
+      example, '3 <term>&rArr;</term> 3' and '$x+0 <term>&rArr;</term>
+      3' are both instances of the judgment '&gr_Expr;
+      <term>&rArr;</term> &gr_Value;'. Note that in the first
+      judgment, '3' corresponds to both the expression '3' (on the
+      left-hand side of the <term>&rArr;</term> symbol) and to the
+      value '3' (on the right-hand side of the <term>&rArr;</term>
+      symbol).</p>
+
+      <p id="jd_not">In some cases, inference rules may need to use
+      the fact that a certain judgment <emph>does not</emph> hold.
+      <expression>&jd_not;(<emph>Judgment</emph>)</expression> holds
+      if and only if <emph>Judgment</emph> does not hold.</p>
+
+      <p id="jd_isin">In some cases, a pattern may be instantiated to
+      a value within a finite set of pre-determined values. We may
+      write that set of possible values using the &jd_isin;
+      judgment. For instance, the judgment</p>
+
+        <display>
+          <clause>
+          <expression><emph>Color</emph> &jd_isin; {
+          <term>blue</term>, <term>green</term> }
+          </expression>
+          </clause>
+        </display>
+
+      <p>holds if the pattern <emph>Color</emph> has either the value
+      <emph>blue</emph> or the value <emph>green</emph>.</p>
+
+      <p>In some cases, a judgment may use the <quote>=</quote> sign
+      to indicate that a given value is equal to another value, or
+      that a pattern is equal to a given value. For instance, the
+      judgment</p>
+
+        <display>
+          <clause>
+          <expression><emph>Color</emph> = <term>blue</term>
+          </expression>
+          </clause>
+        </display>
+
+      <p>holds if the pattern <emph>Color</emph> has the value
+      <emph>blue</emph>.</p>
+
+      <p>An index to all the judgments used in this specification is
+      provided in <specref ref="sec_indexes"/>.</p>
+    </div3>
+
+    <!-- ***************** Environments              ****** -->
+
+    <div3 id="sec_environments">
+      <head>Notations for environments</head>
+
+      <p id="xq_environment">An environment component is a dictionary
+      that maps a symbol (e.g., a function name or a variable name) to
+      an <quote>object</quote> (e.g., a function body, a type, a
+      value). One can access information in an environment component
+      or update it.</p>
+
+      <p>If <quote>envComp</quote> is an environment component, then
+      <quote>envComp(<emph>symbol</emph>)</quote> denotes the
+      <quote>object</quote> to which <emph>symbol</emph> is mapped.
+      The notation is intentionally similar to function application,
+      because an environment component can be considered a function
+      from the argument <emph>symbol</emph> to the
+      <quote>object</quote> to which the <emph>symbol</emph> is
+      mapped.</p>
+
+      <p>This document uses <emph>environments</emph> that group
+      related environment components. If <quote>env</quote> is an
+      environment containing the environment component
+      <quote>envComp</quote>, that environment component is denoted
+      <quote>env.envComp</quote>. The value that <emph>symbol</emph>
+      is mapped to in that environment component is denoted
+      <quote><expression>env.envComp(<emph>symbol</emph>)</expression></quote>.</p>
+
+      <p>The two main environments used in the Formal Semantics are: a
+      dynamic environment (&xq_dyn_env;), which models the &language;
+      dynamic context, and a static environment (&xq_stat_env;), which
+      models the &language; static context. Both are defined in
+      <specref ref="sec_context"/>.</p>
+
+      <p>For example, &xq_val_env; denotes the dynamic environment
+      component that maps variables to values and
+      &xq_val_env;(&gr_Variable;) denotes the value of the variable
+      &gr_Variable; in the dynamic context.</p>
+
+      <p>Environments are used in a judgment to capture some of the
+      context in which the judgment is computed, and most judgments
+      are computed assuming that some environment is given. This
+      <emph>assumption</emph> is denoted by prefixing the judgment
+      with <quote><expression>env</expression> &xt_turn;</quote>. The
+      <quote>&xt_turn;</quote> symbol is called a
+      <quote>turnstile</quote> and is used in almost all inference
+      rules.</p>
+
+      <p>For instance, the judgment</p>
+
+      <display>
+        <clause>
+          <environment>&xq_dyn_env;</environment>
+          <expression>
+      	    &gr_Expr; <term>&rArr;</term> &gr_Value;
+          </expression>
+        </clause>
+      </display>
+
+      <p>is read as: Assuming the dynamic environment &xq_dyn_env;,
+      the expression &gr_Expr; yields the value &gr_Value;.</p>
+
+      <p>Environments can be <emph>updated</emph>, using the following
+      notation:</p>
+
+      <ulist>
+        <item>
+          <p>
+            <quote><expression><update><environment>env.envComp</environment>
+            <expression><emph>symbol</emph> &xt_bind;
+            <emph>object</emph></expression></update></expression></quote>
+            denotes the new environment that is identical to
+            <emph>env</emph> except that the environment component
+            <emph>envComp</emph> has been updated to map
+            <emph>symbol</emph> to <emph>object</emph>. The notation
+            <expression><emph>symbol</emph> &xt_bind;
+            <emph>object</emph></expression> indicates that
+            <emph>symbol</emph> is mapped to <emph>object</emph> in
+            the new environment.</p>
+        </item>
+        <item>
+          <p>In case the environment component contains only a
+            constant value (e.g., the ordering mode which can only be
+            either ordered or unordered), the following notation is
+            used to set its value.
+            <quote><expression><update>
+                  <environment>env.envComp</environment>
+                  <expression>
+                    <emph>object</emph>
+                  </expression>
+                </update></expression></quote>.</p>
+        </item>
+        <item>
+          <p>
+            The following shorthand is also allowed:
+            <quote><expression><update>
+                  <environment>env.envComp</environment>
+                  <expression>
+                    <emph>symbol</emph><subscript>1</subscript>
+                    &xt_bind;
+                    <emph>object</emph><subscript>1</subscript>
+                    ; ... ;
+                    <emph>symbol</emph><subscript>n</subscript>
+                    &xt_bind;
+                    <emph>object</emph><subscript>n</subscript>
+                  </expression>
+                </update></expression></quote> in which each symbol is
+                mapped to a corresponding object in the new
+                environment.</p>
+
+            <p>This notation is equivalent to nested updates, as in
+            <quote>
+              <expression>
+                (env + envComp(
+                <emph>symbol</emph><subscript>1</subscript>
+                &xt_bind;
+                <emph>object</emph><subscript>1</subscript>)
+                + 
+                ...
+                ) + env(<emph>symbol</emph><subscript>n</subscript>
+                &xt_bind;
+                <emph>object</emph><subscript>n</subscript>)</expression></quote>.
+          </p>
+        </item>
+      </ulist>
+
+      <p>Updating an environment creates a copy of the original
+      environment and overrides any previous binding that might exist
+      for the same name and the same component in that
+      environment. Updating the environment is used to capture the
+      <emph>scope</emph> of a symbol (e.g., for variables, namespace
+      prefixes, etc). For instance, in the following expression</p>
+
+<eg><![CDATA[
+  let $x := 1 return
+  let $x := $x + 2 return
+  $x - 3
+]]></eg>
+
+      <p>each let expression changes the dynamic context by binding a
+      new variable to a new value. Each different context is
+      represented by a different environment. The original
+      environment, in which the expression <code>1</code> is
+      evaluated, does not contain any binding for variable
+      <code>$x</code>. This environment is updated a first time with a
+      binding of variable <code>$x</code> to the value <code>1</code>,
+      and this new environment is used for the evaluation of the
+      expression <code>$x + 2</code>. Then this second environment is
+      updated with a binding of variable <code>$x</code> to the value
+      <code>3</code>, and this environment is used for the evaluation
+      of the expression <code>$x - 3</code>.</p>
+
+      <p>Also, note that there are no operations to remove entries
+      from environments. This is never necessary as updating an
+      environment effectively creates a new extended copy of the
+      original environment, leaving the original environment
+      accessible wherever it is in scope along with the updated
+      copy.</p>
+
+    </div3>
+
+    <!-- ***************** Inference rules ****** -->
+
+    <div3 id="sec_inference">
+      <head>Notations for inference rules</head>
+
+      <p>Inference rules are used to specify how to infer whether a
+      given judgment holds or not. Inference rules express the logical
+      relation between judgments and describe how complex judgments
+      can be concluded from simpler premise judgments. </p>
+
+      <p>A logical inference rule is written as a collection of
+      <emph>premise</emph>s and a <emph>conclusion</emph>, written
+      respectively above and below a dividing line, as follows:</p>
+
+      <infergr>
+    	<infer>
+    	 <prejudge>
+    	  <clause>
+    	   <expression>
+    	       <emph>premise</emph><subscript>1</subscript>
+    	       ...
+    	       <emph>premise</emph><subscript>n</subscript>
+    	   </expression>
+    	  </clause>
+    	 </prejudge>
+    	 <postjudge>
+    	  <clause>
+    	   <expression>
+    	       <emph>conclusion</emph>
+    	   </expression>
+    	  </clause>
+    	 </postjudge>
+    	</infer>
+      </infergr>
+
+      <p>All premises and the conclusion are judgments. From a logical
+      point of view, an inference rule is a deduction that if the
+      premises hold, then the conclusion holds as well. In that sense,
+      the previous inference rule has a similar meaning as the
+      following logical statement.</p>
+
+      <p>IF <emph>premise</emph><subscript>1</subscript></p>
+      <p>AND ...</p>
+      <p>AND <emph>premise</emph><subscript>n</subscript></p>
+      <p>THEN <emph>conclusion</emph></p>
+
+      <p>Here is a simple example of inference rule, which uses
+      specific instances of the example judgment '&gr_Expr;
+      <term>&rArr;</term> &gr_Value;' from above:</p>
+
+      <infergr>
+    	<infer>
+    	 <prejudge>
+    	  <clause>
+    	   <expression>
+    	       $x <term>&rArr;</term> 0
+    	   </expression>
+    	  </clause>
+    	  <clause>
+    	   <expression>
+    	       3 <term>&rArr;</term> 3
+    	   </expression>
+    	  </clause>
+    	 </prejudge>
+    	 <postjudge>
+    	  <clause>
+    	    <expression>
+    	       $x + 3 <term>&rArr;</term> 3
+    	    </expression>
+    	  </clause>
+    	 </postjudge>
+    	</infer>
+      </infergr>
+
+      <p>This inference rule expresses the following property:
+      <emph>if</emph> the variable expression '$x' yields the value
+      '0', <emph>and</emph> the literal expression '3' yields the
+      value '3', <emph>then</emph> the expression '$x + 3' yields the
+      value '3'.</p>
+
+      <p>An inference rule may have no premises above the line, which
+      means that the expression below the line always holds. For
+      instance:</p>
+
+      <infergr>
+    	<infer>
+    	 <postjudge>
+    	  <clause>
+    	    <expression>
+    	       3 <term>&rArr;</term> 3 
+    	    </expression>
+    	  </clause>
+    	 </postjudge>
+    	</infer>
+      </infergr>
+
+      <p>This inference rule expresses the following property:
+      evaluating the literal expression '3' always yields the value
+      '3'.</p>
+
+      <p>The two above rules are expressed in terms of specific
+      expressions and values, but usually rules are more abstract.
+      That is, the judgments are not fully instantiated. Here is a
+      rule that says that for any variable &gr_DVarName; that yields
+      the integer value &gr_Integer;, adding '0' yields the same
+      integer value:</p>
+
+      <infergr>
+        <infer>
+         <prejudge>
+           <clause>
+             <expression>
+                &gr_DVarName; <term>&rArr;</term> &gr_Integer;
+             </expression>
+           </clause>
+         </prejudge>
+         <postjudge>
+          <clause>
+            <expression>
+              &gr_DVarName; + 0 <term>&rArr;</term> &gr_Integer;
+            </expression>
+          </clause>
+         </postjudge>
+        </infer>
+      </infergr>
+
+      <p>Each occurrence of a given pattern in a particular inference
+      rule must be instantiated to the same <quote>object</quote>
+      within the entire rule.  This means that, in the context of a
+      particular instantiation of a rule, one can talk about
+      <quote>the value of &gr_DVarName;</quote> instead of <quote diff='chg' at='E037'>the value
+      bound to the first (second, etc) occurrence of
+      &gr_DVarName;</quote>.</p>
+
+      <p>Here is an example of a rule occurring later in this
+      document.</p>
+
+      <infergr>
+       <infer>
+        <prejudge>
+         <clause>
+          <environment>&xq_stat_env;</environment>
+          <expression>&gr_Expr1; <term>:</term> &gr_Type1;</expression>
+         </clause>
+         <clause>
+          <environment>&xq_stat_env;</environment>
+          <expression>&gr_Expr2; <term>:</term> &gr_Type2;</expression>
+         </clause>
+        </prejudge>
+        <postjudge>
+         <clause>
+          <environment>&xq_stat_env;</environment>
+          <expression>&gr_Expr1; , &gr_Expr2; <term>:</term> &gr_Type1;, &gr_Type2;</expression>
+         </clause>
+        </postjudge>
+       </infer>
+      </infergr>
+
+      <p>This rule is read as follows: if two expressions &gr_Expr1;
+      and &gr_Expr2; are known to have the static types &gr_Type1; and
+      &gr_Type2; (the two premises above the line), then it is the
+      case that the sequence expression <quote>&gr_Expr1; ,
+      &gr_Expr2;</quote> has the static type <quote>&gr_Type1;,
+      &gr_Type2;</quote>, which is the sequence of types &gr_Type1;
+      and &gr_Type2;. Note that this inference rule does not modify
+      the static environment.</p>
+
+      <p>The following rule defines the static semantics of a
+      <quote>let</quote> expression. The binding of the new variable
+      is captured by an update to the varType component of the
+      original static environment.</p>
+
+      <infergr>
+       <infer>
+    	<prejudge>
+         <multiclause>
+    	 <clause>
+    	  <environment>&xq_stat_env;</environment>
+    	  <expression>
+    		  &gr_VarName; &jd_var_qname_expands_to; &xd_qname;
+    	   </expression>
+    	 </clause>
+         </multiclause>
+         <multiclause>
+    	 <clause>
+    	  <environment>&xq_stat_env;</environment>
+    	  <expression>
+    		  &gr_Expr1; <term>:</term> &gr_Type1;
+    	   </expression>
+    	 </clause>
+    	 <clause>
+    		<environment>
+    		  <update>
+    		    <environment>&xq_type_env;</environment>
+    		    <expression>&xd_qname; &xt_bind; &gr_Type1;</expression>
+    		  </update>
+    		</environment>
+    		<expression>
+    		    &gr_Expr2; <term>:</term> &gr_Type2;
+    	  </expression>
+    	 </clause>
+         </multiclause>
+    	</prejudge>
+    	<postjudge>
+    	 <clause>
+    	  <environment>&xq_stat_env;</environment>
+    	  <expression>
+    		  <code>let</code>
+    		  <code>$</code>&gr_VarName; := &gr_Expr1;
+    		  <code>return</code>
+    		  &gr_Expr2; <term>:</term> &gr_Type2;
+    	  </expression>
+    	 </clause>
+    	</postjudge>
+       </infer>
+      </infergr>
+
+      <p>This rule is read as follows: First, because the variable is
+      a QName, it is first expanded into an expanded QName.  Second,
+      the type &gr_Type1; for the <quote>let</quote> input expression
+      &gr_Expr1; is computed.  Then the <quote>let</quote> variable
+      with expanded name, &xd_qname; with type &gr_Type1; is added
+      into the varType component of the static environment
+      &xq_stat_env;. Finally, the type &gr_Type2; of &gr_Expr2; is
+      computed in that new environment.</p>
+
+      <p>In some cases, ellipses may be used in inference rules to
+      handle an arbitrary number of judgments. In those cases, some of
+      the patterns may have indices as subscript. If the same index is
+      used several times within the same rule, the number of judgment
+      in each case must be the same. For instance, the following rule
+      holds for any number of expressions, from &gr_Expr1; to
+      &gr_Exprn;, with the same number of types &gr_Type1; to
+      &gr_Typen;.</p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_QName;
+                  &jd_func_qname_expands_to; &xd_qname;</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause><environment>&xq_stat_env;</environment> 
+                  <expression>
+                    &gr_Expr1; &jd_has_type; &gr_Type1;
+                  </expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <expression>
+                    ...
+                  </expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause><environment>&xq_stat_env;</environment> 
+                  <expression>
+                    &gr_Exprn; &jd_has_type; &gr_Typen;
+                  </expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                  <expression>
+                    &xd_qname;(&gr_Type1;,...,&gr_Typen;) &jd_has_type; &gr_Type;
+                  </expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                  <expression>
+                    &gr_QName; (&gr_Expr1;,...,&gr_Exprn;) &jd_has_type; &gr_Type;
+                  </expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <p>This inference rule is equivalent to having an unbounded
+        number of rules, the first of which has 1 judgment, the second
+        of which has 2 judgments, etc. For instance, the above rule
+        holds if and only if one of the following rules hold.</p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_QName;
+                  &jd_func_qname_expands_to; &xd_qname;</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause><environment>&xq_stat_env;</environment> 
+                  <expression>
+                    &gr_Expr1; &jd_has_type; &gr_Type1;
+                  </expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                  <expression>
+                    &xd_qname;(&gr_Type1;) &jd_has_type; &gr_Type;
+                  </expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                  <expression>
+                    &gr_QName; (&gr_Expr1;) &jd_has_type; &gr_Type;
+                  </expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <p>or</p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_QName;
+                  &jd_func_qname_expands_to; &xd_qname;</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause><environment>&xq_stat_env;</environment> 
+                  <expression>
+                    &gr_Expr1; &jd_has_type; &gr_Type1;
+                  </expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause><environment>&xq_stat_env;</environment> 
+                  <expression>
+                    &gr_Expr2; &jd_has_type; &gr_Type2;
+                  </expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                  <expression>
+                    &xd_qname;(&gr_Type1;,&gr_Type2;) &jd_has_type; &gr_Type;
+                  </expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                  <expression>
+                    &gr_QName; (&gr_Expr1;,&gr_Expr2;) &jd_has_type; &gr_Type;
+                  </expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <p>etc.</p>
+
+        <p>When ellipses are used, the value for the index always
+        ranges from 1 to an arbitrary number n.</p>
+    </div3>
+
+    <div3 id="sec_together">
+      <head>Putting it together</head>
+
+      <p>In isolation, each inference rule describes a fragment of the
+      semantics for a given judgment. Put together, inference rules
+      describe possible inferences that can be used to decide whether
+      a particular judgment holds.</p>
+
+      <p>For a given judgment, if that judgment can be inferred to be
+      true by applying any sequence of inferences based on premises
+      which are known to be true, the inference succeeds. In most
+      cases, the inference will proceed by proving intermediate
+      judgments, following the consequences from one judgment to the
+      next by applying successive inference rules.</p>
+
+      <p>Such inference is a mechanism which can be used to describe
+      both static type analysis and dynamic evaluation. More
+      specifically, performing static typing consists in proving that
+      the following judgment holds for a given expression
+      &gr_Expr;.</p>
+
+      <display>
+      <clause>
+        <environment>&xq_stat_env;</environment>
+        <expression>&gr_Expr; &jd_has_type; &gr_Type;</expression>
+      </clause>
+      </display>
+
+      <p>If the judgment holds for a given type &gr_Type;, this type
+      is a possible static type for the expression. If there exists no
+      type for which this judgment holds, then static typing
+      fails and a static type error is returned to the user.</p>
+
+      <p>Consider the following expression.</p>
+
+<eg><![CDATA[
+  fn:count((1,2,3))
+]]></eg>
+
+      <p>Using the static typing rules given for expressions in the
+      rest of this document, one can deduce that the expression is of
+      type &xs_integer; through the following inference.</p>
+
+<eg><![CDATA[
+  statEnv |- 1 : xs:integer  (from typing of literals)
+  statEnv |- 2 : xs:integer  (from typing of literals)
+  --------------------------------------------------- (sequence)
+    statEnv |- 1,2 : xs:integer, xs:integer
+    statEnv |- 3 : xs:integer
+    ----------------------------------------------------- (sequence)
+    statEnv |- 1,2,3 : xs:integer, xs:integer, xs:integer
+
+    declare function fn:count($x as item()*) as xs:integer
+    statEnv |- xs:integer,xs:integer,xs:integer <: item()*
+    ---------------------------------------------------------- (function call)
+    statEnv |- fn:count((1,2,3)) : xs:integer
+]]></eg>
+
+   <p>Conversly, consider the following expression.</p>
+
+<eg><![CDATA[
+  fn:nilled((1,2,3))
+]]></eg>
+
+   <p>Using the static typing rules given for expressions in the rest
+   of this document, one can apply inference rules up to the
+   following point.</p>
+
+<eg><![CDATA[
+    ....
+    ----------------------------------------------------- (sequence)
+    statEnv |- 1,2,3 : xs:integer, xs:integer, xs:integer
+]]></eg>
+
+      <p>However, there is no rule that can infer the type of
+      <code>fn:nilled((1,2,3))</code>, because the static typing rules
+      for function calls will only hold if the type of the function
+      parameters is a subtype of the expected type. However, here
+      <code>(xs:integer,xs:integer,xs:integer)</code> is not a node
+      type, which is the expected type for the function
+      <code>fn:nilled</code>.</p>
+
+      <p>Note that in some cases, the inference can only proceed
+      through the appropriate changes to the environment. For
+      instance, consider the following expression.</p>
+
+<eg><![CDATA[
+  let $x := 1 return ($x,$x)
+]]></eg>
+
+      <p>Using the static typing rules given for expressions in the
+      rest of this document, one can deduce that the expression is of
+      type <code>(xs:integer,xs:integer)</code> through the following
+      inference.</p>
+
+<eg><![CDATA[
+statEnv0.varType = ()
+
+  -------------------------- (literal)
+  statEnv0 |- 1 : xs:integer
+
+statEnv1 = statEnv0 + varType($x => xs:integer)
+
+     statEnv1.varType($x) = xs:integer
+     --------------------------------- (variable reference)
+     statEnv1 |- $x : xs:integer
+
+     statEnv1.varType($x) = xs:integer
+     --------------------------------- (variable reference)
+     statEnv1 |- $x : xs:integer
+
+     ------------------------------------------- (sequence)
+     statEnv1 |- ($x,$x) : xs:integer,xs:integer
+
+  -------------------------------------------------------------- (let)
+  statEnv0 |- let $x := 1 return ($x,$x) : xs:integer,xs:integer
+]]></eg>
+
+      <p>This example illustrates how each rule is applied to
+      individual sub-expressions, and how the environment is used to
+      maintain the relevant context information.</p>
+    </div3>
+
+  </div2>
+
+  <div2 id="sec_namespaces">
+    <head>URIs, Namespaces, and Prefixes</head>
+
+    <p>The Formal Semantics does not formally specify the adjustment
+    of relative URIs according to a base URI. All URIs used in this
+    document are assumed to be absolute URIs.</p>
+
+    <p>The Formal Semantics uses the following namespace prefixes.</p>
+
+    <ulist>
+      <item><p><code>fn:</code> for functions and operators from the
+      &xq_functions; document.</p></item>
+      <item><p><code>xs:</code> for XML Schema components and
+      built-in types.</p></item>
+    </ulist>
+
+    <p>These prefixes are assumed to be bound to the appropriate
+    URIs.</p>
+
+    <p>In addition, the Formal Semantics uses the following special
+    prefixes for specification purposes.</p>
+
+    <ulist>
+      <item><p><emph>dm:</emph> for accessors of the
+      &xq_datamodel;.</p></item>
+      <item><p><emph>op:</emph> for operators in
+      &xq_functions;.</p></item>
+      <item><p><emph>fs:</emph> for functions and types defined in
+      the formal semantics.</p></item>
+    </ulist>
+
+    <p>These prefixes are always italicized to emphasize that the
+    corresponding functions, variables, and types are abstract: they
+    are not and cannot be made accessible in &language;. None of these
+    special prefixes are given an explicit URI, but they behave as if
+    they had one for the purposes of namespace resolution.</p>
+  </div2>
+
+  <div2 id="sec_values">
+    <head>XML Values</head>
+
+    <p>The &language; language is defined over values of the
+    &language; data model. The &language; data model is defined
+    normatively in &xq_datamodel;. We define the formal notation that
+    is used in this document to describe and manipulate values in
+    inference rules. Formal values are used for specification purposes
+    only and are not exposed to the &language; user.</p>
+
+    <p>This section gives the grammar for formal values, along with a
+    summary of the corresponding data model properties. In the context
+    of this document, all constraints on values that are specified in
+    &xq_datamodel; are assumed to hold.</p>
+
+    <div3 id="sec_data_model_overview">
+      <head>Formal values</head>
+
+      <p>A value is a sequence of zero or more items.  An item is
+      either an atomic value or a node.</p>
+
+      <p>An atomic value is a value in the value space of an atomic
+      type, labeled with the name of that atomic type. An atomic type
+      is either a primitive or derived atomic type according to XML
+      Schema &xq_xmlschema2;, &xs_untypedAtomic;, or
+      &xs_anyAtomicType;.</p>
+
+      <p>A node is either an element, an attribute, a document, a
+      text, a comment, or a processing-instruction node.</p>
+
+      <p>Element nodes have a <xtermref spec="XQ"
+      ref="dt-type-annotation"/> and contain a complex value or a
+      simple value. Attribute nodes have a <xtermref spec="XQ"
+      ref="dt-type-annotation"/> and contain a simple value. Text
+      nodes always contain one string value of type
+      &xs_untypedAtomic;, therefore the corresponding type annotation
+      is omitted in the formal notation of a text node. Document nodes
+      do not have a type annotation and contain a sequence of element,
+      text, comment, or processing-instruction nodes.</p>
+
+      <p>A simple value is a sequence of atomic values.</p>
+
+      <p>A complex value is a sequence of attribute nodes followed by
+      a sequence of element, text, comment, or processing-instruction
+      nodes.</p>
+
+      <p>A <xtermref spec="XQ" ref="dt-type-annotation"/> can be
+      either the &gr_QName; of a declared type or an anonymous
+      type. An anonymous type corresponds to an XML Schema type for
+      which the schema writer did not provide a name. Anonymous type
+      names are not visible to the user, but are generated during
+      schema validation and used to annotate nodes in the data
+      model. By convention, anonymous type names are written using the
+      <emph>fs:</emph> Formal Semantics prefix: &gr_Anon0;,
+      &gr_Anon1;, etc.</p>
+
+      <p>Formal values are defined by the following grammar.</p>
+
+      <scrap>
+        <head>Values</head>
+
+        <prodrecap ref="Value"              id="Value"              orig="formal"/>
+        <prodrecap ref="Item"               id="Item"               orig="formal"/>
+        <prodrecap ref="AtomicValue"        id="AtomicValue"        orig="formal"/>
+        <prodrecap ref="AtomicValueContent" id="AtomicValueContent" orig="formal"/>
+        <prodrecap ref="TypeAnnotation"     id="TypeAnnotation"     orig="formal"/>
+        <prodrecap ref="ElementValue"       id="ElementValue"       orig="formal"/>
+        <prodrecap ref="AttributeValue"     id="AttributeValue"     orig="formal"/>
+        <prodrecap ref="SimpleValue"        id="SimpleValue"        orig="formal"/>
+        <prodrecap ref="DocumentValue"      id="DocumentValue"      orig="formal"/>
+        <prodrecap ref="CommentValue"       id="CommentValue"       orig="formal"/>
+        <prodrecap ref="ProcessingInstructionValue" id="ProcessingInstructionValue" orig="formal"/>
+        <prodrecap ref="TextValue"          id="TextValue"          orig="formal"/>
+        <prodrecap ref="NodeValue"          id="NodeValue"          orig="formal"/>
+        <prodrecap ref="ElementName"        id="fs-ElementName"     orig="formal"/>
+        <prodrecap ref="AttributeName"      id="fs-AttributeName"   orig="formal"/>
+        <prodrecap ref="TypeName"           id="formal-TypeName"    orig="formal"/>
+        <prodrecap ref="NamespaceBindings"  id="NamespaceBindings"  orig="formal"/>
+        <prodrecap ref="NamespaceBinding"   id="NamespaceBinding"   orig="formal"/>
+      </scrap>
+
+      <smnotation>
+        <p>In the production for &gr_AtomicValueContent;, each symbol
+        in the right-hand side corresponds to one of the primitive
+        datatypes. For example, &gr_String; corresponds to
+        &xs_string;, and &gr_Boolean; corresponds to
+        &xs_boolean;. (The mapping is obvious, except that
+        <phrase diff='del' at='E038'>"expanded-QName"</phrase>
+        <phrase diff='add' at='E038'>&xd_qname;</phrase>
+        corresponds to &xs_QName;<phrase diff='add' at='E038'>.</phrase>) Although there are
+        no explicit productions for these symbols, we assume that each
+        is a non-terminal that derives a set of syntactic objects,
+        each of which corresponds to a value in the value space of the
+        corresponding datatype. For instance, the non-terminal
+        &gr_String; derives a set of syntactic objects, which appear
+        in examples as <code>""</code>, <code>"a"</code>,
+        <code>"John"</code>, etc.; each one corresponds to a string
+        value in the &xs_string; value space. For familiarity, these
+        objects have been given the same appearance as
+        &gr_StringLiteral;s from the XQuery and Core grammars;
+        however, these are formal objects, with a distinct role in the
+        <phrase diff='del' at='E038'>FS</phrase>
+        <phrase diff='add' at='E038'>Formal Semantics</phrase>.</p>
+      </smnotation>
+
+      <p>Element (resp. attributes) without type annotations, are
+      assumed to have the type annotation &xs_anyType;
+      (resp. &xs_anySimpleType;). Atomic values without type
+      annotations, are assumed to have a type annotation which is the
+      base type for the corresponding value. For instance,
+      <code>"Hello, World!"</code> is equivalent to <code>"Hello,
+      World!" of type xs:string</code>.</p>
+
+      <p>Untyped elements (e.g., from well-formed documents) have the
+      <xtermref spec="XQ" ref="dt-type-annotation"/> &xs_untyped;,
+      untyped attributes have the <xtermref spec="XQ"
+      ref="dt-type-annotation"/> &xs_untypedAtomic;, and untyped
+      atomic values have the <xtermref spec="XQ"
+      ref="dt-type-annotation"/> &xs_untypedAtomic;.</p>
+
+      <p>An element has an optional <quote>nilled</quote> marker. This
+      marker is present only if the element has been validated against
+      an element type in the schema which is <quote>nillable</quote>,
+      and the element has no content and an attribute
+      <code>xsi:nil</code> set to <code>"true"</code>.</p>
+
+      <p>An element also has a sequence of namespace bindings, which
+      are the set of in-scope namespaces for that element. Each
+      namespace binding is a prefix, URI pair. Elements without
+      namespace bindings are assumed to have an empty set of in-scope
+      namespaces.</p>
+
+      <note role="xquery"><p>In <bibref ref="XPath"/>, the in-scope
+      namespaces of an element node are represented by a collection of
+      <term>namespace nodes</term> arranged on a <term>namespace
+      axis</term>, which is optional and deprecated in <bibref
+      ref="xpath-21"/>. XQuery does not support the namespace axis and
+      does not represent namespace bindings in the form of
+      nodes.</p></note>
+
+    </div3>
+
+    <div3 id="sec_example_values">
+      <head>Examples of values</head>
+
+      <p><term>A well-formed document</term></p>
+
+<eg><![CDATA[
+  <fact>The cat weighs <weight units="lbs">12</weight> pounds.</fact>
+]]></eg>
+
+      <p>In the absence of a Schema, this document is represented
+      as</p>
+
+<eg><![CDATA[
+  element fact of type xs:untyped {
+    text { "The cat weighs " },
+    element weight of type xs:untyped {
+      attribute units of type xs:untypedAtomic {
+        "lbs" of type xs:untypedAtomic
+      }]]><phrase diff='add' at='E039'>,</phrase><![CDATA[
+      text { "12" }
+    },
+    text { " pounds." }
+  }
+]]></eg>
+
+      <p><term>A document before and after validation.</term></p>
+
+<eg><![CDATA[
+  <weight xsi:type="xs:integer">42</weight>
+]]></eg>
+
+      <p>The formal model for values can represent values before and
+      after validation. Before validation, this element is represented
+      as:</p>
+
+<eg><![CDATA[
+  element weight of type xs:untyped {
+    attribute xsi:type of type xs:untypedAtomic {
+      "xs:integer" of type xs:untypedAtomic
+    },
+    text { "42" }
+  }
+]]></eg>
+
+      <p>After validation, this element is represented as:</p>
+
+<eg><![CDATA[
+  element weight of type xs:integer {
+    attribute xsi:type of type xs:QName {
+      "xs:integer" of type xs:QName
+    },
+    42 of type xs:integer
+  }
+]]></eg>
+
+      <p><term>An element with a list type</term></p>
+
+<eg><![CDATA[
+  <sizes>1 2 3</sizes>
+]]></eg>
+
+      <p>Before validation, this element is represented as:</p>
+
+<eg><![CDATA[
+  element sizes of type xs:untyped {
+    text { "1 2 3" }
+  }
+]]></eg>
+
+      <p>Assume the following Schema.</p>
+
+<eg><![CDATA[
+  <xs:element name="sizes" type="sizesType"/>
+  <xs:simpleType name="sizesType">
+    <xs:list itemType="sizeType"/>
+  </xs:simpleType>
+  <xs:simpleType name="sizeType">
+    <xs:restriction base="xs:integer"/>
+  </xs:simpleType>
+]]></eg>
+
+      <p>After validation against this Schema, the element is
+      represented as:</p>
+
+<eg><![CDATA[
+  element sizes of type sizesType {
+    1 of type sizeType,
+    2 of type sizeType,
+    3 of type sizeType
+  }
+]]></eg>
+
+      <p><term>An element with an anonymous type</term></p>
+
+<eg><![CDATA[
+  <sizes>1 2 3</sizes>
+]]></eg>
+
+      <p>Before validation, this element is represented as:</p>
+
+<eg><![CDATA[
+  element sizes of type xs:untyped {
+    text { "1 2 3" }
+  }
+]]></eg>
+
+      <p>Assume the following Schema.</p>
+
+<eg><![CDATA[
+  <xs:element name="sizes">
+    <xs:simpleType>
+      <xs:list itemType="xs:integer"/>
+    </xs:simpleType>
+  </xs:element>
+]]></eg>
+
+      <p>After validation, this element is represented as:</p>
+
+<eg><![CDATA[
+  element sizes of type fs:anon1 {
+    1 of type xs:integer,
+    2 of type xs:integer,
+    3 of type xs:integer
+  }
+]]></eg>
+
+      <p>where &gr_Anon1; stands for the internal anonymous name
+      generated by the system for the <code>sizes</code> element.</p>
+
+      <p><term>A nillable element with</term> <code>xsi:type</code> <term>set to
+      true</term></p>
+
+<eg><![CDATA[
+  <sizes xsi:nil="true"/>
+]]></eg>
+
+      <p>Before validation, this element is represented as:</p>
+
+<eg><![CDATA[
+  element sizes of type xs:untyped {
+    attribute xsi:nil of type xs:untypedAtomic { "true" of type xs:untypedAtomic }
+  }
+]]></eg>
+
+      <p>Assume the following Schema.</p>
+
+<eg><![CDATA[
+  <xs:element name="sizes" type="sizesType" nillable="true"/>
+]]></eg>
+
+      <p>After validation against this Schema, the element is
+      represented as:</p>
+
+<eg><![CDATA[
+  element sizes nilled of type sizesType {
+    attribute xsi:nil of type xs:boolean { true of type xs:boolean }
+  }
+]]></eg>
+
+      <p><term>An element with a union type</term></p>
+
+<eg><![CDATA[
+  <sizes>1 two 3 four</sizes>
+]]></eg>
+
+      <p>Before validation, this element is represented as:</p>
+
+<eg><![CDATA[
+  element sizes of type xs:untyped {
+    text { "1 two 3 four" }
+  }
+]]></eg>
+
+      <p>Assume the following Schema:</p>
+
+<eg><![CDATA[
+  <xs:element name="sizes" type="sizesType"/>
+  <xs:simpleType name="sizesType">
+    <xs:list itemType="sizeType"/>
+  </xs:simpleType>
+  <xs:simpleType name="sizeType">
+    <xs:union memberType="xs:integer xs:string"/>
+  </xs:simpleType>
+]]></eg>
+
+      <p>After validation against this Schema, the element is
+      represented as:</p>
+
+<eg><![CDATA[
+  element sizes of type sizesType {
+    1 of type xs:integer,
+    "two" of type xs:string,
+    3 of type xs:integer,
+    "four" of type xs:string
+  }
+]]></eg>
+
+    </div3>
+
+  </div2>
+
+  <div2 id="sec_types">
+    <head>The &language; Type System</head>
+
+    <p>The &language; type system is used in the specification of the
+    dynamic and of the static semantics of &language;. This section
+    introduces formal notations for describing types.</p>
+
+    <div3 id="sec_schema">
+      <head>XML Schema and the &language; Type System</head>
+
+      <p>The &language; type system is based on &xq_xmlschema1; and
+      &xq_xmlschema2;.  &xq_xmlschema1; and &xq_xmlschema2; specify
+      normatively the type information available in &language;.  We
+      define the formal notation that is used in this document to
+      describe and manipulate types in inference rules. Formal types
+      are used for specification purposes only and are not exposed to
+      the &language; user.</p>
+
+      <p><term>Representation of content models.</term> For the
+      purpose of static typing, the &language; type system only
+      describes minOccurs, maxOccurs, and minLength, maxLength on list
+      types for the occurrences that correspond to the DTD operators
+      <code>+</code>, <code>*</code>, and <code>?</code>. Choices are
+      represented using the DTD operator <code>|</code>. <term>All
+      groups</term> are represented using the interleaving operator
+      (<code>&amp;</code>).</p>
+
+      <p><term>Representation of anonymous types.</term> To clarify
+      the semantics, the &language; type system makes all anonymous
+      types explicit.</p>
+
+      <p><term>Representation of XML Schema simple type facets and
+      identity constraints.</term> For simplicity, XML Schema simple
+      type facets and identity constraints are not formally
+      represented in the &language; type system. However, an
+      &language; implementation supporting XML Schema import and
+      validation must take simple type facets and identity constraints
+      into account.</p>
+
+      <p>This document
+      <phrase diff='del' at='E040'>describe</phrase>
+      <phrase diff='add' at='E040'>describes</phrase>
+      types in the &language; types system,
+      as well as the operations and properties over those types which
+      are used to define the &language; static typing feature. The two
+      most important properties are whether a data
+      <phrase diff='del' at='E040'>instances</phrase>
+      <phrase diff='add' at='E040'>instance</phrase>
+      matches a
+      type, and whether a type is a subtype of another. Those
+      properties are described in <specref
+      ref="sec_type_matching"/>. This document does not describe all
+      other possible properties over those types.</p>
+
+      <p>The mapping from XML Schema into the &language; type system
+      is given in <specref ref="sec_importing_schema"/>. The rest of
+      this section is organized as follows. <specref
+      ref="sec_item_types"/> describes item types, <specref
+      ref="sec_content_models"/> describes content models, and
+      <specref ref="sec_top_level_definitions"/>
+      <phrase diff='del' at='E040'>describe</phrase>
+      <phrase diff='add' at='E040'>describes</phrase>
+      top-level
+      type declarations.</p>
+
+    </div3>
+
+    <div3 id="sec_item_types">
+      <head>Item types</head>
+
+      <p>An item type is either an atomic type, an element type, an
+      attribute type, a document node type, a text node type, a
+      comment node type, or a processing instruction type.  We
+      distinguish between document nodes, attribute nodes, and nodes
+      that can occur in element content (elements, comments,
+      processing instructions, and text nodes), as we need to refer to
+      element content types later in the formal semantics.</p>
+
+  <scrap>
+  <head>Item Types</head>
+  <prodrecap ref="FormalItemType" id="FormalItemType" orig="formal"/>
+  <prodrecap ref="AtomicTypeName" id="AtomicTypeName" orig="formal"/>
+  <prodrecap ref="NodeType" id="NodeType" orig="formal"/>
+  <prodrecap ref="ElementContentType" id="ElementContentType" orig="formal"/>
+  <prodrecap ref="ElementType" id="ElementType" orig="formal"/>
+  <prodrecap ref="ElementNameOrWildcard" id="fs-ElementNameOrWildcard" orig="formal"/>
+  <prodrecap ref="AttributeNameOrWildcard" id="AttributeNameOrWildcard" orig="formal"/>
+  <prodrecap ref="OptTypeSpecifier" id="OptTypeSpecifier" orig="formal"/>
+  <prodrecap ref="TypeSpecifier" id="TypeSpecifier" orig="formal"/>
+  <prodrecap ref="AttributeType" id="AttributeType" orig="formal"/>
+  <prodrecap ref="OptNillable" id="OptNillable" orig="formal"/>
+  <prodrecap ref="Nillable" id="Nillable" orig="formal"/>
+  <prodrecap ref="OptTypeReference" id="OptTypeReference" orig="formal"/>
+  <prodrecap ref="TypeReference" id="TypeReference" orig="formal"/>
+  <prodrecap ref="ProcessingInstructionType" id="ProcessingInstructionType" orig="formal" diff="add" at="E022"/>
+  <prodrecap ref="PITargetOrWildcard" id="PITargetOrWildcard" orig="formal" diff="add" at="E022"/>
+  <prodrecap ref="DocumentType" id="DocumentType" orig="formal"/>
+  </scrap>
+
+      <p>An element or attribute type has a name or wildcard, and an
+      optional type reference. A name alone corresponds to a reference
+      to a global element or attribute declaration. A name with a type
+      reference corresponds to a local element or attribute
+      declaration. "element *" or "attribute *" alone refers to the
+      wildcard types for any element or any attribute. In addition, an
+      element type has an optional nillable flag that indicates
+      whether the element can be nilled or not.</p>
+
+      <p>A document type has an optional content type. If no content
+      type is given, then the type is treated as being the wildcard
+      type for documents, i.e., a sequence of text and element
+      nodes. For consistency with element nodes, PIs and comments are
+      not indicated in that wildcard type, but may occur in
+      instances.</p>
+
+      <smnote>
+        <p>Generic node types (e.g., <code>node()</code>) such as used
+        in the SequenceType production, are interpreted in the type
+        system as a union of the corresponding node types (e.g.,
+        element,attribute,text,comment and processing-instruction
+        nodes) and therefore do not appear in the grammar. The
+        semantics of sequence types is described in <specref
+        ref="id-sequencetype-matching"/>.</p>
+      </smnote>
+      
+      <smexamples>
+
+        <p>The following is a text node type</p>
+
+<eg><![CDATA[
+  text
+]]></eg>
+
+        <p>The following is a type for all elements</p>
+
+<eg><![CDATA[
+  element * of type xs:anyType
+]]></eg>
+
+        <p>The following is a type for all elements of type string</p>
+
+<eg><![CDATA[
+  element * of type xs:string
+]]></eg>
+
+        <p>The following is a type for a nillable element of type
+        string and with name <code>size</code></p>
+
+<eg><![CDATA[
+  element size nillable of type xs:string
+]]></eg>
+
+        <p>The following is a reference to a global attribute
+        declaration</p>
+
+<eg><![CDATA[
+  attribute sizes
+]]></eg>
+
+        <p>The following is a type for elements with anonymous type
+        &gr_Anon1;:</p>
+
+<eg><![CDATA[
+  element sizes of type fs:anon1
+]]></eg>
+
+      </smexamples>
+
+    </div3>
+
+    <div3 id="sec_content_models">
+      <head>Content models</head>
+
+      <p>Following XML Schema, types in &language; are composed from
+      item types by optional, one or more, zero or more, <term>all
+      group</term>, <term>sequence</term>, <term>choice</term>, empty
+      sequence (written &xt_empty;), or empty choice (written
+      &xt_none;).</p>
+
+      <p>The type &xt_empty; matches the empty sequence. The type
+      &xt_none; matches no values. &xt_none; is the identity for
+      choice, that is <expression>(&gr_Type; | &xt_none;) =
+      &gr_Type;</expression>. The type &xt_none; is the static type
+      for <specref ref="sec_fnerror"/>.</p>
+
+      <scrap>
+        <head>Types</head>
+      
+        <prodrecap ref="Type" id="Type" orig="formal"/>
+      </scrap>
+
+      <p>The &language; type system includes three binary operators on
+      types: ",", "|" and "&amp;", corresponding respectively to
+      sequence, choice and <term>all groups</term> in Schema. The
+      &language; type system includes three unary operators on types:
+      "*", "+", and "?", corresponding respectively to zero or more
+      instances of the type, one or more instances of the type, or an
+      optional instance of the type.</p>
+
+      <p>The "&amp;" operator builds the <quote>interleaved
+      product</quote> of two types. The type &gr_Type1; &amp;
+      &gr_Type2; matches any sequence that is an interleaving of two
+      sequences of items, &gr_Value1; and &gr_Value2;, with
+      &gr_Value1; matching &gr_Type1; and &gr_Value2; matching
+      &gr_Type2;. The interleaving of two sequences of items
+      &gr_Value1; and &gr_Value2; is any sequence &gr_Value0; such
+      that there is an ordered partition of &gr_Value0; into the two
+      sub-sequences &gr_Value1; and &gr_Value2;. The interleaved
+      product captures the semantics of <term>all groups</term> in XML
+      Schema, but is more general as it applies to arbitrary
+      types. <term>All groups</term> in XML Schema are restricted to
+      apply only on global or local element declarations with
+      minOccurs 0 or 1, and maxOccurs 1.</p>
+
+      <p>For example, consider the types &gr_Type1; =
+      &xs_integer;,&xs_integer;,&xs_integer; and &gr_Type2; =
+      &xs_string;,&xs_string;. &gr_Value1; <code>= (1,2,3)</code>
+      matches the type &gr_Type1; and &gr_Value2; <code>=
+      ("a","b")</code> matches the type &gr_Type2;. Any of the
+      following &gr_Value0; are interleavings of &gr_Value1; and
+      &gr_Value2;, and therefore match the type (&gr_Type1; &amp;
+      &gr_Type2;):</p>
+
+<eg><![CDATA[
+Value0 = (1,2,3,"a","b")
+Value0 = (1,2,"a",3,"b")
+Value0 = (1,2,"a","b",3)
+Value0 = (1,"a",2,3,"b")
+Value0 = (1,"a",2,"b",3)
+Value0 = (1,"a","b",2,3)
+Value0 = ("a",1,2,3,"b")
+Value0 = ("a",1,2,"b",3)
+Value0 = ("a",1,"b",2,3)
+Value0 = ("a","b",1,2,3)
+]]></eg>
+
+      <p><term>Types precedence order</term>. To improve readability
+      when writing types, we assume the following precedence order
+      between operators on types.</p>
+
+      <table summary="" border="1">
+      <tbody>
+  
+      <tr><th>#</th><th>Operator</th></tr>
+      <tr><td>1</td><td>| (choice)</td></tr>
+      <tr><td>2</td><td>&amp; (interleaving)</td></tr>
+      <tr><td>3</td><td>, (sequence)</td></tr>
+      <tr><td>4</td><td>*, +, ? (occurrence)</td></tr>
+      </tbody>
+      </table>
+
+      <p>Parenthesis can be used to enforce precedence. For
+      instance</p>
+
+<eg><![CDATA[
+  xs:string | xs:integer, xs:float*
+]]></eg>
+
+      <p>is equivalent to</p>
+
+<eg><![CDATA[
+  xs:string | (xs:integer, (xs:float*))
+]]></eg>
+
+      <p>and a different precedence can be obtained by writing</p>
+
+<eg><![CDATA[
+  ((xs:string | xs:integer), xs:float)*
+]]></eg>
+
+      <smexamples>
+        <p><term>A sequence of elements</term></p>
+
+        <p>The "," operator builds the <quote>sequence</quote> of two
+        types. For example,</p>
+
+<eg><![CDATA[
+  element title of type xs:string, element year of type xs:integer
+]]></eg>
+
+        <p>is a sequence of an element title of type string followed
+        by an element year of type integer.</p>
+
+        <p><term>The union of two element types</term></p>
+
+        <p>The "|" operator builds the <quote>union</quote> of two
+        types. For example,</p>
+
+<eg><![CDATA[
+  element editor of type xs:string | element bib:author
+]]></eg>
+
+        <p>means either an element editor of type string, or a
+        reference to the global element <code>bib:author</code>.</p>
+
+        <p><term>An all group of two elements</term></p>
+
+        <p>The "&amp;" operator builds the <quote>interleaved
+        product</quote> of two types. For example,</p>
+
+<eg><![CDATA[
+  (element a & element b) =
+    element a, element b
+  | element b, element a
+]]></eg>
+
+        <p>which specifies that the <code>a</code> and <code>b</code>
+        elements can occur in any order.</p>
+
+        <p><term>An empty type</term></p>
+
+        <p>The following type matches the empty sequence.</p>
+
+<eg><![CDATA[
+  empty
+]]></eg>
+
+        <p><term>A sequence of zero or more elements</term></p>
+
+        <p>The following type matches zero or more elements each of
+        which can be a <code>surgeon</code> or a
+        <code>plumber</code>.</p>
+
+<eg><![CDATA[
+  (element surgeon | element plumber)*
+]]></eg>
+
+      </smexamples>      
+
+      <smnotation>
+        <p>The grammar for &gr_Type;
+        <phrase diff='del' at='E041'>describe</phrase>
+        <phrase diff='add' at='E041'>described</phrase>
+        above is general enough
+        to capture
+        <phrase diff='add' at='E041'>the</phrase>
+        type
+        <phrase diff='del' at='E041'>infered</phrase>
+        <phrase diff='add' at='E041'>inferred</phrase>
+        for
+        <phrase diff='add' at='E041'>an</phrase>
+        arbitrary expression<phrase diff='del' at='E041'>, as well as
+        to represent the content of an in &xq_xmlschema1;</phrase>. In a few
+        cases, inference rules rely on the fact that a given type is a
+        type validly describing the content of an element. To capture
+        those cases, we introduce the following auxiliary grammar
+        productions to describe more precisely the attribute
+        declarations and the content model for an element.</p>
+
+      <scrap>
+        <head/>
+        <prodrecap id="AttributeModel" ref="AttributeModel" orig="formal" diff='chg' at='E041'/>
+        <prodrecap id="ElementModel"   ref="ElementModel"   orig="formal" diff='chg' at='E041'/>
+      </scrap>
+      </smnotation>
+
+    </div3>
+
+    <div3 id="sec_top_level_definitions">
+      <head>Top level definitions</head>
+
+      <p>Top level definitions correspond to global element
+      declarations, global attribute declarations and type definitions
+      in XML Schema.</p>
+
+      <scrap>
+      <head>Type Definitions</head>
+      
+      <prodrecap ref="Definitions" id="Definitions" orig="formal" diff='chg' at='E042'/>
+      <prodrecap ref="Definition" id="Definition" orig="formal"/>
+      <prodrecap ref="OptSubstitution" id="OptSubstitution" orig="formal"/>
+      <prodrecap ref="Substitution" id="Substitution" orig="formal"/>
+      <prodrecap ref="TypeDerivation" id="TypeDerivation" orig="formal"/>
+      <prodrecap ref="ComplexTypeDerivation" id="ComplexTypeDerivation" orig="formal" diff='chg' at='E036'/>
+      <prodrecap ref="AtomicTypeDerivation" id="AtomicTypeDerivation" orig="formal"/>
+      <prodrecap ref="OptDerivation" id="OptDerivation" orig="formal" diff='add' at='E036'/>
+      <prodrecap ref="Derivation" id="Derivation" orig="formal"/>
+      <prodrecap ref="OptMixed" id="OptMixed" orig="formal"/>
+      <prodrecap ref="Mixed" id="Mixed" orig="formal"/>
+      </scrap>
+
+       <p>A type definition has a name (possibly anonymous) and a type
+       derivation. In the case of a complex type, the derivation
+       indicates whether it is derived by extension or restriction, its
+       base type, and its content model, with an optional flag
+       indicating if it has mixed content.</p>
+
+       <p>Note the type system allows recursive types, following the
+       rules defined in &xq_xmlschema1;.</p>
+
+       <smexample>
+
+       <p>For instance, the following complex type</p>
+
+<eg><![CDATA[
+ <complexType name="UKAddress">
+   <complexContent>
+     <extension base="ipo:Address">
+       <sequence>
+         <element name="postcode" type="ipo:UKPostcode"/>
+       </sequence>
+       <attribute name="exportCode" type="positiveInteger" fixed="1"/>
+     </extension>
+   </complexContent>
+ </complexType>
+]]></eg>
+
+       <p>is represented as follows</p>
+
+<eg diff='chg' at='E020'><![CDATA[
+  define type UKAddress extends ipo:Address {
+    attribute exportCode of type positiveInteger,
+    element postcode of type ipo:UKPostcode
+  };
+]]></eg>
+
+       </smexample>
+       <smexample>
+
+       <p>In the case of simple types derived by union or list, the
+       derivation is always a restriction from the base type
+       &xs_anySimpleType;, and has a content which is a union of the
+       member types, or a repetition of the item type. For instance,
+       the two following simple type declarations</p>
+
+<eg><![CDATA[
+<xsd:simpleType name="listOfMyIntType">
+  <xsd:list itemType="myInteger"/>
+</xsd:simpleType>
+
+<xsd:simpleType name="zipUnion">
+  <xsd:union memberTypes="USState FrenchRegion"/>
+</xsd:simpleType>
+]]></eg>
+
+       <p>are represented as follows</p>
+
+<eg><![CDATA[
+define type listOfMyIntType restricts xs:anySimpleType {
+  myInteger*
+}]]>&E042_semi;<![CDATA[
+
+define type zipUnion restricts xs:anySimpleType {
+  USState | FrenchRegion
+}]]>&E042_semi;<![CDATA[
+]]></eg>
+
+       </smexample>
+       <smexample>
+
+       <p>In the case of an atomic type, it just indicates its base
+       type. For instance, the following type definition</p>
+
+<eg><![CDATA[
+<xsd:simpleType name="SKU">
+ <xsd:restriction base="xsd:string">
+  <xsd:pattern value="\d{3}-[A-Z]{2}"/>
+ </xsd:restriction>
+</xsd:simpleType>
+]]></eg>
+
+       <p>is represented as
+       <phrase diff='del' at='E043'>follow</phrase>
+       <phrase diff='add' at='E043'>follows</phrase>
+       </p>
+
+<eg><![CDATA[
+  define type SKU restrict]]><phrase diff='add' at='E043'>s</phrase><![CDATA[ xsd:string;
+]]></eg>
+
+       </smexample>
+       <smexample>
+
+       <p>When the type derivation is omitted, the type derives by
+       restriction from &xs_anyType;. For instance<phrase diff='add' at='E042'>,
+       the following two type definitions are equivalent</phrase>:</p>
+
+<eg><![CDATA[
+  define type Bib { element book* }]]>&E042_semi;<phrase diff='del' at='E042'> =</phrase><![CDATA[
+  define type Bib restricts xs:anyType { element book* }]]>&E042_semi;<![CDATA[
+]]></eg>
+
+       </smexample>
+       <smexample>
+
+       <p>Empty content can be indicated with the explicit empty
+       sequence, or omitted, as in:</p>
+
+<eg><![CDATA[
+  define type Bib { }]]>&E042_semi;<phrase diff='del' at='E042'> =</phrase><![CDATA[
+  define type Bib { empty }]]>&E042_semi;<![CDATA[
+]]></eg>
+
+       </smexample>
+
+       <p>Global element and attribute declarations always have a name
+       and a reference to a (possibly anonymous) type.  A global
+       element declaration also may declare a substitution group for
+       the element and whether the element is nillable.</p>
+
+       <smexample diff='chg' at='E020'>
+         <p>A type declaration with one element <code>name</code> of type
+         &xs_string; followed by one or more elements <code>street</code> of type
+         &xs_string;.</p>
+
+<eg diff='chg' at='E020'><![CDATA[
+  define type Address {
+    element name of type xs:string,
+    element street of type xs:string+
+  }
+]]></eg>
+
+       </smexample>
+       <smexample>
+
+         <p>A type declaration with complex content derived by
+         extension</p>
+
+<eg diff='chg' at='E020'><![CDATA[
+  define type USAddress extends Address {
+    element zip of type xs:integer
+  }
+]]></eg>
+
+       </smexample>
+       <smexample>
+
+         <p>A type declaration with mixed content</p>
+
+<eg><![CDATA[
+  define type Section mixed {
+    (element h1 of type xs:string |
+     element p of type xs:string |
+     element div of type Section)*
+  }
+]]></eg>
+
+       </smexample>
+       <smexample>
+
+         <p>A type declaration with simple content derived by
+         restriction</p>
+
+<eg><![CDATA[
+  define type SKU restricts xs:string
+]]></eg>
+
+       </smexample>
+       <smexample>
+
+         <p>An element declaration</p>
+
+<eg><![CDATA[
+  define element address of type Address
+]]></eg>
+
+       </smexample>
+       <smexample>
+
+         <p>An element declaration with a substitution
+         group</p>
+
+<eg><![CDATA[
+  define element usaddress substitutes for address of type USAddress
+]]></eg>
+
+       </smexample>
+       <smexample>
+
+         <p>An element declaration which is nillable</p>
+
+<eg><![CDATA[
+  define element zip nillable of type xs:integer
+]]></eg>
+
+       </smexample>
+
+     </div3>
+
+     <div3 id="sec_types_example">
+       <head>Example of a complete Schema</head>
+
+       <p>Here is a schema describing purchase orders from
+       &xq_xmlschema0;.</p>
+
+<eg><![CDATA[
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  
+   <xsd:annotation>
+    <xsd:documentation xml:lang="en">
+     Purchase order schema for Example.com.
+     Copyright 2000 Example.com. All rights reserved.
+    </xsd:documentation>
+   </xsd:annotation>
+  
+   <xsd:element name="purchaseOrder" type="PurchaseOrderType"/>
+  
+   <xsd:element name="comment" type="xsd:string"/>
+  
+   <xsd:complexType name="PurchaseOrderType">
+    <xsd:sequence>
+     <xsd:element name="shipTo" type="USAddress"/>
+     <xsd:element name="billTo" type="USAddress"/>
+     <xsd:element ref="comment" minOccurs="0"/>
+     <xsd:element name="items"  type="Items"/>
+    </xsd:sequence>
+    <xsd:attribute name="orderDate" type="xsd:date"/>
+   </xsd:complexType>
+  
+   <xsd:complexType name="USAddress">
+    <xsd:sequence>
+     <xsd:element name="name"   type="xsd:string"/>
+     <xsd:element name="street" type="xsd:string"/>
+     <xsd:element name="city"   type="xsd:string"/>
+     <xsd:element name="state"  type="xsd:string"/>
+     <xsd:element name="zip"    type="xsd:decimal"/>
+    </xsd:sequence>
+    <xsd:attribute name="country" type="xsd:NMTOKEN" fixed="US"/>
+   </xsd:complexType>
+  
+   <xsd:complexType name="Items">
+    <xsd:sequence>
+     <xsd:element name="item" minOccurs="0" maxOccurs="unbounded">
+      <xsd:complexType>
+  	<xsd:sequence>
+  	 <xsd:element name="productName" type="xsd:string"/>
+  	 <xsd:element name="quantity">
+  	  <xsd:simpleType>
+  	   <xsd:restriction base="xsd:positiveInteger">
+  	    <xsd:maxExclusive value="100"/>
+  	   </xsd:restriction>
+  	  </xsd:simpleType>
+  	 </xsd:element>
+  	 <xsd:element name="USPrice"  type="xsd:decimal"/>
+  	 <xsd:element ref="comment"   minOccurs="0"/>
+  	 <xsd:element name="shipDate" type="xsd:date" minOccurs="0"/>
+  	</xsd:sequence>
+  	<xsd:attribute name="partNum" type="SKU" use="required"/>
+      </xsd:complexType>
+     </xsd:element>
+    </xsd:sequence>
+   </xsd:complexType>
+  
+   <!-- Stock Keeping Unit, a code for identifying products -->
+   <xsd:simpleType name="SKU">
+    <xsd:restriction base="xsd:string">
+     <xsd:pattern value="\d{3}-[A-Z]{2}"/>
+    </xsd:restriction>
+   </xsd:simpleType>
+  
+  </xsd:schema>
+]]></eg>
+
+<p>Here is the mapping of the above schema into the &language; type
+system.</p>
+
+<eg><![CDATA[
+  declare namespace xsd = "http://www.w3.org/2001/XMLSchema";
+
+  define element purchaseOrder of type PurchaseOrderType;
+ 
+  define element comment of type xsd:string;
+  
+  define type PurchaseOrderType {
+    attribute orderDate of type xsd:date?,
+    element shipTo of type USAddress,
+    element billTo of type USAddress,
+    element comment?,
+    element items of type Items
+  };
+
+  define type USAddress {
+    attribute country of type xsd:NMTOKEN,
+    element name of type xsd:string,
+    element street of type xsd:string,
+    element city of type xsd:string,
+    element state of type xsd:string,
+    element zip of type xsd:decimal
+  };
+
+  define type Items {
+    attribute partNum of type SKU,
+    element item of type fs:anon1*
+  };
+
+  define type fs:anon1 {
+    element productName of type xsd:string,
+    element quantity of type fs:anon2,
+    element USPrice of type xsd:decimal,
+    element comment?,
+    element shipDate of type xsd:date?
+  };
+
+  define type fs:anon2 restricts xsd:positiveInteger;
+
+  define type SKU restrict xsd:string;
+]]></eg>
+
+      <p>Note that the two anonymous types in the <code>item</code>
+      element declarations are mapping to types with names &gr_Anon1;
+      and &gr_Anon2;.</p>
+
+      <p>The following additional definitions illustrate how more
+      advanced XML Schema features (a complex type derived by
+      extension, an anonymous simple type derived by restriction, and
+      substitution groups) are represented in the &language; type
+      system.</p>
+
+<eg><![CDATA[
+  <complexType name="NYCAddress">
+    <complexContent>
+     <extension base="USAddress">
+      <sequence>
+       <element ref="apt"/>
+      </sequence>
+     </extension>
+    </complexContent>
+  </complexType>
+
+  <element name="apt">
+    <xsd:simpleType>
+     <xsd:restriction base="xsd:positiveInteger">
+      <xsd:maxExclusive value="10000"/>
+     </xsd:restriction>
+    </xsd:simpleType>
+  </element>
+
+  <element name="usaddress" substitutionGroup="address" type="USAddress"/>
+  <element name="nycaddress" substitutionGroup="usaddress" type="NYCAddress"/>
+]]></eg>
+
+<p>The above definitions are mapped into the &language; type system as
+follows:</p>
+
+<eg><![CDATA[
+  define type NYCAddress extends USAddress {
+    element apt
+  }]]>&E042_semi;<![CDATA[
+
+  define element apt of type fs:anon3]]>&E042_semi;<![CDATA[
+
+  define type fs:anon3 restricts xsd:positiveInteger]]>&E042_semi;<![CDATA[
+
+  define element usaddress  substitutes for address of type USAddress]]>&E042_semi;<![CDATA[
+  define element nycaddress substitutes for usaddress of type NYCAddress]]>&E042_semi;<![CDATA[
+]]></eg>
+
+    </div3>
+
+  </div2>
+
+  <div2 id="sec_fando">
+    <head>Functions and operators</head>
+
+    <p>The &xq_functions; document defines built-in functions
+    available in &language;. A number of these functions are used to
+    define the &language; semantics; those functions are listed in
+    <specref ref="sec_used_functions"/>.</p>
+
+    <p>Many functions in the &xq_functions; document are
+    <emph>generic</emph>: they perform operations on arbitrary
+    components of the data model, e.g., any kind of node, or any
+    sequence of items. For instance, the <code>fn:unordered</code>
+    <phrase diff='add' at='E044'>function</phrase>
+    returns its input sequence in an implementation-dependent
+    order. The signature of the <code>fn:unordered</code> function
+    takes arbitrary items as input and output:</p>
+
+<eg><![CDATA[
+  fn:unordered($sourceSeq as item()*) as item()*
+]]></eg>
+
+    <p>As defined, this signature provides little useful type
+    information. For such functions, better type information can often
+    be obtained by having the output type depend on the type of input
+    parameters. For instance, if the function
+    <code>fn:unordered</code> is applied on a sequence of
+    <code>a</code> elements, the result is also a sequence of
+    <code>a</code> elements.</p>
+
+    <p>In order to provide better static typing for those functions,
+    specific static typing rules are given in <specref
+    ref="sec_special_functions"/>.</p>
+  </div2>
+
+</div1>
+
+<!-- Keep this comment at the end of the file for Emacs' XML mode to work.
+ Local variables:
+ mode: xml
+ sgml-indent-step:2
+ indent-tabs-mode:nil
+ sgml-parent-document:("XPathXQuerySemantics.xml" "body" "div1")
+ End:
+-->

@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inform-div1 role="xquery" id="id-example-applications">
+	<head>Example Applications</head>
+
+	<p>This section contains examples of several important classes of queries that can be expressed
+		using XQuery. The applications described here include joins across multiple data sources,
+		grouping and aggregation, queries based on sequential relationships, recursive
+		transformations, and selection of distinct combinations of values.</p>
+
+	<note>
+		<p diff="chg" at="bug28782">The new features of XQuery 3.0 and XQuery 3.1 can significantly simplify some of these queries.</p>
+	</note>
+
+
+	<div2 id="id-joins">
+		<head>Joins</head>
+		<p>Joins, which combine data from multiple sources into a single result, are a very
+			important type of query. In this section we will illustrate how several types of joins
+			can be expressed in XQuery. We will base our examples on the following three
+			documents:</p>
+		<olist>
+			<item>
+				<p>A document named <code>parts.xml</code> that contains many <code>part</code>
+					elements; each <code>part</code> element in turn contains <code>partno</code>
+					and <code>description</code> subelements.</p>
+			</item>
+			<item>
+				<p>A document named <code>suppliers.xml</code> that contains many
+						<code>supplier</code> elements; each <code>supplier</code> element in turn
+					contains <code>suppno</code> and <code>suppname</code> subelements.</p>
+			</item>
+			<item>
+				<p>A document named <code>catalog.xml</code> that contains information about the
+					relationships between suppliers and parts. The catalog document contains many
+						<code>item</code> elements, each of which in turn contains
+						<code>partno</code>, <code>suppno</code>, and <code>price</code>
+					subelements.</p>
+			</item>
+		</olist>
+		<p>A conventional ("inner") join returns information from two or more related sources, as
+			illustrated by the following example, which combines information from three documents.
+			The example generates a "descriptive catalog" derived from the catalog document, but
+			containing part descriptions instead of part numbers and supplier names instead of
+			supplier numbers. The new catalog is ordered alphabetically by part description and
+			secondarily by supplier name.</p>
+		<eg role="parse-test"><![CDATA[<descriptive-catalog>
+   { 
+     for $i in fn:doc("catalog.xml")/items/item,
+         $p in fn:doc("parts.xml")/parts/part[partno = $i/partno],
+         $s in fn:doc("suppliers.xml")/suppliers
+                  /supplier[suppno = $i/suppno]
+     order by $p/description, $s/suppname
+     return
+        <item>
+           {
+           $p/description,
+           $s/suppname,
+           $i/price
+           }
+        </item>
+   }
+</descriptive-catalog>]]></eg>
+		<p>The previous query returns information only about parts that have suppliers and suppliers
+			that have parts. An <term>outer join</term> is a join that preserves information from
+			one or more of the participating sources, including elements that have no matching
+			element in the other source. For example, a <term>left outer join</term> between
+			suppliers and parts might return information about suppliers that have no matching
+			parts. </p>
+		<p>The following query demonstrates a left outer join. It returns names of all the suppliers
+			in alphabetic order, including those that supply no parts. In the result, each supplier
+			element contains the descriptions of all the parts it supplies, in alphabetic order.</p>
+		<eg role="parse-test"><![CDATA[for $s in fn:doc("suppliers.xml")/suppliers/supplier
+order by $s/suppname
+return
+   <supplier>
+      { 
+        $s/suppname,
+        for $i in fn:doc("catalog.xml")/items/item
+                 [suppno = $s/suppno],
+            $p in fn:doc("parts.xml")/parts/part
+                 [partno = $i/partno]
+        order by $p/description
+        return $p/description 
+      }
+   </supplier>]]></eg>
+
+		<p>The previous query preserves information about suppliers that supply no parts. Another
+			type of join, called a <term>full outer join</term>, might be used to preserve
+			information about both suppliers that supply no parts and parts that have no supplier.
+			The result of a full outer join can be structured in any of several ways. The following
+			query generates a list of <code>supplier</code> elements, each containing nested
+				<code>part</code> elements for the parts that it supplies (if any), followed by a
+			list of <code>part</code> elements for the parts that have no supplier. This might be
+			thought of as a "supplier-centered" full outer join. Other forms of outer join queries
+			are also possible.</p>
+
+		<eg role="parse-test"><![CDATA[<master-list>
+ {
+    for $s in fn:doc("suppliers.xml")/suppliers/supplier
+    order by $s/suppname
+    return
+        <supplier>
+           { 
+             $s/suppname,
+             for $i in fn:doc("catalog.xml")/items/item
+                     [suppno = $s/suppno],
+                 $p in fn:doc("parts.xml")/parts/part
+                     [partno = $i/partno]
+             order by $p/description
+             return
+                <part>
+                   {
+                     $p/description,
+                     $i/price
+                   }
+                </part> 
+           }
+        </supplier> 
+    ,
+    (: parts that have no supplier :)
+    <orphan-parts>
+       { for $p in fn:doc("parts.xml")/parts/part
+         where fn:empty(fn:doc("catalog.xml")/items/item
+               [partno = $p/partno] )
+         order by $p/description
+         return $p/description 
+       }
+    </orphan-parts>
+ }
+</master-list>]]></eg>
+
+		<p>The previous query uses an element constructor to enclose its output inside a
+				<code>master-list</code> element. The concatenation operator (",") is used to
+			combine the two main parts of the query. The result is an ordered sequence of
+				<code>supplier</code> elements followed by an <code>orphan-parts</code> element that
+			contains descriptions of all the parts that have no supplier.</p>
+	</div2>
+
+	<div2 id="id-queries-on-sequence">
+		<head>Queries on Sequence</head>
+		<p>XQuery uses the <code>&lt;&lt;</code> and <code>&gt;&gt;</code> operators to compare
+			nodes based on document order. Although these operators are quite simple, they can be
+			used to express complex queries for XML documents in which sequence is meaningful. The
+			first two queries in this section involve a surgical report that contains
+				<code>procedure</code>, <code>incision</code>, <code>instrument</code>,
+				<code>action</code>, and <code>anesthesia</code> elements.</p>
+		<p>The following query returns all the <code>action</code> elements that occur between the
+			first and second <code>incision</code> elements inside the first procedure. The original
+			document order among these nodes is preserved in the result of the query.</p>
+		<eg role="parse-test"><![CDATA[let $proc := /report/procedure[1]
+for $i in $proc//action
+where $i >> ($proc//incision)[1]
+   and $i << ($proc//incision)[2]
+return $i]]></eg>
+
+		<p>It is worth noting here that document order is defined in such a way that a node is
+			considered to precede its descendants in document order. In the surgical report, an
+				<code>action</code> is never part of an <code>incision</code>, but an
+				<code>instrument</code> is. Since the <code>&gt;&gt;</code> operator is based on
+			document order, the predicate <code>$i &gt;&gt; ($proc//incision)[1]</code> is true for
+			any <code>instrument</code> element that is a descendant of the first
+				<code>incision</code> element in the first procedure.</p>
+		<p>For some queries, it may be helpful to declare a function that can test whether a node
+			precedes another node without being its ancestor. The following function returns
+				<code>true</code> if its first operand precedes its second operand but is not an
+			ancestor of its second operand; otherwise it returns <code>false</code>:</p>
+
+		<eg role="frag-prolog-parse-test"><![CDATA[declare function local:precedes($a as node(), $b as node()) 
+   as boolean
+   {
+      $a << $b
+        and
+      fn:empty($a//node() intersect $b) 
+   };
+]]></eg>
+
+
+		<p>Similarly, a <code>local:follows</code> function could be written:</p>
+
+		<eg role="frag-prolog-parse-test"><![CDATA[declare function local:follows($a as node(), $b as node()) 
+   as boolean
+   {
+      $a >> $b
+        and
+      fn:empty($b//node() intersect $a) 
+   };
+]]></eg>
+
+		<p>Using the <code>local:precedes</code> function, we can write a query that finds
+				<code>instrument</code> elements between the first two incisions, excluding from the
+			query result any <code>instrument</code> that is a descendant of the first
+				<code>incision</code>:</p>
+
+		<eg role="parse-test"><![CDATA[let $proc := /report/procedure[1]
+for $i in $proc//instrument
+where local:precedes(($proc//incision)[1], $i)
+   and local:precedes($i, ($proc//incision)[2])
+return $i]]></eg>
+
+		<p>The following query reports incisions for which no prior anesthesia was recorded in the
+			surgical report. Since an <code>anesthesia</code> is never part of an
+				<code>incision</code>, we can use <code>&lt;&lt;</code> instead of the
+			less-efficient <code>local:precedes</code> function:</p>
+
+		<eg role="parse-test"><![CDATA[for $proc in /report/procedure
+where some $i in $proc//incision satisfies
+         fn:empty($proc//anesthesia[. << $i])
+return $proc]]></eg>
+		<p>In some documents, particular sequences of elements may indicate a logical hierarchy.
+			This is most commonly true of HTML. The following query returns the introduction of an
+			XHTML document, wrapping it in a <code>div</code> element. In this example, we assume
+			that an <code>h2</code> element containing the text "Introduction" marks the beginning
+			of the introduction, and the introduction continues until the next <code>h2</code> or
+				<code>h1</code> element, or the end of the document, whichever comes first. </p>
+		<eg role="parse-test"><![CDATA[let $intro := //h2[text()="Introduction"],
+    $next-h := //(h1|h2)[. >> $intro][1]
+return
+   <div>
+     {
+       $intro,
+       if (fn:empty($next-h))
+         then //node()[. >> $intro]
+         else //node()[. >> $intro and . << $next-h]
+     }
+   </div>]]></eg>
+		<p>Note that the above query makes explicit the hierarchy that was implicit in the original
+			document. In this example, we assume that the <code>h2</code> element containing the
+			text "Introduction" has no subelements.</p>
+	</div2>
+	<div2 id="id-recursive-transformations">
+		<head>Recursive Transformations</head>
+		<p>Occasionally it is necessary to scan over a hierarchy of elements, applying some
+			transformation at each level of the hierarchy. In XQuery this can be accomplished by
+			defining a recursive function. In this section we will present two examples of such
+			recursive functions.</p>
+		<p>Suppose that we need to compute a table of contents for a given document by scanning over
+			the document, retaining only elements named <code>section</code> or <code>title</code>,
+			and preserving the hierarchical relationships among these elements. For each
+				<code>section</code>, we retain subelements named <code>section</code> or
+				<code>title</code>; but for each <code>title</code>, we retain the full content of
+			the element. This might be accomplished by the following recursive function:</p>
+		<eg role="frag-prolog-parse-test">
+declare function local:sections-and-titles($n as node()) as node()? { 
+   if (fn:local-name($n) = "section") then 
+      element { fn:local-name($n) } { 
+         for $c in $n/* 
+         return local:sections-and-titles($c) 
+      } 
+   else if (fn:local-name($n) = "title") then 
+      $n 
+   else ( ) 
+};</eg>
+		<p>The "skeleton" of a given document, containing only its sections and titles, can then be
+			obtained by invoking the <code>local:sections-and-titles</code> function on the root
+			node of the document, as follows:</p>
+		<eg role="parse-test">local:sections-and-titles(fn:doc("cookbook.xml"))</eg>
+		<p>As another example of a recursive transformation, suppose that we wish to scan over a
+			document, transforming every attribute named <code>color</code> to an element named
+				<code>color</code>, and every element named <code>size</code> to an attribute named
+				<code>size</code>. This can be accomplished by the following recursive function
+			(note that the element constructor in case <code>$e</code> generates attributes before
+			child elements):</p>
+		<eg role="frag-prolog-parse-test">
+declare function local:swizzle($n as node()) as node() {
+   typeswitch($n) 
+   case $a as attribute(color) 
+      return element color { fn:string($a) } 
+   case $es as element(size) 
+      return attribute size { fn:string($es) } 
+   case $e as element() 
+      return element 
+         { fn:local-name($e) } 
+         { for $c in 
+            ($e/@* except $e/@color,    (: attr -&gt; attr :) 
+             $e/size,                   (: elem -&gt; attr :) 
+             $e/@color,                 (: attr -&gt; elem :) 
+             $e/node() except $e/size ) (: elem -&gt; elem :) 
+           return local:swizzle($c) } 
+   case $d as document-node() 
+      return document 
+         { for $c in $d/* return local:swizzle($c) } 
+   default return $n 
+};</eg>
+		<p>The transformation can be applied to a whole document by invoking the
+				<code>local:swizzle</code> function on the root node of the document, as
+			follows:</p>
+		<eg role="parse-test">local:swizzle(fn:doc("plans.xml"))</eg>
+	</div2>
+	<div2 id="id-select-distinct">
+		<head>Selecting Distinct Combinations</head>
+		<p>It is sometimes necessary to search through a set of data to find all the distinct
+			combinations of a given list of properties. For example, an input data set might consist
+			of a large set of <code>order</code> elements, each of which has the same basic
+			structure, as illustrated by the following example:</p>
+		<eg>&lt;order&gt; 
+   &lt;date&gt;2003-10-15&lt;/date&gt; 
+   &lt;product&gt;Dress Shirt&lt;/product&gt; 
+   &lt;size&gt;M&lt;/size&gt; 
+   &lt;color&gt;Blue&lt;/color&gt;
+   &lt;supplier&gt;Fashion Trends&lt;/supplier&gt; 
+   &lt;quantity&gt;50&lt;/quantity&gt;
+&lt;/order&gt;</eg>
+		<p>From this data set, a user might wish to find all the distinct combinations of
+				<code>product</code>, <code>size</code>, and <code>color</code> that occur together
+			in an <code>order</code>. The following query returns this list, enclosing each distinct
+			combination in a new element named <code>option</code>:</p>
+		<eg role="parse-test">for $p in fn:distinct-values(/orders/order/product), 
+    $s in fn:distinct-values(/orders/order/size), 
+    $c in fn:distinct-values(/orders/order/color)
+order by $p, $s, $c 
+return 
+   if (fn:exists(/orders/order[product eq $p 
+         and size eq $s and color eq $c])) then 
+      &lt;option&gt; 
+         &lt;product&gt;{$p}&lt;/product&gt;
+         &lt;size&gt;{$s}&lt;/size&gt; 
+         &lt;color&gt;{$c}&lt;/color&gt; 
+      &lt;/option&gt; 
+   else ()</eg>
+	</div2>
+</inform-div1>

@@ -1,0 +1,1144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--XSLT Processor: SAXON 9.1.0.5 from Saxonica SAXON 9.1.0.5-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:xs="http://www.w3.org/2001/XMLSchema" lang="EN" xmlns=
+"http://www.w3.org/1999/xhtml" xml:lang="EN">
+<head>
+<meta name="generator" content=
+"HTML Tidy for Windows (vers 14 February 2006), see www.w3.org" />
+<title>XQuery and XPath Full Text 1.0 Requirements</title>
+
+<style type="text/css">
+/*<![CDATA[*/
+code           { font-family: monospace; }
+
+div.constraint,
+div.issue,
+div.note,
+div.notice     { margin-left: 2em; }
+
+div.issue
+p.title        { margin-left: -2em; }
+
+ol.enumar      { list-style-type: decimal; }
+ol.enumla      { list-style-type: lower-alpha; }
+ol.enumlr      { list-style-type: lower-roman; }
+ol.enumua      { list-style-type: upper-alpha; }
+ol.enumur      { list-style-type: upper-roman; }
+
+li p           { margin-top: 0.3em;
+                 margin-bottom: 0.3em; }
+
+sup small      { font-style: italic;
+                 color: #8F8F8F;
+               }
+    
+div.exampleInner pre { margin-left: 1em;
+                       margin-top: 0em; margin-bottom: 0em}
+div.exampleOuter {border: 4px double gray;
+                  margin: 0em; padding: 0em}
+div.exampleInner { background-color: #d5dee3;
+                   border-top-width: 4px;
+                   border-top-style: double;
+                   border-top-color: #d3d3d3;
+                   border-bottom-width: 4px;
+                   border-bottom-style: double;
+                   border-bottom-color: #d3d3d3;
+                   padding: 4px; margin: 0em }
+div.exampleWrapper { margin: 4px }
+div.exampleHeader { font-weight: bold;
+                    margin: 4px}
+
+div.issue { border-bottom-color: black;
+            border-bottom-style: solid;
+            border-bottom-width: 1pt;
+            margin-bottom: 20pt;
+}
+
+th.issue-toc-head { border-bottom-color: black;
+                    border-bottom-style: solid;
+                    border-bottom-width: 1pt;
+}
+
+      table.small                             { font-size: x-small; }
+a.judgment:visited, a.judgment:link     { font-family: sans-serif;
+                                          color: black; 
+                                          text-decoration: none }
+a.processing:visited, a.processing:link { color: black; 
+                                                text-decoration: none }
+a.env:visited, a.env:link               { color: black; 
+                                          text-decoration: none }
+/*]]>*/
+</style>
+<link rel="stylesheet" type="text/css" href=
+"http://www.w3.org/StyleSheets/TR/W3C-WG-NOTE.css" />
+</head>
+<body>
+<div class="head">
+<p><a href="http://www.w3.org/"><img src=
+"http://www.w3.org/Icons/w3c_home" alt="W3C" height="48" width=
+"72" /></a></p>
+<h1><a name="title" id="title"></a>XQuery and XPath Full Text 1.0
+Requirements</h1>
+<h2><a name="w3c-doctype" id="w3c-doctype"></a>W3C Working Group
+Note 25 January 2011</h2>
+<dl>
+<dt>This version:</dt>
+<dd><a href=
+"http://www.w3.org/TR/2011/NOTE-xpath-full-text-10-requirements-20110125/">
+http://www.w3.org/TR/2011/NOTE-xpath-full-text-10-requirements-20110125/</a></dd>
+<dt>Latest version:</dt>
+<dd><a href=
+"http://www.w3.org/TR/xpath-full-text-10-requirements/">http://www.w3.org/TR/xpath-full-text-10-requirements/</a></dd>
+<dt>Previous version:</dt>
+<dd><a href=
+"http://www.w3.org/TR/2008/WD-xpath-full-text-10-requirements-20080516/">
+http://www.w3.org/TR/2008/WD-xpath-full-text-10-requirements-20080516/</a></dd>
+<dt>Editors:</dt>
+<!--xmlspec, match="author"-->
+<dd>Stephen Buxton, Oracle Corp</dd>
+<!--xmlspec, match="author"-->
+<dd>Pat Case, Library of Congress</dd>
+<!--xmlspec, match="author"-->
+<dd>Michael Rys, Microsoft</dd>
+</dl>
+<p class="copyright"><a href=
+"http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a>&#160;©&#160;2011&#160;<a href="http://www.w3.org/"><acronym title="World Wide Web Consortium">W3C</acronym></a><sup>®</sup>
+(<a href="http://www.csail.mit.edu/"><acronym title=
+"Massachusetts Institute of Technology">MIT</acronym></a>, <a href=
+"http://www.ercim.eu/"><acronym title=
+"European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>,
+<a href="http://www.keio.ac.jp/">Keio</a>), All Rights Reserved.
+W3C <a href=
+"http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>,
+<a href=
+"http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a>
+and <a href=
+"http://www.w3.org/Consortium/Legal/copyright-documents">document
+use</a> rules apply.</p>
+</div>
+<hr />
+<div>
+<h2><a name="abstract" id="abstract"></a>Abstract</h2>
+<p>The document specifies requirements for Full-Text Search for use
+in XQuery <a href="#xquery">[XQuery 1.0: An XML Query Language]</a>
+and XPath <a href="#xpath20">[XML Path Language (XPath)
+2.0]</a>.</p>
+</div>
+<div>
+<h2><a name="status" id="status"></a>Status of this Document</h2>
+<p><em>This section describes the status of this document at the
+time of its publication. Other documents may supersede this
+document. A list of current W3C publications and the latest
+revision of this technical report can be found in the <a href=
+"http://www.w3.org/TR/">W3C technical reports index</a> at
+http://www.w3.org/TR/.</em></p>
+<p>This is a <a href=
+"http://www.w3.org/2005/10/Process-20051014/tr.html#tr-end">Working
+Group Note</a> as described in the <a href=
+"http://www.w3.org/2005/10/Process-20051014/tr.html">Process
+Document</a>. It has been jointly developed by the W3C <a href=
+"http://www.w3.org/XML/Query/">XML Query Working Group</a> and the
+W3C <a href="http://www.w3.org/Style/XSL/">XSL Working Group</a>,
+each of which is part of the <a href=
+"http://www.w3.org/XML/Activity">XML Activity</a>. This document is
+being published as a <a href=
+"http://www.w3.org/2005/10/Process-20051014/tr.html#tr-end">Working
+Group Note</a> to persistently record the Requirements that guided
+the development of <a href=
+"http://www.w3.org/TR/xpath-full-text-10/">XQuery and XPath Full
+Text 1.0</a> as a W3C Recommendation.</p>
+<p>This document includes, for each requirement, a corresponding
+status, indicating the current situation of the requirement in
+<a href=
+"http://www.w3.org/TR/xpath-full-text-10-requirements/">XQuery and
+XPath Full Text 1.0</a> at the time that it was issued as a final
+Recommendation on 22 February 2011. Organizations and individuals
+should review this document to determine whether or not the
+requirements provided meet the needs of the full-text
+community.</p>
+<p>No substantive changes have been made to this specification
+since its publication as a Last Call Working Draft.</p>
+<p>Please report errors in this document using W3C's <a href=
+"http://www.w3.org/Bugs/Public/">public Bugzilla system</a>
+(instructions can be found at <a href=
+"http://www.w3.org/XML/2005/04/qt-bugzilla">http://www.w3.org/XML/2005/04/qt-bugzilla</a>).
+If access to that system is not feasible, you may send your
+comments to the W3C XSLT/XPath/XQuery public comments mailing list,
+<a href=
+"mailto:public-qt-comments@w3.org">public-qt-comments@w3.org</a>.
+It will be very helpful if you include the string “[FTreq]” in the
+subject line of your report, whether made in Bugzilla or in email.
+Please use multiple Bugzilla entries (or, if necessary, multiple
+email messages) if you have more than one comment to make. Archives
+of the comments and responses are available at <a href=
+"http://lists.w3.org/Archives/Public/public-qt-comments/">http://lists.w3.org/Archives/Public/public-qt-comments/</a>.</p>
+<p>Publication as a <a href=
+"http://www.w3.org/2005/10/Process-20051014/tr.html#tr-end">Working
+Group Note</a> does not imply endorsement by the W3C Membership. At
+the time of publication, work on this document was considered
+complete and no further revisions are anticipated. It is a stable
+document and may be used as reference material or cited from
+another document. However, this document may be updated, replaced,
+or made obsolete by other documents at any time.</p>
+<p>This document was produced by groups operating under the
+<a href="http://www.w3.org/Consortium/Patent-Policy-20040205/">5
+February 2004 W3C Patent Policy</a>. W3C maintains a <a href=
+"http://www.w3.org/2004/01/pp-impl/18797/status#disclosures">public
+list of any patent disclosures</a> made in connection with the
+deliverables of the XML Query Working Group and also maintains a
+<a href=
+"http://www.w3.org/2004/01/pp-impl/19552/status#disclosures">public
+list of any patent disclosures</a> made in connection with the
+deliverables of the XSL Working Group; those pages also include
+instructions for disclosing a patent. An individual who has actual
+knowledge of a patent which the individual believes contains
+<a href=
+"http://www.w3.org/Consortium/Patent-Policy-20040205/#def-essential">
+Essential Claim(s)</a> must disclose the information in accordance
+with <a href=
+"http://www.w3.org/Consortium/Patent-Policy-20040205/#sec-Disclosure">
+section 6 of the W3C Patent Policy</a>.</p>
+</div>
+<div class="toc">
+<h2><a name="contents" id="contents"></a>Table of Contents</h2>
+<p class="toc">1 <a href="#intro">Introduction</a><br />
+2 <a href="#Terminology">Terminology</a><br />
+&#160;&#160;&#160;&#160;2.1 <a href="#d3e197">Terminology</a><br />
+&#160;&#160;&#160;&#160;2.2 <a href="#div-score">SCORE</a><br />
+&#160;&#160;&#160;&#160;2.3 <a href="#div-fts">Full-Text
+Search</a><br />
+3 <a href="#LanguageDesign">Language Design</a><br />
+&#160;&#160;&#160;&#160;3.1 <a href="#markupPrimary">The Data
+Model</a><br />
+&#160;&#160;&#160;&#160;3.2 <a href=
+"#lang-side-effects">Side-effects on the data</a><br />
+&#160;&#160;&#160;&#160;3.3 <a href="#lang-score-match-body">Score
+Function and Full-Text Predicates</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;3.3.1 <a href=
+"#div3-score-independent">Predicate and Score
+Independence</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;3.3.2 <a href=
+"#div3-score-language">Score language</a><br />
+&#160;&#160;&#160;&#160;3.4 <a href="#score-algorithm">Score
+algorithm</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;3.4.1 <a href=
+"#div-return-score">Return Score</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;3.4.2 <a href=
+"#div-sort-score">Sort by Score</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;3.4.3 <a href=
+"#div-typerange-score">Type, Range of Score</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;3.4.4 <a href=
+"#div-score-stats">Score Statistics</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;3.4.5 <a href=
+"#div-score-semantics">Semantics of Score</a><br />
+&#160;&#160;&#160;&#160;3.5 <a href="#scoreComb">Combined
+score</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;3.5.1 <a href=
+"#score-combination">Score Combination</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;3.5.2 <a href=
+"#score-alg-vendor">Score algorithm vendor-provided</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;3.5.3 <a href=
+"#score-alg-override">Score algorithm overridable</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;3.5.4 <a href=
+"#score-alg-influence">Score influence</a><br />
+&#160;&#160;&#160;&#160;3.6 <a href="#ext">Extensibility</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;3.6.1 <a href=
+"#div-extensible">Extensible by vendors</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;3.6.2 <a href=
+"#div-extensible-users">Extensible by users</a><br />
+&#160;&#160;&#160;&#160;3.7 <a href="#fastRight">First, Future
+Versions</a><br />
+&#160;&#160;&#160;&#160;3.8 <a href="#lang-endUserLanguage">End
+user language</a><br />
+&#160;&#160;&#160;&#160;3.9 <a href="#searchable-query">Searchable
+query</a><br />
+&#160;&#160;&#160;&#160;3.10 <a href=
+"#universality">Universality</a><br />
+4 <a href="#Integration">Integration</a><br />
+&#160;&#160;&#160;&#160;4.1 <a href="#xpath">XPath</a><br />
+&#160;&#160;&#160;&#160;4.2 <a href="#ext-mech">Extensibility
+Mechanisms</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;4.2.1 <a href=
+"#div-int-xquery">Integration into XQuery/XPath</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;4.2.2 <a href=
+"#div-own-ext">XQuery and XPath Full Text 1.0
+Extensibility</a><br />
+&#160;&#160;&#160;&#160;4.3 <a href=
+"#int-composability">Composability</a><br />
+&#160;&#160;&#160;&#160;4.4 <a href=
+"#Human-readable">Human-readable</a><br />
+&#160;&#160;&#160;&#160;4.5 <a href="#XMLSyntax">XML
+syntax</a><br />
+5 <a href="#Implementation">Implementation</a><br />
+&#160;&#160;&#160;&#160;5.1 <a href=
+"#efficientExecution">Declarativity</a><br />
+6 <a href="#Scope">Functionality and Scope</a><br />
+&#160;&#160;&#160;&#160;6.1 <a href=
+"#functionality">Functionality</a><br />
+&#160;&#160;&#160;&#160;6.2 <a href="#func-searchScope">Search
+Scope</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;6.2.1 <a href=
+"#div-arbitrary">Search within arbitrary structure</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;6.2.2 <a href=
+"#div-constructed">Constructed Structures</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;6.2.3 <a href=
+"#div-return-arbitrary">Return Arbitrary Nodes</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;6.2.4 <a href=
+"#div-comb-tree">Parts of Search Tree</a><br />
+&#160;&#160;&#160;&#160;6.3 <a href=
+"#func-att">Attributes</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;6.3.1 <a href=
+"#div-att">Search within attributes</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;6.3.2 <a href=
+"#div-att-content">Search across attributes and content</a><br />
+&#160;&#160;&#160;&#160;6.4 <a href="#func-markup">Markup</a><br />
+&#160;&#160;&#160;&#160;6.5 <a href="#elementBoundaries">Element
+Boundaries</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;6.5.1 <a href=
+"#div-element-boundary">Search across element boundaries</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;6.5.2 <a href=
+"#div-token-boundary">Element as a token boundary</a><br />
+&#160;&#160;&#160;&#160;6.6 <a href="#func-score">Score</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;6.6.1 <a href=
+"#div-score-accessible">Score accessible</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;6.6.2 <a href=
+"#div-mplicit-ordering">Implicit ordering</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;6.6.3 <a href=
+"#div-score-extendable">Score extendable</a><br /></p>
+<h3><a name="appendices" id="appendices"></a>Appendices</h3>
+<p class="toc">A <a href="#biblio">References</a><br />
+&#160;&#160;&#160;&#160;A.1 <a href=
+"#non-normative-biblio">Non-Normative</a><br />
+B <a href="#changeLog">Change Log</a><br /></p>
+</div>
+<hr />
+<div class="body">
+<div class="div1">
+<h2><a name="intro" id="intro"></a>1 Introduction</h2>
+<p>"Full-Text Search" (FTS) is a large field which covers a vast
+array of functionality. In addition, there are many different ways
+one could combine FTS capabilities with XQuery and XPath.</p>
+<p>The requirements are written without reference to any particular
+solution.</p>
+</div>
+<div class="div1">
+<h2><a name="Terminology" id="Terminology"></a>2 Terminology</h2>
+<div class="div2">
+<h3><a name="d3e197" id="d3e197"></a>2.1 Terminology</h3>
+<p>The following key words are used throughout the document to
+specify the extent to which an item is a requirement for the work
+of the XML Query Working Group:</p>
+<dl>
+<dt class="label"><a name="terminology-must" id=
+"terminology-must"></a>MUST</dt>
+<dd>
+<p>This word means that the item is an absolute requirement.</p>
+</dd>
+<dt class="label"><a name="terminology-should" id=
+"terminology-should"></a>SHOULD</dt>
+<dd>
+<p>This word means that there may exist valid reasons not to treat
+this item as a requirement, but the full implications should be
+understood and the case carefully weighed before discarding this
+item.</p>
+</dd>
+<dt class="label"><a name="terminology-may" id=
+"terminology-may"></a>MAY</dt>
+<dd>
+<p>This word means that an item deserves attention, but further
+study is needed to determine whether the item should be treated as
+a requirement.</p>
+</dd>
+</dl>
+<p>When the words <a href="#terminology-must">MUST</a>, <a href=
+"#terminology-should">SHOULD</a>, or <a href=
+"#terminology-may">MAY</a> are used in this technical sense, they
+occur as a hyperlink to these definitions. These words will also be
+used with their conventional English meaning, in which case there
+is no hyperlink. For instance, the phrase "the full implications
+should be understood" uses the word "should" in its conventional
+English sense, and therefore occurs without the hyperlink.</p>
+<p id="req-status">Each requirement also includes a status section,
+indicating its current situation in the XML-Query family of
+specifications. Three status levels are available:</p>
+<dl>
+<dt class="label">"Green" status</dt>
+<dd>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> This indicates that the requirement, according to
+its original formulation, has been completely met. Optional
+clarificatory text may follow.</p>
+</dd>
+<dt class="label">"Yellow" status</dt>
+<dd>
+<p><img src="http://www.w3.org/Icons/yellow-ball.gif" alt=
+"yellow status" /> This indicates that the requirement has been
+partially met according to its original formulation. When this
+happens, explanatory text is provided to better clarify the current
+scope of the requirement.</p>
+</dd>
+<dt class="label">"Red" status</dt>
+<dd>
+<p><img src="http://www.w3.org/Icons/red-ball.gif" alt=
+"red status" /> This indicates that the requirement, according to
+its original formulation, has not been met. If this is the case,
+explanatory text is provided.</p>
+</dd>
+</dl>
+</div>
+<div class="div2">
+<h3><a name="div-score" id="div-score"></a>2.2 SCORE</h3>
+<p>[<a name="terminology-score" id="terminology-score" title=
+"SCORE">Definition</a>: <b>SCORE</b> reflects relevance of matched
+material.]</p>
+</div>
+<div class="div2">
+<h3><a name="div-fts" id="div-fts"></a>2.3 Full-Text Search</h3>
+<p>[<a name="terminology-FTS" id="terminology-FTS" title=
+"Full-Text Search">Definition</a>: <b>Full-Text Search</b> in this
+document is an extension to the XQuery and XPath language. It
+provides a way to query text which has been tokenized, i.e. broken
+into a sequence of words, units of punctuation, and spaces.
+Tokenization enables functions and operators which work with the
+relative positioning of words (e.g., proximity operators).
+Tokenization also enables functions and operators which operate on
+a part or the root of the word (e.g., wildcards, stemming).]</p>
+</div>
+</div>
+<div class="div1">
+<h2><a name="LanguageDesign" id="LanguageDesign"></a>3 Language
+Design</h2>
+<p>This section covers requirements for XQuery and XPath Full Text
+language design that are independent from, but related to,
+integration and scoping requirements.</p>
+<div class="div2">
+<h3><a name="markupPrimary" id="markupPrimary"></a>3.1 The Data
+Model</h3>
+<p>XQuery and XPath Full Text 1.0 functions <a title="" href=
+"#terminology-must">MUST</a> operate on instances of the <a href=
+"#xpath-datamodel">[XQuery 1.0 and XPath 2.0 Data Model]</a>.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div2">
+<h3><a name="lang-side-effects" id="lang-side-effects"></a>3.2
+Side-effects on the data</h3>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-must">MUST</a> NOT introduce or rely on
+side-effects.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div2">
+<h3><a name="lang-score-match-body" id=
+"lang-score-match-body"></a>3.3 Score Function and Full-Text
+Predicates</h3>
+<div class="div3">
+<h4><a name="div3-score-independent" id=
+"div3-score-independent"></a>3.3.1 Predicate and Score
+Independence</h4>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-must">MUST</a> allow full-text predicates and
+<a title="SCORE" href="#terminology-score">SCORE</a> functions
+independently.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div3">
+<h4><a name="div3-score-language" id=
+"div3-score-language"></a>3.3.2 Score language</h4>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-must">MUST</a> either</p>
+<ul>
+<li>
+<p>use the same language for full-text predicates and <a title=
+"SCORE" href="#terminology-score">SCORE</a> functions</p>
+</li>
+</ul>
+<p>or</p>
+<ul>
+<li>
+<p>use a language for full-text predicates that is a proper subset
+of the language for <a title="SCORE" href=
+"#terminology-score">SCORE</a> functions.</p>
+</li>
+</ul>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+</div>
+<div class="div2">
+<h3><a name="score-algorithm" id="score-algorithm"></a>3.4 Score
+algorithm</h3>
+<div class="div3">
+<h4><a name="div-return-score" id="div-return-score"></a>3.4.1
+Return Score</h4>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-must">MUST</a> allow the user to return <a title=
+"SCORE" href="#terminology-score">SCORE</a>.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div3">
+<h4><a name="div-sort-score" id="div-sort-score"></a>3.4.2 Sort by
+Score</h4>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-must">MUST</a> allow the user to sort by <a title=
+"SCORE" href="#terminology-score">SCORE</a>.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div3">
+<h4><a name="div-typerange-score" id=
+"div-typerange-score"></a>3.4.3 Type, Range of Score</h4>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-must">MUST</a> define the type and range of <a title=
+"SCORE" href="#terminology-score">SCORE</a> values. The <a title=
+"SCORE" href="#terminology-score">SCORE</a>&#160;<a title="" href=
+"#terminology-should">SHOULD</a> be a float, in the range 0-1.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/yellow-ball.gif" alt=
+"yellow status" />&#160; <em>Status:</em> this requirement has been
+partially met. Float has been changed to double because double is
+the maximal promotion type.</p>
+</div>
+<div class="div3">
+<h4><a name="div-score-stats" id="div-score-stats"></a>3.4.4 Score
+Statistics</h4>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-must">MUST</a> NOT require an explicit definition of
+the global corpus statistics (statistics, such as word frequency,
+used in calculating <a title="SCORE" href=
+"#terminology-score">SCORE</a>).</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div3">
+<h4><a name="div-score-semantics" id=
+"div-score-semantics"></a>3.4.5 Semantics of Score</h4>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-may">MAY</a> partially define the semantics of
+<a title="SCORE" href="#terminology-score">SCORE</a>.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+</div>
+<div class="div2">
+<h3><a name="scoreComb" id="scoreComb"></a>3.5 Combined score</h3>
+<div class="div3">
+<h4><a name="score-combination" id="score-combination"></a>3.5.1
+Score Combination</h4>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-must">MUST</a> be able to generate a <a title="SCORE"
+href="#terminology-score">SCORE</a> for a combination of full-text
+predicates.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div3">
+<h4><a name="score-alg-vendor" id="score-alg-vendor"></a>3.5.2
+Score algorithm vendor-provided</h4>
+<p>The algorithm to produce combined <a title="SCORE" href=
+"#terminology-score">SCORE</a>s <a title="" href=
+"#terminology-must">MUST</a> be vendor-provided.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div3">
+<h4><a name="score-alg-override" id="score-alg-override"></a>3.5.3
+Score algorithm overridable</h4>
+<p>The algorithm to produce combined <a title="SCORE" href=
+"#terminology-score">SCORE</a>s <a title="" href=
+"#terminology-should">SHOULD</a> be overridable by users.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/yellow-ball.gif" alt=
+"yellow status" />&#160; <em>Status:</em> this requirement has been
+partially met. Since SCORE is implementation-dependent, the
+recommendation is silent on this and all matters relating to
+implementation of scoring.</p>
+</div>
+<div class="div3">
+<h4><a name="score-alg-influence" id=
+"score-alg-influence"></a>3.5.4 Score influence</h4>
+<p>Users <a title="" href="#terminology-must">MUST</a> be able to
+influence individual components of complex score expressions.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+</div>
+<div class="div2">
+<h3><a name="ext" id="ext"></a>3.6 Extensibility</h3>
+<div class="div3">
+<h4><a name="div-extensible" id="div-extensible"></a>3.6.1
+Extensible by vendors</h4>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-must">MUST</a> be extensible by vendors.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div3">
+<h4><a name="div-extensible-users" id=
+"div-extensible-users"></a>3.6.2 Extensible by users</h4>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-may">MAY</a> be extensible by users.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+</div>
+<div class="div2">
+<h3><a name="fastRight" id="fastRight"></a>3.7 First, Future
+Versions</h3>
+<p>The first version of XQuery and XPath Full Text 1.0 <a title=""
+href="#terminology-must">MUST</a> provide a robust framework for
+future versions.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div2">
+<h3><a name="lang-endUserLanguage" id=
+"lang-endUserLanguage"></a>3.8 End user language</h3>
+<p>It is not a requirement that XQuery and XPath Full Text 1.0 be
+designed as an end-user UI language.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div2">
+<h3><a name="searchable-query" id="searchable-query"></a>3.9
+Searchable query</h3>
+<p>It <a title="" href="#terminology-should">SHOULD</a> be possible
+to search XQuery and XPath Full Text 1.0 queries.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div2">
+<h3><a name="universality" id="universality"></a>3.10
+Universality</h3>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-should">SHOULD</a> be universal. As a minimum, XQuery
+and XPath Full Text 1.0 <a title="" href=
+"#terminology-must">MUST</a> allow full-text search in any Unicode
+character-set and in all common written natural languages.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+</div>
+<div class="div1">
+<h2><a name="Integration" id="Integration"></a>4 Integration</h2>
+<p>This section specifies requirements for the integration of
+XQuery and XPath Full Text 1.0 with XQuery and XPath.</p>
+<div class="div2">
+<h3><a name="xpath" id="xpath"></a>4.1 XPath</h3>
+<p>Part, but not necessarily all, of XQuery and XPath Full Text 1.0
+<a title="" href="#terminology-must">MUST</a> be usable as part of
+an XPath expression.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div2">
+<h3><a name="ext-mech" id="ext-mech"></a>4.2 Extensibility
+Mechanisms</h3>
+<div class="div3">
+<h4><a name="div-int-xquery" id="div-int-xquery"></a>4.2.1
+Integration into XQuery/XPath</h4>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-should">SHOULD</a> use the extensibility mechanisms
+that exist in XQuery and XPath for integration into XQuery and
+XPath.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/yellow-ball.gif" alt=
+"yellow status" />&#160; <em>Status:</em> this requirement has been
+partially met. XQuery and XPath Full Text 1.0 did not use functions
+because they were syntactically burdensome to users. The
+extensibility mechanisms were used in the XML syntax (XQueryX) for
+XQuery and XPath Full Text 1.0.</p>
+</div>
+<div class="div3">
+<h4><a name="div-own-ext" id="div-own-ext"></a>4.2.2 XQuery and
+XPath Full Text 1.0 Extensibility</h4>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-must">MUST</a> use the extensibility mechanisms that
+exist in XQuery and XPath for it's own extensibility.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+</div>
+<div class="div2">
+<h3><a name="int-composability" id="int-composability"></a>4.3
+Composability</h3>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-must">MUST</a> be composable with XQuery, and
+<a title="" href="#terminology-should">SHOULD</a> be composable
+with itself.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div2">
+<h3><a name="Human-readable" id="Human-readable"></a>4.4
+Human-readable</h3>
+<p>XQuery and XPath Full Text 1.0 may have more than one syntax
+binding. One query language syntax must be convenient for humans to
+read and write. See <a href="#xquery-requirements">[XML Query
+(XQuery) Requirements]</a>.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div2">
+<h3><a name="XMLSyntax" id="XMLSyntax"></a>4.5 XML syntax</h3>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-may">MAY</a> have more than one syntax binding. One
+query language syntax <a title="" href="#terminology-must">MUST</a>
+be expressed in XML in a way that reflects the underlying structure
+of the query. See <a href="#xquery-requirements">[XML Query
+(XQuery) Requirements]</a>.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+</div>
+<div class="div1">
+<h2><a name="Implementation" id="Implementation"></a>5
+Implementation</h2>
+<div class="div2">
+<h3><a name="efficientExecution" id="efficientExecution"></a>5.1
+Declarativity</h3>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-must">MUST</a> be declarative. Notably, it <a title=
+"" href="#terminology-must">MUST</a> not enforce a particular
+evaluation strategy.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+</div>
+<div class="div1">
+<h2><a name="Scope" id="Scope"></a>6 Functionality and Scope</h2>
+<p>This section defines requirements for the functionality in
+XQuery and XPath Full Text 1.0, and the scope of XQuery and XPath
+Full Text 1.0 queries.</p>
+<div class="div2">
+<h3><a name="functionality" id="functionality"></a>6.1
+Functionality</h3>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-must">MUST</a> provide, in the first release, the
+minimum set of full-text functionality that is useful.</p>
+<ol class="enumar">
+<li>
+<p>single-word search</p>
+</li>
+<li>
+<p>phrase search</p>
+</li>
+<li>
+<p>support for stop words</p>
+</li>
+<li>
+<p>single character suffix</p>
+</li>
+<li>
+<p>0 or more character suffix</p>
+</li>
+<li>
+<p>0 or more character prefix</p>
+</li>
+<li>
+<p>0 or more character infix</p>
+</li>
+<li>
+<p>proximity searching (unit: words)</p>
+</li>
+<li>
+<p>specification of order in proximity searching</p>
+</li>
+<li>
+<p>combination using AND</p>
+</li>
+<li>
+<p>combination using OR</p>
+</li>
+<li>
+<p>combination using NOT</p>
+</li>
+<li>
+<p>word normalization, diacritics</p>
+</li>
+<li>
+<p>ranking, relevance</p>
+</li>
+</ol>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+<p>Additional functionality represented in the <a href=
+"#xpath-full-text-10-use-cases">[XQuery and XPath Full Text 1.0 Use
+Cases]</a>&#160;<a title="" href="#terminology-must">MUST</a> be
+considered, but may be left to a future release.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+<p>Additional functionality from other Full-Text Search contexts
+such as <a href="#SQLMMFT">[SQL/MM Full-Text]</a>&#160;<a title=""
+href="#terminology-must">MUST</a> be considered, but <a title=""
+href="#terminology-should">SHOULD</a> be left to a future
+release.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div2">
+<h3><a name="func-searchScope" id="func-searchScope"></a>6.2 Search
+Scope</h3>
+<div class="div3">
+<h4><a name="div-arbitrary" id="div-arbitrary"></a>6.2.1 Search
+within arbitrary structure</h4>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-must">MUST</a> allow search within an arbitrary
+structure (an arbitrary XPath expression).</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div3">
+<h4><a name="div-constructed" id="div-constructed"></a>6.2.2
+Constructed Structures</h4>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-must">MUST</a> NOT preclude Full-Text Search within
+structures constructed during a query.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div3">
+<h4><a name="div-return-arbitrary" id=
+"div-return-arbitrary"></a>6.2.3 Return Arbitrary Nodes</h4>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-must">MUST</a> allow a query to return arbitrary
+nodes.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div3">
+<h4><a name="div-comb-tree" id="div-comb-tree"></a>6.2.4 Parts of
+Search Tree</h4>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-must">MUST</a> allow the combination of predicates on
+different parts of the searched document 'tree'.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+</div>
+<div class="div2">
+<h3><a name="func-att" id="func-att"></a>6.3 Attributes</h3>
+<div class="div3">
+<h4><a name="div-att" id="div-att"></a>6.3.1 Search within
+attributes</h4>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-must">MUST</a> support Full-Text Search within
+attributes.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div3">
+<h4><a name="div-att-content" id="div-att-content"></a>6.3.2 Search
+across attributes and content</h4>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-may">MAY</a> support Full-Text Search within
+attributes in conjunction with Full-Text Search within element
+content.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+</div>
+<div class="div2">
+<h3><a name="func-markup" id="func-markup"></a>6.4 Markup</h3>
+<p>If XQuery and XPath Full Text 1.0 supports search within names
+of elements and attributes, then it <a title="" href=
+"#terminology-must">MUST</a> distinguish between</p>
+<ul>
+<li>
+<p>element content and attribute values</p>
+</li>
+</ul>
+<p>and</p>
+<ul>
+<li>
+<p>names of elements and attributes</p>
+</li>
+</ul>
+<p>in any search.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div2">
+<h3><a name="elementBoundaries" id="elementBoundaries"></a>6.5
+Element Boundaries</h3>
+<div class="div3">
+<h4><a name="div-element-boundary" id=
+"div-element-boundary"></a>6.5.1 Search across element
+boundaries</h4>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-must">MUST</a> support search across element
+boundaries, at least for NEAR.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div3">
+<h4><a name="div-token-boundary" id="div-token-boundary"></a>6.5.2
+Element as a token boundary</h4>
+<p>XQuery and XPath Full Text 1.0 <a title="" href=
+"#terminology-must">MUST</a> treat an element as a token boundary.
+This <a title="" href="#terminology-may">MAY</a> be
+user-defined.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/yellow-ball.gif" alt=
+"yellow status" />&#160; <em>Status:</em> this requirement has been
+partially met. By default elements create token boundaries, but
+implementations may override that for certain elements.</p>
+</div>
+</div>
+<div class="div2">
+<h3><a name="func-score" id="func-score"></a>6.6 Score</h3>
+<div class="div3">
+<h4><a name="div-score-accessible" id=
+"div-score-accessible"></a>6.6.1 Score accessible</h4>
+<p><a title="SCORE" href=
+"#terminology-score">SCORE</a>&#160;<a title="" href=
+"#terminology-must">MUST</a> be accessible anywhere in the scope of
+the query.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div3">
+<h4><a name="div-mplicit-ordering" id=
+"div-mplicit-ordering"></a>6.6.2 Implicit ordering</h4>
+<p><a title="SCORE" href=
+"#terminology-score">SCORE</a>&#160;<a title="" href=
+"#terminology-should">SHOULD</a> NOT be used for implicit
+ordering.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+<div class="div3">
+<h4><a name="div-score-extendable" id=
+"div-score-extendable"></a>6.6.3 Score extendable</h4>
+<p><a title="SCORE" href=
+"#terminology-score">SCORE</a>&#160;<a title="" href=
+"#terminology-may">MAY</a> be extendable to a general
+distance-measure.</p>
+<p>&#160;&#160;&#160;<img src=
+"http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" />&#160; <em>Status:</em> this requirement has been
+met.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="back">
+<div class="div1">
+<h2><a name="biblio" id="biblio"></a>A References</h2>
+<div class="div2">
+<h3><a name="non-normative-biblio" id=
+"non-normative-biblio"></a>A.1 Non-Normative</h3>
+<dl>
+<dt class="label"><span><a name="xpath-datamodel" id=
+"xpath-datamodel"></a>XQuery 1.0 and XPath 2.0 Data
+Model</span></dt>
+<dd>
+<div><a href="http://www.w3.org/TR/xpath-datamodel/"><cite>XQuery
+1.0 and XPath 2.0 Data Model (XDM) (Second Edition)</cite></a>,
+Norman Walsh, Mary Fernández, Ashok Malhotra, <em>et. al.</em>,
+Editors. World Wide Web Consortium, 14 December 2010. This version
+is http://www.w3.org/TR/2010/REC-xpath-datamodel-20101214/. The
+<a href="http://www.w3.org/TR/xpath-datamodel/">latest version</a>
+is available at http://www.w3.org/TR/xpath-datamodel/.</div>
+</dd>
+<dt class="label"><span><a name="xquery" id="xquery"></a>XQuery
+1.0: An XML Query Language</span></dt>
+<dd>
+<div><a href="http://www.w3.org/TR/xquery/"><cite>XQuery 1.0: An
+XML Query Language (Second Edition)</cite></a>, Don Chamberlin,
+Anders Berglund, Scott Boag, <em>et. al.</em>, Editors. World Wide
+Web Consortium, 14 December 2010. This version is
+http://www.w3.org/TR/2010/REC-xquery-20101214/. The <a href=
+"http://www.w3.org/TR/xquery/">latest version</a> is available at
+http://www.w3.org/TR/xquery/.</div>
+</dd>
+<dt class="label"><span><a name="xpath20" id="xpath20"></a>XML Path
+Language (XPath) 2.0</span></dt>
+<dd>
+<div><a href="http://www.w3.org/TR/xpath20/"><cite>XML Path
+Language (XPath) 2.0 (Second Edition)</cite></a>, Don Chamberlin,
+Anders Berglund, Scott Boag, <em>et. al.</em>, Editors. World Wide
+Web Consortium, 14 December 2010. This version is
+http://www.w3.org/TR/2010/REC-xpath20-20101214/. The <a href=
+"http://www.w3.org/TR/xpath20/">latest version</a> is available at
+http://www.w3.org/TR/xpath20/.</div>
+</dd>
+<dt class="label"><span><a name="xquery-requirements" id=
+"xquery-requirements"></a>XML Query (XQuery)
+Requirements</span></dt>
+<dd>
+<div><a href="http://www.w3.org/TR/xquery-requirements/"><cite>XML
+Query (XQuery) Requirements</cite></a>, Don Chamberlin, Peter
+Fankhauser, Massimo Marchiori, and Jonathan Robie, Editors. World
+Wide Web Consortium, 23&#160;March&#160;2007. This version is
+http://www.w3.org/TR/2007/NOTE-xquery-requirements-20070323/. The
+<a href="http://www.w3.org/TR/xquery-requirements/">latest
+version</a> is available at
+http://www.w3.org/TR/xquery-requirements/.</div>
+</dd>
+<dt class="label"><span><a name="xpath-full-text-10-use-cases" id=
+"xpath-full-text-10-use-cases"></a>XQuery and XPath Full Text 1.0
+Use Cases</span></dt>
+<dd>
+<div><a href=
+"http://www.w3.org/TR/xpath-full-text-10-use-cases/"><cite>XQuery
+and XPath Full Text 1.0 Use Cases</cite></a>, Sihem Amer-Yahia and
+Pat Case, Editors. World Wide Web Consortium, 25 January 2011. This
+version is
+http://www.w3.org/TR/2011/NOTE-xpath-full-text-10-use-cases-20110125/.
+The <a href=
+"http://www.w3.org/TR/xpath-full-text-10-use-cases/">latest
+version</a> is available at
+http://www.w3.org/TR/xpath-full-text-10-use-cases/.</div>
+</dd>
+<dt class="label"><span><a name="SQLMMFT" id="SQLMMFT"></a>SQL/MM
+Full-Text</span></dt>
+<dd>
+<div>ISO/IEC 13249-2:2000, Information technology — Database
+languages — SQL Multimedia and Application Packages — Part 2:
+Full-Text, International Organization For Standardization, 2000,
+available from http://www.iso.org/</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="div1">
+<h2><a name="changeLog" id="changeLog"></a>B Change Log</h2>
+<table border="0" summary="Changes">
+<tbody>
+<tr>
+<td>Author</td>
+<td>Date</td>
+<td>Action</td>
+<td>Description</td>
+</tr>
+<tr>
+<td>Stephen Buxton</td>
+<td>2003-03-19</td>
+<td>Added a Change Log</td>
+<td></td>
+</tr>
+<tr>
+<td>Stephen Buxton</td>
+<td>2003-03-19</td>
+<td>Terminology definition changes</td>
+<td>Switched the definitions of <a title="" href=
+"#terminology-should">SHOULD</a> and <a title="" href=
+"#terminology-may">MAY</a>, to be consistent with <a href=
+"#xquery-requirements">[XML Query (XQuery) Requirements]</a>. The
+rest of the document does not need to change, since the earlier
+versions of this document, on which the text of the spec is based,
+referred to the definitions in <a href="#xquery-requirements">[XML
+Query (XQuery) Requirements]</a>.</td>
+</tr>
+<tr>
+<td>Stephen Buxton</td>
+<td>2003-04-18</td>
+<td>Change XML Query Requirements link to external URI</td>
+<td>Changed links in the document body to point to external latest
+copy of XML Query Requirements.</td>
+</tr>
+<tr>
+<td>Pat Case</td>
+<td>2006-11-17</td>
+<td>Recorded that requirements were met</td>
+<td>Recorded that the XQuery and XPath Full Text 1.0 Requirements
+have been met (fully or paritially).</td>
+</tr>
+<tr>
+<td>Pat Case</td>
+<td>2007-12-04</td>
+<td>Title</td>
+<td>Updated title and title references to remove 1.0, 2.0, and the
+hyphen.</td>
+</tr>
+<tr>
+<td>Pat Case</td>
+<td>2008-04-04</td>
+<td>Requirement 4.2.1</td>
+<td>Changed the status on 4.2.1 from green to yellow with an
+explanation.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</body>
+</html>

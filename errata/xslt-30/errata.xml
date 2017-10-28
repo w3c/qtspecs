@@ -1,0 +1,406 @@
+<?xml version="1.0"?>
+<er:errata spec="XT30" xmlns:er="http://www.w3.org/2007/04/qt-errata"  
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+           xsi:schemaLocation="http://www.w3.org/2007/04/qt-errata ../build/errata.xsd"> 
+  <er:base-documents> 
+    <!--<er:document name="main-xml" href="../../specifications/xslt-30/src/xslt.xml" media-type="application/xml"/>-->
+  	<er:document name="main-xml" href="../../specifications/xslt-30/build/xslt-30-baseline-for-errata.xml" media-type="application/xml"/>
+	<er:document name="main-html" href="http://www.w3.org/TR/xslt-30/" media-type="text/html"/>
+	<er:document name="dated-html" href="http://www.w3.org/TR/2017/REC-xslt-30-20170608/" media-type="text/html"/>
+  </er:base-documents>
+  <er:authlist> 
+	<er:author> 
+		<er:author-name>Michael Kay</er:author-name>
+		<er:author-affiliation>Saxonica</er:author-affiliation>
+		<er:author-uri>http://www.saxonica.com/</er:author-uri>
+	</er:author>
+  </er:authlist>
+  <er:erratum id="E1" category="editorial">
+    <er:description>
+		  <p>There are several examples of streamable stylesheet functions where the variable name used in the example (<code>$input</code>) does not
+		  	match the name used in the accompanying prose (<code>$nodes</code>).</p>
+    </er:description>
+    <er:bugzilla bug="30123"/> 
+	<er:history>
+	  <er:event status="proposed" date="2017-10-13" author="mike@saxonica.com"/>
+	  <er:event status="reviewed" date="2017-10-19" author="mike@saxonica.com"/>
+    </er:history>
+	<er:impact>
+	  <er:affects object="feature" name="streaming"/>
+    </er:impact>
+	<er:change>
+		<er:old-text ref="category-absorbing" select=".//example[head='An absorbing stylesheet function']/p[2]/code" action="replace"/>
+		<er:new-text version="3.0">
+	  	<eg>$input</eg>
+	 </er:new-text>
+	</er:change>
+  	<er:change>
+  		<er:old-text ref="category-inspection" select=".//example[head='Example of an inspection stylesheet function']/p[2]/code" action="replace"/>
+  		<er:new-text version="3.0">
+  			<eg>$input</eg>
+  		</er:new-text>
+  	</er:change>
+  </er:erratum>
+	
+	
+	<er:erratum id="E2" category="substantive">
+		<er:description>
+			<p>In the <code>map:merge</code> function, one of the values for the <code>duplicates</code> option is given as <code>unspecified</code>,
+				but the corresponding option in <emph>Functions and Operators</emph> is given as <code>use-any</code>.</p>
+			<p>The correct value is <code>use-any</code> but to avoid interoperability problems, processors <rfc2119>should</rfc2119>
+			accept <code>unspecified</code> as a synonym.</p>
+		</er:description>
+		<er:bugzilla bug="30129"/> 
+		<er:history>
+			<er:event status="proposed" date="2017-10-13" author="mike@saxonica.com"/>
+			<er:event status="reviewed" date="2017-10-19" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="function" name="map:merge"/>
+		</er:impact>
+		<er:change>
+			<er:old-text ref="func-map-merge" select=".//td/code[.='unspecified']" action="replace"/>
+			<er:new-text version="3.0">
+				<code>use-any</code>
+			</er:new-text>
+		</er:change>
+		<er:change>
+			<er:old-text ref="func-map-merge" select=".//p[starts-with(., 'The result of the function call')]" action="insert-before"/>
+			<er:new-text version="3.0">
+				<note>
+					<p>In the original publication of XSLT 3.0, the <code>use-any</code> option was incorrectly
+						given the keyword <code>unspecified</code>, which was inconsistent with the Functions and Operators 3.1 specification. 
+						To avoid interoperability problems, implementations <rfc2119>should</rfc2119>
+						accept the keywords <code>unspecified</code> and <code>use-any</code> as synonyms, but
+						the keyword <code>unspecified</code> is <termref def="dt-deprecated"/>.</p>
+				</note>
+			</er:new-text>
+		</er:change>
+		<!--<er:manual-change>
+			<p>In the rules of the <code>map:merge</code> function, in the table describing the <code>duplicates</code> option, change the value
+			<code>unspecified</code> to <code>use-any</code>.</p>
+			<p>Below the table, add a note: "Note. In the original publication of XSLT 3.0, the <code>use-any</code> option was incorrectly
+				given the keyword <code>unspecified</code>. To avoid interoperability problems, implementations <rfc2119>should</rfc2119>
+			therefore accept the keyword <code>unspecified</code> as a synonym for <code>use-any</code>.</p>
+		</er:manual-change>-->
+
+	</er:erratum>
+	
+	<er:erratum id="E3" category="editorial">
+		<er:description>
+			<p>Minor spelling and grammatical errors in the specification of <elcode>xsl:merge</elcode>.</p>
+		</er:description>
+		<er:bugzilla bug="30129"/> 
+		<er:history>
+			<er:event status="proposed" date="2017-10-13" author="mike@saxonica.com"/>
+			<er:event status="reviewed" date="2017-10-19" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="element" name="xsl:merge"/>
+		</er:impact>
+		<er:change>
+			<er:old-text ref="streamable-merging" select="p[5]" action="replace"/>
+			<er:new-text version="3.0">
+				<p>Note that the merge key for the second merge source includes data from a child
+					element of the selected element and also from an attribute of the parent element.
+					This works because <phrase diff="del" at="E3">of</phrase> the merge key is evaluated on the result of implicitly applying
+					the <function>snapshot</function> function.</p>
+			</er:new-text>
+		</er:change>
+		<er:change>
+			<er:old-text ref="merge-keys" select="p[2]"/>
+			<er:new-text version="3.0">
+		      <p>The merge key for each type of input sequence (that is, for each
+			<elcode>xsl:merge-source</elcode> element) is defined by a sequence of
+			<elcode>xsl:merge-key</elcode> element children of the
+			<elcode>xsl:merge-source</elcode> element. Each <elcode>xsl:merge-key</elcode>
+			element defines one merge key component. The syntax and semantics of an
+			<elcode>xsl:merge-key</elcode> element are closely based on the rules for the
+			<elcode>xsl:sort</elcode> element (the only <phrase diff="chg" at="E3">difference in syntax</phrase> being the absence of the
+			<code>stable</code> attribute); the difference is that
+			<elcode>xsl:merge-key</elcode> elements do not cause a sort to take place, they
+			merely declare the existing sort order of the input sequence.</p>
+			</er:new-text>
+		</er:change>
+		<er:change>
+			<er:old-text ref="merge-keys" select="p[5]"/>
+			<er:new-text version="3.0">
+				<p>The value of <phrase diff="add" at="E3">the</phrase> <var>N</var>th merge key value of an item
+					<var>J</var> in a <termref def="dt-merge-input-sequence">merge input
+						sequence</termref>
+					<var>S</var> is the result of the expression in the <code>select</code> attribute of
+					the <var>N</var>th <elcode>xsl:merge-key</elcode> child of the corresponding
+					<elcode>xsl:merge-source</elcode> element, or in the absence of the
+					<code>select</code> attribute, the result of the contained <termref
+						def="dt-sequence-constructor"/>. This is evaluated with a <termref
+							def="dt-singleton-focus"/> based on <var>J</var>, or, if
+					<code>streamable=yes</code> is specified on the <elcode>xsl:merge-source</elcode>,
+					a <termref def="dt-singleton-focus"/> based on a <function>snapshot</function> of
+					<var>J</var> (see <specref ref="streamable-merging"/>).</p>
+			</er:new-text>
+		</er:change>
+		
+		
+	</er:erratum>
+	
+	<er:erratum id="E4" category="editorial">
+		<er:description>
+			<p>A non-normative note explaining the consequences of error XTSE3080 is inaccurate.</p>
+		</er:description>
+		<er:bugzilla bug="30142"/> 
+		<er:history>
+			<er:event status="proposed" date="2017-10-13" author="mike@saxonica.com"/>
+			<er:event status="reviewed" date="2017-10-19" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="error" name="XTSE3080"/>
+		</er:impact>
+		<er:change>
+			<er:old-text ref="component-references" select=".//note[p[starts-with(., 'This means that abstract components')]]" action="replace"/>
+			<er:new-text version="3.0">
+				<note><p>Abstract components in a used package by default become hidden in the using
+					package, which means that a reference to the component in the top-level package 
+					will fail to resolve (resulting in a different static error). This particular error occurs
+					only if the abstract component is declared within the top-level package.</p></note>
+			</er:new-text>
+		</er:change>
+	</er:erratum>
+	
+	<er:erratum id="E5" category="editorial">
+		<er:description>
+			<p>The specification is not unambiguously clear that a global variable cannot reference 
+				the imported variable that it is overriding.</p>
+		</er:description>
+		<er:bugzilla bug="30171"/> 
+		<er:history>
+			<er:event status="proposed" date="2017-10-13" author="mike@saxonica.com"/>
+			<er:event status="reviewed" date="2017-10-19" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="element" name="xsl:variable"/>
+		</er:impact>
+		<er:change>
+			<er:old-text ref="global-variables" select="p[2]" action="replace"/>
+			<er:new-text version="3.0">
+				<p>
+					<termdef id="dt-global-variable" term="global variable">A <termref def="dt-top-level"/> <termref
+						def="dt-variable-binding-element">variable-binding element</termref> declares a
+						<term>global variable</term> that is visible everywhere 
+						<phrase diff="chg" at="E5">except (a) within the <code>xsl:variable</code> or <code>xsl:param</code> element itself, 
+						(b) within any other global variable declaration that binds a variable with the same name, and 
+						(c) within any region where it is <termref
+							def="dt-shadows">shadowed</termref> by another variable binding.</phrase></termdef>
+				</p>
+			</er:new-text>
+		</er:change>
+		<er:change>
+			<er:old-text ref="scope-of-variables" select="p[6]" action="replace"/>
+			<er:new-text version="3.0">
+				<p>
+					<termdef id="dt-shadows" term="shadows">Within a region of the stylesheet where a 
+						binding <var>B1</var> is visible, <var>B1</var> shadows another binding <var>B2</var> 
+						having the same name as <var>B1</var> if <var>B1</var> occurs at a point where <var>B2</var> is visible.</termdef>
+				</p>
+			</er:new-text>
+				
+		</er:change>
+	</er:erratum>
+	
+	<er:erratum id="E6" category="substantive">
+		<er:description>
+			<p>No error code is prescribed for the case where <elcode>xsl:global-context-item</elcode> specifies <code>use="required"</code>, 
+				and no global context item is supplied.</p>
+		</er:description>
+		<er:bugzilla bug="30173"/> 
+		<er:history>
+			<er:event status="proposed" date="2017-10-13" author="mike@saxonica.com"/>
+			<er:event status="reviewed" date="2017-10-19" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="error" name="XTDE3086"/>
+			<er:affects object="element" name="xsl:global-context-item"/>
+		</er:impact>
+		<er:change>
+			<er:old-text ref="declaring-global-context-item" select="." action="insert-as-last"/>
+			<er:new-text version="3.0">
+				<p><error spec="XT" type="dynamic" class="DE" code="3086">
+					<p>It is a <termref def="dt-dynamic-error"/> if an <code>xsl:global-context-item</code> 
+						specifies <code>use="required"</code>, and no global context item is supplied.</p>
+				</error></p>
+			</er:new-text>
+		</er:change>
+		
+		
+		
+	</er:erratum>
+	
+	<er:erratum id="E7" category="substantive">
+		<er:description>
+			<p>The rule that disallows reference to the global context item from within a library package uses
+				unclear language.</p>
+		</er:description>
+		<er:bugzilla bug="30179"/> 
+		<er:history>
+			<er:event status="proposed" date="2017-10-13" author="mike@saxonica.com"/>
+			<er:event status="reviewed" date="2017-10-19" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="element" name="xsl:global-context-item"/>
+		</er:impact>
+		<er:change>
+			<er:old-text ref="focus" select="p[4]" action="replace"/>
+			<er:new-text version="3.0">
+				<p>The context item for evaluating global
+					variables <phrase diff="chg" at="E7">declared</phrase> in the <termref def="dt-top-level-package"/> is set to the <termref def="dt-global-context-item"/>
+					supplied when the transformation is invoked (see <specref ref="initiating"
+					/>). <phrase diff="chg" at="E7">For global variables declared in a
+					<termref def="dt-library-package">library
+						package</termref>, the context item is <termref def="dt-absent"/></phrase>.</p>
+			</er:new-text>
+		</er:change>
+		<er:change>
+			<er:old-text ref="priming-stylesheet" select="ulist/item[2]/p[1]" action="replace"/>
+			<er:new-text version="3.0">
+				<p>
+					<termdef id="dt-global-context-item" term="global context item">An item that acts as the <term>global
+							context item</term> for the transformation. This item acts
+						as the <termref def="dt-context-item"/> when evaluating
+						the <code>select</code> expression or <termref def="dt-sequence-constructor"/> of a
+							<termref def="dt-global-variable"/> 
+						<phrase diff="chg" at="E7">whose declaration is</phrase> within the <termref
+							def="dt-top-level-package"/>, as described in <specref
+								ref="focus"/>. The global context item may also be available in a <termref def="dt-named-template"/>
+						when the stylesheet is invoked as described in <specref ref="invoking-initial-template"/></termdef>.</p>
+			</er:new-text>
+		</er:change>
+	</er:erratum>
+	
+	<er:erratum id="E8" category="editorial">
+		<er:description>
+			<p>The rule stating that the initial named template must have public visibility could be misinterpreted. It would be useful to add a note
+			pointing out that this is the default in the case where the top-level package is rooted at an <code>xsl:stylesheet</code>
+			or <code>xsl:transform</code> element.</p>
+		</er:description>
+		<er:bugzilla bug="30179"/> 
+		<er:history>
+			<er:event status="proposed" date="2017-10-13" author="mike@saxonica.com"/>
+			<er:event status="reviewed" date="2017-10-19" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="error" name="XTDE0040"/>
+			<er:affects object="element" name="xsl:template"/>
+		</er:impact>
+		<er:change>
+			<er:old-text ref="invoking-initial-template" select="p[4]" action="insert-after"/>
+			<er:new-text version="3.0">
+				<note><p>When the top-level package is rooted at an <elcode>xsl:stylesheet</elcode>
+				or <elcode>xsl:transform</elcode> element, named templates having no explicit 
+					<code>visibility</code> attribute are automatically exposed as public components.</p></note>
+				
+			</er:new-text>
+		</er:change>
+
+	</er:erratum>
+	
+	<er:erratum id="E9" category="editorial">
+		<er:description>
+			<p>The reasoning explaining an example of streamability uses obsolete concepts. The example is correct,
+			but the explanation is flawed.</p>
+		</er:description>
+		<er:bugzilla bug="30129"/> 
+		<er:history>
+			<er:event status="proposed" date="2017-10-13" author="mike@saxonica.com"/>
+			<er:event status="reviewed" date="2017-10-19" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="element" name="xsl:merge"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="stream-examples" select="example/olist[2]/item[4]/p"/>
+			<er:new-text version="3.0">
+				<p>The argument to <code>max</code> is a <code>RelativePathExpr</code> whose
+					two operands are the <code>RelativePathExpr</code>
+					<code>transactions/transaction</code> and the <code>AxisStep</code>
+					<code>@value</code>. The left-hand operand <code>transactions/transaction</code> has
+					<termref def="dt-striding"/>
+					<termref def="dt-posture"/>. The right-hand operand <code>@value</code>, 
+					<phrase diff="add">given that the context posture is striding, </phrase>
+					is <termref def="dt-motionless"/>. The <code>RelativePathExpr</code> argument to <code>max</code> is
+					therefore consuming.</p>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E10" category="editorial">
+		<er:description>
+			<p>There are a number of errors in the (non-normative) XSD Schema for XSLT 3.0 stylesheets.</p>
+		</er:description>
+		<er:bugzilla bug="30141"/> 
+		<er:history>
+			<er:event status="proposed" date="2017-10-13" author="mike@saxonica.com"/>
+			<er:event status="reviewed" date="2017-10-19" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="element" name="xsl:accept"/>
+			<er:affects object="element" name="xsl:expose"/>
+			<er:affects object="element" name="xsl:function"/>
+			<er:affects object="element" name="xsl:mode"/>
+		</er:impact>
+		
+		<er:manual-change>
+			<p>Apply the following changes to the schema for XSLT 3.0 stylesheets in Appendix H.1.</p>
+			<olist>
+				<li><p>In annotations, change all references to XPath version numbers from "2.0" or "31" to "3.1".</p></li>
+				<li><p>In the element declaration for <elcode>xsl:accept</elcode> and <elcode>xsl:expose</elcode>, the type of the <code>@names</code>
+				attribute is given as <code>xsl:EQNames</code>. However, this type does not allow function references in the form <code>f:func#2</code>. 
+				The attribute should instead have type <code>xsl:component-tests</code>.</p></li>
+				<li><p>In the element declaration for <elcode>xsl:function</elcode>, the attribute declaration <code>_identity-sensitive</code>
+				should be named <code>_new-each-time</code>.</p></li>
+				<li><p>In the element declaration for <elcode>xsl:function</elcode>, remove the assertion that requires the element to have
+				no <code>required</code> or <code>_required</code> attribute, and replace it with the assertion 
+					<code>every $e in xsl:param/@required satisfies normalize-space($e) = ('yes', 'true', '1')"></code>
+				which asserts that any <code>required</code> attribute that is present must have the effective value "yes".</p></li>
+				<li><p>In the element declaration for <elcode>xsl:mode</elcode>, there should be an attribute declaration with <code>name="_use-accumulators"
+				type="xs:string"</code>.</p></li>
+				<li><p>In the simpleType declaration for <code>nametest</code>, (a) correct the description to indicate that it represents a single
+				NameTest rather than a list, and (b) add a third permitted pattern, namely
+					<code>"Q\{[^}]*\}\*</code>.</p></li>
+				<li><p>In the simpleType declaration for <code>nametests</code>, change the <code>itemType</code> of the list type 
+					from <code>nametest</code> to <code>xsl:nametest</code>.</p></li>
+				<li><p>In the simpleType declaration for <code>method</code>, add to the enumeration the permitted values <code>json</code>
+				and <code>adaptive</code>.</p></li>
+			</olist>
+		</er:manual-change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E11" category="editorial">
+		<er:description>
+			<p>The (non-normative) RelaxNG Schema for XSLT 3.0 stylesheets permits the attribute <code>xsl:merge-source/@for-each-stream</code>.</p>
+		</er:description>
+		<er:bugzilla bug="30141"/> 
+		<er:history>
+			<er:event status="proposed" date="2017-10-13" author="mike@saxonica.com"/>
+			<er:event status="reviewed" date="2017-10-19" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="element" name="xsl:merge-source"/>
+		</er:impact>
+		
+		<er:manual-change>
+			<p>Apply the following changes to the Relax-NG schema for XSLT 3.0 stylesheets in Appendix H.2.</p>
+			<olist>
+				<li><p>In the declaration of the <elcode>xsl:merge-source</elcode> element, delete
+				the attributes <code>for-each-stream</code> and <code>_for-each-stream</code>.</p></li>
+			</olist>
+		</er:manual-change>
+		
+	</er:erratum>
+		
+
+	
+	
+</er:errata>
+

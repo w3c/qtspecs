@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+<project name="xslt" default="all" >
+
+  <!-- Needs the ant-contrib library from http://ant-contrib.sourceforge.net/ -->
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+
+  <dirname property="etc.dir" file="../../etc/*"/>
+  <import file="${etc.dir}/build-constants.xml"/>
+
+  <property name="shortname" value="xslt-21"/>
+  <property name="spec.uri" value="http://www.w3.org/TR/${shortname}/"/>
+  <property name="spec.xml" value="${src.dir}/xslt.xml"/>
+  <property name="errata.xml" value="${src.dir}/xslt20-errata.xml"/>
+  <property name="spec.code" value="XT21"/>
+
+  <property name="spec.style" value="${style.dir}/xslt.xsl"/>
+
+  <import file="../../etc/build-impl.xml"/>
+
+  <target name="all"
+          depends="diagrams,spec,diffspec,errata"
+          description="This is the default target."/>
+
+  <!-- ====================================================================== -->
+
+  <property name="baseline" value=""/>
+
+  <!-- ====================================================================== -->
+
+  <!-- Overrides internal template -->
+  <target name="-style-spec" depends="init,chk.spec,validate-spec"
+	  if="build.spec" unless="spec.exists">
+    <echo message="Building XSLT 2.1 ..." />
+
+    <!-- XSLT 2.0 -->
+    <java fork="true" classname="net.sf.saxon.Transform">
+      <classpath refid="saxon9.classpath"/>
+      <arg value="-t"/>
+      <arg value="-o"/>
+      <arg value="${dist.dir}/Overview.html"/>
+      <arg value="${spec.xml}"/>
+      <arg value="style/xslt-diff.xsl"/>
+      <arg value="baseline=${baseline}"/>
+      <arg value="show.diff.markup=0"/>
+    </java>
+  </target>
+
+  <target name="chk.xsltdiff" depends="init">
+    <uptodate property="xsltdiff.exists"
+              srcfile="${spec.xml}"
+              targetfile="${dist.dir}/Overview-diff.html"/>
+  </target>
+
+  <target name="diffspec" depends="init,chk.xsltdiff,tidy-diff-spec"
+	  unless="xsltdiff.exists"/>
+
+  <target name="tidy-diff-spec" depends="init,style-diff-spec,chk.runtidy"
+	  if="run.tidy">
+    <antcall target="tidy">
+      <param name="html.file" value="${dist.dir}/Overview-diff.html"/>
+    </antcall>
+  </target>    
+
+  <target name="style-diff-spec" depends="init,validate-spec">
+    <echo message="Building XSLT 2.1 (Diff) with baseline=${baseline} ..." />
+
+    <java fork="true" classname="net.sf.saxon.Transform">
+      <classpath refid="saxon9.classpath"/>
+      <arg value="-t"/>
+      <arg value="-o"/>
+      <arg value="${build.dir}/Overview-diff.html"/>
+      <arg value="${spec.xml}"/>
+      <arg value="style/xslt-diff.xsl"/>
+      <arg value="baseline=${baseline}"/>
+      <arg value="specdoc=XT"/>
+    </java>
+
+    <java fork="true" classname="net.sf.saxon.Transform">
+      <classpath refid="saxon9.classpath"/>
+      <arg value="-o"/>
+      <arg value="${dist.dir}/Overview-diff.html"/>
+      <arg value="${build.dir}/Overview-diff.html"/>
+      <arg value="style/xsltdiff-cleanup.xsl"/>
+    </java>
+  </target>
+
+  <!-- Overrides internal template -->
+  <target name="-style-errata" depends="init,chk.errata"
+	  if="build.errata" unless="errata.exists">
+    <echo message="Formating ${shortname} errata..." />
+
+    <java fork="true" classname="net.sf.saxon.Transform">
+      <classpath refid="saxon9.classpath"/>
+      <arg value="-o"/>
+      <arg value="${dist.dir}/errata.html"/>
+      <arg value="${errata.xml}"/>
+      <arg value="${spec.style}"/>
+    </java>
+  </target>
+  
+  <target name="diagrams" description="Process all the diagrams in the img directory"
+          depends="spec">
+	<foreach target="diagram" param="diagram">
+      <path>
+    	<fileset dir="${dist.dir}/img">
+    	  <include name="*.dot"/>
+    	</fileset>
+      </path>
+    </foreach>
+  </target>
+  
+  <target name="diagram">
+    <echo message="Converting diagram ${diagram}"/>
+    <basename property="name" file="${diagram}" suffix=".dot"/>
+    <echo message="  to ${dist.dir}/img/${name}.svg"/>
+    <!--<exec executable="../../lib/GraphViz2.24/bin/dot">
+      <arg line="-o${dist.dir}/img/${name}.attributed.dot -Tdot ${diagram} -s"/>
+    </exec>-->
+    <exec executable="../../lib/GraphViz2.24/bin/dot">
+      <arg line="-o${dist.dir}/img/${name}.svg -Tsvg ${diagram} "/>
+    </exec>
+    <!--<copy toDir="${dist.dir}/img">
+      <fileset dir="${build.dir}/img/*.svg"/>
+    </copy>-->
+  </target>
+    
+
+</project>

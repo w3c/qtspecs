@@ -1,0 +1,584 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=PowerPoint.Slide>
+<meta name=Generator content="Microsoft PowerPoint 10">
+<link id=Main-File rel=Main-File href="../EBNFChangeProposal.html">
+<link rel=Preview href=preview.wmf>
+<script>
+<!--
+if( window.name != "PPTOtl" )
+  parent.location.href = "../EBNFChangeProposal.html";
+//-->
+</script>
+<meta name=Robots content=NoIndex>
+</head>
+
+<body bgcolor=black alink=white link=white vlink=white text=white>
+
+<p><font face=Arial size=2><b><a
+href="javascript:parent.GoToSld('v3_slide0001.html');">EBNF Change Proposal</a></b></font>
+
+<table>
+ <tr>
+  <td width=5 nowrap></td>
+  <td width="100%"></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=1><font face=Arial size=2>Scott Boag</font></td>
+ </tr>
+</table>
+
+</p>
+
+<p><font face=Arial size=2><b><a
+href="javascript:parent.GoToSld('v3_slide0003.html');">Long Tokens</a></b></font>
+
+<table>
+ <tr>
+  <td width=5 nowrap></td>
+  <td width=20 nowrap></td>
+  <td width=20 nowrap></td>
+  <td width=20 nowrap></td>
+  <td width="100%"></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=4><font face=Arial size=2>Example: &lt;&quot;for&quot;
+  &quot;$&quot;&gt;</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=4><font face=Arial size=2>Needed to:</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=3><font face=Arial size=2>BUG: Distinguish keywords from QNames.</font></td>
+ </tr>
+ <tr>
+  <td colspan=3></td>
+  <td colspan=2><font face=Arial size=2>BUT, only in “states” that have QNames!</font></td>
+ </tr>
+ <tr>
+  <td colspan=4></td>
+  <td colspan=1><font face=Arial size=2>BUT, “states” are not part of our
+  specs!</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=3><font face=Arial size=2>Determine branch choices in grammar.</font></td>
+ </tr>
+ <tr>
+  <td colspan=3></td>
+  <td colspan=2><font face=Arial size=2>Lookahead is where you branch, some
+  long tokens are what is being looked for.</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=4><font face=Arial size=2>Affect EBNF structure:</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=3><font face=Arial size=2>Example: (&lt;&quot;empty&quot;
+  &quot;greatest&quot;&gt; | &lt;&quot;empty&quot; &quot;least&quot;&gt;)</font></td>
+ </tr>
+ <tr>
+  <td colspan=3></td>
+  <td colspan=2><font face=Arial size=2>Is better expressed as (“empty”
+  (“greatest” | ”least”))</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=4><font face=Arial size=2>ARE NOT NORMATIVE!</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=4><font face=Arial size=2>Bug: Use of long tokens prevents (: (:
+  nested :)<span style='mso-spacerun:yes'>  </span>comments :)<span
+  style='mso-spacerun:yes'>  </span>in the white space of those tokens if
+  matched with Regular Expressions.</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=3><font face=Arial size=2>I’ll be glad to go into deep detail why
+  this bug is so hard to solve with existing parser construction tools!</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=4><font face=Arial size=2>Short tokens make a lexical state
+  machine even harder and trickier.</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=3><font face=Arial size=2>Though, I admit, not impossible.</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=4></td>
+ </tr>
+</table>
+
+</p>
+
+<p><font face=Arial size=2><b><a
+href="javascript:parent.GoToSld('v3_slide0004.html');">New Test Parser</a></b></font>
+
+<table>
+ <tr>
+  <td width=5 nowrap></td>
+  <td width=20 nowrap></td>
+  <td width="100%"></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>Original Intent was to produce parser
+  without altering the grammar source.</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>In practice this proved to difficult.</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>Was supposed to be post-CR</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>Parser NOT part of CR release.</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>Parsers now pass all known tests for
+  all grammars.</font></td>
+ </tr>
+</table>
+
+</p>
+
+<p><font face=Arial size=2><b><a
+href="javascript:parent.GoToSld('v3_slide0006.html');">EBNF Change 1: No Angle
+Brackets</a></b></font>
+
+<table>
+ <tr>
+  <td width=5 nowrap></td>
+  <td width=20 nowrap></td>
+  <td width="100%"></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>CastableExpr ( &lt;&quot;treat&quot;
+  &quot;as&quot;&gt; SequenceType )?<br>
+    Becomes:<br>
+    <span style='mso-spacerun:yes'> </span>CastableExpr ( &quot;treat&quot;
+  &quot;as&quot; SequenceType )?</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>Long tokens no longer have an real
+  meaning!</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>In any case, they are dependent on
+  lexical states, which are not part of the document, and so should be removed
+  in any case!!!</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>Change is not strictly required.</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>Could leave these in, but they’re no
+  longer tested!</font></td>
+ </tr>
+</table>
+
+</p>
+
+<p><font face=Arial size=2><b><a
+href="javascript:parent.GoToSld('v3_slide0007.html');">EBNF Change 2: minor
+reordering of some A | B Constructs</a></b></font>
+
+<table>
+ <tr>
+  <td width=5 nowrap></td>
+  <td width=20 nowrap></td>
+  <td width="100%"></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>VersionDecl? (MainModule | LibraryModule)<br>
+    becomes:<br>
+    VersionDecl? (LibraryModule | MainModule )</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>This helps the test parser generation,
+  because, with lookahead, MainModule must be tested last, since it contains
+  the “fallback” QName case.</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>Clearly A | B Constructs are unordered
+  in EBNF</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>Spec only says: matches A or B<span
+  style='mso-spacerun:yes'>  </span>but not both.</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>Change not required... Could do this
+  ordering for the parser with an attribute and leave the ordering as it was.</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>But why?</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1></td>
+ </tr>
+</table>
+
+</p>
+
+<p><font face=Arial size=2><b><a
+href="javascript:parent.GoToSld('v3_slide0008.html');">EBNF Change 3: Some
+local restructuring</a></b></font>
+
+<table>
+ <tr>
+  <td width=5 nowrap></td>
+  <td width=20 nowrap></td>
+  <td width="100%"></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>(&lt;&quot;declare&quot;
+  &quot;default&quot; &quot;element&quot;&gt; | <br>
+    &lt;&quot;declare&quot; &quot;default&quot; &quot;function&quot;&gt;)
+  &quot;namespace&quot; URILiteral<br>
+    becomes:<br>
+    &quot;declare&quot; &quot;default&quot; (&quot;element&quot; |
+  &quot;function&quot;) <br>
+    &quot;namespace&quot; URILiteral</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>Local ONLY, never done across
+  production boundaries!</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>More opportunities, but only did a
+  couple obvious cases.</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>Change not required: Simply Reduces
+  Lookahead overhead for test parser!</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>But the change clearly helps the
+  readability of the BNF.</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2></td>
+ </tr>
+</table>
+
+</p>
+
+<p><font face=Arial size=2><b><a
+href="javascript:parent.GoToSld('v3_slide0009.html');">EBNF Change 4: Superscript
+Lookahead Hints?</a></b></font>
+
+<table>
+ <tr>
+  <td width=5 nowrap></td>
+  <td width=20 nowrap></td>
+  <td width="100%"></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>[28] StepExpr ::= AxisStep | FilterExpr
+  <br>
+    Becomes:<br>
+    [28] StepExpr ::= FilterExpr<sup>L3</sup> | AxisStep</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>Hints at likely lookahead points for
+  parsers</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>Non-normative.</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>CC notation for already-documented
+  ambiguities</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>(&quot;/&quot; RelativePathExpr?<sup>CC</sup>)<span
+  style='mso-spacerun:yes'>  </span>...<span style='mso-spacerun:yes'>  
+  </span>/* xgs: leading-lone-slash */</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>Not required: they’re only helpful
+  hints.</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>Still depends on tokenization strategy:
+  If tokenization strategy for Qname is to break it into three tokens: NCName
+  “:” NCName, for instance, then lookahead for FunctionCall changes from L2 to
+  L4.</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>Direct constructors don’t use
+  lookahead, but some implementations might!</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>On balance, I tend to think we should
+  not do this.</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2></td>
+ </tr>
+</table>
+
+</p>
+
+<p><font face=Arial size=2><b><a
+href="javascript:parent.GoToSld('v3_slide0010.html');">Summary</a></b></font>
+
+<table>
+ <tr>
+  <td width=5 nowrap></td>
+  <td width=20 nowrap></td>
+  <td width=20 nowrap></td>
+  <td width="100%"></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=3><font face=Arial size=2>NO changes to what is a legal XQuery
+  sentence are being suggested!</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=3><font face=Arial size=2>Pre CR-Options:</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=2><font face=Arial size=2>No change to xpath-grammar.xml source</font></td>
+ </tr>
+ <tr>
+  <td colspan=3></td>
+  <td colspan=1><font face=Arial size=2>In which case, we have to determine how
+  to proceed post-CR!</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=2><font face=Arial size=2>New xpath-grammar.xml, but EBNF must
+  not change in even trivial ways.</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=2><font face=Arial size=2>New xpath-grammar.xml, remove angle
+  brackets, but no other EBNF change. (1)</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=2><font face=Arial size=2>New xpath-grammar.xml, remove angle
+  brackets, allow trivial choice reordering and restructure (1, 2, 3)*</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=2><font face=Arial size=2>New xpath-grammar.xml, remove angle
+  brackets, allow trivial choice reordering and restructure, and lookahead
+  hints <br>
+    (1, 2, 3, 4)</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=2><font face=Arial size=2>None of the above.</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=2></td>
+ </tr>
+</table>
+
+</p>
+
+<p><font face=Arial size=2><b><a
+href="javascript:parent.GoToSld('v3_slide0012.html');">Information</a></b></font>
+
+<table>
+ <tr>
+  <td width=5 nowrap></td>
+  <td width=20 nowrap></td>
+  <td width="100%"></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>Proposed xpath-grammar.xml:</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>http://www.w3.org/XML/Group/xsl-query-specs/grammar/parser/applets-llk/xpath-grammar.xml</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>The doc with the changes are available
+  for review at:</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>http://www.w3.org/XML/Group/xsl-query-specs/grammar/llkdocs/xquery.html#id-grammar</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>http://www.w3.org/XML/Group/xsl-query-specs/grammar/llkdocs/xpath.html#id-grammar</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>http://www.w3.org/XML/Group/xsl-query-specs/grammar/llkdocs/shared.html</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>http://www.w3.org/XML/Group/xsl-query-specs/grammar/llkdocs/shared-semantics.html</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>Somewhat problematic diff version for
+  XQuery:</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>http://www.w3.org/XML/Group/xsl-query-specs/grammar/llkdocs/LLKCompare.htm</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>Grammar Applets:</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>http://www.w3.org/XML/Group/xsl-query-specs/grammar/parser/applets-llk/xqueryApplet.html</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>http://www.w3.org/XML/Group/xsl-query-specs/grammar/parser/applets-llk/xpathApplet.html</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>http://www.w3.org/XML/Group/xsl-query-specs/grammar/parser/applets-llk/xquery-fulltextApplet.html</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>http://www.w3.org/XML/Group/xsl-query-specs/grammar/parser/applets-llk/xquery-updateApplet.html</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>http://www.w3.org/XML/Group/xsl-query-specs/grammar/parser/applets-llk/xquery-coreApplet.html</font></td>
+ </tr>
+</table>
+
+</p>
+
+<p><font face=Arial size=2><b><a
+href="javascript:parent.GoToSld('v3_slide0011.html');">Backup Slides</a></b></font></p>
+
+<p><font face=Arial size=2><b><a
+href="javascript:parent.GoToSld('v3_slide0002.html');">Background</a></b></font>
+
+<table>
+ <tr>
+  <td width=5 nowrap></td>
+  <td width=20 nowrap></td>
+  <td width="100%"></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>Grammar specified in XML source
+  produces both test parser and EBNF.</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>Test parser is used to verify and
+  experiment with the grammar.</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>And used by testing taskforce.</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>And provide starting code for casual
+  implementers.</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>Bug: Use of long tokens prevents (:
+  comment :)<span style='mso-spacerun:yes'>  </span>in the white space of those
+  tokens.</font></td>
+ </tr>
+ <tr>
+  <td colspan=2></td>
+  <td colspan=1><font face=Arial size=2>Regular Expressions can’t match nested
+  comments!</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=2><font face=Arial size=2>Grammar still being developed for
+  Update, Fulltext.</font></td>
+ </tr>
+</table>
+
+</p>
+
+<p><font face=Arial size=2><b><a
+href="javascript:parent.GoToSld('v3_slide0005.html');">Advantages of new
+xpath-grammar.xml</a></b></font>
+
+<table>
+ <tr>
+  <td width=5 nowrap></td>
+  <td width="100%"></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=1><font face=Arial size=2>Only DEFAULT lexical state, except for
+  XQuery Direct Constructors!</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=1><font face=Arial size=2>Trivial strings do not need to be
+  named.</font></td>
+ </tr>
+ <tr>
+  <td colspan=1></td>
+  <td colspan=1></td>
+ </tr>
+</table>
+
+</p>
+
+</body>
+
+</html>

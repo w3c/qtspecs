@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding='utf-8'?>
+<project name="xpath" default="build.xpath" basedir=".">
+<!-- build customization file for XPath specification -->
+
+<!-- Import a bunch of global property definitions -->
+  <dirname property="etc.dir" file="../../etc/*"/>
+  <import file="${etc.dir}/build-constants.xml"/>
+
+<!-- Set properties for "this" document's build requirements -->
+  <property name="generic-shortname" value="xpath"/>
+  <property name="this-spec-version-code" value="30"/>
+  <property name="xquery-version-code" value="30"/>
+
+  <property name="spec.code" value="XP${this-spec-version-code}"/>
+  <property name="spec.xml" value="${src.dir}/xpath.xml"/>
+  <property name="first-generic-shortname" value="${generic-shortname}${this-spec-version-code}"/>
+  <property name="second-generic-shortname" value="'dummy'"/>
+  <property name="not-this-generic-shortname" value="xquery"/>
+
+  <!-- ====================================================================== -->
+
+  <!-- The "help" template displays on the message medium the names of the    -->
+  <!--   various targets in this project and their purposes.                  -->
+  <target name="help">
+    <echo message="This file should never be invoked directly, but only from the build.xml ant project"/>
+    <echo message="This project to build the XPath spec includes only one target."/>
+    <echo message="  build.xpath -- builds the spec by invoking build-spec.xml"/>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="build.xpath"
+          description="This is the default target. ">
+    <ant antfile="build-spec.xml" inheritAll="true" inheritRefs="true" target="build-spec"/>
+  </target>
+
+</project>

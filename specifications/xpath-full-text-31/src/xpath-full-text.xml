@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE spec SYSTEM "../../../schema/xsl-query.dtd"[
+	
+<!-- Things to update in these ENTITY definitions before publishing this document:
+* Relationships between doc.stage, w3c-doctype, and doc.w3c-doctype-full
+* doc.stage  w3c-doctype  doc.w3c-doctype-full
+* FPWD       wd           First Public Working Draft
+  WD         wd           Working Draft
+  WD         wd           Last Call Working Draft
+  CR         cr           Candidate Recommendation
+  PR         pr           Proposed Recommendation
+  PER        per          Proposed Edited Recommendation
+  REC        rec          Recommendation
+  WGNOTE     note         Working Group Note
+* date.day, date.DD, date.month, date.monthnum, and date.year must represent the date of publication of the document
+* doc.w3c-prevdesignation must properly represent the stage and shortname of the immediately preceding publication of the document
+* Various status section generation ENTITY definitions below must be properly updated
+-->
+
+<!ENTITY % ref-req.att "ref                    CDATA           #REQUIRED">
+
+	<!ENTITY XML "http://www.w3.org/TR/REC-xml">
+	<!ENTITY XMLNames "http://www.w3.org/TR/REC-xml-names">
+
+  <!ENTITY doc.version "3.1">
+  <!ENTITY doc.major-version "3">
+  <!ENTITY doc.version-code "31">
+  <!ENTITY doc.stage "WD">
+  <!ENTITY doc.w3c-doctype "wd">
+  <!ENTITY doc.w3c-doctype-full "First Public Working Draft">
+
+	<!ENTITY date.day "18">
+	<!ENTITY date.DD "18">
+	<!ENTITY date.month "September">
+	<!ENTITY date.monthnum "09">
+	<!ENTITY date.year "2014">
+	<!ENTITY doc.date "&date.year;&date.monthnum;&date.DD;">
+
+	<!ENTITY w3c.tr "http://www.w3.org/TR">
+  <!ENTITY doc.generic-shortname "xpath-full-text">
+  <!ENTITY doc.shortname "&doc.generic-shortname;-&doc.version-code;">
+	<!ENTITY doc.w3c-designation "&doc.stage;-&doc.shortname;">
+  <!ENTITY doc.publoc "&w3c.tr;/&date.year;/&doc.w3c-designation;-&doc.date;/">
+  <!ENTITY doc.latestloc "&w3c.tr;/&doc.shortname;/">
+  <!ENTITY doc.latestloc-major "&w3c.tr;/&doc.generic-shortname;-&doc.major-version;/">
+  <!ENTITY doc.latestloc-tech "&w3c.tr;/&doc.generic-shortname;/">
+  <!ENTITY doc.w3c-prev-designation "WD-&doc.shortname;">
+  <!ENTITY language-tech "XQuery and XPath Full Text">
+  <!ENTITY language "XQuery and XPath Full Text &doc.version;">
+  <!ENTITY language-major "XQuery and XPath Full Text &doc.major-version;">
+<!-- ************************ THIS MUST BE EITHER '(WG Review Draft)' OR '' ************** -->
+<!ENTITY version "WG Review Draft">
+<!-- ************************************************************************************* -->
+
+<!--  <!ENTITY url.external "&w3c.tr;/&date.year;/&doc.prefix;-&doc.date;/">
+  <!ENTITY url.this "&url.external;"> -->
+
+	<!ENTITY tq_texquerydoc "Language and Semantics">
+	<!ENTITY ndash "-">
+	<!ENTITY TQHEADER SYSTEM "tqheader.xml">
+	<!ENTITY TQINTRO SYSTEM "tqintro.xml">
+	<!ENTITY TQEXPRESSIONS SYSTEM "tqexpressions.xml">
+	<!ENTITY TQFTSELECTIONS SYSTEM "tqftselections.xml">
+	<!ENTITY TQSEMANTICS SYSTEM "tqsemantics.xml">
+	<!ENTITY TQCONFORMANCE SYSTEM "tqconformance.xml">
+	<!ENTITY ebnf SYSTEM "ebnf-minimal.xml">
+	<!ENTITY ebnf-xpath SYSTEM "ebnf-xpath.xml">
+	<!ENTITY references SYSTEM "references.xml">    
+
+	<!-- <!ENTITY ebnf SYSTEM "../style/xpath-grammar.xml"> -->
+	<!ENTITY error-list SYSTEM "errors.xml">
+	<!ENTITY ft-xqueryx SYSTEM "ft-xqueryx.xml">
+	<!-- <!ENTITY issues SYSTEM "tqissues.xml"> -->
+	<!ENTITY acknowledgements SYSTEM "acknowledgements.xml">
+	<!ENTITY glossary SYSTEM "glossary.xml">
+	<!ENTITY static-context SYSTEM "static-context.xml">
+	<!ENTITY implementation-defined SYSTEM "implementation-defined.xml">
+	<!ENTITY changelog SYSTEM "changelog.xml">
+
+    <!-- entities used for XQueryX appendix, Jim, updated 2008-04-21 -->
+    <!ENTITY xqftxqx-schema SYSTEM "xpath-full-text-31-xqueryx-CDATA.xsd.xml">
+    <!ENTITY xqftxqx-options-schema SYSTEM "xpath-full-text-31-xqueryx-ftmatchoption-extensions-CDATA.xsd.xml">
+    <!ENTITY xqftxqx-stylesheet SYSTEM "xpath-full-text-31-xqueryx-CDATA.xsl.xml">
+    <!ENTITY ftxqxexmpl1xqft SYSTEM "FTexample1-CDATA.xq.xml">
+    <!ENTITY ftxqxexmpl1ftxqx SYSTEM "FTexample1-CDATA.xqx.xml">
+    <!ENTITY ftxqxexmpl1ftxqx2xqft SYSTEM "FTexample1-CDATA.xqx2xq.xml">
+
+	<!-- additional entities from Chavdar, 2004-05-06 -->
+    <!ENTITY FTComparisonExpr "<term>FTComparisonExpr</term>">
+    <!ENTITY FTScoreExpr "<term>FTScoreExpr</term>">
+    <!ENTITY FTSelection "<term>FTSelection</term>">
+    <!ENTITY FTMatchOption "<term>FTMatchOption</term>">
+    <!ENTITY FTSelectionWithScoreWeights "<term>FTSelectionWithScoreWeights</term>">
+    <!ENTITY AllMatches "<term>AllMatches</term>">
+    <!ENTITY Match "<term>Match</term>">
+    <!ENTITY StringMatch "<term>StringMatch</term>">
+    <!ENTITY StringInclude "<term>StringInclude</term>">
+    <!ENTITY stringInclude "<term>stringInclude</term>">
+    <!ENTITY StringExclude "<term>StringExclude</term>">
+    <!ENTITY stringExclude "<term>stringExclude</term>">
+    <!ENTITY QueryTokenInfo "<term>QueryTokenInfo</term>">
+    <!ENTITY TokenInfo "<term>TokenInfo</term>">
+    <!ENTITY FTContains "<term>FTContains</term>">
+    <!ENTITY FTContainsExpr "<term>FTContainsExpr</term>">
+    <!ENTITY FTWords "<term>FTWords</term>">
+    <!ENTITY FTOr "<term>FTOr</term>">
+    <!ENTITY FTAnd "<term>FTAnd</term>">
+    <!ENTITY FTNegation "<term>FTNegation</term>">
+    <!ENTITY FTUnaryNot "<term>FTUnaryNot</term>">
+    <!ENTITY FTMildNegation "<term>FTMildNegation</term>">
+    <!ENTITY FTMildNot "<term>FTMildNot</term>">
+    <!ENTITY FTOrder "<term>FTOrder</term>">
+    <!ENTITY FTScope "<term>FTScope</term>">
+    <!ENTITY FTDistance "<term>FTDistance</term>">
+    <!ENTITY FTRange "<term>FTRange</term>">
+    <!ENTITY FTWindow "<term>FTWindow</term>">
+    <!ENTITY FTTimes "<term>FTTimes</term>">
+    <!ENTITY members "(W3C members only)">
+    <!ENTITY FTThesaurusOption "<term>FTThesaurusOption</term>">
+    <!ENTITY FTRegexOption "<term>FTRegexOption</term>">
+    <!ENTITY FTCaseOption "<term>FTCaseOption</term>">
+    <!ENTITY FTStemOption "<term>FTStemOption</term>">
+    <!ENTITY FTStopWordOption "<term>FTStopWordOption</term>">
+    <!ENTITY FTLanguageOption "<term>FTLanguageOption</term>">
+    <!ENTITY FTWildCardOption "<term>FTWildCardOption</term>">
+    <!ENTITY FTDiacriticsOption "<term>FTDiacriticsOption</term>">
+
+    <!ENTITY ref-implementation-defined '<termref def="dt-implementation-defined">implementation-defined</termref>'>
+    <!ENTITY ref-implementation-dependent '<termref def="dt-implementation-dependent">implementation-dependent</termref>'>
+
+<!-- Generate Status section automatically from the following ENTITY definitions -->
+<!ENTITY % status-entities SYSTEM "../../../etc/status-entities.dtd">
+%status-entities;
+
+<!ENTITY doc.WD-pubdate "08 January 2013">
+<!ENTITY doc.LC-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.LC-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.CR-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.CR-repubdate "TO BE SPECIFIED">
+<!ENTITY doc.CR-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.PR-expected "TO BE SPECIFIED">
+<!ENTITY doc.PR-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.PR-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.REC-pubdate "TO BE SPECIFIED">
+
+<!ENTITY doc.pubdate "&doc.WD-pubdate;">
+<!ENTITY doc.comments-due "&doc.LC-comments-due;">
+
+
+<!ENTITY status-section-id "status">
+<!ENTITY spec-devby    "&devby.joint1;">
+<!ENTITY changelog-id  "id-xqft-changelog">
+<!ENTITY changes-para  "&post.WD.nochanges;">
+<!ENTITY implementation-report-location "http://dev.w3.org/2011/xpath-full-text-31-test-suite/results/">
+<!ENTITY implementation-report-availability "&report-public;">
+<!ENTITY implementation-report "&no-implementation-report-yet;">
+<!ENTITY test-suite-location "http://dev.w3.org/cvsweb/2011/xpath-full-text-31-test-suite/">
+<!ENTITY Bugzilla-key "FT31">
+<!ENTITY patent-policy-paragraph "&ppp-two;">
+<!ENTITY documents-and-relationships "&not-set-of-documents;">
+<!ENTITY advancement.statement "&advance.2WGs;">
+<!ENTITY doc-stability "&doc-stability-LC;">
+<!ENTITY document-stage "&doc-stage-LC;">
+
+<!ENTITY PR-entrance-criteria ''>
+<!ENTITY features-at-risk-para ''>
+<!ENTITY features-at-risk ''>
+
+<!ENTITY customized-paragraph '<p>This version of Full Text has to be described in a customized paragraph before publication as a FPWD.
+           The purpose of this &doc.w3c-doctype-full; is to align the grammar of &language; with the grammars of
+           <bibref ref="xquery-31"/> and <bibref ref="xpath-31"/>. </p>'>
+
+<!ENTITY status-section SYSTEM "../../../etc/status-general.xml">
+
+]>
+
+<spec id="spec-top" w3c-doctype="&doc.w3c-doctype;"
+status="final"
+>
+<header>&TQHEADER;</header>
+<body>
+&TQINTRO;
+&TQEXPRESSIONS;
+&TQFTSELECTIONS;
+&TQSEMANTICS;
+&TQCONFORMANCE;
+</body>
+<back id="id-appendices">
+&ebnf;
+&ebnf-xpath;
+&static-context;
+&error-list;
+&ft-xqueryx;
+&references;
+&acknowledgements;
+&glossary;
+&implementation-defined;
+<!--	&issues; -->
+&changelog;
+</back>
+</spec>

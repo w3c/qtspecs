@@ -1,0 +1,2886 @@
+<div1 id="sec_importing_schema">
+  <head>Importing Schemas</head>
+
+  <p>This section describes how XML Schema declarations, as specified
+  by XML Schema are imported into the &language; type system.</p>
+
+  <div2 id="sec_import_intro">
+    <head>Introduction</head>
+
+    <p>During schema import processing, the &language; environment
+    imports XML Schema declarations and loads them as declarations in
+    the &language; type system. The semantics of that loading process
+    is defined by normalization rules that map XML Schema descriptions
+    into the &language; type system.</p>
+
+    <div3 id="sec_import_features">
+      <head>Features</head>
+
+      <p>Here is summarized the XML Schema features which are covered
+      by the formal semantics, and handled by the import mapping
+      described in this section. For each feature, the following
+      indications are used.</p>
+
+      <ulist>
+        <item>
+          <p><term>Handled</term> indicates features that are relevant for
+          &language;, are modeled in the &language; type system,
+          and are supported by the mapping.</p>
+        </item>
+        <item>
+          <p><term>Not in v1.0</term> indicates features that  are relevant to
+          &language;, but are not yet modeled in the &language;
+          type system or are not handled by the mapping in XQuery
+          V1.0. In case the &language;
+          type system provides appropriate support for those features,
+          but the mapping is incomplete, the additional annotation
+          <term>mapping only</term> is used.</p>
+        </item>
+        <item>
+          <p><term>Not handled</term> indicates features that are relevant
+          for &language;, but are not modeled in the &language;
+          type system, and are not handled by the mapping. Such
+          features are typically only related to validation, for which
+          the formal semantics defines a partial model.</p>
+        </item>
+        <item>
+          <p><term>Ignored</term> Indicates features that are not relevant
+          for &language;, are not modeled in the &language; type
+          system, and are not relevant for the mapping. Such features
+          might have to do with documentation of the schema, or might
+          affect which Schemas are legal, but do not affect which
+          documents match which Schemas.</p>
+        </item>
+      </ulist>
+
+      <p>Here is the exhaustive list of XML Schema features and their
+      status in this document.</p>
+
+        <table summary="" role="figure">
+          <col align="left"/>
+          <col align="center"/>
+          <col align="left"/>
+          <tbody>
+             <tr><td><term>Feature:</term></td>
+          	 <td><term>Supported</term></td>
+             </tr>
+             <tr><td>Primitive Simple types</td>
+          	 <td>Handled</td>
+             </tr>
+             <tr><td>Simple type derivation by restriction</td>
+          	 <td>Handled</td>
+             </tr>
+             <tr><td>Derivation by list and union</td>
+          	 <td>Handled</td>
+             </tr>
+             <tr><td>Facets on simple types</td>
+          	 <td>Not handled</td>
+             </tr>
+             <tr><td>ID and IDREF constraints</td>
+          	 <td>Ignored</td>
+             </tr>
+             <tr><td>Attribute Declarations</td>
+          	 <td></td>
+             </tr>
+             <tr><td>&sp4;default,fixed,use</td>
+          	 <td>Not in v1.0</td>
+             </tr>
+             <tr><td>Element Declarations</td>
+          	 <td></td>
+             </tr>
+             <tr><td>&sp4;default, fixed (value constraint)</td>
+          	 <td>Not in v1.0</td>
+             </tr>
+             <tr><td>&sp4;nillable</td>
+          	 <td>Handled</td>
+             </tr>
+             <tr><td>&sp4;substitution group affiliation</td>
+          	 <td>Handled</td>
+             </tr>
+             <tr><td>&sp4;substitution group exclusions</td>
+          	 <td>Ignored</td>
+             </tr>
+             <tr><td>&sp4;disallowed substitutions</td>
+          	 <td>Ignored</td>
+             </tr>
+             <tr><td>&sp4;abstract</td>
+          	 <td>Not in v1.0</td>
+             </tr>
+             <tr><td>Complex Type Definitions</td>
+          	 <td></td>
+             </tr>
+             <tr><td>&sp4;derivation by restriction</td>
+          	 <td>Handled</td>
+             </tr>
+             <tr><td>&sp4;derivation by extension</td>
+          	 <td>Handled</td>
+             </tr>
+             <tr><td>&sp4;final</td>
+          	 <td>Ignored</td>
+             </tr>
+             <tr><td>&sp4;abstract</td>
+          	 <td>Not in v1.0</td>
+             </tr>
+             <tr><td>AttributeUses</td>
+          	 <td></td>
+             </tr>
+             <tr><td>&sp4;required</td>
+          	 <td>Not in v1.0, mapping only</td>
+             </tr>
+             <tr><td>&sp4;default, fixed (value constraint)</td>
+          	 <td>Not in v1.0</td>
+             </tr>
+             <tr><td>Attribute Group Definitions</td>
+          	 <td>Not in v1.0, mapping only</td>
+             </tr>
+             <tr><td>Model Group Definitions</td>
+          	 <td>Not in v1.0, mapping only</td>
+             </tr>
+             <tr><td>Model Groups</td>
+          	 <td>Handled</td>
+             </tr>
+             <tr><td>Particles</td>
+          	 <td>Handled</td>
+             </tr>
+             <tr><td>Wildcards</td>
+          	 <td></td>
+             </tr>
+             <tr><td>&sp4;process contents strict, skip, lax</td>
+          	 <td>Ignored</td>
+             </tr>
+             <tr><td>&sp4;namespace wild cards.</td>
+          	 <td>Ignored</td>
+             </tr>
+             <tr><td>Identity-constraint Definitions</td>
+          	 <td>Ignored</td>
+             </tr>
+             <tr><td>Notation Declarations</td>
+          	 <td>Ignored</td>
+             </tr>
+             <tr><td>Annotations</td>
+          	 <td>Ignored</td>
+             </tr>
+          </tbody>
+        </table>
+
+        <p>Note that the schema import feature specified here assumes
+        it is given a legal schema as input. As a result, it is not
+        necessary to check for 'block' or 'abstract' attributes.</p>
+
+    </div3>
+
+    <div3 id="sec_import_organization">
+      <head>Organization</head>
+
+      <p>The presentation of the schema mapping is done according to
+      the following organization.</p>
+
+      <smschema>
+  
+    	<p>First each schema component is summarized using the same
+    	notation used in the XML Representation Summary sections in
+    	XML Schema. For instance, here is the XML Representation
+    	Summary for complex types.</p>
+  
+    	<schemaRepresentationEg>
+    	  <schemaRepresentation>
+    	    <name>complexType</name>
+    	    <schemaAttribute role="ignored">
+    	       abstract = boolean : false
+    	    </schemaAttribute>
+    	    <schemaAttribute role="ignored">
+    	       block = (#all | List of (extension | restriction))
+    	    </schemaAttribute>
+    	    <schemaAttribute role="ignored">
+    	       final = (#all | List of (extension | restriction))
+    	    </schemaAttribute>
+    	    <schemaAttribute role="ignored">
+    	       id = ID
+    	    </schemaAttribute>
+    	    <schemaAttribute>
+    	       mixed = boolean : false
+    	    </schemaAttribute>
+    	    <schemaAttribute>
+    	       name = NCName
+    	    </schemaAttribute>
+    	    <schemaAttribute role="ignored">
+    	       {any schemaAttributes with non-schema namespace ...}
+    	    </schemaAttribute>
+    	    <content>
+    	      Content: (annotation?, (simpleContent | complexContent |
+    	      ((group | all | choice | sequence)?, ((schemaAttribute |
+    	      schemaAttributeGroup)*, anySchemaAttribute?))))
+    	    </content>
+    	  </schemaRepresentation>
+    	</schemaRepresentationEg>
+  
+    	<p>Attributes indicated as <term>[ ignored ]</term> are not mapped
+    	into the &language; type system.</p>
+  
+    	<p>Attributes indicated as <term>[ not handled ]</term> are not
+    	currently handled by the mapping.</p>
+  
+    	<p>Note that in order to simplify the mapping, it is assumed
+    	that the default values for all attributes in the XML
+    	Representation of Schema are filled in. For instance in the
+    	above complex type, if the <code>mixed</code> attribute is not
+    	present, it will be treated as being present and having the
+    	value <code>"false"</code>.</p>
+  
+      </smschema>
+  
+      <smschemanorm>
+  
+    	<p>XML Schema import is specified by means of mapping
+    	rules. All mapping rules have the structure below.</p>
+  
+    	<mapping>
+    	  <xquery>
+    	    <expression>
+    	      <map><emph>SchemaComponent</emph></map><subscript>Subscript</subscript>
+    	    </expression>
+    	  </xquery>
+    	  <core>
+    	    <expression>
+    	      <emph>TypeComponent</emph>
+    	    </expression>
+    	  </core>
+    	</mapping>
+  
+    	<p>The <emph>SchemaComponent</emph> above the horizontal rule
+    	denotes an XML Schema component before translation and the
+    	<emph>TypeComponent</emph> beneath the horizontal rule denotes
+    	an equivalent type component in the &language; type system.</p>
+  
+      </smschemanorm>
+  
+      <smnotation>
+  
+    	<p>Whenever necessary for the mapping rules, specific grammar
+    	productions which describe fragments of XML Schema may be
+    	introduced. For instance, here are grammar productions used to
+    	describes fragments of the XML Representation Summary for the
+    	complexType Element Information Item.</p>
+  
+    	<scrap>
+    	  <head>Complex type content</head>
+  	
+    	  <prodrecap ref="ComplexTypeContent" id="test-ComplexTypeContent" orig="formal" test="Example"/>
+    	  <prodrecap ref="AttributeContent"   id="test-AttributeContent"   orig="formal" test="Example"/>
+    	  <prodrecap ref="ChildrenContent"    id="test-ChildrenContent"    orig="formal" test="Example"/>
+    	</scrap>
+   
+    	<p>As in the rest of this document, some mapping rules may use
+    	fragments of the XML Representation corresponding to the
+    	syntactic categories defined by those grammar productions. For
+    	instance, the following complex type fragment uses the
+    	syntactic categories: &gr_TypeName;, &gr_ComplexTypeContent;,
+    	and &gr_AttributeContent;, &gr_ChildrenContent;, and
+    	&gr_MixedAttribute;.</p>
+  
+    	<schemaRepresentation>
+    	  <name>complexType</name>
+    	  <schemaAttribute>
+    	     name = &gr_TypeName;
+    	  </schemaAttribute>
+    	  <schemaAttribute>
+    	     &gr_MixedAttribute;
+    	  </schemaAttribute>
+    	  <content>&gr_ChildrenContent; &gr_AttributeContent;</content>
+    	</schemaRepresentation>
+  
+      </smnotation>
+    </div3>
+
+    <div3 id="sec_import_mapping">
+      <head>Main mapping rules</head>
+    
+      <smnotation>
+        <p id="jd_map_schema">The normalization rule</p>
+
+        <display>
+  	  <mapping>
+  	    <xquery>
+              <expression>
+  	         <map>&gr_Schema;</map>&jd_map_schema;
+              </expression>
+  	    </xquery>
+  	    <core>
+  	      <expression>
+  	        &gr_Definitions;
+              </expression>
+  	    </core>
+  	  </mapping>
+        </display>
+
+        <p>maps a complete schema into a set of &gr_Definitions; in
+        the &language; type system.</p>
+
+  	<p id="jd_map_definition">The normalization rule</p>
+
+  	<display>
+  	  <mapping>
+  	    <xquery>
+              <expression>
+  	         <map><emph>SchemaComponent</emph></map>&jd_map_definition;
+              </expression>
+  	    </xquery>
+  	    <core>
+  	      <expression>
+  	        &gr_Definition;
+              </expression>
+  	    </core>
+  	  </mapping>
+  	</display>
+
+        <p>maps a top level schema component into a &gr_Definition; in
+        the &language; type system, given the target namespace
+        &gr_targetURI;.</p>
+
+  	<p id="jd_map_content">The normalization rule</p>
+      	
+  	<display>
+  	  <mapping>
+  	    <xquery>
+              <expression>
+  	         <map><emph>SchemaComponent</emph></map>&jd_map_content;
+              </expression>
+  	    </xquery>
+  	    <core>
+  	      <expression>
+  	        <emph>TypeComponent</emph>
+              </expression>
+  	    </core>
+  	  </mapping>
+  	</display>
+
+        <p>maps a schema component not directly under the schema
+        element, into a <emph>TypeComponent</emph> in the &language;
+        type system, given the target namespace &gr_targetURI;.</p>
+      </smnotation>
+    </div3>    
+
+    <div3 id="sec_use">
+      <head>Special attributes</head>
+    
+      <p>The XML Schema attributes: use, default, fixed, minOccurs,
+      maxOccurs, mixed, nillable, and substitutionGroup, require
+      specific mapping rules.</p>
+    
+      <div4 id="sec_import_attributes">
+  	<head>use, default, and fixed</head>
+      
+  	<p>The <quote>use</quote>, <quote>default</quote>, and
+        <quote>fixed</quote> attributes are used to describe the
+        occurrence and default behavior of a given attribute.</p>
+  
+  	<smnotation>
+  	  <p>The following auxiliary grammar productions are used to
+  	  describe the <quote>use</quote>, <quote>default</quote>, and
+  	  <quote>fixed</quote> attributes.</p>
+      
+  	  <scrap>
+  	    <head>Use, default, and fixed attributes</head>
+  	  
+  	    <prodrecap ref="UseAttribute" id="UseAttribute" orig="formal"/>
+  	    <prodrecap ref="DefaultAttribute" id="DefaultAttribute" orig="formal"/>
+  	    <prodrecap ref="FixedAttribute" id="FixedAttribute" orig="formal"/>
+  	  </scrap>
+
+  	  <p id="jd_map_use">The normalization rule</p>
+      
+  	  <display>
+  	    <mapping>
+  	      <xquery>
+  		<expression>
+  		  <map>&gr_UseAttribute; &gr_DefaultAttribute;? &gr_FixedAttribute;? </map>&jd_map_use;
+  		</expression>
+  	      </xquery>
+  	      <core>
+  		<expression>
+  		  &gr_Occurrence;
+  		</expression>
+  	      </core>
+  	    </mapping>
+  	  </display>
+  
+  	  <p>maps a combination of a use attribute &gr_UseAttribute;,
+  	  along with an optional default or fixed attribute in Schema
+  	  into the occurrence indicator &gr_Occurrence; in the
+  	  &language; type system.</p>
+  	</smnotation>
+  	  
+  	<smschemanorm>
+  	  <p>Use attributes are mapped to the type system in the
+  	  following way. In case there is a default or fixed
+  	  attribute, the attribute is always present in the PSVI and
+  	  the use attribute is ignored.</p>
+  	  
+  	  <mapping>
+  	    <xquery>
+  	      <expression>&gr_UseAttribute; &gr_DefaultAttribute;&jd_map_use;</expression>
+  	    </xquery>
+  	    <core>
+  	      <expression>1</expression>
+  	    </core>
+  	  </mapping>
+  	
+  	  <mapping>
+  	    <xquery>
+  	      <expression>&gr_UseAttribute; &gr_FixedAttribute;&jd_map_use;</expression>
+  	    </xquery>
+  	    <core>
+  	      <expression>1</expression>
+  	    </core>
+  	  </mapping>
+  	
+  	  <mapping>
+  	    <xquery>
+  	      <expression>use = <quote>optional</quote>&jd_map_use;</expression>
+  	    </xquery>
+  	    <core>
+  	      <expression>?</expression>
+  	    </core>
+  	  </mapping>
+  	
+  	  <mapping>
+  	    <xquery>
+  	      <expression>use = <quote>required</quote>&jd_map_use;</expression>
+  	    </xquery>
+  	    <core>
+  	      <expression>1</expression>
+  	    </core>
+  	  </mapping>
+  	
+  	  <ednote>
+  	    <edtext>Issue: how derivation of attribute declaration and
+  	    the <quote>prohibited</quote> use attributes are mapped in
+  	    the &language; type system is still an open
+  	    issue.</edtext>
+  	  </ednote>
+  
+  	</smschemanorm>
+      </div4>
+
+      <div4 id="prod-formal-OccursAttributes"> 
+  	<head>minOccurs, maxOccurs, minLength, maxLength, and length</head>
+    
+  	<smnotation>
+  	  <p>The following auxiliary grammar productions are used to
+  	  describe occurrence attributes and the length facets.</p>
+  	  
+  	  <scrap>
+  	    <head>Occurrence attributes</head>
+  	  
+  	    <prodrecap ref="OccursAttributes" id="OccursAttributes" orig="formal"/>
+  	    <prodrecap ref="maxOccurs" 	      id="maxOccurs" 	    orig="formal"/>
+  	    <prodrecap ref="minOccurs" 	      id="minOccurs" 	    orig="formal"/>
+  	    <prodrecap ref="maxLength" 	      id="maxLength" 	    orig="formal"/>
+  	    <prodrecap ref="minLength" 	      id="minLength" 	    orig="formal"/>
+  	    <prodrecap ref="length" 	      id="length" 	    orig="formal"/>
+  	  </scrap>
+  
+  	  <p id="jd_map_occurs">The normalization rule</p>
+      
+  	  <display>
+  	    <mapping>
+  	      <xquery>
+  		<expression>
+  		  <map>&gr_OccursAttributes;</map>&jd_map_occurs;
+  		</expression>
+  	      </xquery>
+  	      <core>
+  		<expression>
+  		  &gr_Occurrence;
+  		</expression>
+  	      </core>
+  	    </mapping>
+  	  </display>
+  
+  	  <p>maps the occurrence attributes and facets &gr_OccursAttributes; in
+  	  Schema into the occurrence indicator &gr_Occurrence; in the
+  	  &language; type system.</p>
+  	</smnotation>
+  	  
+  	<smschemanorm>
+  	  
+  	  <p>Occurrence attributes are mapped to the type system in
+  	  the following way.</p>
+  	  
+  	  <mapping>
+  	    <xquery>
+  	      <expression><map>minOccurs="0" maxOccurs="1"</map>&jd_map_occurs;</expression>
+  	    </xquery>
+  	    <core>
+  	      <expression>?</expression>
+  	    </core>
+  	  </mapping>
+  	  
+  	  <mapping>
+  	    <xquery>
+  	      <expression><map>minOccurs="1" maxOccurs="1"</map>&jd_map_occurs;</expression>
+  	    </xquery>
+  	    <core>
+  	      <expression></expression>
+  	    </core>
+  	  </mapping>
+  	  
+  	  <mapping>
+  	    <xquery>
+  	      <expression><map>minOccurs="0" maxOccurs="n"</map>&jd_map_occurs;</expression>
+  	    </xquery>
+  	    <core>
+  	      <expression>*</expression>
+  	    </core>
+  	  </mapping>
+  	  
+  	  <mapping>
+  	    <xquery>
+  	      <expression><map>minOccurs="1" maxOccurs="n"</map>&jd_map_occurs;</expression>
+  	    </xquery>
+  	    <core>
+  	      <expression>+</expression>
+  	    </core>
+  	  </mapping>
+  	  
+  	  <p>where <expression>n &gt; 1</expression>.</p>
+  	  
+  	  <mapping>
+  	    <xquery>
+  	      <expression><map>minOccurs="n" maxOccurs="m"</map>&jd_map_occurs;</expression>
+  	    </xquery>
+  	    <core>
+  	      <expression>+</expression>
+  	    </core>
+  	  </mapping>
+  	  
+  	  <p>where <expression>m &gt;= n &gt; 1</expression></p>
+
+  	  <mapping>
+  	    <xquery>
+  	      <expression><map>minLength="0" maxLength="1"</map>&jd_map_occurs;</expression>
+  	    </xquery>
+  	    <core>
+  	      <expression>?</expression>
+  	    </core>
+  	  </mapping>
+  	  
+  	  <mapping>
+  	    <xquery>
+  	      <expression><map>minLength="1" maxLength="1"</map>&jd_map_occurs;</expression>
+  	    </xquery>
+  	    <core>
+  	      <expression></expression>
+  	    </core>
+  	  </mapping>
+  	  
+  	  <mapping>
+  	    <xquery>
+  	      <expression><map>minLength="0" maxLength="n"</map>&jd_map_occurs;</expression>
+  	    </xquery>
+  	    <core>
+  	      <expression>*</expression>
+  	    </core>
+  	  </mapping>
+  	  
+  	  <mapping>
+  	    <xquery>
+  	      <expression><map>minLength="1" maxLength="n"</map>&jd_map_occurs;</expression>
+  	    </xquery>
+  	    <core>
+  	      <expression>+</expression>
+  	    </core>
+  	  </mapping>
+  	  
+  	  <p>where <expression>n &gt; 1</expression>.</p>
+  	  
+  	  <mapping>
+  	    <xquery>
+  	      <expression><map>minLength="n" maxLength="m"</map>&jd_map_occurs;</expression>
+  	    </xquery>
+  	    <core>
+  	      <expression>+</expression>
+  	    </core>
+  	  </mapping>
+  	  
+  	  <p>where <expression>m &gt;= n &gt; 1</expression></p>
+
+  	  <mapping>
+  	    <xquery>
+  	      <expression><map>length="1"</map>&jd_map_occurs;</expression>
+  	    </xquery>
+  	    <core>
+  	      <expression></expression>
+  	    </core>
+  	  </mapping>
+  	  
+  	  <mapping>
+  	    <xquery>
+  	      <expression><map>length="n"</map>&jd_map_occurs;</expression>
+  	    </xquery>
+  	    <core>
+  	      <expression>+</expression>
+  	    </core>
+  	  </mapping>
+  	  
+  	  <p>where <expression>n &gt; 1</expression></p>
+  	</smschemanorm>
+      </div4>
+  
+      <div4 id="sec_import_mixed">
+  	<head>mixed</head>
+    
+  	<smnotation>
+  	  <p>The following auxiliary grammar productions are used to
+  	  describe the <quote>mixed</quote> attribute.</p>
+    
+  	  <scrap>
+  	    <head>Mixed attribute</head>
+  	  
+  	    <prodrecap ref="MixedAttribute" id="MixedAttribute" orig="formal"/>
+  	  </scrap>
+  
+  	  <p id="jd_map_mixed">The normalization rule</p>
+      
+  	  <display>
+  	    <mapping>
+  	      <xquery>
+  		<expression>
+  		  <map>&gr_MixedAttribute;</map>&jd_map_mixed;
+  		</expression>
+  	      </xquery>
+  	      <core>
+  		<expression>
+  		  &gr_Mixed;
+  		</expression>
+  	      </core>
+  	    </mapping>
+  	  </display>
+  
+  	  <p>maps the mixed attribute &gr_MixedAttribute; in Schema into
+  	  a &gr_Mixed; notation in the &language; type system.</p>
+  	</smnotation>
+  	  
+  	<smschemanorm>
+  	  <p>If the mixed attribute is true it is mapped to a mixed
+  	  notation in the &language; type system.</p>
+  	  
+  	  <mapping>
+  	    <xquery>
+  	      <expression>
+  		<map>
+  		  mixed = <quote>true</quote>
+  	      </map>&jd_map_mixed;
+  	    </expression>
+  	    </xquery>
+  	    <core>
+  	      <expression>mixed</expression>
+  	    </core>
+  	  </mapping>
+  	  
+  	  <p>If the mixed attribute is false it is mapped to empty in
+  	  the &language; type system.</p>
+  	  
+  	  <mapping>
+  	    <xquery>
+  	      <expression>
+  		<map>
+  		  mixed = <quote>false</quote>
+  		</map>&jd_map_mixed;
+  	    </expression>
+  	    </xquery>
+  	    <core>
+  	      <expression></expression>
+  	    </core>
+  	  </mapping>
+  	
+  	</smschemanorm>
+      </div4>
+    
+      <div4 id="sec_import_nillable">
+  	<head>nillable</head>
+    
+  	<smnotation>
+  	  <p>The following auxiliary grammar productions are used to
+  	  describe the <quote>nillable</quote> attribute.</p>
+    
+  	  <scrap>
+  	    <head>Nillable attribute</head>
+  	  
+  	    <prodrecap ref="NillableAttribute" id="NillableAttribute" orig="formal"/>
+  	  </scrap>
+  
+  	  <p id="jd_map_nillable">The normalization rule</p>
+      
+  	  <display>
+  	    <mapping>
+  	      <xquery>
+  		<expression>
+  		  <map>&gr_NillableAttribute;</map>&jd_map_nillable;
+  		</expression>
+  	      </xquery>
+  	      <core>
+  		<expression>
+  		  &gr_Nillable;
+  		</expression>
+  	      </core>
+  	    </mapping>
+  	  </display>
+  
+  	  <p>maps the nillable attribute &gr_NillableAttribute; in
+  	  Schema into a &gr_Nillable; notation in the &language; type
+  	  system.</p>
+  	</smnotation>
+  	  
+  	<smschemanorm>
+  	  <p>If the nillable attribute is true it is mapped to a
+  	  nillable notation in the &language; type system.</p>
+  	  
+  	  <mapping>
+  	    <xquery>
+  	      <expression>
+  		<map>
+  		  nillable = <quote>true</quote>
+  	      </map>&jd_map_nillable;
+  	    </expression>
+  	    </xquery>
+  	    <core>
+  	      <expression>nillable</expression>
+  	    </core>
+  	  </mapping>
+  	  
+  	  <p>If the nillable attribute is false it is mapped to empty
+  	  in the &language; type system.</p>
+  	  
+  	  <mapping>
+  	    <xquery>
+  	      <expression>
+  		<map>
+  		  nillable = <quote>false</quote>
+  		</map>&jd_map_nillable;
+  	    </expression>
+  	    </xquery>
+  	    <core>
+  	      <expression></expression>
+  	    </core>
+  	  </mapping>
+  	
+  	</smschemanorm>
+      </div4>
+    
+      <div4 id="sec_import_substitution">
+  	<head>substitutionGroup</head>
+    
+  	<smnotation>
+  	  <p>The substitution group declaration indicates the element
+  	  that a given element can be substituted for. The following
+  	  auxiliary grammar productions are used to describe the
+  	  <quote>substitutionGroup</quote> attribute.</p>
+    
+  	  <scrap>
+  	    <head>substitutionGroup attribute</head>
+  	  
+  	    <prodrecap ref="substitutionGroupAttribute" id="substitutionGroupAttribute" orig="formal"/>
+  	  </scrap>
+  
+  	  <p id="jd_map_substitution">The normalization rule</p>
+      
+  	  <display>
+  	    <mapping>
+  	      <xquery>
+  		<expression>
+  		  <map>&gr_substitutionGroupAttribute;</map>&jd_map_substitution;
+  		</expression>
+  	      </xquery>
+  	      <core>
+  		<expression>
+  		  &gr_Substitution;
+  		</expression>
+  	      </core>
+  	    </mapping>
+  	  </display>
+  
+  	  <p>maps the substitutionGroup attribute
+  	  &gr_substitutionGroupAttribute; in Schema into a
+  	  &gr_Substitution; notation in the &language; type
+  	  system.</p>
+  	</smnotation>
+  	  
+  	<smschemanorm>
+  	  <p>If the substitutionGroup attribute is present, it is
+  	  mapped to a substitutionGroup notation in the &language;
+  	  type system.</p>
+  	  
+  	  <mapping>
+  	    <xquery>
+  	      <expression>
+  		<map>
+  		  substitutionGroup = &gr_QName;
+  	      </map>&jd_map_substitution;
+  	    </expression>
+  	    </xquery>
+  	    <core>
+  	      <expression>substitutes for &gr_QName;</expression>
+  	    </core>
+  	  </mapping>
+
+  	  <p>Otherwise, it is mapped to empty.</p>
+  	</smschemanorm>
+      </div4>
+    
+    </div3>
+
+    <div3 id="sec_import_anonymous">
+      <head>Anonymous type names</head>
+
+      <smnotation>
+        <p>As explained in <specref ref="sec_types"/>, the &language;
+        type uses system-generated type names for anonymous types. For
+        the purpose of this document those type names are generated at
+        XML Schema import time.</p>
+      </smnotation>
+    </div3>
+  </div2>
+
+  <div2 id="sec_schema_as_a_whole">
+    <head>Schemas as a whole</head>
+
+    <div3 id="sec_import_whole">
+      <head>Schema</head>
+
+      <smschema>
+        <p>A schema is represented in XML by the following
+        structure.</p>
+  
+        <schemaRepresentationEg>
+        <schemaRepresentation>
+          <name>schema</name>
+          <schemaAttribute role="nothandled">
+             attributeFormDefault = (qualified | unqualified) : unqualified
+          </schemaAttribute>
+          <schemaAttribute role="ignored">
+             blockDefault = (#all | List of (extension | restriction | substitution))  : ' '
+          </schemaAttribute>
+          <schemaAttribute role="nothandled">
+             elementFormDefault = (qualified | unqualified) : unqualified
+          </schemaAttribute>
+          <schemaAttribute role="ignored">
+             finalDefault = (#all | List of (extension | restriction)) :  ' '
+          </schemaAttribute>
+          <schemaAttribute role="ignored">
+             id = ID
+          </schemaAttribute>
+          <schemaAttribute>
+             targetNamespace = anyURI
+          </schemaAttribute>
+          <schemaAttribute role="ignored">
+             version = token
+          </schemaAttribute>
+          <schemaAttribute role="ignored">
+             xml:lang = language
+          </schemaAttribute>
+          <schemaAttribute role="ignored">
+             {any attributes with non-schema namespace ...}
+          </schemaAttribute>
+          <content>
+            Content: ((include | import | redefine | annotation)*,
+            (((simpleType | complexType | group | attributeGroup) |
+            element | attribute | notation), annotation*)*)
+          </content>
+        </schemaRepresentation>
+        </schemaRepresentationEg>
+  
+      </smschema>
+  
+      <smnotation>
+        <p>The following auxiliary grammar productions are used.</p>
+  
+        <scrap>
+          <head>XML Schema Pragma and Content</head>
+        
+          <prodrecap ref="SPragma" id="SPragma" orig="formal"/>
+          <prodrecap ref="Content" id="Content" orig="formal"/>
+        </scrap>
+   
+        <p id="jd_map_pragma">The auxiliary normalization rule</p>
+    
+        <display>
+          <mapping>
+            <xquery>
+              <expression>
+                <map>&gr_Pragma;</map>&jd_map_pragma;
+              </expression>
+            </xquery>
+            <core>
+              <expression>
+                &gr_Definitions;
+              </expression>
+            </core>
+          </mapping>
+        </display>
+    
+        <p>maps the a schema pragma into a set of definitions in the
+        &language; type system.</p>
+      </smnotation>
+
+      <smschemanorm>
+        <p>Schemas are imported by the <quote>schema</quote>
+        declaration in the preamble of a query. To import a schema,
+        the document referred to by the given URI is opened and the
+        schema declarations contained in the document are translated
+        into the corresponding in-line type definitions.  The
+        mechanism for finding a schema document, possibly using the
+        optional schema location hint, is not specified formally. </p>
+  
+        <mapping>
+          <xquery>
+            <expression>
+              <map>schema &gr_StringLiteral; (at &gr_StringLiteral;)?</map>&jd_map_schema;
+            </expression>
+          </xquery>
+          <core>
+            <expression>
+              <map>open-schema-document(&gr_StringLiteral; (at &gr_StringLiteral;)?)</map>&jd_map_schema;
+            </expression>
+          </core>
+        </mapping>
+  
+        <mapping>
+          <xquery>
+            <expression>
+             <map>
+                 <schemaRepresentation>
+                   <name>schema</name>
+                   <schemaAttribute>
+                      targetNamespace = &gr_targetURI;
+                   </schemaAttribute>
+                   <content>
+                     &gr_Pragma; &gr_Content;
+                   </content>
+                 </schemaRepresentation>
+             </map>&jd_map_schema;
+           </expression>
+          </xquery>
+          <core>
+            <expression>
+                <map>&gr_Pragma;</map>&jd_map_pragma;
+                <map>&gr_Content;</map>&jd_map_definition;
+            </expression>
+          </core>
+        </mapping>
+      </smschemanorm>
+
+    </div3>
+
+    <div3 id="sec_import_include">
+      <head>Include</head>
+
+        <smschema>
+          <p>A schema include is represented in XML by the following
+          structure.</p>
+  
+          <schemaRepresentationEg>
+            <schemaRepresentation>
+              <name>include</name>
+              <schemaAttribute role="ignored">
+                 id = ID
+              </schemaAttribute>
+              <schemaAttribute>
+                 schemaLocation = anyURI
+              </schemaAttribute>
+              <schemaAttribute role="ignored">
+                 {any attributes with non-schema namespace ...}
+              </schemaAttribute>
+              <content>
+                Content: (annotation?)
+              </content>
+            </schemaRepresentation>
+          </schemaRepresentationEg>
+
+        </smschema>
+
+        <smschemanorm>
+
+          <p>A schema include is not specified here, and is assumed
+          to be handled by the XML Schema processor.</p>
+        </smschemanorm>
+      </div3>
+
+      <div3 id="sec_import_redefine">
+        <head>Redefine</head>
+
+        <smschema>
+          <p>A schema redefinition is represented in XML by the
+          following structure.</p>
+
+          <schemaRepresentationEg>
+            <schemaRepresentation>
+              <name>redefine</name>
+              <schemaAttribute role="ignored">
+                 id = ID
+              </schemaAttribute>
+              <schemaAttribute>
+                 schemaLocation = anyURI
+              </schemaAttribute>
+              <schemaAttribute role="ignored">
+                 {any attributes with non-schema namespace ...}
+              </schemaAttribute>
+              <content>
+                Content: (annotation | (simpleType | complexType | group | attributeGroup))*
+              </content>
+            </schemaRepresentation>
+          </schemaRepresentationEg>
+
+        </smschema>
+
+        <smschemanorm>
+
+          <p>A schema redefine is not specified here, and is assumed
+          to be handled by the XML Schema processor.</p>
+
+        </smschemanorm>
+
+      </div3>
+
+      <div3 id="sec_import_import">
+        <head>Import</head>
+
+        <smschema>
+          <p>A schema import is represented in XML by the following
+          structure.</p>
+
+          <schemaRepresentationEg>
+            <schemaRepresentation>
+              <name>import</name>
+              <schemaAttribute role="ignored">
+                 id = ID
+              </schemaAttribute>
+              <schemaAttribute>
+                 namespace = anyURI
+              </schemaAttribute>
+              <schemaAttribute>
+                 schemaLocation = anyURI
+              </schemaAttribute>
+              <schemaAttribute role="ignored">
+                 {any attributes with non-schema namespace ...}
+              </schemaAttribute>
+              <content>
+                Content: (annotation?)
+              </content>
+            </schemaRepresentation>
+          </schemaRepresentationEg>
+
+        </smschema>
+
+        <smschemanorm>
+          <p>A schema import is not specified here, and is assumed to
+          be handled by the XML Schema processor.</p>
+        </smschemanorm>
+      </div3>
+    </div2>
+
+  <div2 id="sec_import_attribute_decl">
+    <head>Attribute Declarations</head>
+
+    <smschema>
+      <p>The following structure describes attribute declarations in
+      XML Schema.</p>
+  
+    	<schemaRepresentationEg>
+    	  <schemaRepresentation>
+    	    <name>attribute</name>
+    	    <schemaAttribute role="nothandled">
+    	       default = string
+    	    </schemaAttribute>
+    	    <schemaAttribute role="nothandled">
+    	       fixed = string
+    	    </schemaAttribute>
+    	    <schemaAttribute role="nothandled">
+    	       form = (qualified | unqualified)
+    	    </schemaAttribute>
+    	    <schemaAttribute role="ignored">
+    	       id = ID
+    	    </schemaAttribute>
+    	    <schemaAttribute>
+    	       name = NCName
+    	    </schemaAttribute>
+    	    <schemaAttribute>
+    	       ref = QName
+    	    </schemaAttribute>
+    	    <schemaAttribute>
+    	       type = QName
+    	    </schemaAttribute>
+    	    <schemaAttribute>
+    	       use = (optional | prohibited | required) : optional
+    	    </schemaAttribute>
+    	    <schemaAttribute role="ignored">
+    	       {any attributes with non-schema namespace ...}
+    	    </schemaAttribute>
+    	    <content>
+    	      Content: (annotation?, (simpleType?))
+    	    </content>
+    	  </schemaRepresentation>
+    	</schemaRepresentationEg>
+    </smschema>
+  
+    <div3 id="sec_import_global_attributes">
+      <head>Global attributes declarations</head>
+  
+      <p>Schema import distinguishes between global attribute
+      declarations and local attribute declarations.</p>
+  
+      <smschemanorm>
+        <p>Global attribute declarations are mapped like local
+        attribute declarations, but are prefixed by a
+        <quote>define</quote> keyword in the &language; type
+        system.</p>
+  
+        <mapping>
+          <xquery>
+            <expression><map>&gr_AttributeDecl;</map>&jd_map_definition;</expression>
+          </xquery>
+          <core>
+            <expression>define <map>&gr_AttributeDecl;</map>&jd_map_content;</expression>
+          </core>
+        </mapping>
+      </smschemanorm>
+    </div3>
+  
+    <div3 id="sec_import_local_attributes">
+      <head>Local attribute declarations</head>
+  
+      <smschemanorm>
+        <p>Local attributes whose type is given by a reference to a
+        global type name are mapped in the type system as
+        follows.</p>
+  
+        <mapping>
+          <xquery>
+            <expression>
+              <map>
+    	  	  <schemaRepresentationNoContent>
+    	  	    <name>attribute</name>
+    	  	    <schemaAttribute>
+    	  	       name = &gr_NCName;
+    	  	    </schemaAttribute>
+    	  	    <schemaAttribute>
+    	  	       type = &gr_QName;
+    	  	    </schemaAttribute>
+    	  	    <schemaAttribute>
+    	  	       &gr_UseAttribute;
+    	  	    </schemaAttribute>
+    	  	  </schemaRepresentationNoContent>
+              </map>&jd_map_content;
+            </expression>
+          </xquery>
+          <core>
+            <expression>( attribute &gr_targetNCName;:&gr_NCName; {
+            of type &gr_QName; }
+            )<map>&gr_UseAttribute;</map>&jd_map_use;</expression>
+          </core>
+        </mapping>
+    
+        <p>References to a global attribute are mapped in the type
+        system as follows.</p>
+  
+        <mapping>
+          <xquery>
+            <expression>
+              <map>
+    	  	  <schemaRepresentationNoContent>
+    	  	    <name>attribute</name>
+    	  	    <schemaAttribute>
+    	  	       ref = &gr_QName;
+    	  	    </schemaAttribute>
+    	  	    <schemaAttribute>
+    	  	       &gr_UseAttribute;
+    	  	    </schemaAttribute>
+    	  	  </schemaRepresentationNoContent>
+              </map>&jd_map_content;
+            </expression>
+          </xquery>
+          <core>
+            <expression>( attribute &gr_QName;
+            )<map>&gr_UseAttribute;</map>&jd_map_use;</expression>
+          </core>
+        </mapping>
+    
+        <p>A local attribute with a local content is mapped to the
+        &language; type system as follows. Let &gr_Anonk; be a newly
+        generated anonymous name.</p>
+  
+        <mapping>
+          <xquery>
+            <expression>
+              <map>
+    	  	  <schemaRepresentation>
+    	  	    <name>attribute</name>
+    	  	    <schemaAttribute>
+    	  	       name = &gr_NCName;
+    	  	    </schemaAttribute>
+    	  	    <schemaAttribute>
+    	  	       &gr_UseAttribute;
+    	  	    </schemaAttribute>
+    	    	    <content>
+    	    	      &gr_simpleType;
+    	    	    </content>
+    	  	  </schemaRepresentation>
+              </map>&jd_map_content;
+            </expression>
+          </xquery>
+          <core>
+            <expression>
+            <table summary=""><tbody>
+            <tr><td><expression>( attribute &gr_targetNCName;:&gr_NCName; of
+            type &gr_Anonk;
+            )<map>&gr_UseAttribute;</map>&jd_map_use;</expression></td></tr>
+            <tr><td>&sp2;with</td></tr>
+            <tr><td><expression>define type &gr_Anonk; of type
+            xs:anySimpleType {
+            <map>&gr_simpleType;</map>&jd_map_content; }</expression></td></tr> 
+            </tbody>
+            </table>
+            </expression>
+          </core>
+        </mapping>
+
+    
+      </smschemanorm>
+    </div3>
+  </div2>
+
+  <div2 id="sec_import_element">
+    <head>Element Declarations</head>
+  
+    <smschema>
+      <p>The following structure describes attribute declarations in
+      XML Schema.</p>
+  
+      <schemaRepresentationEg>
+        <schemaRepresentation>
+          <name>element</name>
+          <schemaAttribute role="ignored">
+            abstract = boolean : false
+          </schemaAttribute>
+    	  <schemaAttribute role="ignored">
+    	    block = (#all | List of (extension | restriction))
+    	  </schemaAttribute>
+          <schemaAttribute role="nothandled">
+            default = string
+          </schemaAttribute>
+    	  <schemaAttribute role="ignored">
+    	    final = (#all | List of (extension | restriction))
+    	  </schemaAttribute>
+          <schemaAttribute role="nothandled">
+            fixed = string
+          </schemaAttribute>
+          <schemaAttribute role="nothandled">
+            form = (qualified | unqualified)
+          </schemaAttribute>
+          <schemaAttribute role="ignored">
+            id = ID
+          </schemaAttribute>
+    	  <schemaAttribute>
+    	    maxOccurs = (nonNegativeInteger | unbounded)  : 1
+    	  </schemaAttribute>
+    	  <schemaAttribute>
+    	    minOccurs = nonNegativeInteger : 1
+    	  </schemaAttribute>
+          <schemaAttribute>
+            name = NCName
+          </schemaAttribute>
+          <schemaAttribute>
+            nillable = boolean : false
+          </schemaAttribute>
+          <schemaAttribute>
+            ref = QName
+          </schemaAttribute>
+          <schemaAttribute>
+            substitutionGroup = QName
+          </schemaAttribute>
+          <schemaAttribute>
+             type = QName
+          </schemaAttribute>
+          <schemaAttribute role="ignored">
+             {any attributes with non-schema namespace ...}
+          </schemaAttribute>
+          <content>
+            Content: (annotation?, ((simpleType | complexType)?, (unique | key | keyref)*))
+          </content>
+        </schemaRepresentation>
+      </schemaRepresentationEg>
+    </smschema>
+
+    <div3 id="sec_import_global_element">
+      <head>Global element declarations</head>
+  
+      <p>Schema import distinguishes between global element
+      declarations and local element declarations.</p>
+  
+      <smschemanorm>
+        <p>Global element declarations are mapped like local element
+        declarations, but are prefixed by a <quote>define</quote>
+        keyword in the &language; type system.</p>
+  
+        <mapping>
+          <xquery>
+            <expression>
+              <map>
+        	<schemaRepresentationNoContent>
+        	  <name>element</name>
+        	  <schemaAttribute>
+        	    name = &gr_NCName;
+        	  </schemaAttribute>
+        	  <schemaAttribute>
+        	    &gr_NillableAttribute;
+        	  </schemaAttribute>
+        	  <schemaAttribute>
+        	    &gr_substitutionGroupAttribute;
+        	  </schemaAttribute>
+        	  <schemaAttribute>
+        	    type = &gr_QName;
+        	  </schemaAttribute>
+        	</schemaRepresentationNoContent>
+              </map>&jd_map_definition;
+            </expression>
+          </xquery>
+          <core>
+            <expression>define element &gr_targetNCName;:&gr_NCName;
+            <map>&gr_substitutionGroupAttribute;</map>&jd_map_substitution;
+            <map>&gr_NillableAttribute;</map>&jd_map_nillable; of type
+            &gr_QName;</expression>
+          </core>
+        </mapping>
+
+        <mapping>
+          <xquery>
+            <expression>
+              <map>
+        	<schemaRepresentation>
+        	  <name>element</name>
+        	  <schemaAttribute>
+        	    name = &gr_NCName;
+        	  </schemaAttribute>
+        	  <schemaAttribute>
+        	    &gr_NillableAttribute;
+        	  </schemaAttribute>
+        	  <schemaAttribute>
+        	    &gr_substitutionGroupAttribute;
+        	  </schemaAttribute>
+        	  <content>
+        	    &gr_ElementModel;
+        	  </content>
+        	</schemaRepresentation>
+              </map>&jd_map_definition;
+            </expression>
+          </xquery>
+          <core>
+            <expression>define element &gr_targetNCName;:&gr_NCName;
+            <map>&gr_substitutionGroupAttribute;</map>&jd_map_substitution;
+            <map>&gr_NillableAttribute;</map>&jd_map_nillable;
+            <map>&gr_ElementModel;</map>&jd_map_content;</expression>
+          </core>
+        </mapping>
+
+      </smschemanorm>
+    </div3>
+
+    <div3 id="sec_import_local_element">
+      <head>Local element declarations</head>
+  
+      <smschemanorm>
+        <p>Local element declarations, but mapped into corresponding
+        notations in the &language; type system. Note that
+        substitution group cannot be declared on local elements.</p>
+  
+        <mapping>
+          <xquery>
+            <expression>
+              <map>
+        	<schemaRepresentationNoContent>
+        	  <name>element</name>
+    	    	  <schemaAttribute>
+          	    &gr_OccursAttributes;
+    	    	  </schemaAttribute>
+        	  <schemaAttribute>
+        	    name = &gr_NCName;
+        	  </schemaAttribute>
+        	  <schemaAttribute>
+        	    &gr_NillableAttribute;
+        	  </schemaAttribute>
+        	  <schemaAttribute>
+        	    type = &gr_QName;
+        	  </schemaAttribute>
+        	</schemaRepresentationNoContent>
+              </map>&jd_map_content;
+            </expression>
+          </xquery>
+          <core>
+            <expression>( element &gr_targetNCName;:&gr_NCName;
+            <map>&gr_NillableAttribute;</map>&jd_map_nillable; of type
+            &gr_QName; )
+            <map>&gr_OccursAttributes;</map>&jd_map_occurs;</expression>
+          </core>
+        </mapping>
+
+        <mapping>
+          <xquery>
+            <expression>
+              <map>
+        	<schemaRepresentationNoContent>
+        	  <name>element</name>
+    	    	  <schemaAttribute>
+          	    &gr_OccursAttributes;
+    	    	  </schemaAttribute>
+        	  <schemaAttribute>
+        	    ref = &gr_QName;
+        	  </schemaAttribute>
+        	</schemaRepresentationNoContent>
+              </map>&jd_map_content;
+            </expression>
+          </xquery>
+          <core>
+            <expression>( element &gr_QName; )
+            <map>&gr_OccursAttributes;</map>&jd_map_occurs;</expression>
+          </core>
+        </mapping>
+
+        <p>Let &gr_Anonk; be a newly generated anonymous name.</p>
+
+        <mapping>
+          <xquery>
+            <expression>
+              <map>
+        	<schemaRepresentation>
+        	  <name>element</name>
+    	    	  <schemaAttribute>
+          	    &gr_OccursAttributes;
+    	    	  </schemaAttribute>
+        	  <schemaAttribute>
+        	    name = &gr_NCName;
+        	  </schemaAttribute>
+        	  <schemaAttribute>
+        	    &gr_NillableAttribute;
+        	  </schemaAttribute>
+        	  <content>
+        	    &gr_ElementModel;
+        	  </content>
+        	</schemaRepresentation>
+              </map>&jd_map_definition;
+            </expression>
+          </xquery>
+          <core>
+            <expression>
+            <table summary=""><tbody>
+            <tr><td><expression>( element
+            &gr_targetNCName;:&gr_NCName;
+            <map>&gr_NillableAttribute;</map>&jd_map_nillable; of type
+            &gr_Anonk; )
+            <map>&gr_OccursAttributes;</map>&jd_map_occurs;</expression></td></tr>
+            <tr><td>&sp2;with</td></tr>
+            <tr><td><expression>define type &gr_Anonk;
+            <map>&gr_ElementModel;</map>&jd_map_content;
+            }</expression></td></tr>
+            </tbody>
+            </table>
+            </expression>
+          </core>
+        </mapping>
+      </smschemanorm>
+    </div3>
+  </div2>
+
+  <div2 id="sec_complex_type">
+    <head>Complex Type Definitions</head>
+  
+    <smschema>
+      <p>A complex type definition is represented in XML by the
+      following structure.</p>
+  
+    	<schemaRepresentationEg>
+    	  <schemaRepresentation>
+    	    <name>complexType</name>
+    	    <schemaAttribute role="ignored">
+    	       abstract = boolean : false
+    	    </schemaAttribute>
+    	    <schemaAttribute role="ignored">
+    	       block = (#all | List of (extension | restriction))
+    	    </schemaAttribute>
+    	    <schemaAttribute role="ignored">
+    	       final = (#all | List of (extension | restriction))
+    	    </schemaAttribute>
+    	    <schemaAttribute role="ignored">
+    	       id = ID
+    	    </schemaAttribute>
+    	    <schemaAttribute>
+    	       mixed = boolean : false
+    	    </schemaAttribute>
+    	    <schemaAttribute>
+    	       name = NCName
+    	    </schemaAttribute>
+    	    <schemaAttribute role="ignored">
+    	       {any attributes with non-schema namespace ...}
+    	    </schemaAttribute>
+    	    <content>
+    	      Content: (annotation?, (simpleContent | complexContent |
+    	      ((group | all | choice | sequence)?, ((attribute |
+    	      attributeGroup)*, anyAttribute?))))
+    	    </content>
+    	  </schemaRepresentation>
+    	</schemaRepresentationEg>
+    </smschema>
+  
+    <smnotation>
+      <p>The following auxiliary grammar productions are used to
+      describe the content of a complex type definition.</p>
+  
+      <scrap>
+        <head>Complex type content</head>
+  
+        <prodrecap ref="ComplexTypeContent" id="ComplexTypeContent" orig="formal"/>
+    	<prodrecap ref="AttributeContent"   id="AttributeContent"   orig="formal"/>
+    	<prodrecap ref="ChildrenContent"    id="ChildrenContent"    orig="formal"/>
+      </scrap>
+  
+    </smnotation>
+  
+    <div3 id="sec_import_global_complex_type">
+      <head>Global complex type</head>
+  
+      <p>Schema import distinguishes between global complex types
+      (which are mapped to sort declarations) and local complex types
+      (which are mapped to type definitions).</p>
+  
+      <smschemanorm>
+        <p>In the case of global complex types, the mapping rule which
+        applies is denoted by <map></map>&jd_map_definition;.</p>
+  
+        <mapping>
+          <xquery>
+            <expression>
+              <map>
+    	  	  <schemaRepresentation>
+    	  	    <name>complexType</name>
+    	  	    <schemaAttribute>
+    	  	       &gr_MixedAttribute;
+    	  	    </schemaAttribute>
+    	  	    <schemaAttribute>
+    	  	       name = &gr_NCName;
+    	  	    </schemaAttribute>
+    	  	    <content>
+    	  	       &gr_ComplexTypeContent;
+    	  	    </content>
+    	  	  </schemaRepresentation>
+            </map>&jd_map_definition;
+          </expression>
+          </xquery>
+          <core>
+            <expression>define type &gr_targetNCName;:&gr_NCName;
+            <map>&gr_MixedAttribute;
+            &gr_ComplexTypeContent;</map>&jd_map_mixed_content;</expression>
+          </core>
+        </mapping>
+  
+        <p>Note that the <code>mixed</code> is passed along in the
+        normalization rules, in order to map it later on to the
+        appropriate indication in the &language; type system.</p>
+      </smschemanorm>
+  
+    </div3>
+  
+    <div3 id="sec_import_local_complex_type">
+      <head>Local complex type</head>
+  
+      <smschemanorm>
+        <p>In the case of a local complex types, there must not be a
+        name attribute and the mapping rule which applies is denoted
+        by <map></map>&jd_map_content;.</p>
+  
+        <mapping>
+          <xquery>
+            <expression>
+              <map>
+    	  	  <schemaRepresentation>
+    	  	    <name>complexType</name>
+    	  	    <schemaAttribute>
+    	  	       &gr_MixedAttribute;
+    	  	    </schemaAttribute>
+    	  	    <content>
+    	  	       &gr_ComplexTypeContent;
+    	  	    </content>
+    	  	  </schemaRepresentation>
+            </map>&jd_map_content;
+          </expression>
+          </xquery>
+          <core>
+            <expression><map>&gr_MixedAttribute;
+            &gr_ComplexTypeContent;</map>&jd_map_mixed_content;</expression>
+          </core>
+        </mapping>
+  
+        <p>Note that the <code>mixed</code> is passed along in the
+        normalization rules, in order to map it later on to the
+        appropriate indication in the &language; type system.</p>
+      </smschemanorm>
+  
+    </div3>
+  
+    <div3 id="sec_import_ct_simple">
+      <head>Complex type with simple content</head>
+  
+    	<smschema>
+    	  <p>A complex type can be of simple content. A simple content
+    	  is represented in XML by the following structure.</p>
+  
+    	  <schemaRepresentationEg>
+    	    <schemaRepresentation>
+    	      <name>simpleContent</name>
+    	      <schemaAttribute role="ignored">
+    		 id = ID
+    	      </schemaAttribute>
+    	      <schemaAttribute role="ignored">
+    		 {any attributes with non-schema namespace ...}
+    	      </schemaAttribute>
+    	      <content>
+    		Content: (annotation?, (restriction | extension))
+    	      </content>
+    	    </schemaRepresentation>
+        </schemaRepresentationEg>
+  
+        <p>Derivation by restriction inside a simple content is
+        represented in XML by the following structure.</p>
+  
+    	  <schemaRepresentationEg>
+    	    <schemaRepresentation>
+    	      <name>restriction</name>
+    	      <schemaAttribute>
+    		 base = QName
+    	      </schemaAttribute>
+    	      <schemaAttribute role="ignored">
+    		 id = ID
+    	      </schemaAttribute>
+    	      <schemaAttribute role="ignored">
+    		 {any attributes with non-schema namespace ...}
+    	      </schemaAttribute>
+    	      <content>
+    		Content: (annotation?, (simpleType?, (minExclusive |
+    		minInclusive | maxExclusive | maxInclusive |
+    		totalDigits | fractionDigits | length | minLength |
+    		maxLength | enumeration | whiteSpace | pattern)*)?,
+    		((attribute | attributeGroup)*, anyAttribute?))
+    	      </content>
+    	    </schemaRepresentation>
+        </schemaRepresentationEg>
+  
+        <p>Derivation by extension inside a simple content is
+        represented in XML by the following structure.</p>
+  
+    	  <schemaRepresentationEg>
+    	    <schemaRepresentation>
+    	      <name>extension</name>
+    	      <schemaAttribute>
+    		 <term>base</term> = QName
+    	      </schemaAttribute>
+    	      <schemaAttribute role="ignored">
+    		 id = ID
+    	      </schemaAttribute>
+    	      <schemaAttribute role="ignored">
+    		 {any attributes with non-schema namespace ...}
+    	      </schemaAttribute>
+    	      <content>
+              Content: (annotation?, ((attribute | attributeGroup)*,
+              anyAttribute?))
+    	      </content>
+    	    </schemaRepresentation>
+        </schemaRepresentationEg>
+      </smschema>
+
+      <smnotation>
+        <p id="jd_map_mixed_content">The normalization rule</p>
+      
+        <display>
+          <mapping>
+            <xquery>
+              <expression>
+                <map>&gr_MixedAttribute; &gr_ComplexTypeContent;</map>&jd_map_mixed_content;
+              </expression>
+            </xquery>
+            <core>
+              <expression>
+                &gr_TypeDerivation;
+              </expression>
+            </core>
+          </mapping>
+        </display>
+      
+        <p>maps a pair of mixed attribute and complex type content to
+        a type derivation.</p>
+      </smnotation>
+  
+      <smschemanorm>
+        <p>A complex types with simple content must not have a
+        <code>mixed</code> attribute set to <quote>true</quote>.</p>
+  
+        <p>If the simple content is derived by restriction, it is
+        mapped into a simple type restriction in the &language; type
+        system. Only the name of the base atomic type and attributes
+        are mapped, while the actual simple type restriction is
+        ignored. (Remember that facets are not captured in the
+        &language; type system.)</p>
+  
+        <mapping>
+          <xquery>
+            <expression>
+              <map>
+                <table summary="">
+                <tbody>
+                <tr>
+                <td>mixed = <quote>false</quote></td>
+                <td>
+   	  	  <schemaRepresentationNoAttribute>
+    	  	    <name>simpleContent</name>
+    	  	    <content>
+    	    	      <schemaRepresentation>
+    	    		<name>restriction</name>
+    	    		<schemaAttribute>
+    	 		   base = &gr_QName;
+    	    		</schemaAttribute>
+    	    		<content>
+    	 		  &gr_simpleContentRestriction; &gr_AttributeContent;
+    	    		</content>
+    	    	      </schemaRepresentation>
+    	  	    </content>
+    	  	  </schemaRepresentationNoAttribute>
+               </td></tr></tbody></table>
+            </map>&jd_map_mixed_content;
+          </expression>
+          </xquery>
+          <core>
+            <expression>restricts &gr_QName; {
+            <map>&gr_AttributeContent;</map>&jd_map_content;
+            &gr_QName; }</expression>
+          </core>
+        </mapping>
+  
+        <p>If the simple type is derived by extension, it is mapped
+        into an extended type specifier into the &language; type
+        system.</p>
+  
+        <mapping>
+          <xquery>
+            <expression>
+              <map>
+                <table summary="">
+                <tbody>
+                <tr>
+                <td>mixed = <quote>false</quote></td>
+                <td>
+   	  	  <schemaRepresentationNoAttribute>
+    	  	    <name>simpleContent</name>
+    	  	    <content>
+    	    	      <schemaRepresentation>
+    	    		<name>extension</name>
+    	    		<schemaAttribute>
+    	 		   base = &gr_QName;
+    	    		</schemaAttribute>
+    	    		<content>
+    	 		  &gr_AttributeContent;
+    	    		</content>
+    	    	      </schemaRepresentation>
+    	  	    </content>
+    	  	  </schemaRepresentationNoAttribute>
+               </td></tr></tbody></table>
+            </map>&jd_map_mixed_content;
+          </expression>
+          </xquery>
+          <core>
+            <expression>extends &gr_QName; {
+            <map>&gr_AttributeContent;</map>&jd_map_content;
+            }</expression>
+          </core>
+        </mapping>
+  
+      </smschemanorm>
+  
+    </div3>
+  
+    <div3 id="sec_import_ct_complex">
+      <head>Complex type with complex content</head>
+  
+    	<smschema>
+    	  <p>A complex type can be of complex content. A complex
+    	  content is represented in XML by the following
+    	  structure.</p>
+  
+    	  <schemaRepresentationEg>
+    	    <schemaRepresentation>
+    	      <name>complexContent</name>
+    	      <schemaAttribute role="ignored">
+    		 id = ID
+    	      </schemaAttribute>
+            <schemaAttribute>
+        	 mixed = boolean : false
+            </schemaAttribute>
+    	      <schemaAttribute role="ignored">
+    		 {any attributes with non-schema namespace ...}
+    	      </schemaAttribute>
+    	      <content>
+               Content: (annotation?, (restriction | extension))
+    	      </content>
+    	    </schemaRepresentation>
+        </schemaRepresentationEg>
+  
+        <p>Derivation by restriction inside a complex content is
+        represented in XML by the following structure.</p>
+  
+    	  <schemaRepresentationEg>
+    	    <schemaRepresentation>
+    	      <name>restriction</name>
+    	      <schemaAttribute>
+    		 base = QName
+    	      </schemaAttribute>
+    	      <schemaAttribute role="ignored">
+    		 id = ID
+    	      </schemaAttribute>
+    	      <schemaAttribute role="ignored">
+    		 {any attributes with non-schema namespace ...}
+    	      </schemaAttribute>
+    	      <content>
+               Content: (annotation?, (group | all | choice |
+               sequence)?, ((attribute | attributeGroup)*,
+               anyAttribute?))
+            </content>
+    	    </schemaRepresentation>
+        </schemaRepresentationEg>
+  
+        <p>Derivation by extension inside a complex content is
+        represented in XML by the following structure.</p>
+  
+        <schemaRepresentationEg>
+          <schemaRepresentation>
+            <name>extension</name>
+            <schemaAttribute>
+               <term>base</term> = QName
+            </schemaAttribute>
+            <schemaAttribute role="ignored">
+               id = ID
+            </schemaAttribute>
+            <schemaAttribute role="ignored">
+               {any attributes with non-schema namespace ...}
+            </schemaAttribute>
+            <content>
+            Content: (annotation?, ((group | all | choice |
+            sequence)?, ((attribute | attributeGroup)*,
+            anyAttribute?)))
+            </content>
+          </schemaRepresentation>
+        </schemaRepresentationEg>
+      </smschema>
+  
+      <smschemanorm>
+        <p>If the complex content is derived by restriction, it is
+        mapped into a type restriction in the &language; type
+        system, and the </p>
+  
+        <mapping>
+          <xquery>
+            <expression>
+              <map>
+                <table summary="">
+                <tbody>
+                <tr>
+                <td>&gr_MixedAttribute;</td>
+                <td>
+   	  	  <schemaRepresentationNoAttribute>
+    	  	    <name>complexContent</name>
+    	  	    <content>
+    	    	      <schemaRepresentation>
+    	    		<name>restriction</name>
+    	    		<schemaAttribute>
+    	 		   base = &gr_QName;
+    	    		</schemaAttribute>
+    	    		<content>
+    	 		  &gr_annotation;? &gr_ChildrenContent; &gr_AttributeContent;
+    	    		</content>
+    	    	      </schemaRepresentation>
+    	  	    </content>
+    	  	  </schemaRepresentationNoAttribute>
+               </td></tr></tbody></table>
+            </map>&jd_map_mixed_content;
+          </expression>
+          </xquery>
+          <core>
+            <expression>restricts &gr_QName;
+            <map>&gr_MixedAttribute;</map>&jd_map_mixed; {
+            <map>&gr_AttributeContent;</map>&jd_map_content;
+            <map>&gr_ChildrenContent;</map>&jd_map_content;
+            }</expression>
+          </core>
+        </mapping>
+  
+        <p>If the complex content is derived by extension, it is
+        mapped into an extended type specifier into the &language;
+        type system.</p>
+  
+        <mapping>
+          <xquery>
+            <expression>
+              <map>
+                <table summary="">
+                <tbody>
+                <tr>
+                <td>&gr_MixedAttribute;</td>
+                <td>
+   	  	  <schemaRepresentationNoAttribute>
+    	  	    <name>complexContent</name>
+    	  	    <content>
+    	    	      <schemaRepresentation>
+    	    		<name>extension</name>
+    	    		<schemaAttribute>
+    	 		   base = &gr_QName;
+    	    		</schemaAttribute>
+    	    		<content>
+    	 		  &gr_annotation;? &gr_ChildrenContent; &gr_AttributeContent;
+    	    		</content>
+    	    	      </schemaRepresentation>
+    	  	    </content>
+    	  	  </schemaRepresentationNoAttribute>
+               </td></tr></tbody></table>
+            </map>&jd_map_mixed_content;
+          </expression>
+          </xquery>
+          <core>
+            <expression>extends &gr_QName;
+            <map>&gr_MixedAttribute;</map>&jd_map_mixed; {
+            <map>&gr_AttributeContent;</map>&jd_map_content;
+            <map>&gr_ChildrenContent;</map>&jd_map_content;
+            }</expression>
+          </core>
+        </mapping>
+  
+      </smschemanorm>
+  
+    </div3>
+  
+  </div2>
+
+  <div2 id="sec_attribute_use">
+    <head>Attribute Uses</head>
+  
+    <p>Mapping for attribute uses is given in <specref
+    ref="sec_use"/>.</p>
+  </div2>
+  
+  <div2 id="sec_attribute_group">
+    <head>Attribute Group Definitions</head>
+  
+    <div3 id="sec_attribute_group_def">
+      <head>Attribute group definitions</head>
+  
+    	<smschema>
+    	  <p>Model group definitions are represented in XML by the
+    	  following structure.</p>
+  
+    	  <schemaRepresentationEg>
+    	    <schemaRepresentation>
+    	      <name>attributeGroup</name>
+    	      <schemaAttribute role="ignored">
+    		 id = ID
+    	      </schemaAttribute>
+    	      <schemaAttribute>
+    		   name = NCame
+    	      </schemaAttribute>
+    	      <schemaAttribute>
+    		   ref = QName
+    	      </schemaAttribute>
+    	      <schemaAttribute role="ignored">
+    		 {any attributes with non-schema namespace ...}
+    	      </schemaAttribute>
+    	      <content>
+    		Content: (annotation?, ((attribute | attributeGroup)*,
+    		anyAttribute?))
+    	      </content>
+    	    </schemaRepresentation>
+    	  </schemaRepresentationEg>
+    	</smschema>
+  
+    	<smschemanorm>
+    	  <p>Attribute group definitions are not currently handled by
+    	  the mapping. See Issue 501 (FS-Issue-0158).</p>
+    	</smschemanorm>
+    </div3>
+  
+    <div3 id="sec_import_attribute_group_ref">
+      <head>Attribute group reference</head>
+  
+    	<smschemanorm>
+    	  <p>Attribute group references are not currently handled by
+    	  the mapping. See Issue 501 (FS-Issue-0158).</p>
+    	</smschemanorm>
+    </div3>
+  </div2>
+  
+  <div2 id="sec_import_model">
+    <head>Model Group Definitions</head>
+  
+    <smschema>
+      <p>Model group definitions are represented in XML by the
+      following structure.</p>
+  
+    	<schemaRepresentationEg>
+    	  <schemaRepresentation>
+    	    <name>group</name>
+    	    <schemaAttribute>
+    		 <term>name</term> = NCame
+    	    </schemaAttribute>
+    	    <content>
+            Content: (annotation?, (all | choice | sequence))
+    	    </content>
+    	  </schemaRepresentation>
+      </schemaRepresentationEg>
+    </smschema>
+  
+    <smschemanorm>
+      <p>Model group definitions are not currently handled by the
+      mapping. See Issue 501 (FS-Issue-0158).</p>
+    </smschemanorm>
+  </div2>
+
+  <div2 id="sec_import_model_groups">
+    <head>Model Groups</head>
+  
+    <p>Model groups are either <quote>all</quote>,
+    <quote>sequence</quote> or <quote>choice</quote>. One can also
+    refer to a model group definition.</p>
+  
+    <div3 id="sec_import_all_groups">
+      <head>All groups</head>
+  	
+    	<smschema>
+    	  <p>All groups are represented in XML by the following
+    	  structure.</p>
+  
+    	  <schemaRepresentationEg>
+    	    <schemaRepresentation>
+    	      <name>all</name>
+    	      <schemaAttribute role="ignored">
+    		 id = ID
+    	      </schemaAttribute>
+    	      <schemaAttribute>
+    		 maxOccurs = 1 : 1
+    	      </schemaAttribute>
+    	      <schemaAttribute>
+    		 minOccurs = (0 | 1) : 1
+    	      </schemaAttribute>
+    	      <schemaAttribute role="ignored">
+    		 {any attributes with non-schema namespace ...}
+    	      </schemaAttribute>
+    	      <content>
+    		Content: (annotation?, element*)
+    	      </content>
+    	    </schemaRepresentation>
+    	  </schemaRepresentationEg>
+    	</smschema>
+  
+      <smschemanorm>
+         <p>All groups are mapped into the <quote>&amp;</quote>
+         operation in the &language; type system.</p>
+        <mapping>
+          <xquery>
+            <expression>
+              <map>
+    	    	  <schemaRepresentation>
+    	    	    <name>all</name>
+    	    	    <schemaAttribute>
+          	      &gr_OccursAttributes;
+    	    	    </schemaAttribute>
+    	    	    <content>
+    	 	      &gr_Element1; ... &gr_Elementn;
+    	    	    </content>
+    	    	  </schemaRepresentation>
+             </map>&jd_map_content;
+            </expression>
+          </xquery>
+          <core>
+            <expression>(<map>&gr_Element1;</map>&jd_map_content;
+            &amp; ... &amp;
+            <map>&gr_Elementn;</map>&jd_map_content;)
+            <map>&gr_OccursAttributes;</map>&jd_map_occurs;</expression>
+          </core>
+        </mapping>
+  
+      </smschemanorm>
+    </div3>
+  	
+    <div3 id="sec_import_choice_groups">
+      <head>Choice groups</head>
+  	
+    	<smschema>
+    	  <p>Choice groups are represented in XML by the following
+    	  structure.</p>
+  
+    	  <schemaRepresentationEg>
+    	    <schemaRepresentation>
+    	      <name>choice</name>
+    	      <schemaAttribute role="ignored">
+    		 id = ID
+    	      </schemaAttribute>
+    	      <schemaAttribute>
+    		 maxOccurs = (nonNegativeInteger | unbounded)  : 1
+    	      </schemaAttribute>
+    	      <schemaAttribute>
+    		 minOccurs = nonNegativeInteger : 1
+    	      </schemaAttribute>
+    	      <schemaAttribute role="ignored">
+    		 {any attributes with non-schema namespace ...}
+    	      </schemaAttribute>
+    	      <content>
+    		Content: (annotation?, (element | group | choice |
+    		sequence | any)*)
+    	      </content>
+    	    </schemaRepresentation>
+    	  </schemaRepresentationEg>
+    	</smschema>
+  
+      <smnotation>
+        <p>The following auxiliary grammar productions are used to
+        describe group components.</p>
+  	  
+        <scrap>
+          <head>Group Component </head>
+  	  
+          <prodrecap ref="GroupComponent" id="GroupComponent" orig="formal"/>
+        </scrap>
+      </smnotation>
+  
+      <smschemanorm>
+        <p>Choice groups are mapped into the <quote>|</quote>
+        operation in the &language; type system.</p>
+  
+        <mapping>
+          <xquery>
+            <expression>
+              <map>
+    	    	  <schemaRepresentation>
+    	    	    <name>choice</name>
+    	    	    <schemaAttribute>
+          	      &gr_OccursAttributes;
+    	    	    </schemaAttribute>
+    	    	    <content>
+    	 	      &gr_GroupComponent1; ... &gr_GroupComponentn;
+    	    	    </content>
+    	    	  </schemaRepresentation>
+             </map>&jd_map_content;
+            </expression>
+          </xquery>
+          <core>
+            <expression>(<map>&gr_GroupComponent1;</map>&jd_map_content;
+            | ... |
+            <map>&gr_GroupComponentn;</map>&jd_map_content;)
+            <map>&gr_OccursAttributes;</map>&jd_map_occurs;</expression>
+          </core>
+        </mapping>
+  
+      </smschemanorm>
+    </div3>
+  	
+    <div3 id="sec_import_sequence_groups">
+      <head>Sequence groups</head>
+  	
+    	<smschema>
+    	  <p>Sequence groups are represented in XML by the following
+    	  structure.</p>
+  
+    	  <schemaRepresentationEg>
+    	    <schemaRepresentation>
+    	      <name>sequence</name>
+    	      <schemaAttribute role="ignored">
+    		 id = ID
+    	      </schemaAttribute>
+    	      <schemaAttribute>
+    		 maxOccurs = (nonNegativeInteger | unbounded)  : 1
+    	      </schemaAttribute>
+    	      <schemaAttribute>
+    		 minOccurs = nonNegativeInteger : 1
+    	      </schemaAttribute>
+    	      <schemaAttribute role="ignored">
+    		 {any attributes with non-schema namespace ...}
+    	      </schemaAttribute>
+    	      <content>
+    		Content: (annotation?, (element | group | choice |
+    		sequence | any)*)
+    	      </content>
+    	    </schemaRepresentation>
+    	  </schemaRepresentationEg>
+    	</smschema>
+  
+      <smschemanorm>
+        <p>Sequence groups are mapped into the <quote>,</quote>
+        operation in the &language; type system.</p>
+  
+        <mapping>
+          <xquery>
+            <expression>
+              <map>
+    	    	  <schemaRepresentation>
+    	    	    <name>sequence</name>
+    	    	    <schemaAttribute>
+          	      &gr_OccursAttributes;
+    	    	    </schemaAttribute>
+    	    	    <content>
+    	 	      &gr_GroupComponent1; ... &gr_GroupComponentn;
+    	    	    </content>
+    	    	  </schemaRepresentation>
+             </map>&jd_map_content;
+            </expression>
+          </xquery>
+          <core>
+            <expression>(<map>&gr_GroupComponent1;</map>&jd_map_content;
+            , ... ,
+            <map>&gr_GroupComponentn;</map>&jd_map_content;)
+            <map>&gr_OccursAttributes;</map>&jd_map_occurs;</expression>
+          </core>
+        </mapping>
+      </smschemanorm>
+    </div3>
+  </div2>
+  
+  <div2 id="sec_import_particles">
+    <head>Particles</head>
+  
+    <p>Particles contribute to the definition of content models.</p>
+  
+    <p>A particle can be either an element reference, a group
+    reference or a wildcard.</p>
+  
+    <div3 id="sec_import_element_ref">
+      <head>Element reference</head>
+  
+    	<smschema>
+    	  <p>Element reference particles are represented in XML by the
+    	  following structure.</p>
+  
+    	  <schemaRepresentationEg>
+    	    <schemaRepresentationNoContent>
+    	      <name>element</name>
+    	      <schemaAttribute>
+    		 ref = QName
+    	      </schemaAttribute>
+    	      <schemaAttribute>
+    		   maxOccurs = (nonNegativeInteger | unbounded)  : 1
+    	      </schemaAttribute>
+    	      <schemaAttribute>
+    		   minOccurs = nonNegativeInteger : 1
+    	      </schemaAttribute>
+    	      <schemaAttribute role="ignored">
+    		 {any attributes with non-schema namespace ...}
+    	      </schemaAttribute>
+    	    </schemaRepresentationNoContent>
+    	  </schemaRepresentationEg>
+    	</smschema>
+  
+      <smschemanorm>
+        <p>Element references are mapped into element references in
+        the &language; type system.</p>
+  
+        <mapping>
+          <xquery>
+            <expression>
+      	<map>
+    	      	  <schemaRepresentationNoContent>
+    	     	    <name>element</name>
+    	     	    <schemaAttribute>
+    	  	       ref = &gr_QName;
+    	     	    </schemaAttribute>
+    	     	    <schemaAttribute>
+    	  	       &gr_OccursAttributes;
+    	     	    </schemaAttribute>
+    	      	  </schemaRepresentationNoContent>
+              </map>&jd_map_content;
+            </expression>
+          </xquery>
+          <core>
+            <expression>element &gr_QName;
+            <map>&gr_OccursAttributes;</map>&jd_map_occurs;</expression>
+          </core>
+        </mapping>
+      </smschemanorm>
+    </div3>
+  
+    <div3 id="sec_group_ref">
+      <head>Group reference</head>
+  
+    	<smschema>
+    	  <p>Group reference particles are represented in XML by the
+    	  following structure.</p>
+  
+    	  <schemaRepresentationEg>
+    	    <schemaRepresentationNoContent>
+    	      <name>group</name>
+    	      <schemaAttribute>
+    		 ref = QName
+    	      </schemaAttribute>
+    	      <schemaAttribute>
+    		   maxOccurs = (nonNegativeInteger | unbounded)  : 1
+    	      </schemaAttribute>
+    	      <schemaAttribute>
+    		   minOccurs = nonNegativeInteger : 1
+    	      </schemaAttribute>
+    	      <schemaAttribute role="ignored">
+    		 {any attributes with non-schema namespace ...}
+    	      </schemaAttribute>
+    	    </schemaRepresentationNoContent>
+    	  </schemaRepresentationEg>
+    	</smschema>
+  
+      <smschemanorm>
+        <p>Model group references are not currently handled by the
+        mapping.</p>
+      </smschemanorm>
+    </div3>
+  </div2>
+
+  <div2 id="sec_import_wildcards">
+    <head>Wildcards</head>
+  
+    <div3 id="sec_import_attribute_wildcards">
+      <head>Attribute wildcards</head>
+  
+    	<smschema>
+    	  <p>Attribute wildcards are represented in XML by the
+    	  following structure.</p>
+  
+    	  <schemaRepresentationEg>
+    	    <schemaRepresentation>
+    	      <name>anyAttribute</name>
+            <schemaAttribute role="ignored">
+        	 id = ID
+            </schemaAttribute>
+    	      <schemaAttribute role="nothandled">
+    		 namespace = ((##any | ##other) | List of (anyURI | (##targetNamespace | ##local)) )  : ##any
+    	      </schemaAttribute>
+    	      <schemaAttribute>
+    		 processContents = (lax | skip | strict) : strict
+    	      </schemaAttribute>
+    	      <schemaAttribute role="ignored">
+    		 {any attributes with non-schema namespace ...}
+    	      </schemaAttribute>
+            <content>
+               Content: (annotation?)
+            </content>
+    	    </schemaRepresentation>
+    	  </schemaRepresentationEg>
+    	</smschema>
+  
+      <smschemanorm>
+        <p>An attribute wildcard with a <quote>skip</quote> process
+        content is mapped as an attribute wildcard in the &language;
+        type system.</p>
+  
+        <mapping>
+          <xquery>
+            <expression>
+        	<map>
+    		  <schemaRepresentation>
+    		    <name>anyAttribute</name>
+    		    <schemaAttribute>
+    		       processContents = <quote>skip</quote>
+    		    </schemaAttribute>
+      	    <content>
+      	       &gr_annotation;?
+      	    </content>
+    		  </schemaRepresentation>
+      	 </map>&jd_map_content;
+            </expression>
+          </xquery>
+          <core>
+            <expression>(attribute (*, &xs_untypedAtomic;))*</expression>
+          </core>
+        </mapping>
+
+        <mapping>
+          <xquery>
+            <expression>
+        	<map>
+    		  <schemaRepresentation>
+    		    <name>anyAttribute</name>
+    		    <schemaAttribute>
+    		       processContents = <quote>lax</quote>
+    		    </schemaAttribute>
+      	    <content>
+      	       &gr_annotation;?
+      	    </content>
+    		  </schemaRepresentation>
+      	 </map>&jd_map_content;
+            </expression>
+          </xquery>
+          <core>
+            <expression>attribute *</expression>
+          </core>
+        </mapping>
+
+        <mapping>
+          <xquery>
+            <expression>
+        	<map>
+    		  <schemaRepresentation>
+    		    <name>anyAttribute</name>
+    		    <schemaAttribute>
+    		       processContents = <quote>strict</quote>
+    		    </schemaAttribute>
+      	    <content>
+      	       &gr_annotation;?
+      	    </content>
+    		  </schemaRepresentation>
+      	 </map>&jd_map_content;
+            </expression>
+          </xquery>
+          <core>
+            <expression>attribute *</expression>
+          </core>
+        </mapping>
+
+<!--
+  	<ednote>
+  	  <edtext>Attribute wildcards with a
+          <quote>strict</quote> process content
+          are not handled by the mapping. </edtext>
+  	</ednote>
+-->
+
+  	<ednote>
+  	  <edtext>Namespace wildcards are not
+  	  handled by the mapping.</edtext>
+  	</ednote>
+      </smschemanorm>
+    </div3>
+  
+    <div3 id="sec_import_element_wildcards">
+      <head>Element wildcards</head>
+  
+    	<smschema>
+    	  <p>Element wildcards are represented in XML by the following
+    	  structure.</p>
+  
+   	  <schemaRepresentationEg>
+    	    <schemaRepresentation>
+    	      <name>any</name>
+            <schemaAttribute role="ignored">
+        	 id = ID
+            </schemaAttribute>
+    	      <schemaAttribute>
+    		 maxOccurs = (nonNegativeInteger | unbounded)  : 1
+    	      </schemaAttribute>
+    	      <schemaAttribute>
+    		 minOccurs = nonNegativeInteger : 1
+    	      </schemaAttribute>
+    	      <schemaAttribute role="nothandled">
+    		 namespace = ((##any | ##other) | List of (anyURI | (##targetNamespace | ##local)) )  : ##any
+    	      </schemaAttribute>
+    	      <schemaAttribute>
+    		 processContents = (lax | skip | strict) : strict
+    	      </schemaAttribute>
+    	      <schemaAttribute role="ignored">
+    		 {any attributes with non-schema namespace ...}
+    	      </schemaAttribute>
+            <content>
+               Content: (annotation?)
+            </content>
+    	    </schemaRepresentation>
+    	  </schemaRepresentationEg>
+    	</smschema>
+  
+      <smschemanorm>
+        <p>An element wildcard with a <quote>skip</quote> process
+        content is mapped as an element wildcard in the &language;
+        type system.</p>
+  
+        <mapping>
+          <xquery>
+            <expression>
+      	<map>
+    		  <schemaRepresentation>
+    		    <name>any</name>
+                  <schemaAttribute>
+    		       &gr_OccursAttributes;
+    		    </schemaAttribute>
+    		    <schemaAttribute>
+    		       processContents = <quote>skip</quote>
+    		    </schemaAttribute>
+      	    <content>
+      	       &gr_annotation;?
+      	    </content>
+    		  </schemaRepresentation>
+      	 </map>&jd_map_content;
+            </expression>
+          </xquery>
+          <core>
+            <expression>( element (*, &xs_untyped;)
+            )<map>&gr_OccursAttributes;</map>&jd_map_occurs;</expression>
+          </core>
+        </mapping>
+  
+        <mapping>
+          <xquery>
+            <expression>
+      	<map>
+    		  <schemaRepresentation>
+    		    <name>any</name>
+                  <schemaAttribute>
+    		       &gr_OccursAttributes;
+    		    </schemaAttribute>
+    		    <schemaAttribute>
+    		       processContents = <quote>lax</quote>
+    		    </schemaAttribute>
+      	    <content>
+      	       &gr_annotation;?
+      	    </content>
+    		  </schemaRepresentation>
+      	 </map>&jd_map_content;
+            </expression>
+          </xquery>
+          <core>
+            <expression>( element (*, &xs_anyType;)
+            )<map>&gr_OccursAttributes;</map>&jd_map_occurs;</expression>
+          </core>
+        </mapping>
+  
+  	<ednote>
+  	  <edtext>Element wildcards with a
+          <quote>lax</quote> or <quote>strict</quote> process content
+          are not handled by the mapping. </edtext>
+  	</ednote>
+
+  	<ednote>
+  	  <edtext>Namespace wildcards are not
+  	  handled by the mapping.</edtext>
+  	</ednote>
+      </smschemanorm>
+    </div3>
+  </div2>
+  
+  <div2 id="sec_import_identity">
+    <head>Identity-constraint Definitions</head>
+  
+    <p>All identity-constraints definitions are ignored when mapping
+    into the &language; type system.</p>
+  </div2>
+  
+  <div2 id="sec_import_notation">
+    <head>Notation Declarations</head>
+  
+    <p>All notation declarations are ignored when mapping into the
+    &language; type system.</p>
+  </div2>
+  
+  <div2 id="sec_import_annotation">
+    <head>Annotation</head>
+  
+    <p>All annotation are ignored when mapping into the &language;
+    type system.</p>
+  </div2>
+
+  <div2 id="sec_import_simple_type">
+    <head>Simple Type Definitions</head>
+    
+    <smschema>
+      <p>A simple type is represented in XML by the following
+      structure.</p>
+
+      <schemaRepresentationEg>
+        <schemaRepresentation>
+          <name>simpleType</name>
+          <schemaAttribute role="ignored">
+             final = (#all | (list | union | restriction))
+          </schemaAttribute>
+          <schemaAttribute role="ignored">
+             id = ID
+          </schemaAttribute>
+          <schemaAttribute>
+             name = NCName
+          </schemaAttribute>
+          <schemaAttribute role="ignored">
+             {any attributes with non-schema namespace ...}
+          </schemaAttribute>
+          <content>
+            name = NCName
+          </content>
+        </schemaRepresentation>
+      </schemaRepresentationEg>
+
+      <p>Derivation by restriction inside a simple type is represented
+      in XML by the following structure.</p>
+  
+      <schemaRepresentationEg>
+        <schemaRepresentation>
+          <name>restriction</name>
+          <schemaAttribute>
+             base = QName
+          </schemaAttribute>
+          <schemaAttribute role="ignored">
+             id = ID
+          </schemaAttribute>
+          <schemaAttribute role="ignored">
+             {any attributes with non-schema namespace ...}
+          </schemaAttribute>
+          <content>
+            Content: (annotation?, (simpleType?, (minExclusive |
+            minInclusive | maxExclusive | maxInclusive |
+            totalDigits | fractionDigits | length | minLength |
+            maxLength | enumeration | whiteSpace | pattern)*)?)
+          </content>
+        </schemaRepresentation>
+      </schemaRepresentationEg>
+  
+      <p>Derivation by list inside a simple type is represented in XML
+      by the following structure.</p>
+  
+      <schemaRepresentationEg>
+        <schemaRepresentation>
+          <name>list</name>
+          <schemaAttribute role="ignored">
+             id = ID
+          </schemaAttribute>
+          <schemaAttribute>
+             itemType = QName
+          </schemaAttribute>
+          <schemaAttribute role="ignored">
+             {any attributes with non-schema namespace ...}
+          </schemaAttribute>
+          <content>
+             Content: (annotation?, (simpleType?))
+          </content>
+        </schemaRepresentation>
+      </schemaRepresentationEg>
+
+      <p>Derivation by union inside a simple type is represented in
+      XML by the following structure.</p>
+  
+      <schemaRepresentationEg>
+        <schemaRepresentation>
+          <name>union</name>
+          <schemaAttribute role="ignored">
+             id = ID
+          </schemaAttribute>
+          <schemaAttribute>
+             memberTypes = List of QName
+          </schemaAttribute>
+          <schemaAttribute role="ignored">
+             {any attributes with non-schema namespace ...}
+          </schemaAttribute>
+          <content>
+             Content: (annotation?, (simpleType*))
+          </content>
+        </schemaRepresentation>
+      </schemaRepresentationEg>
+    </smschema>
+
+    <div3 id="sec_import_global_simple_type">
+      <head>Global simple type definition</head>
+
+      <p>Schema import distinguishes between global simple types
+      (which are mapped to sort declarations) and local simple types
+      (which are mapped to type definitions).</p>
+  
+      <smschemanorm>
+        <p>In the case of global simple types, the mapping rule which
+        applies is denoted by <map></map>&jd_map_definition;.</p>
+  
+      	<mapping>
+      	  <xquery>
+      	    <expression>
+      	      <map>
+      		<schemaRepresentation>
+      		  <name>simpleType</name>
+      		  <schemaAttribute>
+      		     name = &gr_NCName;
+      		  </schemaAttribute>
+      		  <content>
+      		     &gr_SimpleTypeContent;
+      		  </content>
+      		</schemaRepresentation>
+      	    </map>&jd_map_definition;
+      	  </expression>
+      	  </xquery>
+      	  <core>
+      	    <expression>define type &gr_targetNCName;:&gr_NCName;
+      	    <map>&gr_SimpleTypeContent;</map>&jd_map_simple_content;</expression>
+      	  </core>
+      	</mapping>
+      </smschemanorm>
+    </div3>
+
+    <div3 id="sec_import_local_simple_type">
+      <head>Local simple type definition</head>
+
+      <smschemanorm>
+        <p>In the case of global simple types, the mapping rule which
+        applies is denoted by <map></map>&jd_map_content;.</p>
+  
+      	<mapping>
+      	  <xquery>
+      	    <expression>
+      	      <map>
+      		<schemaRepresentationNoAttribute>
+      		  <name>simpleType</name>
+      		  <content>
+      		     &gr_SimpleTypeContent;
+      		  </content>
+      		</schemaRepresentationNoAttribute>
+      	    </map>&jd_map_content;
+      	  </expression>
+      	  </xquery>
+      	  <core>
+      	    <expression><map>&gr_SimpleTypeContent;</map>&jd_map_simple_content;</expression>
+      	  </core>
+      	</mapping>
+      </smschemanorm>
+    </div3>
+
+    <div3 id="sec_import_simple_type_content">
+      <head>Simple type content</head>
+
+      <smnotation>
+        <p id="jd_map_simple_content">The normalization rule
+        <map></map>&jd_map_simple_content; maps a simple type content
+        to a type specifier and an optional occurrence indicator.</p>
+      </smnotation>
+
+      <smschemanorm>
+        <p>If the simple type is derived by restriction, it is mapped
+        into a simple type restriction in the &language; type
+        system.   The name of the base atomic type and attributes
+        are mapped.  Only the minLength, maxLength, and length facets in the simple type
+        restriction are handled.  All other properties of the simple-type restriction are ignored.</p>
+
+      	<mapping>
+      	  <xquery>
+      	    <expression>
+      	      <map>
+      		<schemaRepresentation>
+      		  <name>restriction</name>
+      		  <schemaAttribute>
+      		     base = &gr_QName;
+      		  </schemaAttribute>
+      		  <content>
+      		     &gr_simpleContentRestriction;
+      		  </content>
+      		</schemaRepresentation>
+      	    </map>&jd_map_simple_content;
+      	  </expression>
+      	  </xquery>
+      	  <core>
+      	    <expression>restricts &gr_QName; { &gr_QName; } <map>&gr_simpleContentRestriction;</map>&jd_map_occurs;</expression>
+      	  </core>
+      	</mapping>
+      
+        <p>If the simple type is derived by list, and its content type
+        does not constrain the length of the list, 
+        it is mapped into a zero-or-more repetition type into the &language; type system.</p>
+      
+      	<mapping>
+      	  <xquery>
+      	    <expression>
+      	      <map>
+                <schemaRepresentationNoAttribute>
+                  <name>list</name>
+                  <content>
+                    &gr_SimpleType;
+                  </content>
+                </schemaRepresentationNoAttribute>
+      	      </map>&jd_map_simple_content;
+              &gr_Type; = <map>&gr_SimpleType;</map>&jd_map_content;
+      	    </expression>
+      	  </xquery>
+      	  <core>
+      	    <expression>{ &gr_Type; * }</expression>
+      	  </core>
+      	</mapping>
+
+        <p>If the simple type is derived by list, and its content type
+        does constrain the length of the list, then it is mapped into
+        a zero-or-more repetition type into the &language; type
+        system.</p>
+
+      	<mapping>
+      	  <xquery>
+      	    <expression>
+      	      <map>
+                <schemaRepresentationNoAttribute>
+                  <name>list</name>
+                  <content>
+                    &gr_SimpleType;
+                  </content>
+                </schemaRepresentationNoAttribute>
+      	      </map>&jd_map_simple_content;
+              &gr_Type; &type_occurs_product; &gr_Occurrence; = <map>&gr_SimpleType;</map>&jd_map_content;
+      	    </expression>
+      	  </xquery>
+      	  <core>
+      	    <expression>{ &gr_Type; &type_occurs_product; &gr_Occurrence; }</expression>
+      	  </core>
+      	</mapping>
+  
+      	<mapping>
+      	  <xquery>
+      	    <expression>
+      	      <map>
+                <schemaRepresentationNoContent>
+                  <name>list</name>
+                  <schemaAttribute>
+                     itemType = &gr_QName;
+                  </schemaAttribute>
+                </schemaRepresentationNoContent>
+      	      </map>&jd_map_simple_content;
+      	    </expression>
+      	  </xquery>
+      	  <core>
+      	    <expression>{ &gr_QName;* }</expression>
+      	  </core>
+      	</mapping>
+
+        <p>If the simple type is derived by union, it is mapped into a
+        union type into the &language; type system.</p>
+      
+      	<mapping>
+      	  <xquery>
+      	    <expression>
+      	      <map>
+                <schemaRepresentationNoAttribute>
+                  <name>union</name>
+                  <content>
+                    &gr_SimpleType1; ... &gr_SimpleTypen;
+                  </content>
+                </schemaRepresentationNoAttribute>
+      	      </map>&jd_map_simple_content;
+      	    </expression>
+      	  </xquery>
+      	  <core>
+      	    <expression>{ (<map>&gr_SimpleType;</map>&jd_map_content;
+            | ... | <map>&gr_SimpleTypen;</map>&jd_map_content;) }</expression>
+      	  </core>
+      	</mapping>
+  
+      	<mapping>
+      	  <xquery>
+      	    <expression>
+      	      <map>
+                <schemaRepresentationNoContent>
+                  <name>union</name>
+                  <schemaAttribute>
+                     memberTypes = &gr_QName1; ... &gr_QNamen;
+                  </schemaAttribute>
+                </schemaRepresentationNoContent>
+      	      </map>&jd_map_simple_content;
+      	    </expression>
+      	  </xquery>
+      	  <core>
+      	    <expression>{ &gr_QName1; | ... | &gr_QNamen; }</expression>
+      	  </core>
+      	</mapping>
+
+      </smschemanorm>
+    </div3>
+  </div2>
+</div1>
+

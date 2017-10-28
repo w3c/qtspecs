@@ -1,0 +1,431 @@
+<xsd:schema
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+     xmlns:xqx="http://www.w3.org/2005/XQueryX"
+     xmlns:xqxft="http://www.w3.org/2007/xpath-full-text"
+     targetNamespace="http://www.w3.org/2007/xpath-full-text"
+     elementFormDefault="qualified"
+     attributeFormDefault="unqualified">
+
+<!-- Initial creation                            2006-08-17: Jim Melton    -->
+<!-- Added ftOptionDecl, ftScoreVariableBinding  2006-08-21: Jim Melton    -->
+<!-- First version believed complete             2006-08-29: Jim Melton    -->
+<!-- Cleaned up naming                           2007-04-27: Mary Holstege -->
+<!-- Revised to align with updated syntax        2008-01-14: Jim Melton    -->
+<!-- Moved ftOptionDecl: prolog part two to one  2008-01-24: Jim Melton    -->
+<!-- Revised position of "weight" in grammar     2008-11-12: Jim Melton    -->
+
+  <xsd:import namespace="http://www.w3.org/2005/XQueryX"
+              schemaLocation="http://www.w3.org/2005/XQueryX/xqueryx.xsd"/>
+
+  <xsd:include schemaLocation="./xpath-full-text-10-xqueryx-ftmatchoption-extensions.xsd"/>
+
+  <xsd:element name="ftOptionDecl" substitutionGroup="xqx:prologPartOneItem">
+    <xsd:complexType>
+      <xsd:sequence minOccurs="1" maxOccurs="unbounded">
+        <xsd:element ref="xqxft:ftMatchOption"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+
+  <!-- Create a new substitution group for full-text expressions           -->
+  <xsd:complexType name="ftExpr">
+    <xsd:complexContent>
+      <xsd:extension base="xqx:expr"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="ftExpr" type="xqxft:ftExpr" abstract="true" substitutionGroup="xqx:expr"/>
+
+
+  <!-- Represents an untyped variable for the "score" clause               -->
+  <xsd:element name="ftScoreVariableBinding" type="xqx:QName"
+               substitutionGroup="xqx:forLetClauseItemExtensions"/>
+
+
+
+  <!-- FTContains ("contains text")                                        -->
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTContainsExpr ::=                                                -->
+  <!--     RangeExpr ( "contains" "text" FTSelection FTIgnoreOption? )?    -->
+  <xsd:complexType name="ftContainsExpr">
+    <xsd:complexContent>
+      <xsd:extension base="xqxft:ftExpr">
+        <xsd:sequence>
+          <xsd:element name="ftRangeExpr"
+                       type="xqx:exprWrapper" />
+          <xsd:sequence minOccurs="0" maxOccurs="1">
+            <xsd:element name="ftSelectionExpr"
+                         type="xqxft:ftSelectionWrapper" />
+            <xsd:element name="ftIgnoreOption"
+                         type="xqxft:ftIgnoreOption"
+                         minOccurs="0" maxOccurs="1" />
+          </xsd:sequence>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="ftContainsExpr" type="xqxft:ftContainsExpr" substitutionGroup="xqxft:ftExpr" />
+
+
+  <!-- FTProximity                                                         -->
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTPosFilter ::=                                                   -->
+  <!--     FTOrder | FTWindow | FTDistance | FTScope | FTContent           -->
+  <xsd:complexType name="ftProximity" />
+
+  <xsd:element name="ftProximity" type="xqxft:ftProximity" abstract="true"/>
+
+
+  <!-- some simple type definitions                                        -->
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTUnit ::= "words" | "sentences" | "paragraphs"                   -->
+  <xsd:simpleType name="ftUnit">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="paragraph"/>
+      <xsd:enumeration value="sentence"/>
+      <xsd:enumeration value="word"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTBigUnit ::= "sentence" | "paragraph"                            -->
+  <xsd:simpleType name="ftBigUnit">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="paragraph"/>
+      <xsd:enumeration value="sentence"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTContent ::= ("at" "start") | ("at" "end") | ("entire" "content")-->
+  <xsd:simpleType name="contentLocation">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="at start"/>
+      <xsd:enumeration value="at end"/>
+      <xsd:enumeration value="entire content"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTScope ::= ("same" | "different") FTBigUnit                      -->
+  <xsd:simpleType name="ftScopeType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="same"/>
+      <xsd:enumeration value="different"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+
+  <!-- range-related definitions                                           -->
+  <xsd:complexType name="unaryRange">
+    <xsd:sequence>
+      <xsd:element name="value" type="xqx:exprWrapper" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="binaryRange">
+    <xsd:sequence>
+      <xsd:element name="lower" type="xqx:exprWrapper" />
+      <xsd:element name="upper" type="xqx:exprWrapper" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="unaryLiteralRange">
+    <xsd:sequence>
+      <xsd:element name="value" type="xsd:integer" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="binaryLiteralRange">
+    <xsd:sequence>
+      <xsd:element name="lower" type="xsd:integer" />
+      <xsd:element name="upper" type="xsd:integer" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTRange ::= ("exactly" AdditiveExpr)                              -->
+  <!--             | ("at" "least" AdditiveExpr)                           -->
+  <!--             | ("at" "most" AdditiveExpr)                            -->
+  <!--             | ("from" AdditiveExpr "to" AdditiveExpr)               -->
+  <xsd:complexType name="ftRange">
+    <xsd:choice>
+      <xsd:element name="atLeastRange" type="xqxft:unaryRange" />
+      <xsd:element name="atMostRange" type="xqxft:unaryRange" />
+      <xsd:element name="exactlyRange" type="xqxft:unaryRange" />
+      <xsd:element name="fromToRange" type="xqxft:binaryRange" />
+    </xsd:choice>
+  </xsd:complexType>
+
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTLiteralRange ::= ("exactly" IntegerLiteral)                     -->
+  <!--                    | ("at" "least" IntegerLiteral)                  -->
+  <!--                    | ("at" "most" IntegerLiteral)                   -->
+  <!--                    | ("from" IntegerLiteral "to" IntegerLiteral)    -->
+  <xsd:complexType name="ftLiteralRange">
+    <xsd:choice>
+      <xsd:element name="atLeastLiteralRange" type="xqxft:unaryLiteralRange" />
+      <xsd:element name="atMostLiteralRange" type="xqxft:unaryLiteralRange" />
+      <xsd:element name="exactlyLiteralRange" type="xqxft:unaryLiteralRange" />
+      <xsd:element name="fromToLiteralRange" type="xqxft:binaryLiteralRange" />
+    </xsd:choice>
+  </xsd:complexType>
+
+
+  <!-- ftPosFilter alternative: ordered                                    -->
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTOrder ::= "ordered"                                             -->
+  <xsd:complexType name="ftOrdered">
+    <xsd:complexContent>
+      <xsd:extension base="xqxft:ftProximity">
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="ftOrdered" type="xqxft:ftOrdered" substitutionGroup="xqxft:ftProximity"/>
+
+
+  <!-- ftPosFilter alternative: window                                     -->
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTWindow ::= "window" AdditiveExpr FTUnit                         -->
+  <xsd:complexType name="ftWindow">
+    <xsd:complexContent>
+      <xsd:extension base="xqxft:ftProximity">
+        <xsd:sequence>
+          <xsd:element name="value" type="xqx:exprWrapper" />
+          <xsd:element name="unit" type="xqxft:ftUnit" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="ftWindow" type="xqxft:ftWindow" substitutionGroup="xqxft:ftProximity"/>
+
+
+  <!-- ftPosFilter alternative: distance                                   -->
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTDistance ::= "distance" FTRange FTUnit                          -->
+  <xsd:complexType name="ftDistance">
+    <xsd:complexContent>
+      <xsd:extension base="xqxft:ftProximity">
+        <xsd:sequence>
+          <xsd:element name="ftRange" type="xqxft:ftRange" />
+          <xsd:element name="unit" type="xqxft:ftUnit" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="ftDistance" type="xqxft:ftDistance" substitutionGroup="xqxft:ftProximity"/>
+
+  <!-- ftPosFilter alternative: scope                                      -->
+  <!-- Represents the following grammar productions:                       -->
+  <xsd:complexType name="ftScope">
+    <xsd:complexContent>
+      <xsd:extension base="xqxft:ftProximity">
+        <xsd:sequence>
+          <xsd:element name="type" type="xqxft:ftScopeType" />
+          <xsd:element name="unit" type="xqxft:ftBigUnit" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="ftScope" type="xqxft:ftScope" substitutionGroup="xqxft:ftProximity"/>
+
+  <!-- ftPosFilter alternative: FTContent                                  -->
+  <!-- Represents the following grammar productions:                       -->
+  <xsd:complexType name="ftContent">
+    <xsd:complexContent>
+      <xsd:extension base="xqxft:ftProximity">
+        <xsd:sequence>
+          <xsd:element name="location" type="xqxft:contentLocation" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="ftContent" type="xqxft:ftContent" substitutionGroup="xqxft:ftProximity"/>
+
+
+  <!-- ftPosFilter                                                         -->
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTPosFilter ::=                                                   -->
+  <!--     FTOrder | FTWindow | FTDistance | FTScope | FTContent           -->
+  <xsd:complexType name="ftPosFilter">
+    <xsd:complexContent>
+      <xsd:extension base="xqxft:ftExpr">
+        <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+          <xsd:element ref="xqxft:ftProximity" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+
+  <!-- FTSelection                                                         -->
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTSelection ::= FTOr FTPosFilter*                                 -->
+  <xsd:complexType name="ftSelection" >
+    <xsd:complexContent>
+      <xsd:extension base="xqxft:ftExpr">
+        <xsd:sequence>
+          <xsd:element name="ftSelectionSource" type="xqx:exprWrapper"/>
+          <xsd:element name="ftPosFilter"
+                       type="xqxft:ftPosFilter"
+                       minOccurs="0" maxOccurs="1" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="ftSelection" type="xqxft:ftSelection" substitutionGroup="xqxft:ftExpr" />
+
+
+  <xsd:complexType name="ftSelectionWrapper">
+    <xsd:sequence>
+      <xsd:element ref="xqxft:ftSelection"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTIgnoreOption ::= "without" "content" UnionExpr                  -->
+  <xsd:complexType name="ftIgnoreOption">
+    <xsd:sequence>
+      <xsd:element ref="xqx:expr"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+
+  <!-- Full-Text logical operators                                         -->
+  <xsd:element name="ftLogicalOp" type="xqx:binaryOperatorExpr" abstract="true"
+               substitutionGroup="xqx:operatorExpr"/>
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTOr ::= FTAnd ( "ftor" FTAnd )*                                  -->
+  <xsd:element name="ftOr" type="xqx:binaryOperatorExpr"
+               substitutionGroup="xqxft:ftLogicalOp"/>
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTAnd ::= FTMildNot ( "ftand" FTMildNot )*                        -->
+  <xsd:element name="ftAnd" type="xqx:binaryOperatorExpr"
+               substitutionGroup="xqxft:ftLogicalOp"/>
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   	FTMildNot ::= FTUnaryNot ( "not" "in" FTUnaryNot )*              -->
+  <xsd:element name="ftMildNot" type="xqx:binaryOperatorExpr"
+               substitutionGroup="xqxft:ftLogicalOp"/>
+
+  <!-- Represents the following grammar productions:                       -->
+  <xsd:element name="ftLogicalNot" type="xqx:unaryOperatorExpr" abstract="true"
+               substitutionGroup="xqx:operatorExpr"/>
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTUnaryNot ::= ("ftnot")? FTPrimaryWithOptions                    -->
+  <xsd:element name="ftUnaryNot" type="xqx:unaryOperatorExpr"
+               substitutionGroup="xqxft:ftLogicalNot"/>
+
+
+  <!-- Definitions associated with FTWords                                 -->
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTTimes ::= "occurs" FTRange "times"                              -->
+  <xsd:complexType name="ftTimes">
+    <xsd:sequence>
+      <xsd:element name="ftRange" type="xqxft:ftRange"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--  FTAnyallOption ::= ("any" "word"?) | ("all" "words"?) | "phrase"   -->
+  <xsd:simpleType name="ftAnyAllOption">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="any"/>
+      <xsd:enumeration value="all"/>
+      <xsd:enumeration value="any word"/>
+      <xsd:enumeration value="all words"/>
+      <xsd:enumeration value="phrase"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTWordsValue ::= StringLiteral | ("{" Expr "}")                         -->
+  <xsd:complexType name="ftWordsAlternatives">
+    <xsd:choice>
+      <xsd:element name="ftWordsLiteral" type="xqx:exprWrapper"/>
+      <xsd:element name="ftWordsExpression" type="xqx:exprWrapper"/>
+    </xsd:choice>
+  </xsd:complexType>
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTWords ::= FTWordsValue FTAnyallOption?                          -->
+  <xsd:complexType name="ftWords">
+    <xsd:sequence>
+      <xsd:element name="ftWordsValue" type="xqxft:ftWordsAlternatives" />
+      <xsd:element name="ftAnyAllOption" type="xqxft:ftAnyAllOption"
+                   minOccurs="0" maxOccurs="1" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--  ... FTWordsValue FTAnyallOption?                                   -->
+  <xsd:group name="ftWordsWithTimes">
+    <xsd:sequence>
+      <xsd:element name="ftWords" type="xqxft:ftWords" />
+      <xsd:element name="ftTimes" type="xqxft:ftTimes" minOccurs="0" />
+    </xsd:sequence>
+  </xsd:group>
+
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTExtensionSelection ::= Pragma+ "{" FTSelection? "}"             -->
+  <xsd:complexType name="ftExtensionSelection">
+    <xsd:sequence>
+      <xsd:element name="pragma" type="xqx:pragma"
+                   minOccurs="1" maxOccurs="unbounded"/>
+      <xsd:element name="ftSelection" type="xqxft:ftSelection"
+                   minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTPrimary ::= (FTWords FTTimes?)                                  -->
+  <!--               | ("(" FTSelection ")")                               -->
+  <!--               | FTExtensionSelection                                -->
+  <xsd:complexType name="ftPrimary">
+    <xsd:complexContent>
+      <xsd:extension base="xqxft:ftExpr" >
+        <xsd:choice>
+          <xsd:element name="parenthesized" type="xqx:exprWrapper"/>
+          <xsd:group ref="xqxft:ftWordsWithTimes" />
+          <xsd:element name="ftExtensionSelection" type="xqxft:ftExtensionSelection"/>
+        </xsd:choice>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTPrimaryWithOptions ::= FTPrimary FTMatchOptions? FTWeight?      -->
+  <xsd:complexType name="ftPrimaryWithOptions">
+    <xsd:complexContent>
+      <xsd:extension base="xqxft:ftExpr">
+        <xsd:sequence>
+          <xsd:element name="ftPrimary" type="xqxft:ftPrimary"/>
+          <xsd:element ref="xqxft:ftMatchOptions"
+                       minOccurs="0" maxOccurs="1"/>
+          <xsd:element name="weight"
+                       type="xqx:exprWrapper"
+                       minOccurs="0" maxOccurs="1" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="ftPrimaryWithOptions" type="xqxft:ftPrimaryWithOptions"
+               substitutionGroup="xqxft:ftExpr"/>
+
+</xsd:schema>

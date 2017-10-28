@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--XSLT Processor: SAXON 9.1.0.2 from Saxonica SAXON SA 9.1.0.2--><document-summary uri="http://www.w3.org/TR/xpath-full-text-10-requirements/">
+   <title>XQuery and XPath Full Text 1.0 Requirements</title>
+   <div1 id="intro">
+      <head>
+         <h2 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <a name="intro" id="intro"/>1 Introduction</h2>
+      </head>
+   </div1>
+   <div1 id="Terminology">
+      <head>
+         <h2 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <a name="Terminology" id="Terminology"/>2 Terminology</h2>
+      </head>
+      <div2 id="">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="d3e198" id="d3e198"/>2.1 Terminology</h3>
+         </head>
+      </div2>
+      <div2 id="div-score">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="div-score" id="div-score"/>2.2 SCORE</h3>
+         </head>
+      </div2>
+      <div2 id="div-fts">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="div-fts" id="div-fts"/>2.3 Full-Text Search</h3>
+         </head>
+      </div2>
+   </div1>
+   <div1 id="LanguageDesign">
+      <head>
+         <h2 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <a name="LanguageDesign" id="LanguageDesign"/>3 Language Design</h2>
+      </head>
+      <div2 id="markupPrimary">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="markupPrimary" id="markupPrimary"/>3.1 The Data Model</h3>
+         </head>
+      </div2>
+      <div2 id="lang-side-effects">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="lang-side-effects" id="lang-side-effects"/>3.2 Side-effects on the data</h3>
+         </head>
+      </div2>
+      <div2 id="lang-score-match-body">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="lang-score-match-body" id="lang-score-match-body"/>3.3 Score Function and Full-Text Predicates</h3>
+         </head>
+         <div3 id="div3-score-independent">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="div3-score-independent" id="div3-score-independent"/>3.3.1 Predicate and Score Independence</h4>
+            </head>
+         </div3>
+         <div3 id="div3-score-language">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="div3-score-language" id="div3-score-language"/>3.3.2 Score language</h4>
+            </head>
+         </div3>
+      </div2>
+      <div2 id="score-algorithm">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="score-algorithm" id="score-algorithm"/>3.4 Score algorithm</h3>
+         </head>
+         <div3 id="div-return-score">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="div-return-score" id="div-return-score"/>3.4.1 Return Score</h4>
+            </head>
+         </div3>
+         <div3 id="div-sort-score">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="div-sort-score" id="div-sort-score"/>3.4.2 Sort by Score</h4>
+            </head>
+         </div3>
+         <div3 id="div-typerange-score">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="div-typerange-score" id="div-typerange-score"/>3.4.3 Type, Range of Score</h4>
+            </head>
+         </div3>
+         <div3 id="div-score-stats">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="div-score-stats" id="div-score-stats"/>3.4.4 Score Statistics</h4>
+            </head>
+         </div3>
+         <div3 id="div-score-semantics">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="div-score-semantics" id="div-score-semantics"/>3.4.5 Semantics of Score</h4>
+            </head>
+         </div3>
+      </div2>
+      <div2 id="scoreComb">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="scoreComb" id="scoreComb"/>3.5 Combined score</h3>
+         </head>
+         <div3 id="score-combination">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="score-combination" id="score-combination"/>3.5.1 Score Combination</h4>
+            </head>
+         </div3>
+         <div3 id="score-alg-vendor">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="score-alg-vendor" id="score-alg-vendor"/>3.5.2 Score algorithm vendor-provided</h4>
+            </head>
+         </div3>
+         <div3 id="score-alg-override">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="score-alg-override" id="score-alg-override"/>3.5.3 Score algorithm overridable</h4>
+            </head>
+         </div3>
+         <div3 id="score-alg-influence">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="score-alg-influence" id="score-alg-influence"/>3.5.4 Score influence</h4>
+            </head>
+         </div3>
+      </div2>
+      <div2 id="ext">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="ext" id="ext"/>3.6 Extensibility</h3>
+         </head>
+         <div3 id="div-extensible">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="div-extensible" id="div-extensible"/>3.6.1 Extensible by vendors</h4>
+            </head>
+         </div3>
+         <div3 id="div-extensible-users">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="div-extensible-users" id="div-extensible-users"/>3.6.2 Extensible by users</h4>
+            </head>
+         </div3>
+      </div2>
+      <div2 id="fastRight">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="fastRight" id="fastRight"/>3.7 First, Future Versions</h3>
+         </head>
+      </div2>
+      <div2 id="lang-endUserLanguage">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="lang-endUserLanguage" id="lang-endUserLanguage"/>3.8 End user language</h3>
+         </head>
+      </div2>
+      <div2 id="searchable-query">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="searchable-query" id="searchable-query"/>3.9 Searchable query</h3>
+         </head>
+      </div2>
+      <div2 id="universality">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="universality" id="universality"/>3.10 Universality</h3>
+         </head>
+      </div2>
+   </div1>
+   <div1 id="Integration">
+      <head>
+         <h2 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <a name="Integration" id="Integration"/>4 Integration</h2>
+      </head>
+      <div2 id="xpath">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="xpath" id="xpath"/>4.1 XPath</h3>
+         </head>
+      </div2>
+      <div2 id="ext-mech">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="ext-mech" id="ext-mech"/>4.2 Extensibility Mechanisms</h3>
+         </head>
+         <div3 id="div-int-xquery">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="div-int-xquery" id="div-int-xquery"/>4.2.1 Integration into XQuery/XPath</h4>
+            </head>
+         </div3>
+         <div3 id="div-own-ext">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="div-own-ext" id="div-own-ext"/>4.2.2 XQuery and XPath Full Text 1.0 Extensibility</h4>
+            </head>
+         </div3>
+      </div2>
+      <div2 id="int-composability">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="int-composability" id="int-composability"/>4.3 Composability</h3>
+         </head>
+      </div2>
+      <div2 id="Human-readable">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="Human-readable" id="Human-readable"/>4.4 Human-readable</h3>
+         </head>
+      </div2>
+      <div2 id="XMLSyntax">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="XMLSyntax" id="XMLSyntax"/>4.5 XML syntax</h3>
+         </head>
+      </div2>
+   </div1>
+   <div1 id="Implementation">
+      <head>
+         <h2 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <a name="Implementation" id="Implementation"/>5 Implementation</h2>
+      </head>
+      <div2 id="efficientExecution">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="efficientExecution" id="efficientExecution"/>5.1 Declarativity</h3>
+         </head>
+      </div2>
+   </div1>
+   <div1 id="Scope">
+      <head>
+         <h2 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <a name="Scope" id="Scope"/>6 Functionality and Scope</h2>
+      </head>
+      <div2 id="functionality">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="functionality" id="functionality"/>6.1 Functionality</h3>
+         </head>
+      </div2>
+      <div2 id="func-searchScope">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="func-searchScope" id="func-searchScope"/>6.2 Search Scope</h3>
+         </head>
+         <div3 id="div-arbitrary">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="div-arbitrary" id="div-arbitrary"/>6.2.1 Search within arbitrary structure</h4>
+            </head>
+         </div3>
+         <div3 id="div-constructed">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="div-constructed" id="div-constructed"/>6.2.2 Constructed Structures</h4>
+            </head>
+         </div3>
+         <div3 id="div-return-arbitrary">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="div-return-arbitrary" id="div-return-arbitrary"/>6.2.3 Return Arbitrary Nodes</h4>
+            </head>
+         </div3>
+         <div3 id="div-comb-tree">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="div-comb-tree" id="div-comb-tree"/>6.2.4 Parts of Search Tree</h4>
+            </head>
+         </div3>
+      </div2>
+      <div2 id="func-att">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="func-att" id="func-att"/>6.3 Attributes</h3>
+         </head>
+         <div3 id="div-att">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="div-att" id="div-att"/>6.3.1 Search within attributes</h4>
+            </head>
+         </div3>
+         <div3 id="div-att-content">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="div-att-content" id="div-att-content"/>6.3.2 Search across attributes and content</h4>
+            </head>
+         </div3>
+      </div2>
+      <div2 id="func-markup">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="func-markup" id="func-markup"/>6.4 Markup</h3>
+         </head>
+      </div2>
+      <div2 id="elementBoundaries">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="elementBoundaries" id="elementBoundaries"/>6.5 Element Boundaries</h3>
+         </head>
+         <div3 id="div-element-boundary">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="div-element-boundary" id="div-element-boundary"/>6.5.1 Search across element boundaries</h4>
+            </head>
+         </div3>
+         <div3 id="div-token-boundary">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="div-token-boundary" id="div-token-boundary"/>6.5.2 Element as a token boundary</h4>
+            </head>
+         </div3>
+      </div2>
+      <div2 id="func-score">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="func-score" id="func-score"/>6.6 Score</h3>
+         </head>
+         <div3 id="div-score-accessible">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="div-score-accessible" id="div-score-accessible"/>6.6.1 Score accessible</h4>
+            </head>
+         </div3>
+         <div3 id="div-mplicit-ordering">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="div-mplicit-ordering" id="div-mplicit-ordering"/>6.6.2 Implicit ordering</h4>
+            </head>
+         </div3>
+         <div3 id="div-score-extendable">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="div-score-extendable" id="div-score-extendable"/>6.6.3 Score extendable</h4>
+            </head>
+         </div3>
+      </div2>
+   </div1>
+   <div1 id="biblio">
+      <head>
+         <h2 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <a name="biblio" id="biblio"/>A References</h2>
+      </head>
+      <div2 id="non-normative-biblio">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="non-normative-biblio" id="non-normative-biblio"/>A.1 Non-Normative</h3>
+         </head>
+      </div2>
+   </div1>
+   <div1 id="changeLog">
+      <head>
+         <h2 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <a name="changeLog" id="changeLog"/>B Change Log</h2>
+      </head>
+   </div1>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="terminology-score"
+            term="SCORE"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="terminology-FTS"
+            term="Full-Text Search"/>
+</document-summary>

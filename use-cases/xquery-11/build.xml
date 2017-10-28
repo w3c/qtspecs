@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<project name="xquery-use-cases" default="all">
+
+  <dirname property="etc.dir" file="../../etc/*"/>
+  <import file="${etc.dir}/build-constants.xml"/>
+
+  <property name="generic-shortname" value="xquery"/>
+  <property name="this-spec-version-code" value="11"/>
+  <property name="shortname" value="${generic-shortname}-${this-spec-version-code}-use-cases"/>
+  <property name="spec.uri" value="${W3C.TR}/${shortname}/"/>
+  <property name="spec.xml" value="${src.dir}/${generic-shortname}-use-cases.xml"/>
+  <property name="spec.code" value="XQUC11"/>
+<!-- Here, we do not define property 'spec.style' -->
+<!-- Therefore, spec.style is implicitly ${shared.style.dir}/xsl-query.xsl -->
+<!--   as defined within build-impl.xml -->
+
+  <import file="${etc.dir}/build-impl.xml"/>
+
+  <target name="all"
+          depends="spec,extract-example-queries"
+          description="This is the default target."/>
+
+<!-- This additional target is used to extract all of the XQuery example code and snippets -->
+  <target name="extract-example-queries" depends="init,spec">
+    <xslt in="${spec.xml}" out="${dist.dir}/xquery-use-case-queries.txt" 
+          style="${local.style.dir}/usecasesextr.xsl"
+          classpathref="saxon6.classpath" force="yes"/>
+    <xslt in="${src.dir}/../../../specifications/${generic-shortname}-${this-spec-version-code}/html/${generic-shortname}-${this-spec-version-code}.xml"
+          out="${dist.dir}/xquery-example-queries.txt"
+          style="${local.style.dir}/xquery-examples-extr.xsl"
+          classpathref="saxon6.classpath" force="yes"/>
+  </target>
+
+</project>

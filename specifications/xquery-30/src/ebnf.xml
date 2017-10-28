@@ -1,0 +1,1007 @@
+<?xml version="1.0" encoding="utf-8"?>
+<div1 id="nt-bnf">
+  <head>&language; Grammar</head>
+  <div2 id="id-grammar">
+    <head>EBNF</head>
+    <p>The grammar of &language; uses the same simple Extended
+    Backus-Naur Form (EBNF) notation as 
+    <bibref ref="XML" /> with the following minor differences.</p>
+    <ulist>
+      <item>
+        <p>All named symbols have a name that begins with an
+        uppercase letter.</p>
+      </item>
+      <item>
+        <p>It adds a notation for referring to productions in
+        external specs.</p>
+      </item>
+      <item>
+        <p>Comments or extra-grammatical constraints on grammar
+        productions are between '/*' and '*/' symbols.</p>
+        <ulist>
+          <item>
+            <p>A 'xgc:' prefix is an extra-grammatical constraint,
+            the details of which are explained in 
+            <specref ref="extra-grammatical-constraints" /></p>
+          </item>
+          <item>
+            <p>A 'ws:' prefix explains the whitespace rules for the
+            production, the details of which are explained in 
+            <specref ref="whitespace-rules" /></p>
+          </item>
+          <item>
+            <p>A 'gn:' prefix means a 'Grammar Note', and is meant
+            as a clarification for parsing rules, and is explained
+            in 
+            <specref ref="notes-on-parsing" />. These notes are not
+            normative.</p>
+          </item>
+        </ulist>
+      </item>
+    </ulist>
+    <p>The terminal symbols for this grammar include the quoted
+    strings used in the production rules below, and the terminal
+    symbols defined in section 
+    <specref ref="terminal-symbols" />.</p>
+    <p>The EBNF notation is described in more detail in 
+    <specref ref="EBNFNotation" />.</p>
+    <p>To increase readability, the EBNF in the main body of this
+    document omits some of these notational features. This appendix
+    is the normative version of the EBNF.</p>
+    <scrap id="BNF-Grammar" role="non-terminal-structure-expand">
+      <head></head>
+      <prodrecap id="BNF-Grammar-prods" ref="BNF-Grammar-prods" />
+    </scrap>
+    <div3 id="EBNFNotation">
+      <head>Notation</head>
+      <p>The following definitions will be helpful in defining
+      precisely this exposition.</p>
+      <p>
+        <termdef id="symbol" term="symbol">Each rule in the grammar
+        defines one 
+        <term>symbol</term>, using the following format:
+        <eg>symbol ::= expression</eg></termdef>
+      </p>
+      <p>
+      <termdef term="terminal" id="terminal">A 
+      <term>terminal</term> is a symbol or string or pattern that
+      can appear in the right-hand side of a rule, but never
+      appears on the left-hand side in the main grammar, although
+      it may appear on the left-hand side of a rule in the grammar
+      for terminals.</termdef> The following constructs are used to
+      match strings of one or more characters in a terminal:</p>
+      <glist>
+        <gitem>
+          <label>[a-zA-Z]</label>
+          <def>
+            <p>matches any 
+            <nt def="Char" id="Char">Char</nt> with a value in the
+            range(s) indicated (inclusive).</p>
+          </def>
+        </gitem>
+        <gitem>
+          <label>[abc]</label>
+          <def>
+            <p>matches any 
+            <nt def="Char">Char</nt> with a value among the
+            characters enumerated. 
+            <phrase diff="del">Enumerations and ranges can be mixed
+            in one set of brackets.</phrase></p>
+          </def>
+        </gitem>
+        <gitem>
+          <label>[^abc]</label>
+          <def>
+            <p>matches any 
+            <nt def="Char">Char</nt> with a value not among the
+            characters given.
+            <phrase diff="del">Enumerations and ranges of forbidden
+            values can be mixed in one set of
+            brackets.</phrase></p>
+          </def>
+        </gitem>
+        <gitem>
+          <label>"string"</label>
+          <def>
+            <p>matches the sequence of characters that appear
+            inside the double quotes.</p>
+          </def>
+        </gitem>
+        <gitem>
+          <label>'string'</label>
+          <def>
+            <p>matches the sequence of characters that appear
+            inside the single quotes.</p>
+          </def>
+        </gitem>
+        <gitem>
+          <label>
+          [http://www.w3.org/TR/REC-example/#NT-Example]</label>
+          <def>
+            <p>matches any string matched by the production defined
+            in the external specification as per the provided
+            reference.</p>
+          </def>
+        </gitem>
+      </glist>
+      <p>Patterns (including the above constructs) can be combined
+      with grammatical operators to form more complex patterns,
+      matching more complex sets of character strings. In the
+      examples that follow, A and B represent (sub-)patterns.</p>
+      <glist>
+        <gitem>
+          <label>(A)</label>
+          <def>
+            <p>
+            <code>A</code> is treated as a unit and may be combined
+            as described in this list.</p>
+          </def>
+        </gitem>
+        <gitem>
+          <label>A?</label>
+          <def>
+            <p>matches 
+            <code>A</code> or nothing; optional 
+            <code>A</code>.</p>
+          </def>
+        </gitem>
+        <gitem>
+          <label>A B</label>
+          <def>
+            <p>matches 
+            <code>A</code> followed by 
+            <code>B</code>. This operator has higher precedence
+            than alternation; thus 
+            <code>A B | C D</code> is identical to 
+            <code>(A B) | (C D)</code>.</p>
+          </def>
+        </gitem>
+        <gitem>
+          <label>A | B</label>
+          <def>
+            <p>matches 
+            <code>A</code> or 
+            <code>B</code> but not both.</p>
+          </def>
+        </gitem>
+        <gitem>
+          <label>A - B</label>
+          <def>
+            <p>matches any string that matches 
+            <code>A</code> but does not match 
+            <code>B</code>.</p>
+          </def>
+        </gitem>
+        <gitem>
+          <label>A+</label>
+          <def>
+            <p>matches one or more occurrences of 
+            <code>A</code>. Concatenation has higher precedence
+            than alternation; thus 
+            <code>A+ | B+</code> is identical to 
+            <code>(A+) | (B+)</code>.</p>
+          </def>
+        </gitem>
+      </glist>
+      <glist>
+        <gitem>
+          <label>A*</label>
+          <def>
+            <p>matches zero or more occurrences of 
+            <code>A</code>. Concatenation has higher precedence
+            than alternation; thus 
+            <code>A* | B*</code> is identical to 
+            <code>(A*) | (B*)</code></p>
+          </def>
+        </gitem>
+      </glist>
+    </div3>
+    <div3 id="extra-grammatical-constraints">
+      <head>Extra-grammatical Constraints</head>
+      <p>This section contains constraints on the EBNF productions,
+      which are required to parse syntactically valid sentences. The notes below
+      are referenced from the right side of the production, with
+      the notation: 
+      <emph>/* xgc: &lt;id&gt; */</emph>.</p>
+      <constraintnote id="parse-note-leading-lone-slash" type="xgc"
+      diff="chg" at="XQ.E24 and XP.E16">
+        <head>leading-lone-slash</head>
+        <p>A single slash may appear either as a complete path
+        expression or as the first part of a path expression in
+        which it is followed by a 
+        <nt def="RelativePathExpr">RelativePathExpr</nt>. In some
+        cases, the next token after the slash is insufficient to
+        allow a parser to distinguish these two possibilities: the 
+        <code>*</code> token and keywords like 
+        <code>union</code> could be either an operator or a 
+        <nt def="NameTest">NameTest</nt>
+        <phrase role="xquery">, and the 
+        <code>&lt;</code> token could be either an operator or the
+        start of a 
+        <nt def="DirectConstructor">
+        DirectConstructor</nt></phrase>. For example, without
+        lookahead the first part of the expression 
+        <code>/ * 5</code> is easily taken to be a complete
+        expression, 
+        <code role="parse-test">/ *</code>, which has a very different interpretation
+        (the child nodes of 
+        <code>/</code>).</p>
+        <p>Therefore to reduce the need for lookahead, if the token
+        immediately following a slash can form the start of a 
+        <nt def="RelativePathExpr">RelativePathExpr</nt>, then the
+        slash must be the beginning of a 
+        <nt def="PathExpr">PathExpr</nt>, not the entirety of
+        it.</p>
+        <p>A single slash may be used as the left-hand argument of
+        an operator by parenthesizing it: 
+        <code role="parse-test">(/) * 5</code>. The expression 
+        <code role="parse-test">5 * /</code>, on the other hand, is syntactically valid without
+        parentheses.</p>
+      </constraintnote>
+      <constraintnote id="parse-note-xml-version" type="xgc">
+        <head>xml-version</head>
+        <p diff="chg">The version of XML and XML Names (e.g. <bibref
+        ref="XML" /> and <bibref ref="XMLNAMES" />, or <bibref
+        ref="XML1.1" /> and <bibref ref="XMLNAMES11" />) is <termref
+        def="dt-implementation-defined">implementation-defined</termref>. It
+        is recommended that the latest applicable version be used
+        (even if it is published later than this specification). The
+        EBNF in this specification links only to the 1.0
+        versions. Note also that these external productions follow the
+        whitespace rules of their respective specifications, and not
+        the rules of this specification, in particular <specref
+        ref="DefaultWhitespaceHandling" />. Thus <code>prefix :
+        localname</code> is not a syntactically valid <termref
+        def="dt-qname">lexical QName</termref> for purposes of this
+        specification, just as it is not permitted in a XML
+        document. Also, comments are not permissible on either side of
+        the colon. Also extra-grammatical constraints such as
+        well-formedness constraints must be taken into account.</p>
+
+
+	<p role="xquery" diff="chg">XML 1.0 and XML 1.1 differ in their handling of
+	C0 control characters (specifically #x1 through #x1F,
+	excluding #x9, #xA, and #xD) and C1 control characters (#x7F
+	through #x9F). In XML 1.0, these C0 characters are prohibited,
+	and the C1 characters are permitted. In XML 1.1, both sets of
+	control characters are permitted, but only if written as
+	character references. It is RECOMMENDED that implementations
+	should follow the XML 1.1 rules in this respect; however, for
+	backwards compatibility with <phrase role="xquery">XQuery 1.0</phrase>
+	<phrase role="xpath">XPath 2.0</phrase>, implementations MAY
+	allow C1 control characters to be used directly.
+
+	<note><p>Direct use of C1 control characters often suggests a
+	character encoding error, such as using encoding CP-1252 and
+	mislabeling it as iso-8859-1.</p></note></p>
+
+	<p role="xpath" diff="chg">XPath expressions allow any legal XML Unicode character, subject only to constraints imposed by the host language.</p>
+
+      </constraintnote>
+
+      <constraintnote id="parse-note-reserved-function-names"
+      type="xgc">
+        <head>reserved-function-names</head>
+        <p>Unprefixed function names spelled the same way as
+        language keywords could make the language harder to
+        recognize. For instance, 
+        <code>if(foo)</code> could be taken either as a 
+        <nt def="FunctionCall">FunctionCall</nt> or as the beginning
+        of an 
+        <nt def="IfExpr">IfExpr</nt>.  Therefore, an unprefixed
+	function name must not be any of the names in
+	<specref ref="id-reserved-fn-names" />.</p>
+       
+        <p>A function named "if" can be called by binding its
+        namespace to a prefix and using the prefixed form:
+        "library:if(foo)" instead of "if(foo)".</p>
+      </constraintnote>
+      <constraintnote id="parse-note-occurrence-indicators"
+      type="xgc">
+        <head>occurrence-indicators</head> <p>As written, the grammar
+        in <specref ref="nt-bnf" /> is ambiguous for some forms using
+        the '+' and '*' Kleene operators. The ambiguity is resolved as
+        follows: these operators are tightly bound to the <nt
+        def="SequenceType">SequenceType</nt> expression, and have
+        higher precedence than other uses of these symbols.  Any
+        occurrence of '+' and '*', as well as '?', following a
+        sequence type is assumed to be an occurrence indicator, which
+        binds to the last <nt def="ItemType">ItemType</nt> in the <nt
+        def="SequenceType">SequenceType</nt>.</p>
+
+	<p>Thus, <code role="parse-test">4 treat as item() + -
+	5</code> must be interpreted as <code role="parse-test">(4
+	treat as item()+) - 5</code>, taking the '+' as an
+	OccurrenceIndicator and the '-' as a subtraction operator. To
+	force the interpretation of "+" as an addition operator (and
+	the corresponding interpretation of the "-" as a unary minus),
+	parentheses may be used: the form <code role="parse-test">(4
+	treat as item()) + -5</code> surrounds the <nt
+	def="SequenceType">SequenceType</nt> expression with
+	parentheses and leads to the desired interpretation.</p>
+
+	<p> <code>function () as xs:string *</code>
+	is interpreted as <code>function () as
+	(xs:string *)</code>, not as <code>(function
+	() as xs:string) *</code>.  Parentheses can be used as shown
+	to force the latter interpretation.</p>
+
+        <p>This rule has as a consequence that certain forms which
+        would otherwise be syntactically valid and unambiguous are not
+        recognized: in "4 treat as item() + 5", the "+" is taken as
+        an 
+        <nt def="OccurrenceIndicator">OccurrenceIndicator</nt>, and
+        not as an operator, which means this is not a syntactically valid
+        expression.</p>
+      </constraintnote>
+    </div3>
+    <div3 id="notes-on-parsing">
+      <head>Grammar Notes</head>
+      <p>This section contains general notes on the EBNF
+      productions, which may be helpful in understanding how to
+      interpret and implement the EBNF. These notes are not
+      normative. The notes below are referenced from the right side
+      of the production, with the notation: 
+      <emph>/* gn: &lt;id&gt; */</emph>.</p>
+      <note>
+        <glist>
+          <gitem id="parse-note-parens">
+            <label>grammar-note: parens</label>
+            <def>
+              <p>Look-ahead is required to distinguish 
+              <nt def="FunctionCall">FunctionCall</nt> from a EQName
+              or keyword followed by a 
+              <phrase role="xquery">
+              <nt def="Pragma">Pragma</nt> or </phrase>
+              <nt def="Comment">Comment</nt>. For example: 
+              <code role="parse-test">address (: this may be empty
+              :)</code> may be mistaken for a call to a function
+              named "address" unless this lookahead is employed.
+              Another example is 
+              <code role="parse-test">for (: whom the bell :)
+              $tolls in 3 return $tolls</code>, where the keyword
+              "for" must not be mistaken for a function name.</p>
+            </def>
+          </gitem>
+          <gitem id="parse-note-comments">
+            <label>grammar-note: comments</label>
+            <def>
+              <p>Comments are allowed everywhere that 
+              <termref def="IgnorableWhitespace">ignorable
+              whitespace</termref> is allowed, and the 
+              <nt def="Comment">Comment</nt> symbol does not
+              explicitly appear on the right-hand side of the
+              grammar (except in its own production). See 
+              <specref ref="DefaultWhitespaceHandling" />. 
+              <phrase role="xquery">Note that comments are not
+              allowed in direct constructor content, though they
+              are allowed in nested 
+              <nt def="EnclosedExpr">
+              EnclosedExprs</nt>.</phrase></p>
+              <p>A comment can contain nested comments, as long as
+              all "(:" and ":)" patterns are balanced, no matter
+              where they occur within the outer comment.</p>
+              <note>
+                <p>Lexical analysis may typically handle nested
+                comments by incrementing a counter for each "(:"
+                pattern, and decrementing the counter for each ":)"
+                pattern. The comment does not terminate until the
+                counter is back to zero.</p>
+              </note>
+              <p>Some illustrative examples:</p>
+              <ulist>
+                <item>
+                  <p>
+                  <code>(: commenting out a (: comment :) may be
+                  confusing, but often helpful :)</code> is a syntactically valid
+                  Comment, since balanced nesting of comments is
+                  allowed.</p>
+                </item>
+                <item>
+                  <p>
+                  <code role="parse-test">"this is just a string
+                  :)"</code> is a syntactically valid expression. However, 
+                  <code>(: "this is just a string :)" :)</code> will
+                  cause a syntax error. Likewise, 
+                  <code role="parse-test">"this is another string
+                  (:"</code> is a syntactically valid expression, but 
+                  <code>(: "this is another string (:"
+                  :)</code> will cause a syntax error. It is a
+                  limitation of nested comments that literal
+                  content can cause unbalanced nesting of
+                  comments.</p>
+                </item>
+                <item>
+                  <p>
+                  <code role="parse-test">for (: set up loop :) $i
+                  in $x return $i</code> is syntactically valid,
+                  ignoring the comment.</p>
+                </item>
+                <item>
+                  <p>
+                  <code role="parse-test">5 instance (: strange
+                  place for a comment :) of xs:integer</code> is
+                  also syntactically valid.</p>
+                </item>
+                <item role="xquery">
+                  <p>
+                  <code>
+                    <![CDATA[<eg (: an example:)>{$i//title}</eg>]]>
+</code> is not syntactically valid.</p>
+                </item>
+                <item role="xquery">
+                  <p>
+                  <code role="parse-test">
+                    <![CDATA[<eg> (: an example:) </eg>]]>
+</code> is syntactically valid, but the characters that look like a
+comment are in fact literal element content.</p>
+                </item>
+              </ulist>
+            </def>
+          </gitem>
+        </glist>
+      </note>
+    </div3>
+  </div2>
+  <div2 id="lexical-structure">
+    <head>Lexical structure</head>
+    <p>The terminal symbols assumed by the grammar above are
+    described in this section.</p>
+    <p>Quoted strings appearing in production rules are terminal
+    symbols.</p>
+    <p>Other terminal symbols are defined in 
+    <specref ref="terminal-symbols" />.</p>
+
+    <p diff="add">Some productions are defined by reference to the XML and XML Names
+specifications (e.g.  <bibref ref="XML" /> and <bibref ref="XMLNAMES" />, or  <bibref ref="XML1.1" /> and  <bibref ref="XMLNAMES11" /> . <phrase role="xpath">A host language may choose</phrase><phrase role="xquery">It is implementation-defined</phrase> which version of these specifications is used; it is recommended that the latest applicable version be used (even if it is published later than this specification).</p>
+
+    <p role="xpath" diff="del">A 
+    <term>host language</term> may choose whether the lexical rules
+    of 
+    <bibref ref="XML" /> and 
+    <bibref ref="XMLNAMES" /> are followed, or alternatively, the
+    lexical rules of 
+    <bibref ref="XML1.1" /> and 
+    <bibref ref="XMLNAMES11" /> are followed.</p>
+
+    <p role="xquery" diff="del">It is 
+    <termref def="dt-implementation-defined">
+    implementation-defined</termref> whether the lexical rules of 
+    <bibref ref="XML" /> and 
+    <bibref ref="XMLNAMES" /> are followed, or alternatively, the
+    lexical rules of 
+    <bibref ref="XML1.1" /> and 
+    <bibref ref="XMLNAMES11" /> are followed. Implementations that
+    support the full 
+    <bibref ref="XML1.1" /> character set 
+    <termref def="should">SHOULD</termref>, for purposes of
+    interoperability, provide a mode that follows only the 
+    <bibref ref="XML" /> and 
+    <bibref ref="XMLNAMES" /> lexical rules.</p>
+
+    <p>When tokenizing, the longest possible match that is <phrase diff="del">valid in
+    the current context</phrase><phrase diff="add">consistent with the EBNF</phrase> is used.</p>
+
+    <p>All keywords are case sensitive. Keywords are not
+    reserved&#8212;that is, any <termref def="dt-qname">lexical
+    QName</termref> may duplicate a keyword except as noted in
+    <specref ref="id-reserved-fn-names" />.</p>
+
+    <div3 id="terminal-symbols">
+      <head>Terminal Symbols</head>
+      <scrap headstyle="show">
+        <head></head>
+        <prodrecap id="DefinedLexemes" ref="DefinedLexemes" />
+      </scrap>
+      <p>The following symbols are used only in the definition of
+      terminal symbols; they are not terminal symbols in the
+      grammar of 
+      <specref ref="id-grammar" />.</p>
+      <scrap headstyle="show">
+        <head></head>
+        <prodrecap id="LocalTerminalSymbols"
+        ref="LocalTerminalSymbols" />
+      </scrap>
+    </div3>
+    <div3 id="id-terminal-delimitation">
+      <head>Terminal Delimitation</head>
+      <p>&language; expressions consist of 
+      <loc href="#terminal-symbols">terminal symbols</loc> and 
+      <termref def="symbolseparators">symbol
+      separators</termref>.</p>
+      <p>Terminal symbols that are not used exclusively in 
+      <loc href="#ws-explicit">/* ws: explicit */</loc> productions
+      are of two kinds: delimiting and non-delimiting.</p>
+      <!-- The next paragraph is "filled in" by various stylesheets used to generate the "assembled" source files. -->
+      <p>
+        <termdef id="delimiting-token"
+        term="delimiting terminal symbol">The 
+        <term>delimiting terminal symbols</term> are: 
+        <phrase role="defined-tokens-delimiting">[This section to
+        be filled in by assemble-spec.xsl]</phrase></termdef>
+      </p>
+      <!-- The next paragraph is "filled in" by various stylesheets used to generate the "assembled" source files. -->
+      <p>
+        <termdef id="non-delimiting-token"
+        term="non-delimiting terminal symbol">The 
+        <term>non-delimiting terminal symbols</term> are: 
+        <phrase role="defined-tokens-nondelimiting">[This section
+        to be filled in by assemble-spec.xsl]</phrase></termdef>
+      </p>
+      <p>
+        <termdef id="symbolseparators" term="symbol separators">
+        <termref def="Whitespace">Whitespace</termref> and 
+        <nt def="Comment">Comments</nt> function as 
+        <term>symbol separators</term>. For the most part, they are
+        not mentioned in the grammar, and may occur between any two
+        terminal symbols mentioned in the grammar, except where
+        that is forbidden by the 
+        <loc href="#ws-explicit">/* ws: explicit */</loc> annotation
+        in the EBNF, or by the 
+        <loc href="#parse-note-xml-version">/* xgc: xml-version
+        */</loc> annotation.</termdef>
+      </p>
+      <p>It is customary to separate consecutive terminal symbols
+      by 
+      <termref def="Whitespace">whitespace</termref> and 
+      <nt def="Comment">Comments</nt>, but this is required only
+      when otherwise two non-delimiting symbols would be adjacent
+      to each other. There are two exceptions to this, that of "."
+      and "-", which do require a 
+      <termref def="symbolseparators">symbol separator</termref> if
+      they follow a QName or NCName. Also, "." requires a separator
+      if it precedes or follows a numeric literal.</p>
+    </div3>
+    <div3 id="id-eol-handling">
+      <head>End-of-Line Handling</head>
+
+      <p role="xpath">The host language must specify whether the
+      &language; processor normalizes all line breaks on input, before
+      parsing, and if it does so, whether it uses the rules of <bibref ref="XML" /> or <bibref
+      ref="XML1.1" />.<phrase diff="del">It is implementation defined
+      which version is used.</phrase></p>
+
+      <p role="xquery" diff="chg">Prior to parsing, the &language;
+      processor must normalize all line breaks. The rules for line
+      breaking follow the rules of <bibref ref="XML" /> or <bibref
+      ref="XML1.1" />.  It is implementation-defined which version is
+      used.</p>
+
+      <div4 id="id-xml10-eol-handling">
+        <head>XML 1.0 End-of-Line Handling</head>
+        <p>For 
+        <bibref ref="XML" /> processing, all of the following must
+        be translated to a single #xA character:</p>
+        <olist>
+          <item>
+            <p>the two-character sequence #xD #xA</p>
+          </item>
+          <item>
+            <p>any #xD character that is not immediately followed
+            by #xA.</p>
+          </item>
+        </olist>
+      </div4>
+      <div4 id="id-xml11-eol-handling">
+        <head>XML 1.1 End-of-Line Handling</head>
+        <p>For 
+        <bibref ref="XML1.1" /> processing, all of the following
+        must be translated to a single #xA character:</p>
+        <olist>
+          <item>
+            <p>the two-character sequence #xD #xA</p>
+          </item>
+          <item>
+            <p>the two-character sequence #xD #x85</p>
+          </item>
+          <item>
+            <p>the single character #x85</p>
+          </item>
+          <item>
+            <p>the single character #x2028</p>
+          </item>
+          <item>
+            <p>any #xD character that is not immediately followed
+            by #xA or #x85.</p>
+          </item>
+        </olist>
+        <p role="xquery">The characters #x85 and #x2028 cannot be
+        reliably recognized and translated until the 
+        <nt def="VersionDecl">VersionDecl</nt> declaration (if
+        present) has been read.</p>
+      </div4>
+    </div3>
+    <div3 id="whitespace-rules">
+      <head>Whitespace Rules</head>
+      <div4 id="DefaultWhitespaceHandling">
+        <head>Default Whitespace Handling</head>
+        <p>
+          <termdef id="Whitespace" term="whitespace">A 
+          <term>whitespace</term> character is any of the characters
+          defined by 
+          <xnt href="http://www.w3.org/TR/REC-xml/#NT-S">
+          [http://www.w3.org/TR/REC-xml/#NT-S]</xnt>.</termdef>
+        </p>
+        <p>
+        <termdef term="ignorable whitespace"
+        id="IgnorableWhitespace">
+        <term>Ignorable whitespace</term> consists of any 
+        <termref def="Whitespace">whitespace</termref> characters
+        that may occur between 
+        <termref def="terminal">terminals</termref>, unless these
+        characters occur in the context of a production marked with
+        a 
+        <loc href="#ExplicitWhitespaceHandling">
+        ws:explicit</loc> annotation, in which case they can occur
+        only where explicitly specified (see 
+        <specref ref="ExplicitWhitespaceHandling" />).</termdef> Ignorable
+        whitespace characters are not significant to the semantics
+        of an expression. Whitespace is allowed before the first
+        terminal and after the last terminal <phrase role="xquery">of
+        a module</phrase><phrase role="xpath">of an XPath</phrase>.
+        Whitespace is allowed between any two 
+        <termref def="terminal">terminals</termref>. 
+        <nt def="Comment">Comments</nt> may also act as "whitespace"
+        to prevent two adjacent terminals from being recognized as
+        one. Some illustrative examples are as follows:</p>
+        <ulist>
+          <item>
+            <p>
+            <code>foo- foo</code> results in a syntax error. "foo-"
+            would be recognized as a QName.</p>
+          </item>
+          <item>
+            <p>
+            <code role="parse-test">foo -foo</code> is syntactically
+            equivalent to 
+            <code role="parse-test">foo - foo</code>, two QNames
+            separated by a subtraction operator.</p>
+          </item>
+          <item>
+            <p>
+            <code role="parse-test">foo(: This is a comment :)-
+            foo</code> is syntactically equivalent to 
+            <code>foo - foo</code>. This is because the comment
+            prevents the two adjacent terminals from being
+            recognized as one.</p>
+          </item>
+          <item>
+            <p>
+            <code role="parse-test">foo-foo</code> is syntactically equivalent to
+            single QName. This is because "-" is a valid character
+            in a QName. When used as an operator after the
+            characters of a name, the "-" must be separated from
+            the name, e.g. by using whitespace or parentheses.</p>
+          </item>
+          <item>
+            <p>
+            <code>10div 3</code> results in a syntax error.</p>
+          </item>
+          <item>
+            <p>
+            <code>10 div3</code> also results in a syntax error.</p>
+          </item>
+          <item>
+            <p>
+            <code>10div3</code> also results in a syntax error.</p>
+          </item>
+        </ulist>
+      </div4>
+      <div4 id="ExplicitWhitespaceHandling">
+        <head>Explicit Whitespace Handling</head>
+        <p>Explicit whitespace notation is specified with the EBNF
+        productions, when it is different from the default rules,
+        using the notation shown below. This notation is not
+        inherited. In other words, if an EBNF rule is marked as /*
+        ws: explicit */, the notation does not automatically apply
+        to all the 'child' EBNF productions of that rule.</p>
+        <glist>
+          <gitem id="ws-explicit">
+            <label>ws: explicit</label>
+            <def>
+              <p>/* ws: explicit */ means that the EBNF notation
+              explicitly notates, with 
+              <code>S</code> or otherwise, where 
+              <termref def="Whitespace">whitespace
+              characters</termref> are allowed. In productions with
+              the /* ws: explicit */ annotation, 
+              <specref ref="DefaultWhitespaceHandling" /> does not
+              apply. 
+              <nt def="Comment">Comments</nt> are also not allowed
+              in these productions.</p>
+            </def>
+          </gitem>
+        </glist>
+        <p role="xquery" id="ws-explicit-lex-states">For example,
+        whitespace is not freely allowed by the direct constructor
+        productions, but is specified explicitly in the grammar, in
+        order to be more consistent with XML.</p>
+      </div4>
+    </div3>
+  </div2>
+  <div2 id="id-reserved-fn-names">
+    <head>Reserved Function Names</head>
+    <p>The following names are not allowed as function names in an
+    unprefixed form because expression syntax takes precedence.</p>
+    <!-- Note to editors: This list is (or should be) in alphabetical order. -->
+    <ulist>
+      <item>
+        <p>
+          <code>attribute</code>
+        </p>
+      </item>
+      <item>
+        <p>
+          <code>comment</code>
+        </p>
+      </item>
+      <item>
+        <p>
+          <code>document-node</code>
+        </p>
+      </item>
+      <item>
+        <p>
+          <code>element</code>
+        </p>
+      </item>
+      <item>
+        <p>
+          <code>empty-sequence</code>
+        </p>
+      </item>
+      <item>
+        <p>
+          <code>function</code>
+        </p>
+      </item>
+      <item>
+        <p>
+          <code>if</code>
+        </p>
+      </item>
+      <item>
+        <p>
+          <code>item</code>
+        </p>
+      </item>
+      <item>
+        <p>
+          <code>namespace-node</code>
+        </p>
+      </item>
+      <item>
+        <p>
+          <code>node</code>
+        </p>
+      </item>
+      <item>
+        <p>
+          <code>processing-instruction</code>
+        </p>
+      </item>
+      <item>
+        <p>
+          <code>schema-attribute</code>
+        </p>
+      </item>
+      <item>
+        <p>
+          <code>schema-element</code>
+        </p>
+      </item>
+      <item>
+        <p>
+          <code>switch</code>
+        </p>
+      </item>
+      <item>
+        <p>
+          <code>text</code>
+        </p>
+      </item>
+      <item>
+        <p>
+          <code>typeswitch</code>
+        </p>
+      </item>
+    </ulist>
+    <note role="xpath">
+      <p>
+      Although the keywords
+      <code>switch</code>
+      and
+      <code>typeswitch</code>
+      are not used in XPath,
+      they are considered reserved function names
+      for compatibility with XQuery.
+      </p>
+    </note>
+  </div2>
+  <div2 id="id-precedence-order">
+    <head>Precedence Order (Non-Normative)</head>
+    <p diff="chg" at="XQ.E26 and XP.E18">The grammar in
+    <specref ref="id-grammar" /> normatively defines built-in
+    precedence among the operators of XQuery. These operators are
+    summarized here to make clear the order of their precedence
+    from lowest to highest. The associativity column indicates the
+    order in which operators of equal precedence in an expression
+    are applied.</p>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>#</th>
+          <th>Operator</th>
+          <th>Associativity</th>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td><nt def="Expr">, (comma)</nt></td>
+          <td>either</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>
+            <phrase role="xpath"><nt def="ForExpr">for</nt>,</phrase>
+            <phrase role="xpath"><nt def="LetExpr">let</nt>,</phrase>
+            <phrase role="xquery"><nt def="FLWORExpr">FLWOR</nt>,</phrase>
+            <nt def="QuantifiedExpr">some, every</nt>, 
+            <phrase role="xquery"><nt def="SwitchExpr">switch</nt>,</phrase>
+            <phrase role="xquery"><nt def="TypeswitchExpr">typeswitch</nt>,</phrase>
+            <phrase role="xquery"><nt def="TryCatchExpr">try</nt>,</phrase>
+            <nt def="IfExpr">if</nt>
+          </td>
+          <td>NA</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>
+            <nt def="OrExpr">or</nt>
+          </td>
+          <td>either</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>
+            <nt def="AndExpr">and</nt>
+          </td>
+          <td>either</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>
+            <nt def="ValueComp">eq, ne, lt, le, gt, ge</nt>, 
+            <nt def="GeneralComp">=, !=, &lt;, &lt;=, &gt;, &gt;=</nt>, 
+            <nt def="NodeComp">is, &lt;&lt;, &gt;&gt;</nt>
+          </td>
+          <td>NA</td>
+        </tr>
+	<tr diff="add">
+	  <td>6</td>
+	  <td>
+	    <nt def="StringConcatExpr">||</nt>
+	  </td>
+	  <td>left-to-right</td>
+	</tr>
+        <tr>
+          <td>7</td>
+          <td>
+            <nt def="RangeExpr">to</nt>
+          </td>
+          <td>NA</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>
+            <nt def="AdditiveExpr">+, - (binary)</nt>
+          </td>
+          <td>left-to-right</td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>
+            <nt def="MultiplicativeExpr">*, div, idiv, mod</nt>
+          </td>
+          <td>left-to-right</td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>
+            <nt def="UnionExpr">union, |</nt>
+          </td>
+          <td>either</td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td>
+            <nt def="IntersectExceptExpr">intersect, except</nt>
+          </td>
+          <td>left-to-right</td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td>
+            <nt def="InstanceofExpr">instance of</nt>
+          </td>
+          <td>NA</td>
+        </tr>
+        <tr>
+          <td>13</td>
+          <td>
+            <nt def="TreatExpr">treat as</nt>
+          </td>
+          <td>NA</td>
+        </tr>
+        <tr>
+          <td>14</td>
+          <td>
+            <nt def="CastableExpr">castable as</nt>
+          </td>
+          <td>NA</td>
+        </tr>
+        <tr>
+          <td>15</td>
+          <td>
+            <nt def="CastExpr">cast as</nt>
+          </td>
+          <td>NA</td>
+        </tr>
+        <tr>
+          <td>16</td>
+          <td>
+            <nt def="UnaryExpr">-, + (unary)</nt>
+          </td>
+          <td>right-to-left</td>
+        </tr>
+        <tr>
+          <td>17</td>
+          <td>
+            <nt def="SimpleMapExpr">!</nt>
+          </td>
+          <td>left-to-right</td>
+        </tr>
+        <tr>
+          <td>18</td>
+          <td>
+            <nt def="PathExpr">/, //</nt>
+          </td>
+          <td>left-to-right</td>
+        </tr>
+<!--        <tr diff="chg" at="XQ.E26 and XP.E18"> -->
+        <tr>
+          <td>19</td>
+          <td>
+            <nt def="Predicate">[ ]</nt>
+          </td>
+          <td>left-to-right</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      In the "Associativity" column,
+      "either"
+      indicates that all the operators at that level have the associative property
+      (i.e., <code>(A op B) op C</code> is equivalent to <code>A op (B op C)</code>),
+      so their associativity is inconsequential.
+      "NA" (not applicable)
+      indicates that the EBNF does not allow
+      an expression that directly contains
+      multiple operators from that precedence level,
+      so the question of their associativity does not arise.
+    </p>
+
+    <note diff="chg" at="XQ.E26 and XP.E18">
+      <p>Parentheses can be used to override the operator
+      precedence in the usual way. Square brackets in an expression
+      such as A[B] serve two roles: they act as an operator causing
+      B to be evaluated once for each item in the value of A, and
+      they act as parentheses enclosing the expression B.</p>
+      <p role="xquery">Curly braces in an expression such as
+      validate{E} or ordered{E} perform a similar bracketing role
+      to the parentheses in a function call, but with the
+      difference in most cases that E is an Expr rather than
+      ExprSingle, meaning that it can use the comma operator.</p>
+    </note>
+  </div2>
+</div1>

@@ -1,0 +1,685 @@
+<!--* Administrative entities *-->
+
+<!ENTITY meForTxt "datatypes">
+
+<!ENTITY schema-language "XML Schema definition language">
+<!ENTITY XSP1 '<bibref ref="structural-schemas"/>'>
+
+<!--* parameter entities for modifying the xmlspec substrate *-->
+
+<!ENTITY % rhs.element "IGNORE" >
+<!ENTITY % term.element "IGNORE" >  <!-- davep -->
+<!ENTITY % sub.element "IGNORE" >  <!-- davep -->
+<!ENTITY % sup.element "IGNORE" >  <!-- davep -->
+<!ENTITY % head.element "IGNORE" >  <!-- davep -->
+<!ENTITY % nt.element "IGNORE" >  <!-- davep -->
+<!ENTITY % arg.element "IGNORE" >  <!-- davep -->  <!-- N.B.: arg is totally redefined for our purposes (was for XSL) -->
+<!ENTITY % arg.attlist "IGNORE" >  <!-- davep -->
+<!ENTITY % affiliation.element "IGNORE">
+<!ENTITY % local.emph.class "| strong | unusual | ghostchar | br">
+<!ENTITY % local.tech.class "|pt | mention | string | ent | dt | charclass | rhs">
+<!ENTITY % local.termdef.class "| defset | propdef | vpropdef | funcdef" >
+<!ENTITY % local.ref.class "| propref | xpropref | eltref | compref | dtref 
+                            | baseref | itemTyperef | vpropref | funcref
+                            | defsetsum | pfref | clauseref" >  
+<!-- vpropfref and funcref are obsolete -->
+<!--* clauseref added by MSM 2006-02-02 *-->
+
+<!ENTITY % local.tech.pcd.mix "| br | var | ghostchar | emph | charclass | rhs" >  <!-- davep -->
+
+<!ENTITY % commonDTD SYSTEM "schemaSpecs.dtd" >  <!-- davep -->
+    %commonDTD;
+
+<!--* More administrative *-->
+<!--* MSM updates xmlspec entity 2005-08-25 as a quick hack to let the
+    * external references in 1.1 go to the right place, even though we
+    * don't have phase-2 wording for RQ-152 yet.
+    *-->
+<!ENTITY xmlspec "http://www.w3.org/TR/xml11/">
+<!ENTITY old-dated-xmlspec "http://www.w3.org/TR/2004/REC-xml-20040204">
+<!ENTITY old-xmlspec "http://www.w3.org/TR/xml/"><!--* silent change MSM 20091030 *-->
+<!ENTITY old-xmlspec "http://www.w3.org/TR/REC-xml/">
+<!ENTITY old-xmlnsspec "http://www.w3.org/TR/xml-names/"><!--* unilaterally 
+         and silently changed 30 Oct 2009 MSM *-->
+<!ENTITY old-xmlnsspec "http://www.w3.org/TR/REC-xml-names/">
+<!ENTITY xmlnsspec "http://www.w3.org/TR/xml-names11/">
+<!ENTITY xsdl "http://www.w3.org/TR/2012/REC-xmlschema11-1-20120405/structures.html">
+<!ENTITY xsd-str-shortname "http://www.w3.org/TR/xmlschema11-1/">
+<!ENTITY sfsd-doc    'http://www.w3.org/TR/xmlschema11-2'>
+<!ENTITY sfsd-doc.xx 'http://www.w3.org/TR/xmlschema<phrase diff="add" dg="b4839">11</phrase>-2'>
+
+<!--* remove '#FIXED' from these attributes, as it seems to serve
+    * only to create validity problems. *-->
+<!ATTLIST spec otherSpec  CDATA "http://www.w3.org/TR/2012/REC-xmlschema11-1-20120405/structures.html"
+               me         CDATA "datatypes"
+               suffix     CDATA ""
+               primSchema CDATA "./primitives.nxsd"
+               drvdSchema CDATA "./derived.nxsd">
+
+<!ENTITY primer "http://www.w3.org/TR/xmlschema-0/"><!--* temporary hack *-->
+<!ENTITY primer "http://www.w3.org/TR/2012/REC-xmlschema-0-20041028/primer.html">
+<!ENTITY xlink "http://www.w3.org/TR/xlink/">
+<!ENTITY xlink-dated "http://www.w3.org/TR/2001/REC-xlink-20010627/">
+<!ENTITY charmod "http://www.w3.org/TR/charmod/">
+<!ENTITY charmod-dated "http://www.w3.org/TR/2005/REC-charmod-20050215/">
+<!ENTITY charmod-old "http://www.w3.org/TR/2004/WD-charmod-20040225">
+<!ENTITY html4 "http://www.w3.org/TR/html401/">
+<!ENTITY html4-dated "http://www.w3.org/TR/1999/REC-html401-19991224/">
+<!ENTITY rfc3987 "http://www.ietf.org/rfc/rfc3987.txt">
+<!ENTITY v-value "<xtermref href='&xsdl;#key-vv'>actual value</xtermref>" >
+<!ENTITY v-values "<xtermref href='&xsdl;#key-vv'>actual values</xtermref>" >
+<!ENTITY i-value "<xtermref href='&xsdl;#key-nv'>normalized value</xtermref>">
+<!ENTITY i-values "<xtermref href='&xsdl;#key-nv'>normalized values</xtermref>">
+<!ENTITY cvc-xpath "<xtermref href='&xsdl;#cvc-xpath'>XPath Evaluation</xtermref>">
+<!ENTITY cellback "#d0d9fa">  <!-- RGB color mix (somewhat light blue?) -->
+<!ENTITY xdm "http://www.w3.org/TR/2007/REC-xpath-datamodel-20070123/">
+<!ENTITY xpath2 "http://www.w3.org/TR/2007/REC-xpath20-20070123/">
+<!ENTITY fno "http://www.w3.org/TR/2007/REC-xpath-functions-20070123/">
+<!ENTITY as '<xspecref href="&xsdl;#as">Assertion</xspecref>'>
+<!-- <!ENTITY as '<compref ref="as"/>'> -->
+<!-- 5906 use different names for assertions in complex and simple types. -->
+<!ENTITY assref '<phrase diff="del" dg="b5906">assert</phrase><phrase diff="add" dg="b5906">&assname;</phrase>'>
+<!ENTITY asseref '<phrase diff="del" dg="b5906"><eltref ref="assert"/></phrase><phrase diff="add" dg="b5906"><eltref ref="&assname;"/></phrase>'>
+<!ENTITY assname "assertion">
+<!ENTITY as_test "{test}">
+<!-- <!ENTITY as_test '<propref comp="as" prop="test"/>'> -->
+<!ENTITY xdm_an "&xdm;#AttributeNode">
+<!ENTITY xdm_en "&xdm;#ElementNode">
+<!ENTITY xdm_tn "&xdm;#TextNode">
+<!ENTITY minustimes '<phrase diff="del" dg="b9005">&minus;</phrase><phrase diff="add" dg="b9005">&times;</phrase>'>
+
+<!ENTITY XSWG "XML Schema Working Group">
+
+
+<!ENTITY ieee754 '<phrase diff="del" dg="b6664a"><bibref
+ref="ieee754"/></phrase><phrase diff="add" dg="b6664a"><bibref
+ref="ieee754-2008"/></phrase>'>
+<!ENTITY IEEE-754 '<bibref ref="ieee754-2008"/>'>
+
+        <!-- SPECIAL CHARACTERS -->
+
+<!ENTITY bull "&#8226;" >         <!-- bullet, U+2022 -->
+<!ENTITY ccedil "&#xe7;" >        <!-- cedilla c -->
+<!ENTITY concat "&amp;" >         <!-- concatenation operator -->
+<!ENTITY degree "&#176;" >        <!-- degree, U+00B0 -->
+<!ENTITY ensp "&nbsp;" >          <!-- en space (use no-break space) -->
+<!ENTITY emsp "&ensp;&ensp;" >    <!-- em space (use two en spaces) -->
+<!ENTITY ge "&#x2265;" >          <!-- greater than or equal to, U+2265 -->
+<!ENTITY hellip "&#x2026;" >      <!--=ellipsis (horizontal)-->
+<!ENTITY inc "&lt;>" >            <!-- incomparable:  not lt, gt, nor eq -->
+<!ENTITY infin "&#8734;" >        <!-- infinity, U+221E ISOtech -->
+<!ENTITY isin   "&#x2208;" >      <!--/in R: =set membership-->
+<!ENTITY le "&#x2264;" >          <!-- less than or equal to, U+2264 ISOtech -->
+<!ENTITY lsquo  "&#x2018;" ><!--=single quotation mark, left-->
+
+<!ENTITY mdash "&ndash;&ndash;" > <!-- em dash, (use two en dashes) -->
+
+<!--* MSM declines to commit the character set abuse of using U+2013 (n-dash)
+    * for minus sign.  Either we should use U+002D (i.e. - HYPHEN-MINUS)
+    * or U+2212 MINUS SIGN.  But definitely not ndash.
+    *-->
+<!--* well, of course U+002D virtually never is given a minus sign glyph
+    * except for monospace fonts.  So we look foolish using that; let's
+    * hope that all browsers now support U+2212.  (They didn't when the
+    * original U+2013 was entered.)  I'm surprised MSM didn't redo mdash
+    *  and emsp as well.  -DP
+    *-->
+<!ENTITY minus "&#x2212;" >       <!-- minus sign -->
+<!ENTITY minus "-" >              <!-- subtraction (hyphen/minus) -->
+<!ENTITY minus "&ndash;" >        <!-- subtraction (use en dash) -->
+
+<!ENTITY ndash "&#x2013;" >       <!-- en dash, U+2013 -->
+<!ENTITY ne "&#8800;" >           <!-- not equal to, U+2260 ISOtech -->
+
+<!ENTITY prime  "&#x2032;" ><!--/prime =prime or minute-->
+<!ENTITY Prime  "&#x2033;" ><!--=double prime or second-->
+<!ENTITY rsquo  "&#x2019;" ><!--=single quotation mark, right-->
+<!ENTITY sp " ">
+<!ENTITY squot "'" >              <!-- single universal quote, U+0027 -->
+
+<!ENTITY times "&#215;" >         <!-- multiplication, U+00D7 -->
+        <!--davep added for better formatting -->
+<!ENTITY uuml "&#xfc;" >          <!-- umlaut u -->
+
+<!--* names of decimal and precisionDecimal ... *-->
+<!ENTITY pD "precisionDecimal" >
+<!ENTITY pD-dt "<dtref ref='precisionDecimal'/>" >
+<!ENTITY dec "aPDecimal" >
+<!ENTITY odec "decimal" >
+<!ENTITY odec_ "decimal" >
+<!ENTITY Odec "decimal" >
+<!ENTITY odec "<phrase diff='add' dg='pdo'>(old) </phrase>decimal" >
+<!ENTITY odec_ "(old) decimal" >
+<!ENTITY Odec "<phrase diff='add' dg='pdo'>(Old) </phrase>decimal" >
+
+<!--* This entity is not currently in use 2008-08-04.
+    * Commented out because the entity name is about to be repurposed. *-->
+<!--* ENTITY timezone "integer"  *--> 
+
+<!ENTITY cfacet "constraining facet" >
+<!ENTITY cfacets "constraining facets" >
+<!ENTITY Cfacet "<phrase>Constraining facet</phrase>" >
+<!ENTITY Cfacets "<phrase>Constraining facets</phrase>" >
+<!ENTITY CFacet "<phrase>Constraining Facet</phrase>" >
+<!ENTITY CFacets "<phrase>Constraining Facets</phrase>" >
+<!ENTITY proc "<phrase>procedure</phrase>" >
+<!ENTITY Proc "<phrase>Procedure</phrase>" >
+<!ENTITY integer "<phrase>integer</phrase>" >
+<!ENTITY Integer "<phrase>Integer</phrase>" >
+<!ENTITY INteger "<phrase>Integer</phrase>" >
+<!ENTITY decimal "<phrase>decimal number</phrase>" >
+<!ENTITY Decimal "<phrase>Decimal number</phrase>" >
+<!ENTITY DEcimal "<phrase>Decimal Number</phrase>" >
+
+<!--* name of facet used to control whether time zone offset info is required
+    * optional or prohibited
+    *-->
+<!ENTITY dateTimeStamp 'dateTimeStamp'>
+<!ENTITY explicitTimezone 'explicitTimezone'>
+<!ENTITY explicitTimezone2 'explicitTimezone'>
+
+<!--* experimental change by MSM: for 'character string' read 'literal'
+    * when referring to members of the lexical space.  26 August 2005.
+    * 27 Feb 2008: entity names are misleading, let's change them.
+    *-->
+
+
+<!--* Miscellaneous termrefs, used primarily to make the XML source more
+    * readable. 
+    * Some of these will have both diffed and undiffed versions.  Use the
+    * undiffed form in new text, and make sure the entity name for the diffed
+    * version signals that it's diffed.
+    *-->
+
+<!ENTITY actual_value "<xtermref href='&xsdl;#key-vv'>actual value</xtermref>" >
+<!ENTITY actual_values "<xtermref href='&xsdl;#key-vv'>actual values</xtermref>" >
+<!ENTITY annotation-mapping_1 '<xtermref href="&xsdl;#key-am-one">annotation mapping</xtermref>'>
+<!ENTITY annotation-mapping_n '<xtermref href="&xsdl;#key-am-set">annotation mapping</xtermref>'>
+<!ENTITY annotation-propmap_START 'The &annotation-mapping_1; of the'>
+<!ENTITY annotation-propmap_END 'element, as defined in 
+  section <xspecref href="&xsdl;#declare-annotation"
+  >XML Representation of Annotation Schema Components</xspecref>
+  of <bibref ref="structural-schemas"/>.'>
+<!ENTITY annotation-propmap_OLD 'The annotations corresponding to all the <eltref ref="annotation"/> 
+element information items in the &i-children;, if any.'>
+<!ENTITY annotation-propmap_XXX '<phrase diff="del" dg="b3869">&annotation-propmap_OLD;</phrase>'>
+<!ENTITY anyAtomicType '<code><phrase><dtref role="def" ref="anyAtomicType"/></phrase></code>'>
+<!ENTITY xs.anyAtomicType '<termref def="dt-anyAtomicType"><phrase><code
+  >xs:anyAtomicType</code></phrase></termref>'>
+<!ENTITY anySimpleType '<termref def="dt-anySimpleType"><phrase><code
+  >anySimpleType</code></phrase></termref>'>
+<!ENTITY xs.anySimpleType '<termref def="dt-anySimpleType"><phrase><code
+  >xs:anySimpleType</code></phrase></termref>'>
+<!ENTITY atomic '<termref def="dt-atomic"/>'>
+<!ENTITY atomic_datatype.x '<phrase diff="del" dg="rq120">atomic type</phrase
+                           ><phrase diff="add" dg="rq120"><termref def="dt-atomic"/> datatype</phrase>'>
+<!ENTITY atomic_datatypes.x '<phrase diff="del" dg="rq120">atomic types</phrase
+                            ><phrase diff="add" dg="rq120"><termref def="dt-atomic"/> datatypes</phrase>'>
+<!ENTITY atomic_value '<termref def="dt-atomic-value"/>'>
+<!ENTITY atomic_values '<termref def="dt-atomic-value">atomic values</termref>'>
+
+<!ENTITY basetype '<termref def="dt-basetype"/>'>
+<!ENTITY bibref-xml.xx '<bibref ref="XML1.0" diff="del" dg="b1838refs"
+	  /><bibref ref="XML" diff="add" dg="b1838refs"/>' >
+<!ENTITY bibref-xmlns.xx '<bibref ref="XMLNS1.0" diff="del" dg="b1838refs"
+	  /><bibref ref="XMLNS" diff="add" dg="b1838refs"
+	  />'>
+<!ENTITY block-escape '<termref
+	  def="dt-ccesblock">block escape</termref>' >
+<!ENTITY block-escapes '<termref
+	  def="dt-ccesblock">block escapes</termref>' >
+<!ENTITY built-in '<termref def="dt-built-in"/>'>
+
+<!ENTITY canonical_mapping '<termref def="dt-canonical-mapping"/>'>
+<!ENTITY canonical_mappings '<termref def="dt-canonical-mapping">canonical mappings</termref>'>
+<!ENTITY Canonical_mappings '<termref def="dt-canonical-mapping">Canonical mappings</termref>'>
+<!ENTITY canonical_representation '<termref def="dt-canonical-representation"/>'>
+<!ENTITY canonical_representations '<termref def="dt-canonical-representation">canonical representations</termref>'>
+<!ENTITY cardinality '<termref def="dt-cardinality"/>'>
+<!ENTITY constraining_facet '<termref def="dt-constraining-facet">&cfacet;</termref>'>
+<!ENTITY Constraining_facets '<termref def="dt-constraining-facet">&CFacets;</termref>'>
+<!ENTITY constraining_facets '<termref def="dt-constraining-facet">&cfacets;</termref>'>
+<!ENTITY constructed '<termref def="dt-constructed"/>'>
+<!ENTITY constructed.x '<termref diff="del" dg="rq120" def="dt-derived"
+                      /><termref diff="add" dg="rq120" def="dt-constructed"/>'>
+<!ENTITY construction '<termref def="dt-constructed">construction</termref>'>
+
+<!ENTITY derived '<termref def="dt-derived"/>'>
+<!ENTITY derivation '<termref def="dt-derived">derivation</termref>'>
+<!ENTITY div '<termref def="dt-div"/>'>
+
+<!ENTITY enumeration '<termref def="dt-enumeration"/>'>
+<!ENTITY error '<termref def="dt-error"/>'>
+<!ENTITY errors '<termref def="dt-error">errors</termref>'>
+
+<!ENTITY facets '<propref comp="std" prop="facets"/>'>
+
+<!ENTITY impl-defined '<termref def="key-impl-def"/>' >
+<!ENTITY Impl-defined '<termref def="key-impl-def">Implementation-defined</termref>' >
+<!ENTITY impl-dependent '<termref def="key-impl-dep"/>' >
+<!ENTITY incomparable '<termref def="dt-incomparable"/>'>
+<!ENTITY incomparability '<termref def="dt-incomparable">incomparability</termref>'>
+<!ENTITY itemType '<termref def="dt-itemType"/>'>
+<!ENTITY item_type '<termref def="dt-itemType"/>'>
+<!ENTITY item_type_definition '<propref comp="std" prop="item type definition"/>'>
+<!ENTITY itd '<propref comp="std" prop="item type definition"/>'>
+
+<!ENTITY lexical '<termref def="dt-lexical"/>'>
+<!ENTITY lexical_mapping '<termref def="dt-lexical-mapping"/>'>
+<!ENTITY lexical_mappings '<termref def="dt-lexical-mapping">lexical mappings</termref>'>
+<!ENTITY lexical_representation '<termref def="dt-lexical-representation"/>'>
+<!ENTITY lexical_representations '<termref def="dt-lexical-representation">lexical representations</termref>'>
+<!ENTITY lexical_space '<termref def="dt-lexical-space"/>'>
+<!ENTITY lexical_spaces '<termref def="dt-lexical-space">lexical spaces</termref>'>
+<!ENTITY lex_rep '<termref def="dt-lexical-representation"/>'>
+<!ENTITY List '<termref def="dt-list">List</termref>'>
+<!ENTITY list '<termref def="dt-list"/>'>
+<!ENTITY Lists '<termref def="dt-list">Lists</termref>'>
+<!ENTITY lists '<termref def="dt-list">lists</termref>'>
+
+<!--* earlier form (temporary), showing the change explicitly *-->
+<!ENTITY literal '<phrase diff="del" dg="rq21-lit">literal</phrase
+                 ><phrase diff="add" dg="rq21-lit"><termref def="dt-literal"/></phrase>'>
+<!ENTITY literals '<phrase diff="del" dg="rq21-lit">literals</phrase
+                  ><phrase diff="add" dg="rq21-lit"><termref def="dt-literal">literals</termref></phrase>'>
+<!--* after rq21 is approved, make the change silent *-->
+<!--* 2009 10 13 no, that makes it impossible to reconstruct 1.0, since 1.0 did not
+    * have a termdef for 'literal'. *-->
+<!ENTITY literal '<termref def="dt-literal"/>'>
+<!ENTITY literals '<termref def="dt-literal">literals</termref>'>
+
+<!--* literals formerly known as character strings ... *-->
+<!ENTITY literal.xcs   "<phrase diff='del' dg='rq21-lit'>character string</phrase
+                       ><phrase diff='add' dg='rq21-lit'>&literal;</phrase>" >
+<!ENTITY literals.xcss "<phrase diff='del' dg='rq21-lit'>character strings</phrase
+                       ><phrase diff='add' dg='rq21-lit'>&literals;</phrase>" >
+<!ENTITY Literal.xCs   "<phrase diff='del' dg='rq21-lit'>Character string</phrase
+                       ><phrase diff='add' dg='rq21-lit'><termref def='dt-literal'>Literal</termref></phrase>" >
+<!ENTITY Literals.xCss "<phrase diff='del' dg='rq21-lit'>Character strings</phrase
+                       ><phrase diff='add' dg='rq21-lit'><termref def='dt-literal'>Literals</termref></phrase>" >
+
+<!--* old forms, replaced 27 Feb 2008 with the above, to avoid confusing entity names. 
+<!ENTITY string "<phrase diff='del' dg='rq21-lit'>character string</phrase
+                ><phrase diff='add' dg='rq21-lit'>&literal;</phrase>" >
+<!ENTITY strings "<phrase diff='del' dg='rq21-lit'>character strings</phrase
+                 ><phrase diff='add' dg='rq21-lit'>&literals;</phrase>" >
+<!ENTITY String "<phrase diff='del' dg='rq21-lit'>Character string</phrase
+                ><phrase diff='add' dg='rq21-lit'><termref def='dt-literal'>Literal</termref></phrase>" >
+<!ENTITY Strings "<phrase diff='del' dg='rq21-lit'>Character strings</phrase
+                 ><phrase diff='add' dg='rq21-lit'><termref def='dt-literal'>Literals</termref></phrase>" >
+<!ENTITY STring "<phrase diff='del' dg='rq21-lit'>Character String</phrase
+                ><phrase diff='add' dg='rq21-lit'><termref def='dt-literal'>Literal</termref></phrase>" >
+*-->
+<!--* The following appears not to be used, at least not by datatypes.xml.
+      commented out 27 Feb 2008 by MSM.
+
+<!ENTITY string.er.literal.2449 '<phrase diff="del" dg="b2449">string</phrase
+                ><phrase diff="add" dg="b2449">literal</phrase>'>
+*-->
+
+<!ENTITY match '<termref def="dt-match"/>'>
+<!ENTITY matches '<termref def="dt-match">matches</termref>'>
+<!ENTITY matched '<termref def="dt-match">matched</termref>'>
+<!ENTITY member_type '<termref def="dt-memberTypes"/>'>
+<!ENTITY member_types '<termref def="dt-memberTypes"/>'>
+<!ENTITY member_type_definitions '<propref comp="std" prop="member type definitions"/>'>
+<!ENTITY mtds '<propref comp="std" prop="member type definitions"/>'>
+<!ENTITY mod '<termref def="dt-mod"/>'>
+<!ENTITY must '<termref def="dt-must"/>'>
+<!ENTITY must.xmust '<phrase diff="del" dg="ep35">must</phrase
+><phrase diff="add" dg="ep35">&must;</phrase>' >
+
+<!ENTITY one-or-more.x '<phrase diff="add" dg="b5625">one or more</phrase>'>
+<!ENTITY optional '<termref def="dt-optional"/>'>
+<!ENTITY ordinary '<termref def="dt-ordinary"/>'>
+<!ENTITY Ordinary '<termref def="dt-ordinary">Ordinary</termref>'>
+<!ENTITY ordinary.np '<termref diff="add" dg="rq120c" def="dt-onp"
+                    /><termref diff="add" dg="rq120o" def="dt-ordinary"/>'>
+<!ENTITY ordinary.d.onp '<termref diff="del" dg="rq120" def="dt-derived"
+                       /><termref diff="add" dg="rq120c" def="dt-onp"
+                       /><termref diff="add" dg="rq120o" def="dt-ordinary"/>'
+>
+
+<!ENTITY pattern '<compref ref="f-p"/>'>
+<!ENTITY pattern_valid '<specref ref="cvc-pattern-valid"/>'>
+<!ENTITY pre-lexical '<termref def="dt-pre-lexical"/>'>
+<!ENTITY primitive '<termref def="dt-primitive"/>'>
+<!ENTITY primitives '<termref def="dt-primitive">primitives</termref>'>
+<!ENTITY primitive_type_definition '<propref comp="std" prop="primitive type definition"/>'>
+<!ENTITY ptd '<propref comp="std" prop="primitive type definition"/>'>
+
+<!--* pattern.tc: occurrences of "pattern" formerly marked termref, now marked as
+    * component reference 
+    *-->
+<!ENTITY pattern.tc '<phrase diff="del" dg="ed-pattern"><termref def="dt-pattern"/></phrase
+                    ><phrase diff="add" dg="ed-pattern"><compref ref="f-p"/></phrase>'>
+<!ENTITY pattern '<compref ref="f-p"/>'>
+
+<!ENTITY restriction '<termref def="dt-restriction"/>'>
+<!ENTITY restricted '<termref def="dt-restriction">restricted</termref>'>
+<!ENTITY restricting '<termref def="dt-restriction">restricting</termref>'>
+<!ENTITY restrictions '<termref def="dt-restriction">restrictions</termref>'>
+
+<!ENTITY fb-restriction.xr '<termref diff="del" dg="rq120" def="dt-restriction"
+                          /><termref diff="add" dg="rq120" def="dt-fb-restriction"/>'>
+<!ENTITY fb.restriction.xr '<phrase diff="del" dg="rq120">restriction</phrase
+                           ><phrase diff="add" dg="rq120"><termref def="dt-fb-restriction"/></phrase>'>
+<!ENTITY fb.restrictions.xr '<phrase diff="del" dg="rq120">restrictions</phrase
+                            ><phrase diff="add" dg="rq120"><termref def="dt-fb-restriction">facet-based restrictions</termref></phrase>'>
+
+<!ENTITY fb.restriction '<termref def="dt-fb-restriction"/>' >
+<!ENTITY fb.restricted '<termref def="dt-fb-restriction">restricted</termref>' >
+<!ENTITY fb.restricting '<termref def="dt-fb-restriction">restricting</termref>' >
+<!ENTITY fb.restrictions '<termref def="dt-fb-restriction">restrictions</termref>' >
+
+<!ENTITY resolved '<xtermref href="&xsdl;#src-resolve">resolved</xtermref>'>
+
+<!ENTITY simple_type_definition '<compref ref="std"/>'>
+<!ENTITY std '<compref ref="std"/>'>
+<!ENTITY special '<termref def="dt-special"/>'>
+<!ENTITY special_value '<termref def="dt-specialvalue"/>'>
+<!ENTITY special_values '<termref def="dt-specialvalue">special values</termref>'>
+
+<!ENTITY special_value.xc '<phrase diff="del" dg="b3249b"><dtref ref="constant"/></phrase
+                          ><phrase diff="add" dg="b3249b">&special_value;</phrase>'>
+<!ENTITY special_value.xo '<phrase diff="del" dg="b3249c">value object</phrase
+                          ><phrase diff="add" dg="b3249c">&special_value;</phrase> '>
+<!ENTITY special_values.xos '<phrase diff="del" dg="b3249c">value objects</phrase
+                            ><phrase diff="add" dg="b3249c">&special_values;</phrase> '>
+<!ENTITY special_values.xcs '<phrase diff="del" dg="b3249b"><dtref ref="constant"/>s</phrase
+                            ><phrase diff="add" dg="b3249b">&special_values;</phrase>'>
+<!ENTITY special_value.xx '<phrase diff="del" dg="b3249b">special value</phrase
+                          ><phrase diff="add" dg="b3249b">&special_value;</phrase>'>
+<!ENTITY special_values.xx '<phrase diff="del" dg="b3249b">special values</phrase
+                           ><phrase diff="add" dg="b3249b">&special_values;</phrase>'>
+<!ENTITY special_values.xx2 '<phrase diff="del" dg="b3249b"><emph>special values</emph></phrase
+                            ><phrase diff="add" dg="b3249b">&special_values;</phrase>'>
+
+<!ENTITY time_zone 'time zone'>
+<!ENTITY timezone  'timezone'>
+<!ENTITY Timezone  'Timezone'>
+<!ENTITY timezoned 'timezoned'>
+<!ENTITY non-timezoned.xu '<phrase diff="del" dg="b6943">un</phrase
+                          ><phrase diff="add" dg="b6943">non-</phrase
+                          >timezoned'>
+<!ENTITY non-timezoned.x 'non<phrase diff="add" dg="b6943">-</phrase>timezoned'>
+<!ENTITY non-timezoned 'non-timezoned'>
+<!ENTITY timezones 'timezones'>
+<!ENTITY Timezones 'Timezones'>
+
+<!--* time zone offset *-->
+<!--* Mostly, use the unhyphenated form. *-->
+<!ENTITY tz_offset  'time zone offset'>
+<!ENTITY tz_offsets 'time zone offsets'>
+<!ENTITY tz_offset.xtz '<phrase diff="del" dg="b4642">timezone</phrase
+                       ><phrase diff="add" dg="b4642">time zone offset</phrase>'>
+<!ENTITY tz_offset.xt_z '<phrase diff="del" dg="b4642">timezone</phrase
+                       ><phrase diff="add" dg="b4642">time zone offset</phrase>'>
+<!ENTITY tz_offsets.xtz '<phrase diff="del" dg="b4642">timezones</phrase
+                        ><phrase diff="add" dg="b4642">time zone offsets</phrase>'>
+<!ENTITY Tz_offsets.xTz '<phrase diff="del" dg="b4642">Timezones</phrase
+                        ><phrase diff="add" dg="b4642">Time zone offsets</phrase>'>
+<!--* Use the hyphenated form in complex noun phrases where 'offset' is not the 
+    * head of the phrase.
+    * e.g. "the time-zone offset information" etc  
+    *-->
+<!ENTITY t-z_offset  'time-zone offset'>
+<!ENTITY t-z_offsets 'time-zone offsets'>
+<!ENTITY t-z_offset.xtz '<phrase diff="del" dg="b4642">&timezone;</phrase
+                        ><phrase diff="add" dg="b4642">time-zone offset</phrase>'>
+
+<!ENTITY unknown-dt '<termref def="dt-unknown-dt"/>'>
+<!ENTITY unknown-f '<termref def="dt-unknown-f"/>'>
+<!ENTITY Union '<termref def="dt-union">Union</termref>'>
+<!ENTITY union '<termref def="dt-union"/>'>
+<!ENTITY unions '<termref def="dt-union">unions</termref>'>
+<!ENTITY user-defined '<termref def="dt-user-defined"/>'>
+<!ENTITY User-defined '<termref def="dt-user-defined">User-defined</termref>'>
+<!ENTITY user-defined.x '<termref diff="del" dg="rq120" 
+                          def="dt-user-derived"
+                       /><termref diff="add" dg="rq120"
+                          def="dt-user-defined"/>'>
+<!ENTITY useroption '<termref def="dt-useroption"/>'>
+<!ENTITY useroptions '<termref def="dt-useroption">user options</termref>'>
+<!ENTITY atuseroption '<termref def="dt-useroption">at user option</termref>'>
+
+<!ENTITY UTC.tdxx '<phrase diff="del" dg="dt2">UTC</phrase
+                  ><termref diff="add" dg="dt2" def="dt-utc"/>'>
+<!--* 2009-10-13: MSM has no idea when we actually changed the literal UTC to
+a termref, but the occurrences I'm fixing are in paragraphs deleted by dt2 which
+in 1.0 didn't actually have a termref.  If we find out when this change
+was actually made, we can fix the dg values, but for now this will do. *-->
+
+<!ENTITY value-based '<termref def="dt-value-based"/>'>
+<!ENTITY value_space '<termref def="dt-value-space"/>'>
+<!ENTITY value_spaces '<termref def="dt-value-space">value spaces</termref>'>
+<!ENTITY value.x. '<phrase diff="del" dg="wgi-20080613">.</phrase
+                  ><phrase diff="add" dg="wgi-20080613">$value</phrase>'>
+<!ENTITY variety '<propref comp="std" prop="variety"/>'>
+
+<!ENTITY whiteSpace '<compref ref="f-w"/>'>
+
+<!ENTITY zero-or-more.x '<phrase diff="add" dg="b5625">zero or more</phrase>'>
+
+<!--* Changes not involving termrefs, other. *-->
+
+<!--* entities to make it easier to deal with some rec12-map changes *-->
+<!ENTITY absent.pt.x '<phrase diff="del" dg="rec12-map"><pt>absent</pt></phrase
+                     ><phrase diff="add" dg="rec12-map"><xtermref href="&xsdl;#key-null">absent</xtermref></phrase>' >
+
+<!ENTITY resolved..x '<phrase diff="del" dg="rec12-map">resolved</phrase
+                     ><phrase diff="add" dg="rec12-map"><xtermref href="&xsdl;#src-resolve">resolved</xtermref></phrase>' >
+
+<!ENTITY bBase64 '<phrase diff="del" dg="b1911-b64b">b</phrase
+                 ><phrase diff="add" dg="b1911-b64b">B</phrase>ase64'>
+<!ENTITY B64Sx4 '(<nt def="nt-B64S"/> <nt def="nt-B64S"/> <nt def="nt-B64S"/> <nt def="nt-B64S"/>)'>
+
+<!ENTITY lexical.forms.er.reps '<phrase diff="del" dg="b1911-b64b">lexical forms</phrase
+                               ><phrase diff="add" dg="b1911-b64b">&lexical_representations;</phrase>'>
+<!ENTITY lexical.form.er.repr '<phrase diff="del" dg="b1911-b64b">lexical form</phrase
+                              ><phrase diff="add" dg="b1911-b64b">&lexical_representation;</phrase>'>
+
+<!--* new text of nV_limit *-->
+<!ENTITY nV_limit "<var>c</var>&nbsp;&times;&nbsp;2<sup><var>e</var></sup>&nbsp;&minus;&nbsp;2<sup>(<var>e</var>&minus;1)</sup>" >
+<!--* old text of nV_limit *-->
+<!ENTITY nV_limit "<var>c</var>&nbsp;&times;&nbsp;(2<sup><var>e</var></sup>&nbsp;&minus;&nbsp;2<sup><var>e</var>&minus;2</sup>)" >
+
+<!ENTITY owners.Diff '<phrase diff="del" dg="wdd">parent&apos;s</phrase
+                     ><phrase diff="add" dg="wdd">owner&apos;s</phrase>'>
+
+
+
+
+<!--* variables *-->
+<!ENTITY A "<var>A</var>">
+<!ENTITY B "<var>B</var>">
+<!ENTITY c "<var>c</var>">
+<!ENTITY C "<var>C</var>">
+<!ENTITY C.C "&C;<emph>(</emph>&C;<emph>)</emph>">
+<!ENTITY C.G "&C;<emph>(</emph>&G;<emph>)</emph>">
+<!ENTITY C.P "&C;<emph>(</emph>&P;<emph>)</emph>">
+<!ENTITY C.notP "&C;<emph>(</emph>&notP;<emph>)</emph>">
+<!ENTITY C.R "&C;<emph>(</emph>&R;<emph>)</emph>">
+<!ENTITY E "<var>E</var>">
+<!ENTITY Eprime "<var>E</var>&prime;">
+<!ENTITY F "<var>F</var>">
+<!ENTITY G "<var>G</var>">
+<!ENTITY L "<var>L</var>">
+<!ENTITY L.R "&L;<emph>(</emph>&R;<emph>)</emph>">
+<!ENTITY m "<var>m</var>">
+<!ENTITY n "<var>n</var>">
+<!ENTITY N "<var>N</var>">
+<!ENTITY P "<var>P</var>">
+<!ENTITY notP "^<var>P</var>">
+<!ENTITY q "<var>q</var>">
+<!ENTITY R "<var>R</var>">
+<!ENTITY s "<var>s</var>">
+<!ENTITY S "<var>S</var>">
+<!ENTITY T "<var>T</var>">
+<!ENTITY T2 "<var>T2</var>">
+<!ENTITY V "<var>V</var>">
+<!ENTITY V1 "<var>V1</var>">
+<!ENTITY V2 "<var>V2</var>">
+<!ENTITY X "<var>X</var>">
+<!ENTITY Y "<var>Y</var>">
+
+<!--* non-terminals that need diff markup (sigh) *-->
+<!ENTITY nt-NormalChar '<phrase diff="del" dg="b5322"><nt def="nt-Char"/></phrase
+                       ><phrase diff="add" dg="b5322"><nt def="nt-NormalChar"/></phrase>'>
+
+
+<!--* Regular expression fragments. *-->
+
+<!ENTITY timezone_re     '([+\-](0[0-9])|(1[0-4]):[0-5][0-9])?'>
+<!ENTITY timezone2_re '(Z|((+|-)(0[0-9]|1[0-4]):[0-5][0-9]))?'>
+<!ENTITY year_re '...'>
+<!ENTITY % regex-entities SYSTEM "regexes.ent" >
+%regex-entities; 
+
+
+
+        <!-- NEW ELEMENT TYPES -->
+
+<!ELEMENT dtref EMPTY >
+<!ATTLIST dtref ref NMTOKEN #REQUIRED >
+<!ATTLIST dtref %common.att; >  <!-- diff used within defset -->
+
+<!ELEMENT vpropref EMPTY >
+<!ATTLIST vpropref ref NMTOKEN #REQUIRED >
+<!ATTLIST vpropref %common.att; >
+
+<!ELEMENT baseref EMPTY >
+<!ELEMENT itemTyperef EMPTY >
+
+<!ELEMENT clauseref EMPTY>
+<!ATTLIST clauseref ref IDREF #REQUIRED>
+
+<!ELEMENT applicable-facets EMPTY >
+<!ATTLIST applicable-facets 
+          rend CDATA #IMPLIED>
+<!ELEMENT fundamental-facets EMPTY >
+<!ELEMENT facets EMPTY >
+<!ATTLIST facets %common.att; >
+<!ELEMENT subtypes EMPTY >
+<!ATTLIST subtypes %common.att; >
+<!ELEMENT inverse-facets EMPTY >
+<!ATTLIST inverse-facets name CDATA #REQUIRED >
+<!ELEMENT open-issues EMPTY >
+<!ELEMENT revisions EMPTY >
+
+            <!-- kludge for force-formatting -->
+<!ELEMENT font (#PCDATA) >
+<!ATTLIST font size NMTOKEN #IMPLIED >  <!-- presumed kludge to resize something w/o a CSS style;
+                                             used only in one <eg>. -->
+
+<!ELEMENT br EMPTY >  <!-- part of PVB kludge to get line breaks in <code> -->
+
+<!ELEMENT strong (%p.pcd.mix;)* >  <!-- davep:  added more than just PCDATA to the kludge -->
+
+        <!-- davep added:  uniform handling of vprop, func, and nt defs -->
+        <!-- three cases:  multiple prods (no reason for prodgroup; delete when noticed:
+                              it's just an intermediate container of prods)
+                           multiple properties for values in a constructed value space
+                           mixed set of function and procedure definitions -->
+
+<!ELEMENT defset (
+                    (head , ((prodgroup | prod)+ | vpropdef+ |
+                    (funcdef | procdef)+))
+	         |
+                    (defset+)
+                 )
+>  
+<!-- prodgroup is obsolete but not yet all gone -->
+<!ATTLIST defset %common.att; >
+<!ELEMENT vpropdef (name+ , (dtref | limits)+) >
+<!ATTLIST vpropdef %common.att; >
+<!ELEMENT funcdef (name+ , 
+                   (dtref | nt | phrase)+ , 
+                   limits , args? , summary? , 
+                   argsetup? , varsetup? , algorithm) >
+<!ATTLIST funcdef %common.att; >
+<!ELEMENT procdef (name+ , args? , summary? , argsetup? , varsetup? , algorithm) >
+<!ATTLIST procdef %common.att; >
+<!ELEMENT limits (%p.pcd.mix; | %p.mix;)* >
+<!ATTLIST limits %common.att; >
+<!ELEMENT algorithm (%p.pcd.mix; | %p.mix; | setup)* >
+<!ELEMENT setup (%p.pcd.mix; | %p.mix;)* >  <!-- obsolete; not sure if any remain. -replace with arg- and/or varsetups -->
+<!ELEMENT argsetup (%p.pcd.mix; | %p.mix;)* >
+<!ELEMENT varsetup (%p.pcd.mix; | %p.mix;)* >
+<!ATTLIST varsetup %common.att; >
+<!ELEMENT args (arg+) >
+<!ELEMENT summary (%p.pcd.mix;|%p.mix;)* >
+<!ATTLIST summary %common.att; >
+<!ELEMENT defsetsum EMPTY >
+<!ATTLIST defsetsum %common.att;
+                    ref IDREF #REQUIRED >
+<!ELEMENT pfref EMPTY >  <!-- uniform reference mechanism for value properties (p) and functions and procedures (f) -->
+<!ATTLIST pfref %common.att;
+                ref IDREF #REQUIRED >
+
+<!ELEMENT dt (%p.pcd.mix; | %p.mix;)* >  
+<!-- now used as target for datatype refs not defined in sections -->
+<!ATTLIST dt %common.att;
+             name CDATA #IMPLIED >
+
+
+<!ELEMENT mention (%p.pcd.mix;)* >  <!-- English (metalanguage) phrase mentioned, not used -->
+<!ELEMENT ent (#PCDATA) >  <!-- like el, att, and eltref, but for mentioning general entities (not needed?) -->
+<!ELEMENT unusual (%p.pcd.mix;)* >  <!-- for unusual or special-meaning use of a word or phrase -->
+<!ELEMENT ghostchar (%p.pcd.mix;)* >  <!-- for optional things such as redundant parentheses included for clarity -->
+<!ELEMENT charclass (#PCDATA | sglchar | charrng)* >  <!-- character class used in EBNF productions; brackets are autogenerated -->
+<!ELEMENT sglchar (#PCDATA) >  <!-- autonymous character(s), references, or escapes in a charclass -->
+<!ATTLIST sglchar %common.att;
+                  scesc CDATA #IMPLIED
+                  uni CDATA #IMPLIED >  <!-- use at most one of scesc, uni; if used, content should be empty;
+                                             scesc autogenerates prefix '\', uni prefix '#x' -->
+<!ELEMENT charrng (sglchar , sglchar) >  <!-- character range; autogenerates infix '-' -->
+<!ATTLIST charrng %common.att;
+                  sense CDATA "pos" > <!-- if not "pos", must be "neg" and will then autogenerate '^' -->
+
+        <!-- XMLSPEC ELEMENT TYPES THAT NEED TO BE REDONE (MUST BE "IGNORE"D IN XMLSPEC: SEE ABOVE) -->
+
+<!ELEMENT term (#PCDATA | emph | phrase)* >
+<!ELEMENT rhs (#PCDATA | nt | xnt | com  | phrase | string | charclass)* >  <!-- ht: allow phrase  davep: added string and charclass -->
+<!ELEMENT sub (#PCDATA | %ref.class; | var)* >  <!-- davep: added var -->
+<!ELEMENT sup (#PCDATA | %ref.class; | var)* >  <!-- davep: added var -->
+
+<!ELEMENT nt EMPTY >  <!-- davep: dropped PCDATA; easier to edit -->
+<!ELEMENT arg (var+ , limits) >  <!-- redefined for use in function/ definitions -->
+<!ATTLIST arg %common.att; >  <!-- delete some other attributes, re-add these -->
+<!ELEMENT affiliation (#PCDATA | emph)* >  <!-- some affiliations require italics (e.g., 'SGMLWorks') -->
+
+        <!-- (*adding* attributes in XML can be done w/o changing original ATTLIST) -->
+
+<!ATTLIST table align   CDATA #IMPLIED
+                bgcolor CDATA #IMPLIED
+                class   CDATA #IMPLIED >
+<!ATTLIST td style CDATA #IMPLIED >
+<!ATTLIST th style CDATA #IMPLIED >  <!--SHOULD BE IN COMMON DTD -->
+
+<!ATTLIST eg text CDATA #IMPLIED>  <!-- experimental pointer to out-of-line example text (1.0 legacy) -->
+
+<!--* MSM can't find a definition for funcref, so I'll make one up.
+    * This one is borrowed from the standard definition of 'termref'.
+    *-->
+              <!-- should be using pfref, which doesn't require rewriting the function name every time
+                   treat the existing funcrefs recently added as obsolete -->
+<!--    funcref: Mention of a function name, along with a link to the
+        definition in the current document. -->
+<!ENTITY % funcref.element "INCLUDE">
+<![%funcref.element;[
+<!ELEMENT funcref (#PCDATA|phrase)*>
+]]>
+<!--    ref attribute:
+        A function reference must link to the func element that
+        defines the function. -->
+<!ENTITY % funcref.attlist "INCLUDE">
+<![%funcref.attlist;[
+<!ATTLIST funcref
+        %common.att;
+        %def-req.att;>
+]]>
+
+
+
+

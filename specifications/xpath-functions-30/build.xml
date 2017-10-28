@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding='utf-8'?>
+<project name="xpath-functions" default="all" basedir=".">
+
+<!-- Import a bunch of global property definitions -->
+  <dirname property="etc.dir" file="../../etc/*"/>
+  <import file="${etc.dir}/build-constants.xml"/>
+
+<!-- Set properties for "this" document's build requirements -->
+  <property name="generic-shortname" value="xpath-functions"/>
+  <property name="this-spec-version-code" value="30"/>
+
+  <property name="spec.code" value="FO${this-spec-version-code}"/>
+  <property name="shortname" value="${generic-shortname}-${this-spec-version-code}"/>
+  <property name="spec.uri" value="${W3C.TR}/${shortname}/"/>
+  <property name="spec.xml" value="${src.dir}/${generic-shortname}.xml"/>
+  <property name="merged-spec.xml" value="${src.dir}/xpath-functions-expanded.xml"/>
+
+  <!-- 2008-09-03, Jim: The following property has no meaning at present,     -->
+  <!--   because we do not build errata in the qtspecs tree. Maybe later...   -->
+<!--  <property name="errata.xml" value="${src.dir}/${generic-shortname}-errata.xml"/> -->
+
+   <!--<property name="spec.style" value="${shared.style.dir}/xmlspec-override.xsl"/>-->
+  <property name="merge.style" value="style/merge-function-specs.xsl"/>
+  <property name="spec.style" value="style/xpath-functions.xsl"/>
+  <property name="spec.diff.style" value="style/fo-diff.xsl"/>
+
+<!-- Import target, etc. definitions that work globally -->
+  <import file="${etc.dir}/build-impl.xml"/>
+
+<!-- Recall that any targets defined herein override targets of the same name -->
+<!--   that are defined in build-impl.xml.  If you cannot find a target of a  -->
+<!--   given name in this file, look in build-impl.xml.                       -->
+
+<!-- ======================================================================== -->
+
+  <!-- additional properties -->
+<!-- This spec doesn't require an assembly step, so this property is undefined-->
+<!--  <property name="assemble-spec-file" value="????"/> -->
+
+  <!-- ====================================================================== -->
+
+  <!-- The "help" template displays on the message medium the names of the    -->
+  <!--   various targets in this project and their purposes.                  -->
+  <target name="help">
+    <echo message="This project to build ${shortname} includes a number of targets."/>
+    <echo message="To invoke any of these targets from the command line, use 'ant target-name'"/>
+    <echo message="  all -- the default target (target-name not required); builds 'everything'"/>
+    <echo message="  spec -- causes the spec and diff document to be built and images positioned"/>
+    <echo message="  chk.spec -- determines whether the spec HTML must be created"/>
+    <echo message="  -style-spec -- transforms the document sources into near-pubrules-ready HTML"/>
+    <echo message="  copy-images -- copies shared images into the local images directory"/>
+    <echo message="  -copy-xml -- creates final XML source file from assembled source file"/>
+    <echo message="  chk.ns-xpath-functions -- checks whether the xpath-functions namespace document must be built"/>
+    <echo message="  ns-xpath-functions -- transforms namespace document sources into XHTML and RDF namespace docs"/>
+    <echo message="  chk.ns-xpath-math-functions -- checks whether the xpath-math-functions namespace document must be built"/>
+    <echo message="  ns-xpath-math-functions -- transforms namespace document sources into XHTML and RDF namespace docs"/>
+    <echo message="  chk.ns-codepoint -- checks whether the codepoint namespace document must be built"/>
+    <echo message="  ns-codepoint -- transforms namespace document sources into XHTML and RDF namespace docs"/>
+    <echo message="  chk.ns-errors -- checks whether the errors namespace document must be built"/>
+    <echo message="  ns-errors -- transforms namespace document sources into XHTML and RDF namespace docs"/>
+    <echo message="The targets that are most likely to be desired from the command line are 'all', 'spec' and the namespace build targets."/>
+    <echo message="Please note that there is not currently a target that builds a diff document for this project."/>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <!-- Overrides global template to omit ",errata" and add namespace docs     -->
+  <target name="all"
+          depends="clean, spec, ns-xpath-functions, ns-xpath-math-functions, ns-codepoint, ns-errors"
+          description="This is the default target."/>
+
+          <!-- dropped quickref - MHK 2009-01-06 -->
+
+<!-- ======================================================================== -->
+
+  <!-- Overrides global template to add style-spec-diffs dependency           -->
+  <target name="spec" depends="init, style-spec, copy-images"/>
+  
+  <!-- ====================================================================== -->
+    
+  <target name="merge-catalog" depends="init, chk.spec, validate-spec"
+    if="build.spec" unless="spec.exists">
+    <echo message="Merging function catalog..."/>
+    
+    <!-- XSLT 2.0 -->
+    <!-- Merge the function definitions from the function catalog into the narrative spec -->
+    <xslt in="${spec.xml}" out="${merged-spec.xml}" style="${merge.style}" force="yes" classpathref="saxon9.classpath"/>
+    
+  </target>
+  
+  <!-- ======================================================================== -->
+  <!-- override global template -->  
+  
+   <target name="-style-spec" depends="init, chk.spec, merge-catalog"
+          if="build.spec" unless="spec.exists">
+
+    <echo message="Building ${shortname} non-diff version ..."/>
+
+    <!-- render the merged spec into HTML --> 
+     <xslt in="${merged-spec.xml}" out="${dist.dir}/Overview.html" style="${spec.style}" force="yes" classpathref="saxon9.classpath">
+       <param name="diff.baseline" expression=""/>
+       <param name="show.diff.markup.string" expression="0"/>
+       <param name="date" expression="2012-10-01"/>
+       <param name="diff.baseline.date" expression="2012-06-18"/>
+     </xslt>
+     
+
+    <echo message="Building ${shortname} diff version ..."/>
+
+    <!-- XSLT 2.0 -->
+    <!-- render the merged spec into HTML with diff markup --> 
+     <xslt in="${merged-spec.xml}" out="${dist.dir}/Overview-diff.html" style="${spec.diff.style}" 
+       force="yes" classpathref="saxon9.classpath">
+       <param name="diff.baseline" expression=""/>
+       <param name="diff.baseline.date" expression="2007-01-23"/>
+       <param name="specdoc" expression="FO"/>
+       <param name="date" expression="2012-10-01"/>
+     </xslt>
+     
+  </target>  
+
+<!-- ======================================================================== -->
+
+  <!-- Overrides internal template -->
+  <target name="-copy-xml" depends="init, chk.spec"
+          if="build.spec" unless="spec.exists">
+    <echo message="Copying XML for ${shortname}..." />
+
+     <xslt in="${merged-spec.xml}"
+          out="${dist.dir}/${shortname}.xml"
+          style="${shared.style.dir}/identity.xsl"
+          classpathref="saxon9.classpath" force="yes"/>
+  </target>
+
+<!-- ======================================================================== -->
+  
+  <!-- Overrides global template -->
+  <target name="chk.spec" depends="init">
+    <echo message="Target chk.spec starting"/>
+    <condition property="spec.exists">
+      <uptodate targetfile="${dist.dir}/Overview.html">
+         <srcfiles file="${base.dir}/build.xml"/>
+         <srcfiles file="${etc.dir}/build-constants.xml"/>
+         <srcfiles file="${etc.dir}/build-impl.xml"/>
+         <srcfiles file="${etc.dir}/status-entities.dtd"/>
+         <srcfiles file="${etc.dir}/status-general.xml"/>
+         <srcfiles file="${src.dir}/xpath-functions.xml"/>
+         <srcfiles file="${src.dir}/function-catalog.xml"/>
+         <srcfiles dir="${src.dir}" includes="**/*.xml"/>
+         <srcfiles file="${spec.style}"/>
+         <srcfiles file="${shared.style.dir}/xsl-query.xsl"/>
+         <srcfiles file="${shared.style.dir}/funcproto.xsl"/>
+         <srcfiles file="${shared.style.dir}/xmlspec-override.xsl"/>
+         <srcfiles file="${shared.style.dir}/xmlspec.xsl"/>
+         <srcfiles file="${local.style.dir}/extract-sig.xsl"/>
+         <srcfiles file="${local.style.dir}/strip.xsl"/>
+         <srcfiles file="${local.style.dir}/xpath-functions-qr.xsl"/>
+         <srcfiles file="${local.style.dir}/xpath-functions.xsl"/>
+         <srcfiles file="${local.style.dir}/xpath-functions-base.xsl"/>
+         <srcfiles file="${shared.schema.dir}/xsl-query.dtd"/>
+         <srcfiles file="${shared.schema.dir}/xmlspec.dtd"/>
+         <srcfiles file="${shared.schema.dir}/elements.dtd"/>
+         <srcfiles file="${shared.schema.dir}/tree-diagram.dtd"/>
+      </uptodate>
+    </condition>
+  </target>
+
+  <!-- ====================================================================== -->
+
+  <!-- Overrides global template -->
+  <target name="copy-images" depends="init">
+    <copy todir="${dist.dir}" flatten="true">
+      <fileset dir="${local.images.dir}"/>
+      <file file="${shared.images.dir}/XPathTypeHierarchy-1-items.png"/>
+      <file file="${shared.images.dir}/XPathTypeHierarchy-2-anyTypes.png"/>
+      <file file="${shared.images.dir}/XPathTypeHierarchy-3-anyAtomicTypes.png"/>
+    </copy>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="chk.ns-xpath-functions" depends="init">
+    <uptodate property="ns-xpath-functions.exists"
+              srcfile="${src.dir}/ns-xpath-functions.xml"
+              targetfile="${dist.dir}/ns-xpath-functions.html"/>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="ns-xpath-functions"
+          depends="init, merge-catalog, chk.ns-xpath-functions"
+          unless="ns-xpath-functions.exists">
+    <echo message="Building namespace document for functions namespace..." />
+    <echo message="Transforming namespace XML source to HTML with RDDL"/>
+    <xslt in="${src.dir}/ns-xpath-functions.xml" 
+          out="${build.dir}/ns-xpath-functions.html" 
+          style="${local.style.dir}/ns-xpath-functions.xsl" 
+          force="yes" classpathref="saxon9.classpath"/>
+
+
+    <echo message="Generating RDF from HTML"/>
+    <xslt in="${build.dir}/ns-xpath-functions.html" 
+      out="${dist.dir}/ns-xpath-functions.rdf" 
+      style="${shared.style.dir}/qt-ns-grddl.xsl" 
+      force="yes" classpathref="saxon9.classpath">
+      <param name="doc" expression="http://www.w3.org/2005/xpath-functions"/>
+    </xslt>
+
+    <echo message="Fixing up HTML namespace document by removing traces of RDDL"/>
+    <xslt in="${build.dir}/ns-xpath-functions.html"
+	        out="${dist.dir}/ns-xpath-functions.html"
+	        style="${shared.style.dir}/html-namespace-fixup.xsl" force="yes"
+	        classpathref="saxon9.classpath"/>
+
+    <echo message="Fixing up RDDL namespace document to add xhtml namespace"/>
+    <xslt in="${build.dir}/ns-xpath-functions.html"
+	        out="${dist.dir}/ns-xpath-functions.xhtml"
+	        style="${shared.style.dir}/rddl-namespace-fixup.xsl" force="yes"
+	        classpathref="saxon9.classpath"/>
+
+    <echo message="Tidy up the HTML file for pubrules"/>
+    <exec executable="tidy">
+      <arg value="--doctype"/>
+      <arg value="transitional"/>
+      <arg value="-utf8"/>
+      <arg value="-mnq"/>
+      <arg value="-asxml"/>
+      <arg value="${dist.dir}/ns-xpath-functions.html"/>
+    </exec>
+
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="chk.ns-xpath-math-functions" depends="init">
+    <uptodate property="ns-xpath-math-functions.exists"
+              srcfile="${src.dir}/ns-xpath-math-functions.xml"
+              targetfile="${dist.dir}/ns-xpath-math-functions.html"/>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="ns-xpath-math-functions"
+          depends="init, merge-catalog, chk.ns-xpath-math-functions"
+          unless="ns-xpath-math-functions.exists">
+    <echo message="Building namespace document for math functions namespace..." />
+
+    <echo message="Transforming namespace XML source to HTML with RDDL"/>
+    <xslt in="${src.dir}/ns-xpath-math-functions.xml"
+      out="${build.dir}/ns-xpath-math-functions.html"
+      style="${local.style.dir}/ns-xpath-math-functions.xsl" force="yes"
+      classpathref="saxon9.classpath"/>
+
+    <echo message="Generating RDF from HTML"/>
+    <xslt in="${build.dir}/ns-xpath-math-functions.html"
+          out="${dist.dir}/ns-xpath-math-functions.rdf"
+          style="${shared.style.dir}/qt-ns-grddl.xsl" force="yes"
+          classpathref="saxon9.classpath">
+      <param name="doc" expression="http://www.w3.org/2005/xpath-functions/math"/>
+    </xslt>
+
+    <echo message="Fixing up HTML namespace document by removing traces of RDDL"/>
+    <xslt in="${build.dir}/ns-xpath-math-functions.html"
+	        out="${dist.dir}/ns-xpath-math-functions.html"
+	        style="${shared.style.dir}/html-namespace-fixup.xsl" force="yes"
+	        classpathref="saxon9.classpath"/>
+
+    <echo message="Fixing up RDDL namespace document to add xhtml namespace"/>
+    <xslt in="${build.dir}/ns-xpath-math-functions.html"
+	        out="${dist.dir}/ns-xpath-math-functions.xhtml"
+	        style="${shared.style.dir}/rddl-namespace-fixup.xsl" force="yes"
+	        classpathref="saxon9.classpath"/>
+
+    <echo message="Tidy up the HTML file for pubrules"/>
+    <exec executable="tidy">
+      <arg value="--doctype"/>
+      <arg value="transitional"/>
+      <arg value="-utf8"/>
+      <arg value="-mnq"/>
+      <arg value="-asxml"/>
+      <arg value="${dist.dir}/ns-xpath-math-functions.html"/>
+    </exec>
+    
+    <echo message="Copy the fn:analyze-string schema for publication"/>
+    <copy file="${src.dir}/analyze-string.xsd" tofile="${dist.dir}/analyze-string.xsd"/>
+
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="chk.ns-codepoint" depends="init">
+    <uptodate property="ns-codepoint.exists"
+              srcfile="${src.dir}/ns-codepoint.xml"
+              targetfile="${dist.dir}/ns-codepoint.html"/>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="ns-codepoint"
+          depends="init, chk.ns-codepoint"
+          unless="ns-codepoint.exists">
+    <echo message="Building namespace document for codepoint collation namespace..." />
+
+    <echo message="Transforming namespace XML source to HTML with RDDL"/>
+    <xslt in="${src.dir}/ns-codepoint.xml"
+          out="${build.dir}/ns-codepoint.html"
+          style="${shared.style.dir}/ns-blank.xsl"
+          force="yes" classpathref="saxon9.classpath"/>
+
+    <echo message="Generating RDF from HTML with RDDL"/>
+    <xslt in="${build.dir}/ns-codepoint.html"
+          out="${dist.dir}/ns-codepoint.rdf"
+          style="${shared.style.dir}/qt-ns-grddl.xsl"
+          force="yes" classpathref="saxon9.classpath">
+      <param name="doc" expression="http://www.w3.org/2005/xpath-functions/collation/codepoint"/>
+    </xslt>
+
+    <echo message="Fixing up HTML namespace document by removing traces of RDDL"/>
+    <xslt in="${build.dir}/ns-codepoint.html"
+	        out="${dist.dir}/ns-codepoint.html"
+	        style="${shared.style.dir}/html-namespace-fixup.xsl" force="yes"
+	        classpathref="saxon9.classpath"/>
+
+    <echo message="Fixing up RDDL namespace document to add xhtml namespace"/>
+    <xslt in="${build.dir}/ns-codepoint.html"
+	        out="${dist.dir}/ns-codepoint.xhtml"
+	        style="${shared.style.dir}/rddl-namespace-fixup.xsl" force="yes"
+	        classpathref="saxon9.classpath"/>
+
+    <echo message="Tidy up the HTML file for pubrules"/>
+    <exec executable="tidy">
+      <arg value="--doctype"/>
+      <arg value="transitional"/>
+      <arg value="-utf8"/>
+      <arg value="-mnq"/>
+      <arg value="-asxml"/>
+      <arg value="${dist.dir}/ns-codepoint.html"/>
+    </exec>
+
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="chk.ns-errors" depends="init">
+    <uptodate property="ns-errors.exists"
+              srcfile="${src.dir}/ns-errors.xml"
+              targetfile="${dist.dir}/ns-errors.html"/>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="ns-errors"
+          depends="init, chk.ns-errors"
+          unless="ns-errors.exists">
+    <echo message="Building namespace document for errors namespace..." />
+
+    <echo message="Transforming namespace XML source to HTML with RDDL"/>
+    <xslt in="${src.dir}/ns-errors.xml"
+      out="${build.dir}/ns-errors.html"
+      style="${local.style.dir}/ns-errors.xsl" force="yes"
+      classpathref="saxon9.classpath"/>
+
+    <echo message="Generating RDF from HTML with RDDL"/>
+    <xslt in="${build.dir}/ns-errors.html"
+      out="${dist.dir}/ns-errors.rdf"
+      style="${shared.style.dir}/qt-ns-grddl.xsl" force="yes"
+      classpathref="saxon9.classpath">
+      <param name="doc" expression="http://www.w3.org/2005/xqt-errors"/>
+    </xslt>
+
+    <echo message="Fixing up HTML namespace document by removing traces of RDDL"/>
+    <xslt in="${build.dir}/ns-errors.html"
+	        out="${dist.dir}/ns-errors.html"
+	        style="${shared.style.dir}/html-namespace-fixup.xsl" force="yes"
+	        classpathref="saxon9.classpath"/>
+
+    <echo message="Fixing up RDDL namespace document to add xhtml namespace"/>
+    <xslt in="${build.dir}/ns-errors.html"
+	        out="${dist.dir}/ns-errors.xhtml"
+	        style="${shared.style.dir}/rddl-namespace-fixup.xsl" force="yes"
+	        classpathref="saxon9.classpath"/>
+
+    <echo message="Tidy up the HTML file for pubrules"/>
+    <exec executable="tidy">
+      <arg value="--doctype"/>
+      <arg value="transitional"/>
+      <arg value="-utf8"/>
+      <arg value="-mnq"/>
+      <arg value="-asxml"/>
+      <arg value="${dist.dir}/ns-errors.html"/>
+    </exec>
+
+  </target>
+
+<!-- ======================================================================== -->
+<!--
+  <target name="quickref">
+    <echo message="Building xpath-functions quickref ..." />
+
+    <xmlvalidate file="${merged-spec.xml}"
+		             failonerror="yes" lenient="no" warn="yes"/>
+
+    <echo message="Extract signatures ..." />
+    
+    <xslt in="${spec.xml}" out="${build.dir}/signatures.xml"
+	        style="${local.style.dir}/extract-sig.xsl" force="yes"
+	        classpathref="saxon6.classpath"/>
+
+    <echo message="Strip redundant prefixes ..." />
+
+    <xslt in="${build.dir}/signatures.xml" out="${build.dir}/sigs-stripped.xml"
+	        style="${local.style.dir}/strip.xsl" force="yes"
+	        classpathref="saxon6.classpath"/>
+
+    <echo message="Build HTML ..." />
+
+    <xslt in="${build.dir}/sigs-stripped.xml" out="${dist.dir}/fo-quickref.html"
+	        style="${local.style.dir}/xpath-functions-qr.xsl" force="yes"
+	        classpathref="saxon6.classpath"/>
+
+    <antcall target="tidy-document">
+      <param name="html.file" value="${dist.dir}/fo-quickref.html"/>
+    </antcall>
+  </target>-->
+
+</project>

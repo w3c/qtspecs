@@ -1,0 +1,722 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--XSLT Processor: Saxonica SAXON HE 9.6.0.7-->
+<document-summary uri="https://www.w3.org/TR/xpath-datamodel-31/">
+   <title>XQuery and XPath Data Model 3.1</title>
+   <div1 id="intro">
+      <head>
+         <h2>
+            <a name="intro" id="intro"/>1 Introduction</h2>
+      </head>
+   </div1>
+   <div1 id="concepts">
+      <head>
+         <h2>
+            <a name="concepts" id="concepts"/>2 Concepts</h2>
+      </head>
+      <div2 id="terminology">
+         <head>
+            <h3>
+               <a name="terminology" id="terminology"/>2.1 Terminology</h3>
+         </head>
+         <div3 id="xs-types">
+            <head>
+               <h4>
+                  <a name="xs-types" id="xs-types"/>2.1.1 Types adopted from XML Schema</h4>
+            </head>
+         </div3>
+      </div2>
+      <div2 id="notation">
+         <head>
+            <h3>
+               <a name="notation" id="notation"/>2.2 Notation</h3>
+         </head>
+      </div2>
+      <div2 id="node-identity">
+         <head>
+            <h3>
+               <a name="node-identity" id="node-identity"/>2.3 Node Identity</h3>
+         </head>
+      </div2>
+      <div2 id="document-order">
+         <head>
+            <h3>
+               <a name="document-order" id="document-order"/>2.4 Document Order</h3>
+         </head>
+      </div2>
+      <div2 id="sequences">
+         <head>
+            <h3>
+               <a name="sequences" id="sequences"/>2.5 Sequences</h3>
+         </head>
+      </div2>
+      <div2 id="namespace-names">
+         <head>
+            <h3>
+               <a name="namespace-names" id="namespace-names"/>2.6 Namespace Names</h3>
+         </head>
+      </div2>
+      <div2 id="types">
+         <head>
+            <h3>
+               <a name="types" id="types"/>2.7 Schema Information</h3>
+         </head>
+         <div3 id="types-representation">
+            <head>
+               <h4>
+                  <a name="types-representation" id="types-representation"/>2.7.1 Representation of Types</h4>
+            </head>
+         </div3>
+         <div3 id="types-predefined">
+            <head>
+               <h4>
+                  <a name="types-predefined" id="types-predefined"/>2.7.2 Predefined Types</h4>
+            </head>
+         </div3>
+         <div3 id="xml-and-xsd-versions">
+            <head>
+               <h4>
+                  <a name="xml-and-xsd-versions" id="xml-and-xsd-versions"/>2.7.3 XML and XSD Versions</h4>
+            </head>
+         </div3>
+         <div3 id="types-hierarchy">
+            <head>
+               <h4>
+                  <a name="types-hierarchy" id="types-hierarchy"/>2.7.4 Type System</h4>
+            </head>
+         </div3>
+         <div3 id="AtomicValue">
+            <head>
+               <h4>
+                  <a name="AtomicValue" id="AtomicValue"/>2.7.5 Atomic Values</h4>
+            </head>
+         </div3>
+         <div3 id="StringValue">
+            <head>
+               <h4>
+                  <a name="StringValue" id="StringValue"/>2.7.6 String Values</h4>
+            </head>
+         </div3>
+         <div3 id="NegativeZero">
+            <head>
+               <h4>
+                  <a name="NegativeZero" id="NegativeZero"/>2.7.7 Negative Zero</h4>
+            </head>
+         </div3>
+      </div2>
+      <div2 id="other-items">
+         <head>
+            <h3>
+               <a name="other-items" id="other-items"/>2.8 Other Items</h3>
+         </head>
+         <div3 id="function-items">
+            <head>
+               <h4>
+                  <a name="function-items" id="function-items"/>2.8.1 Functions</h4>
+            </head>
+         </div3>
+         <div3 id="map-items">
+            <head>
+               <h4>
+                  <a name="map-items" id="map-items"/>2.8.2 Map Items</h4>
+            </head>
+            <div4 id="dm-map-keys">
+               <head>
+                  <h5>
+                     <a name="dm-map-keys" id="dm-map-keys"/>2.8.2.1 <code>map-entries</code> Accessor</h5>
+               </head>
+            </div4>
+         </div3>
+         <div3 id="array-items">
+            <head>
+               <h4>
+                  <a name="array-items" id="array-items"/>2.8.3 Array Items</h4>
+            </head>
+            <div4 id="dm-array-size">
+               <head>
+                  <h5>
+                     <a name="dm-array-size" id="dm-array-size"/>2.8.3.1 <code>array-size</code> Accessor</h5>
+               </head>
+            </div4>
+            <div4 id="dm-array-get">
+               <head>
+                  <h5>
+                     <a name="dm-array-get" id="dm-array-get"/>2.8.3.2 <code>array-get</code> Accessor</h5>
+               </head>
+            </div4>
+         </div3>
+      </div2>
+   </div1>
+   <div1 id="construction">
+      <head>
+         <h2>
+            <a name="construction" id="construction"/>3 Data Model Construction</h2>
+      </head>
+      <div2 id="const-other">
+         <head>
+            <h3>
+               <a name="const-other" id="const-other"/>3.1 Direct Construction</h3>
+         </head>
+      </div2>
+      <div2 id="const-infoset">
+         <head>
+            <h3>
+               <a name="const-infoset" id="const-infoset"/>3.2 Construction from an Infoset</h3>
+         </head>
+      </div2>
+      <div2 id="const-psvi">
+         <head>
+            <h3>
+               <a name="const-psvi" id="const-psvi"/>3.3 Construction from a PSVI</h3>
+         </head>
+         <div3 id="PSVI2Types">
+            <head>
+               <h4>
+                  <a name="PSVI2Types" id="PSVI2Types"/>3.3.1 Mapping PSVI Additions to Node Properties</h4>
+            </head>
+            <div4 id="PSVI2NodeTypes">
+               <head>
+                  <h5>
+                     <a name="PSVI2NodeTypes" id="PSVI2NodeTypes"/>3.3.1.1 Element and Attribute Node Types</h5>
+               </head>
+            </div4>
+            <div4 id="TypedValueDetermination">
+               <head>
+                  <h5>
+                     <a name="TypedValueDetermination" id="TypedValueDetermination"/>3.3.1.2 Typed Value Determination</h5>
+               </head>
+            </div4>
+            <div4 id="typed-string-relationships">
+               <head>
+                  <h5>
+                     <a name="typed-string-relationships" id="typed-string-relationships"/>3.3.1.3 Relationship Between Typed-Value and String-Value</h5>
+               </head>
+            </div4>
+            <div4 id="pattern-facets">
+               <head>
+                  <h5>
+                     <a name="pattern-facets" id="pattern-facets"/>3.3.1.4 Pattern Facets</h5>
+               </head>
+            </div4>
+         </div3>
+         <div3 id="dates-and-times">
+            <head>
+               <h4>
+                  <a name="dates-and-times" id="dates-and-times"/>3.3.2 Dates and Times</h4>
+            </head>
+         </div3>
+         <div3 id="qnames-and-notations">
+            <head>
+               <h4>
+                  <a name="qnames-and-notations" id="qnames-and-notations"/>3.3.3 QNames and NOTATIONS</h4>
+            </head>
+         </div3>
+      </div2>
+   </div1>
+   <div1 id="infoset-mapping">
+      <head>
+         <h2>
+            <a name="infoset-mapping" id="infoset-mapping"/>4 Infoset Mapping</h2>
+      </head>
+   </div1>
+   <div1 id="accessors">
+      <head>
+         <h2>
+            <a name="accessors" id="accessors"/>5 Accessors</h2>
+      </head>
+      <div2 id="dm-attributes">
+         <head>
+            <h3>
+               <a name="dm-attributes" id="dm-attributes"/>5.1 <code>attributes</code> Accessor</h3>
+         </head>
+      </div2>
+      <div2 id="dm-base-uri">
+         <head>
+            <h3>
+               <a name="dm-base-uri" id="dm-base-uri"/>5.2 <code>base-uri</code> Accessor</h3>
+         </head>
+      </div2>
+      <div2 id="dm-children">
+         <head>
+            <h3>
+               <a name="dm-children" id="dm-children"/>5.3 <code>children</code> Accessor</h3>
+         </head>
+      </div2>
+      <div2 id="dm-document-uri">
+         <head>
+            <h3>
+               <a name="dm-document-uri" id="dm-document-uri"/>5.4 <code>document-uri</code> Accessor</h3>
+         </head>
+      </div2>
+      <div2 id="dm-is-id">
+         <head>
+            <h3>
+               <a name="dm-is-id" id="dm-is-id"/>5.5 <code>is-id</code> Accessor</h3>
+         </head>
+      </div2>
+      <div2 id="dm-is-idrefs">
+         <head>
+            <h3>
+               <a name="dm-is-idrefs" id="dm-is-idrefs"/>5.6 <code>is-idrefs</code> Accessor</h3>
+         </head>
+      </div2>
+      <div2 id="dm-namespace-nodes">
+         <head>
+            <h3>
+               <a name="dm-namespace-nodes" id="dm-namespace-nodes"/>5.7 <code>namespace-nodes</code> Accessor</h3>
+         </head>
+      </div2>
+      <div2 id="dm-nilled">
+         <head>
+            <h3>
+               <a name="dm-nilled" id="dm-nilled"/>5.8 <code>nilled</code> Accessor</h3>
+         </head>
+      </div2>
+      <div2 id="dm-node-kind">
+         <head>
+            <h3>
+               <a name="dm-node-kind" id="dm-node-kind"/>5.9 <code>node-kind</code> Accessor</h3>
+         </head>
+      </div2>
+      <div2 id="dm-node-name">
+         <head>
+            <h3>
+               <a name="dm-node-name" id="dm-node-name"/>5.10 <code>node-name</code> Accessor</h3>
+         </head>
+      </div2>
+      <div2 id="dm-parent">
+         <head>
+            <h3>
+               <a name="dm-parent" id="dm-parent"/>5.11 <code>parent</code> Accessor</h3>
+         </head>
+      </div2>
+      <div2 id="dm-string-value">
+         <head>
+            <h3>
+               <a name="dm-string-value" id="dm-string-value"/>5.12 <code>string-value</code> Accessor</h3>
+         </head>
+      </div2>
+      <div2 id="dm-type-name">
+         <head>
+            <h3>
+               <a name="dm-type-name" id="dm-type-name"/>5.13 <code>type-name</code> Accessor</h3>
+         </head>
+      </div2>
+      <div2 id="dm-typed-value">
+         <head>
+            <h3>
+               <a name="dm-typed-value" id="dm-typed-value"/>5.14 <code>typed-value</code> Accessor</h3>
+         </head>
+      </div2>
+      <div2 id="dm-unparsed-entity-public-id">
+         <head>
+            <h3>
+               <a name="dm-unparsed-entity-public-id" id="dm-unparsed-entity-public-id"/>5.15 <code>unparsed-entity-public-id</code> Accessor</h3>
+         </head>
+      </div2>
+      <div2 id="dm-unparsed-entity-system-id">
+         <head>
+            <h3>
+               <a name="dm-unparsed-entity-system-id" id="dm-unparsed-entity-system-id"/>5.16 <code>unparsed-entity-system-id</code> Accessor</h3>
+         </head>
+      </div2>
+   </div1>
+   <div1 id="Node">
+      <head>
+         <h2>
+            <a name="Node" id="Node"/>6 Nodes</h2>
+      </head>
+      <div2 id="DocumentNode">
+         <head>
+            <h3>
+               <a name="DocumentNode" id="DocumentNode"/>6.1 Document Nodes</h3>
+         </head>
+         <div3 id="DocumentNodeOverview">
+            <head>
+               <h4>
+                  <a name="DocumentNodeOverview" id="DocumentNodeOverview"/>6.1.1 Overview</h4>
+            </head>
+         </div3>
+         <div3 id="DocumentNodeAccessors">
+            <head>
+               <h4>
+                  <a name="DocumentNodeAccessors" id="DocumentNodeAccessors"/>6.1.2 Accessors</h4>
+            </head>
+         </div3>
+         <div3 id="const-infoset-document">
+            <head>
+               <h4>
+                  <a name="const-infoset-document" id="const-infoset-document"/>6.1.3 Construction from an Infoset</h4>
+            </head>
+         </div3>
+         <div3 id="const-psvi-document">
+            <head>
+               <h4>
+                  <a name="const-psvi-document" id="const-psvi-document"/>6.1.4 Construction from a PSVI</h4>
+            </head>
+         </div3>
+         <div3 id="infoset-mapping-document">
+            <head>
+               <h4>
+                  <a name="infoset-mapping-document" id="infoset-mapping-document"/>6.1.5 Infoset Mapping</h4>
+            </head>
+         </div3>
+      </div2>
+      <div2 id="ElementNode">
+         <head>
+            <h3>
+               <a name="ElementNode" id="ElementNode"/>6.2 Element Nodes</h3>
+         </head>
+         <div3 id="ElementNodeOverview">
+            <head>
+               <h4>
+                  <a name="ElementNodeOverview" id="ElementNodeOverview"/>6.2.1 Overview</h4>
+            </head>
+         </div3>
+         <div3 id="ElementNodeAccessors">
+            <head>
+               <h4>
+                  <a name="ElementNodeAccessors" id="ElementNodeAccessors"/>6.2.2 Accessors</h4>
+            </head>
+         </div3>
+         <div3 id="const-infoset-element">
+            <head>
+               <h4>
+                  <a name="const-infoset-element" id="const-infoset-element"/>6.2.3 Construction from an Infoset</h4>
+            </head>
+         </div3>
+         <div3 id="const-psvi-element">
+            <head>
+               <h4>
+                  <a name="const-psvi-element" id="const-psvi-element"/>6.2.4 Construction from a PSVI</h4>
+            </head>
+         </div3>
+         <div3 id="infoset-mapping-element">
+            <head>
+               <h4>
+                  <a name="infoset-mapping-element" id="infoset-mapping-element"/>6.2.5 Infoset Mapping</h4>
+            </head>
+         </div3>
+      </div2>
+      <div2 id="AttributeNode">
+         <head>
+            <h3>
+               <a name="AttributeNode" id="AttributeNode"/>6.3 Attribute Nodes</h3>
+         </head>
+         <div3 id="AttributeNodeOverview">
+            <head>
+               <h4>
+                  <a name="AttributeNodeOverview" id="AttributeNodeOverview"/>6.3.1 Overview</h4>
+            </head>
+         </div3>
+         <div3 id="AttributeNodeAccessors">
+            <head>
+               <h4>
+                  <a name="AttributeNodeAccessors" id="AttributeNodeAccessors"/>6.3.2 Accessors</h4>
+            </head>
+         </div3>
+         <div3 id="const-infoset-attribute">
+            <head>
+               <h4>
+                  <a name="const-infoset-attribute" id="const-infoset-attribute"/>6.3.3 Construction from an Infoset</h4>
+            </head>
+         </div3>
+         <div3 id="const-psvi-attribute">
+            <head>
+               <h4>
+                  <a name="const-psvi-attribute" id="const-psvi-attribute"/>6.3.4 Construction from a PSVI</h4>
+            </head>
+         </div3>
+         <div3 id="infoset-mapping-attribute">
+            <head>
+               <h4>
+                  <a name="infoset-mapping-attribute" id="infoset-mapping-attribute"/>6.3.5 Infoset Mapping</h4>
+            </head>
+         </div3>
+      </div2>
+      <div2 id="NamespaceNode">
+         <head>
+            <h3>
+               <a name="NamespaceNode" id="NamespaceNode"/>6.4 Namespace Nodes</h3>
+         </head>
+         <div3 id="NamespaceNodeOverview">
+            <head>
+               <h4>
+                  <a name="NamespaceNodeOverview" id="NamespaceNodeOverview"/>6.4.1 Overview</h4>
+            </head>
+         </div3>
+         <div3 id="NamespaceNodeAccessors">
+            <head>
+               <h4>
+                  <a name="NamespaceNodeAccessors" id="NamespaceNodeAccessors"/>6.4.2 Accessors</h4>
+            </head>
+         </div3>
+         <div3 id="const-infoset-namespace">
+            <head>
+               <h4>
+                  <a name="const-infoset-namespace" id="const-infoset-namespace"/>6.4.3 Construction from an Infoset</h4>
+            </head>
+         </div3>
+         <div3 id="const-psvi-namespace">
+            <head>
+               <h4>
+                  <a name="const-psvi-namespace" id="const-psvi-namespace"/>6.4.4 Construction from a PSVI</h4>
+            </head>
+         </div3>
+         <div3 id="infoset-mapping-namespace">
+            <head>
+               <h4>
+                  <a name="infoset-mapping-namespace" id="infoset-mapping-namespace"/>6.4.5 Infoset Mapping</h4>
+            </head>
+         </div3>
+      </div2>
+      <div2 id="ProcessingInstructionNode">
+         <head>
+            <h3>
+               <a name="ProcessingInstructionNode" id="ProcessingInstructionNode"/>6.5 Processing Instruction Nodes</h3>
+         </head>
+         <div3 id="ProcessingInstructionNodeOverview">
+            <head>
+               <h4>
+                  <a name="ProcessingInstructionNodeOverview"
+                     id="ProcessingInstructionNodeOverview"/>6.5.1 Overview</h4>
+            </head>
+         </div3>
+         <div3 id="ProcessingInstructionNodeAccessors">
+            <head>
+               <h4>
+                  <a name="ProcessingInstructionNodeAccessors"
+                     id="ProcessingInstructionNodeAccessors"/>6.5.2 Accessors</h4>
+            </head>
+         </div3>
+         <div3 id="const-infoset-pi">
+            <head>
+               <h4>
+                  <a name="const-infoset-pi" id="const-infoset-pi"/>6.5.3 Construction from an Infoset</h4>
+            </head>
+         </div3>
+         <div3 id="const-psvi-pi">
+            <head>
+               <h4>
+                  <a name="const-psvi-pi" id="const-psvi-pi"/>6.5.4 Construction from a PSVI</h4>
+            </head>
+         </div3>
+         <div3 id="infoset-mapping-processing-instruction">
+            <head>
+               <h4>
+                  <a name="infoset-mapping-processing-instruction"
+                     id="infoset-mapping-processing-instruction"/>6.5.5 Infoset Mapping</h4>
+            </head>
+         </div3>
+      </div2>
+      <div2 id="CommentNode">
+         <head>
+            <h3>
+               <a name="CommentNode" id="CommentNode"/>6.6 Comment Nodes</h3>
+         </head>
+         <div3 id="CommentNodeOverview">
+            <head>
+               <h4>
+                  <a name="CommentNodeOverview" id="CommentNodeOverview"/>6.6.1 Overview</h4>
+            </head>
+         </div3>
+         <div3 id="CommentNodeAccessors">
+            <head>
+               <h4>
+                  <a name="CommentNodeAccessors" id="CommentNodeAccessors"/>6.6.2 Accessors</h4>
+            </head>
+         </div3>
+         <div3 id="const-infoset-comment">
+            <head>
+               <h4>
+                  <a name="const-infoset-comment" id="const-infoset-comment"/>6.6.3 Construction from an Infoset</h4>
+            </head>
+         </div3>
+         <div3 id="const-psvi-comment">
+            <head>
+               <h4>
+                  <a name="const-psvi-comment" id="const-psvi-comment"/>6.6.4 Construction from a PSVI</h4>
+            </head>
+         </div3>
+         <div3 id="infoset-mapping-comment">
+            <head>
+               <h4>
+                  <a name="infoset-mapping-comment" id="infoset-mapping-comment"/>6.6.5 Infoset Mapping</h4>
+            </head>
+         </div3>
+      </div2>
+      <div2 id="TextNode">
+         <head>
+            <h3>
+               <a name="TextNode" id="TextNode"/>6.7 Text Nodes</h3>
+         </head>
+         <div3 id="TextNodeOverview">
+            <head>
+               <h4>
+                  <a name="TextNodeOverview" id="TextNodeOverview"/>6.7.1 Overview</h4>
+            </head>
+         </div3>
+         <div3 id="TextNodeAccessors">
+            <head>
+               <h4>
+                  <a name="TextNodeAccessors" id="TextNodeAccessors"/>6.7.2 Accessors</h4>
+            </head>
+         </div3>
+         <div3 id="const-infoset-text">
+            <head>
+               <h4>
+                  <a name="const-infoset-text" id="const-infoset-text"/>6.7.3 Construction from an Infoset</h4>
+            </head>
+         </div3>
+         <div3 id="const-psvi-text">
+            <head>
+               <h4>
+                  <a name="const-psvi-text" id="const-psvi-text"/>6.7.4 Construction from a PSVI</h4>
+            </head>
+         </div3>
+         <div3 id="infoset-mapping-text">
+            <head>
+               <h4>
+                  <a name="infoset-mapping-text" id="infoset-mapping-text"/>6.7.5 Infoset Mapping</h4>
+            </head>
+         </div3>
+      </div2>
+   </div1>
+   <div1 id="conformance">
+      <head>
+         <h2>
+            <a name="conformance" id="conformance"/>7 Conformance</h2>
+      </head>
+   </div1>
+   <div1 id="infoset-conformance">
+      <head>
+         <h2>
+            <a name="infoset-conformance" id="infoset-conformance"/>A XML Information Set Conformance</h2>
+      </head>
+   </div1>
+   <div1 id="references">
+      <head>
+         <h2>
+            <a name="references" id="references"/>B References</h2>
+      </head>
+      <div2 id="normative-references">
+         <head>
+            <h3>
+               <a name="normative-references" id="normative-references"/>B.1 Normative References</h3>
+         </head>
+      </div2>
+      <div2 id="informative-references">
+         <head>
+            <h3>
+               <a name="informative-references" id="informative-references"/>B.2 Other References</h3>
+         </head>
+      </div2>
+   </div1>
+   <div1 id="xdtschema">
+      <head>
+         <h2>
+            <a name="xdtschema" id="xdtschema"/>C Schema for the Extended XS Namespace</h2>
+      </head>
+   </div1>
+   <inform-div1 id="glossary">
+      <head>
+         <h2>
+            <a name="glossary" id="glossary"/>D Glossary (Non-Normative)</h2>
+      </head>
+   </inform-div1>
+   <inform-div1 id="example">
+      <head>
+         <h2>
+            <a name="example" id="example"/>E Example (Non-Normative)</h2>
+      </head>
+   </inform-div1>
+   <inform-div1 id="impl-summary">
+      <head>
+         <h2>
+            <a name="impl-summary" id="impl-summary"/>F Implementation-Defined and Implementation-Dependent Items (Non-Normative)</h2>
+      </head>
+   </inform-div1>
+   <inform-div1 id="ChangeLog">
+      <head>
+         <h2>
+            <a name="ChangeLog" id="ChangeLog"/>G Change Log (Non-Normative)</h2>
+      </head>
+   </inform-div1>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="dt-instance"
+            term="instance of the data model"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="dt-sequence"
+            term="sequence"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="dt-item"
+            term="item"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="dt-absent"
+            term="absent"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="dt-root-node"
+            term="root node"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="dt-document"
+            term="document"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="dt-fragment"
+            term="fragment"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="dt-atomic-value"
+            term="atomic value"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="dt-atomic-type"
+            term="atomic type"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="dt-primitive-simple-type"
+            term="primitive simple type"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="dt-expanded-qname"
+            term="expanded-QName"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="dt-implementation-defined"
+            term="implementation defined"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="dt-implementation-dependent"
+            term="implementation dependent"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="dt-document-order"
+            term="document order"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="dt-stable"
+            term="stable"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="dt-namespace-uri"
+            term="Namespace URI"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            term="string"
+            id="dt-string"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            term="character"
+            id="dt-character"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="dt-codepoint"
+            term="codepoint"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            term="function"
+            id="dt-function-item"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            term="function signature"
+            id="dt-signature"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            term="function arity"
+            id="dt-function-arity"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            term="map item"
+            id="dt-map-item"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            term="array item"
+            id="dt-array-item"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="dt-incompletely-validated"
+            term="incompletely validated"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="dt-node"
+            term="Node"/>
+</document-summary>

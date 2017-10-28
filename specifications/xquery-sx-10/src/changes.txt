@@ -1,0 +1,98 @@
+****************************************************************************************************
+* To Be Done
+****************************************************************************************************
+
+Add examples to the new expressions.
+
+****************************************************************************************************
+* Done
+****************************************************************************************************
+
+Eliminated the "redefines" schema because it's no longer needed after we replaced the function declaration "simple" and "sequential" with %-annotations (Jim; 2010-05-13)
+
+Bring XQueryX schema and stylesheet up to date w.r.t. grammar changes since 2009-08-17 (Jim; 2010-02-15)
+
+What error is raised if the category rules are violated?
+
+Add error specific codes.
+
+Telcon #423 Q2.3.1 Stability in XQuery SX
+DECISION to adopt proposal to define "execution scope" as "snapshot scope".
+
+Telcon #422 Q2.3.1 lookahead problem in Scripting grammar
+Change ApplyExpr to
+Expr ::= ConcatExpr ( ";" (ConcatExpr ";")* )?
+
+Telcon #406 Q2.3.2 query mode for xquery scripting extension proposal
+DECISION to adopt Zhen's scripting mode proposal, with mode keywords changed to "simple/sequential",
+and affect extended to also cover sequential expressions.
+
+Telcon #406 Q2.3.1 Global variables vs global constants in XQuery SX
+DECISION to change global modifiable variable syntax to "declare assignable/unassignable variable"
+
+Telcon #405 Q2.3.1 Proposal to drop "set" from AssignmentExpr
+DECISION accept proposal.
+
+Telcon #404 Q2.2.2 Inferring the type of modifiable variables.
+DECISION accept proposal.
+
+Telcon #403 Q2.2.1 Composable Sequential Expressions
+Accepted with the following change:
+ - Make the statement "Predicates - need to evaluate each predicate
+   to completion before the next." apply to all evaluation orders.
+
+Telcon #400 Q2.2.4 Bugzilla Bug 6852, [SX] Scripting grammar ambiguity
+DECISION to change "exit with" to "exit returning" in Scripting.
+
+Telcon #400 Q2.2.5 Bugzilla Bug 6847, [SX] Add "while" to the reserved function names
+DECISION to accept solution, and add a note on backwards compatibility.
+
+F2F #381 Q2.2.5 XQuery SX issue #1: Allow break / continue in FLWOR?
+DECISION: Remove break/continue from XQSE. Draft a sentence for the prolog, saying we've removed them
+and have known alternatives to using them.
+
+F2F #381 Q2.2.7 XQuery SX issue #3: Semi-colon as operator
+DECISION: Approved proposal, with grammar modification.
+
+Expr := ApplyExpr | ConcatExpr
+ApplyExpr := (ConcatExpr ";")+
+
+F2F #381 Q2.2.8 XQuery SX issue #4: Passing arguments to functions
+DECISION: Approved without modification.
+
+(1) Approved M.Dyck proposal in 2008/Feb/0025. After a PUL
+is applied by upd:applyUpdates, a (type? dynamic?) error is raised if
+the value bound to any variable does not match the declared type of
+that variable. Agreed in XQuery Telcon #359, 3/11/08.
+
+(2) Scripting: In order to avoid a double-curly problem in the
+try/catch proposal, a change is made to Blocks in the Scripting spec.
+Stand-alone Blocks must be preceded by keyword "block". Certain 
+embedded uses of Blocks (in function decls and while-loops) may
+omit the keyword. Grammar (approximate):
+ExprSingle ::= ... | BlockExpr
+BlockExpr ::= "block" BlockContent
+BlockContent ::= "{" ... "}"
+WhileExpr ::= ... BlockContent ...
+FunctionDecl ::= ... BlockContent ...
+DC is directed to implement this change in the Scripting spec.
+Decided in F2F at Oracle, week of 3/31/08.
+
+(3) Accept the Snelson proposal to mix XDM with PUL in the Scripting language, 
+as specified here: 
+http://lists.w3.org/Archives/Member/w3c-xml-query-wg/2008Jun/0039.html
+Decided in F2F at Edinburgh, week of 6/23/08. Assigned to Snelson.
+
+(4) Bug observed by DC: 
+In Section 2.3.2 (Block), paragraph 5 says: "The body consists of one
+or more expressions, separated by semicolons (the final expression may
+optionally be followed by a semicolon.)" This sentence is not consistent
+with the grammar. The sentence should be changed as follows:
+"The body consists of one or more expressions terminated by semicolons."
+
+(5) Bug observed by DC:
+In Section 2.3.4 (While Expression), there is an example of a block
+that computes Fibonacci numbers. The block contains an "exit with"
+expression. This kind of expression makes sense only if it is inside
+a function definition. The example should be improved by enclosing it
+in a function definition.

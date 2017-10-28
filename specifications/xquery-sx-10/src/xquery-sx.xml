@@ -1,0 +1,1894 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE spec SYSTEM "../../xpath-semantics-10/schema/xquery-semantics.dtd"[
+
+<!-- Things to update in these ENTITY definitions before publishing this document:
+* doc.stage must be "FPWD", "WD", "LCWD" "CR", "PR", "PER", or "REC"
+* w3c-doctype must be "wd", "cr", "pr", "per", "rec", or "wgnote"
+* doc.w3c-doctype-full must be "First Public Working Draft", "Working Draft", "Last Call Working Draft",
+    "Candidate Recommendation", "Proposed Recommendation", "Proposed Edited Recommendation", or "Recommendation"
+* date.day, date.DD, date.month, date.monthnum, and date.year must represent the date of publication of the document
+* doc.w3c-prevdesignation must properly represent the stage and shortname of the immediately preceding publication of the document
+* Various status section generation ENTITY definitions below must be properly updated
+-->
+
+<!-- Fix the broken definition for prodrecap from the XML spec DTD - jpcs -->
+<!ENTITY % ref-req.att "ref    NMTOKEN    #REQUIRED">
+
+<!ENTITY doc.version "1.0">
+<!ENTITY doc.version-code "10">
+<!ENTITY doc.stage "NOTE">
+<!ENTITY doc.w3c-doctype "wgnote">
+<!ENTITY doc.w3c-doctype-full "Working Group Note">
+<!ENTITY date.day "18">
+<!ENTITY date.DD "18">
+<!ENTITY date.month "September">
+<!ENTITY date.monthnum "09">
+<!ENTITY date.year "2014">
+<!ENTITY doc.date "&date.year;&date.monthnum;&date.DD;">
+<!ENTITY w3c.tr "http://www.w3.org/TR">
+<!ENTITY doc.shortname "xquery-sx-&doc.version-code;">
+<!ENTITY doc.w3c-designation "&doc.stage;-&doc.shortname;">
+<!ENTITY doc.publoc "&w3c.tr;/&date.year;/&doc.w3c-designation;-&doc.date;/">
+<!ENTITY doc.latestloc "&w3c.tr;/&doc.shortname;/">
+<!ENTITY language "XQuery Scripting Extension &doc.version;">
+
+<!ENTITY xqsx-xqueryx SYSTEM "xqsx-xqueryx.xml">
+<!ENTITY xqsx-xqueryx-schema SYSTEM "xqsx-schema.xml">
+<!ENTITY xqsx-xqueryx-redef-schema SYSTEM "xqsx-redef-schema.xml">
+<!ENTITY xqsx-xqueryx-stylesheet SYSTEM "xqsx-stylesheet.xml">
+<!ENTITY xqsx-xqueryx-xq-example1a SYSTEM "xqsx-example-1a.xml">
+<!ENTITY xqsx-xqueryx-xqx-example1b SYSTEM "xqsx-example-1b.xml">
+<!ENTITY xqsx-xqueryx-xq-trans-example1c SYSTEM "xqsx-example-1c.xml">
+
+<!ENTITY % status-entities SYSTEM "../../../etc/status-entities.dtd">
+%status-entities;
+
+<!ENTITY doc.WD-pubdate "3 December 2008">
+<!ENTITY doc.LC-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.LC-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.CR-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.CR-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.PR-expected "TO BE SPECIFIED">
+<!ENTITY doc.PR-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.PR-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.REC-pubdate "18 September 2014">
+<!ENTITY doc.pubdate "&doc.REC-pubdate;">
+<!ENTITY doc.comments-due "$doc.WD-comments-due;">
+
+<!ENTITY status-section-id "status">
+<!ENTITY spec-devby "&devby.xquery;">
+<!ENTITY changelog-id "id-revisions-log">
+<!ENTITY changes-para "&post.WD.changes;">
+<!ENTITY implementation-report-location "">
+<!ENTITY implementation-report-availability "&report-public;">
+<!ENTITY implementation-report "&implementation-report-irrelevant;">
+<!ENTITY test-suite-location "TO BE PROVIDED">
+<!ENTITY disclosure.one "&disclosure.xquery;">
+<!ENTITY Bugzilla-key "SX">
+<!ENTITY patent-policy-paragraph "&ppp-one;">
+<!ENTITY documents-and-relationships "&not-set-of-documents;">
+<!ENTITY advancement.statement "">
+<!ENTITY doc-stability "&doc-stability-NOTE;">
+<!ENTITY features-at-risk-para "&no-features-at-risk;">
+<!ENTITY document-stage "&doc-stage-NOTE;">
+<!ENTITY customized-paragraph '<p>This &doc.w3c-doctype-full; being published in order to
+document the work that the XML Query Working Group has done in the area of providing an
+imperative extension to XQuery.  The WG was unable to achieve consensus on several
+significant aspects of this technology and determined to terminate work on the project in mid-2014. </p>'>
+
+<!ENTITY status-section SYSTEM "../../../etc/status-general.xml">
+]>
+<spec id="spec-top"
+      w3c-doctype="&doc.w3c-doctype;"
+      status="int-review"
+>
+  <header id="spec-header">
+    <title>&language;</title>
+    <w3c-designation>&doc.w3c-designation;</w3c-designation>
+    <w3c-doctype>W3C &doc.w3c-doctype-full;</w3c-doctype>
+    <pubdate>
+      <day>&date.day;</day>
+      <month>&date.month;</month>
+      <year>&date.year;</year>
+    </pubdate>
+    <publoc>
+      <loc href="&doc.publoc;">&doc.publoc;</loc>
+    </publoc>
+    <latestloc>
+      <loc href="&doc.latestloc;">&doc.latestloc;</loc>
+    </latestloc>
+    <prevlocs>
+      <loc href="http://www.w3.org/TR/2010/WD-xquery-sx-10-20100408/"/>
+      <loc href="http://www.w3.org/TR/2008/WD-xquery-sx-10-20081203/"/>
+      <loc href="http://www.w3.org/TR/2008/WD-xquery-sx-10-20080328/"/>
+		</prevlocs>
+    <authlist>
+
+      <author>
+        <name>John Snelson</name>
+        <affiliation>MarkLogic</affiliation>
+        <email href="mailto:john.snelson@marklogic.com">john.snelson@marklogic.com</email>
+      </author>
+      <author>
+        <name>Don Chamberlin</name>
+        <affiliation>IBM Almaden Research Center</affiliation>
+        <loc href="http://www.almaden.ibm.com/cs/people/chamberlin/">&nbsp;http://www.almaden.ibm.com/cs/people/chamberlin/</loc>
+      </author>
+      <author>
+        <name>Daniel Engovatov</name>
+        <affiliation>W3C invited expert</affiliation>
+<!--         <email href="mailto:dengovatov@bea.com">dengovatov@bea.com</email> -->
+      </author>
+      <author>
+        <name>Dana Florescu</name>
+        <affiliation>Oracle Corporation</affiliation>
+        <email href="mailto:dana.florescu@oracle.com">dana.florescu@oracle.com</email>
+      </author>
+      <author>
+        <name>Giorgio Ghelli</name>
+        <affiliation>University of Pisa</affiliation>
+        <email href="mailto:ghelli@di.unipi.it">ghelli@di.unipi.it</email>
+      </author>
+      <author>
+        <name>Jim Melton</name>
+        <affiliation>Oracle Corporation</affiliation>
+        <email href="mailto:jim.melton@acm.org">jim.melton@acm.org</email>
+      </author>
+      <author>
+        <name>Jérôme Siméon</name>
+        <affiliation>IBM T.J. Watson Research Center</affiliation>
+        <email href="mailto:simeon@us.ibm.com">simeon@us.ibm.com</email>
+      </author>
+    </authlist>
+
+    &status-section;
+
+    <abstract>
+      <p>This specification defines an extension to <bibref ref="XQ10"/>
+         and <bibref ref="XQueryUpdate"/>. 
+         Expressions can be evaluated in a specific order,
+         with later expressions seeing the effects of the expressions that came before them. 
+         This specification introduces several new kinds of expression, including the apply,
+         assignment, while, and exit expression, and a block expression with local variable declarations.
+      </p>
+    </abstract>
+
+    <langusage>
+      <language id="en">English</language>
+    </langusage>
+
+    <revisiondesc id="id-revision-log">
+      <p>Engovatov, 23 Sept 2007.  Initial draft.</p>
+      <p>Chamberlin, 27 Sept 2007.  Made some changes to syntax and terminology. Added an example.</p>
+      <p>Chamberlin, 5 Dec 2007. Revised proposal according to "semicolon operator" proposal by John Snelson,
+         approved in WG telcon 347.</p>
+      <p>Melton, 11 Feb 2008. Added XQueryX material.</p>
+      <p>Melton, 14 Mar 2008. Revised Abstract per telecon 2008-03-11, updated XQueryX material to align with grammar.</p>
+      <p>Snelson, 10 July 2008. Revised according to "mixing PUL and XDM" proposal approved in WG face-to-face 372.</p>
+      <p>Snelson, 10 July 2008. Implemented Michael Dyck's proposal for a SequenceType re-check after upd:applyUpdates approved in WG telcon 359.</p>
+      <p>Snelson, 10 July 2008. Implemented block proposal approved in WG face-to-face 362.</p>
+      <p>Snelson, 28 Oct 2008. Removed break/continue according to decision in WG face-to-face 381.</p>
+      <p>Snelson, 28 Oct 2008. Added ApplyExpr and remove semicolon from BlockExpr according to decision in WG face-to-face 381.</p>
+      <p>Snelson, 9 Nov 2008. Added the ability to modify parameters to sequential functions according to decision in WG face-to-face 381.</p>
+      <p>Snelson, 14 May 2009. Removed restrictions on placement of sequential expressions according to decision in WG telcon 403.</p>
+    </revisiondesc>
+  </header>
+
+  <body>
+
+    <div1 id="Introduction">
+      <head>Introduction</head>
+
+      <p>XQuery Scripting Extension extends <bibref ref="XQ10"/>, enabling it to
+         serve as a scripting language in order to satisfy <bibref ref="ScriptingRequirements"/>. 
+         A prerequisite for this extension is <bibref ref="XQueryUpdate"/>. 
+         The following abbreviations are used in this specification: 
+         <termdef term="XQUF" id="dt-xquf"><term>XQUF</term> is an abbreviation for <bibref ref="XQueryUpdate"/>.</termdef>
+         <termdef term="XQSX" id="dt-xqsx"><term>XQSX</term> is an abbreviation for XQuery Scripting Extension.</termdef></p>
+
+      <p>In this document, examples and material labeled as <quote>Note</quote> are provided for
+         explanatory purposes and are not normative. </p>
+
+      <p><termref def="dt-xqsx">XQSX</termref> has the following properties:</p>
+
+      <ulist>
+        <item>
+          <p>It is a strict superset of <termref def="dt-xquf">XQUF</termref>, in the
+             sense that all valid <termref def="dt-xquf">XQUF</termref> expressions are also
+             valid <termref def="dt-xqsx">XQSX</termref> expressions and have the same meaning. 
+             (In the same sense, <termref def="dt-xquf">XQUF</termref> is a strict
+             superset of <bibref ref="XQ10"/>.)</p>
+        </item>
+
+        <item>
+          <p>It does not introduce any "modes" that affect the semantics of expressions.</p>
+        </item>
+
+        <item>
+          <p>As in <termref def="dt-xquf">XQUF</termref>, the result of an expression
+             consists of an <termref def="dt-xdm-instance">XDM instance</termref> and a
+             <termref def="dt-pul">pending update list</termref>.
+             <termdef term="XDM instance" id="dt-xdm-instance">An <term>XDM instance</term>
+             is an unconstrained sequence of zero or more nodes and/or atomic values,
+             as defined in <bibref ref="XDM"/>.</termdef>
+             <termdef term="pending update list" id="dt-pul">A <term>pending update list</term>
+             is an unordered collection of update primitives, representing node state changes
+             that have not yet been applied, as defined in <bibref ref="XQueryUpdate"/>.</termdef></p>
+        </item>
+      </ulist>
+    </div1>
+
+      <div1 id="id-extensions-to-processing-model">
+        <head>Extensions to the Processing Model</head>
+
+        <p>
+          Expressions in XQSX may have side-effects that are visible to subsequent expressions (according to their
+          <termref def="dt-eval-order">evaluation order</termref>). This requires a number of extensions to the 
+          <bibref ref="XQ10"/>and <bibref ref="XQueryUpdate"/> processing model.
+        </p>
+
+      <div2 id="id-evaluation-order">
+        <head>Evaluation Order</head>
+        <p>
+          <termdef term="evaluation order" id="dt-eval-order"><termref def="dt-xqsx">XQSX</termref> defines an <term>evaluation order</term> on
+          many kinds of XQuery expressions, which is the order that operand expressions must be evaluated in order
+          to determine what side-effects are visible to later expressions.</termdef>
+          An implementation may use any execution strategy as long as the result complies with
+          the semantics of this ordering.</p>
+        <note>
+          <p>Since none of the XQuery expressions existing before
+             <termref def="dt-xqsx">XQSX</termref> has any immediate side-effects,
+             no ordering is effectively imposed on the evaluation of any expression
+             unless it contains one of the new sequential expressions introduced by <termref def="dt-xqsx">XQSX</termref>.</p>
+        </note>
+      </div2>
+
+      <div2 id="id-snapshot-scope">
+        <head>Snapshot and Execution Scope</head>
+        <p>The term <term>snapshot</term> is defined in <bibref ref="XQueryUpdate"/> as follows:
+           <termdef term="snapshot" id="dt-snapshot">A <term>snapshot</term> is a scope
+           within which expressions are evaluated with respect to a fixed
+           <termref def="dt-xdm-instance">XDM instance</termref> and updates are held pending.</termdef>
+           A snapshot is terminated by invocation of the <code>upd:applyUpdates</code> operation.
+           Unlike <termref def="dt-xquf">XQUF</termref>, <termref def="dt-xqsx">XQSX</termref>
+           permits a query to contain more than one snapshot.</p>
+
+        <p>
+          <bibref ref="FO"/> defines certain functions as <xtermref spec="FO" ref="stable">stable</xtermref>. Stable functions
+          such as <code>fn:current-time</code> and <code>fn:doc</code> are defined to return the same result given the same
+          arguments within an <xtermref spec="FO" ref="execution-scope">execution scope</xtermref>. <termref def="dt-xqsx">XQSX</termref>
+          redefines the extent of an execution scope, so that a top level query can contain many execution scopes.
+        </p>
+
+        <p>In XQSX, each of the following expressions is both a snapshot and execution scope:
+           <ulist>
+             <item><p>each ConcatExpr within an ApplyExpr</p></item>
+             <item><p>each initialization expression in a BlockVarDecl</p></item>
+             <item><p>the expression on the right-hand side of an AssignmentExpr</p></item>
+             <item><p>the expression in an ExitExpr</p></item>
+             <item><p>the test expression in a WhileExpr</p></item>
+           </ulist>
+        </p>
+      </div2>
+
+      <div2 id="id-variable-revalidation">
+        <head>Variable Binding Revalidation</head>
+        <p>
+          To ensure type soundness, variable bindings are revalidated at the end of each scope to check that
+          any updates applied have not made them invalid with repect to their declared types. It is a dynamic
+          error <errorref code="0003" class="DY"/> if, after applying a pending update list (using <code>upd:applyUpdates</code>),
+          the XDM instance bound to any in-scope variable does not match the static type of that variable according
+          to SequenceType matching rules.
+        </p>
+      </div2>
+      <div2 id="id-updating-constraint">
+        <head>Updating Expression Constraints</head>
+        <p>
+            <termref def="dt-xqsx">XQSX</termref> relaxes the constraints on the placement of 
+            <termref def="dt-updating-expr">updating expressions</termref>, so that a non-empty
+            <termref def="dt-xdm-instance">XDM instance</termref> can be returned by an expression
+            as well as a non-empty <termref def="dt-pul">pending update list</termref>. In order to allow
+            this, new rules to determine the category and resulting <termref def="dt-pul">pending update list</termref>
+            are added to every existing expression, following certain principles:
+        </p>
+        <ulist>
+          <item>
+            <p>
+              An <termref def="dt-updating-expr">updating expression</termref> is allowed anywhere a
+              <termref def="dt-simple-expr">simple expression</termref> is allowed. If an operand of an expression is an
+              <termref def="dt-updating-expr">updating expression</termref>, the expression itself is
+              an <termref def="dt-updating-expr">updating expression</termref>.
+            </p>
+          </item>
+          <item>
+            <p>
+              An expression may not be both <termref def="dt-sequential-expr">sequential</termref> and
+              <termref def="dt-updating-expr">updating</termref>. If an <termref def="dt-updating-expr">updating</termref>
+              expression contains or uses a <termref def="dt-sequential-expr">sequential expression</termref>
+              (or vice versa), an error is raised <errorref code="0002" class="ST"/>.
+            </p>
+          </item>
+          <item>
+            <p>
+              The <termref def="dt-pul">pending update list</termref> that results from any given expression is the result of
+              calling <code>upd:mergeUpdates</code> on the <termref def="dt-pul">pending update lists</termref> from the result
+              of all of its operand expressions. No <termref def="dt-pul">pending update list</termref> is ever discarded.
+              <!-- TBD add the try-catch comment back in when XQSX has try-catch - jpcs -->
+              <!-- except specifically by the try-catch expression. -->
+            </p>
+          </item>
+        </ulist>
+      </div2>
+      <div2 id="id-sequential">
+        <head>Sequential Expressions</head>
+          <p>
+            <termref def="dt-xqsx">XQSX</termref> introduces a new expression category called
+            <termref def="dt-sequential-expr">sequential expressions</termref>. 
+            The simple and updating expression categories introduced by <termref def="dt-xquf">XQUF</termref>
+            are retained, but the vacuous expression category no longer has significance. 
+            Informal definitions of all the expression categories are summarized here. 
+            For normative definitions of the categories, see the "Category Rules"
+            that are specified for each kind of expression in <specref ref="id-new-exprs"/>
+            and <specref ref="id-existing-exprs"/>.</p>
+          <olist>
+            <item>
+              <p>
+                <termdef id="dt-updating-expr" term="updating expression">An <term>updating expression</term>
+                is an expression that can return a non-empty <termref def="dt-pul">pending update list</termref>.</termdef>
+                Updating expressions include insert, delete, replace, rename, and calls to
+                updating functions, as well as certain other expressions that contain nested updating expressions. 
+
+                An updating expression may return a non-empty <termref def="dt-xdm-instance">XDM instance</termref>
+                as well as a non-empty <termref def="dt-pul">pending update list</termref> - however note that
+                it does not actually apply any updates.</p>
+            </item>
+            <item>
+              <p>
+                <termdef term="sequential expression" id="dt-sequential-expr">A <term>sequential expression</term>
+                is an expression that can have side effects other than constructing a new node or raising an error.</termdef>
+                Side effects include applying updates to an <termref def="dt-xdm-instance">XDM instance</termref>,
+                altering the dynamic context, or affecting the flow of control. 
+                Sequential expressions include apply expressions, assignment, exit, while,
+                and calls to sequential functions, as well as certain other expressions that
+                contain nested sequential expressions. 
+                The side effects of a sequential expression are immediately effective
+                and are visible to subsequent expressions. 
+                Because of their side effects, sequential expressions must be evaluated
+                in a well-defined order. 
+                In addition to its side effects, a sequential expression may return
+                a non-empty <termref def="dt-xdm-instance">XDM instance</termref>,
+                but it never returns a non-empty <termref def="dt-pul">pending update list</termref>.</p>
+            </item>
+            <item>
+              <p>
+                <termdef term="simple expression" id="dt-simple-expr">A <term>simple expression</term>
+                is an expression that is neither an <termref def="dt-updating-expr">updating expression</termref>
+                nor a <termref def="dt-sequential-expr">sequential expression</termref>.</termdef>
+                A simple expression may return an <termref def="dt-xdm-instance">XDM instance</termref>,
+                and it may construct a node or raise an error.</p>
+            </item>
+          </olist>
+          <p>The classification of each expression into one of the above categories is
+             performed by static analysis. 
+             For each kind of expression, <termref def="dt-xqsx">XQSX</termref>
+             provides rules that specify the required categories of the operand expressions
+             and the category of the expression itself.</p>
+
+
+      <p>
+         Note that <termref def="dt-simple-expr">simple expressions</termref>, <termref def="dt-updating-expr">updating expressions</termref>, and
+         <termref def="dt-sequential-expr">sequential expressions</termref>
+         are disjoint categories.
+         The kinds of values that can be returned by the various expression categories
+         are summarized in the following table:</p>
+      <table border="1">
+        <tbody>
+          <tr>
+            <th align="center">
+              <emph>Expression category</emph>
+            </th>
+            <th align="center">
+              <emph>Can return non-empty XDM instance?</emph>
+            </th>
+            <th align="center">
+              <emph>Can return non-empty PUL?</emph>
+            </th>
+            <th align="center">
+              <emph>Can have immediate side-effects?</emph>
+            </th>
+          </tr>
+          <tr>
+            <td align="center">Simple</td>
+            <td align="center">YES</td>
+            <td align="center">NO</td>
+            <td align="center">NO</td>
+          </tr>
+          <tr>
+            <td align="center">Updating</td>
+            <td align="center">YES</td>
+            <td align="center">YES</td>
+            <td align="center">NO</td>
+          </tr>
+          <tr>
+            <td align="center">Sequential</td>
+            <td align="center">YES</td>
+            <td align="center">NO</td>
+            <td align="center">YES</td>
+          </tr>
+        </tbody>
+      </table>
+      </div2>
+      </div1>
+
+      <div1 id="id-extensions-to-static-context">
+        <head>Extensions to the Static Context</head>
+      <div2 id="id-namespace">
+        <head>Predefined Namespace</head>
+        <p>
+          <termref def="dt-xqsx">XQSX</termref> adds the pair (<code>xqsx</code>, <code>http://www.w3.org/2008/xquery-sx-10</code>) as a predefined
+          namespace to the statically known namespaces.
+        </p>
+      </div2>
+      <div2 id="id-query-mode">
+        <head>Query Mode</head>
+        <p>
+          <termdef term="query mode" id="dt-query-mode">The <term>query mode</term> governs the composability of
+          <termref def="dt-updating-expr">updating</termref> and <termref def="dt-sequential-expr">sequential expressions</termref>.
+          Valid values are <code>sequential</code> and <code>simple</code>.</termdef>
+          The default initial value of query mode is <code>sequential</code>, but it can be overwritten by an implementation. Query mode
+          has a lexical scope, and can be modified at both the module and expression level.
+        </p>
+        <p>
+          In particular, query mode affects the category rules for 
+          <specref ref="id-path-expr"/>, <specref ref="id-predicate"/>, <specref ref="id-FLWOR-expr"/>, and <specref ref="id-quantified-expr"/>.
+        </p>
+      </div2>
+      </div1>
+
+      <div1 id="id-extensions-to-prolog">
+        <head>Extensions to the Prolog</head>
+
+        <div2 id="id-assignable-global-var">
+          <head>Assignable Global Variables</head>
+          <scrap><head/>
+            <prodrecap id="VarDecl" ref="VarDecl"/>
+          </scrap>
+          <p>
+            <termref def="dt-xqsx">XQSX</termref> allows the qualifiers <code>assignable</code> and <code>unassignable</code>
+            to be used in a Prolog variable declaration.
+            <termdef term="assignable" id="dt-assignable">Prolog variables declared as <term>assignable</term> may have their
+            value changed by an <specref ref="id-assignment"/>.</termdef>
+            If an assignment qualifier is not used, the default is <code>unassignable</code>.
+          </p>
+
+          <p>The semantics of assignable variables are the same as the semantics of unassignable variables, except that
+          the static type of an assignable variable without a declared type is always <code>item()*</code>.
+           </p>
+
+          <p>The initializing expression of a prolog variable (whether assignable or not)
+          must be a <termref def="dt-simple-expr">simple expression</termref> <errorref code="0001" class="ST"/>.</p>
+
+        </div2>
+        <div2 id="id-function-decl">
+          <head>Function Declarations</head>
+          <scrap><head/>
+            <prodrecap id="FunctionDecl" ref="FunctionDecl"/>
+          </scrap>
+          <glist>
+            <gitem>
+              <label>Definitions:</label>
+              <def>
+                <p>
+                  <termdef term="simple function" id="dt-simple-function">A <term>simple function</term>
+                  is a function whose declaration specifies neither <code>updating</code> nor <code>sequential</code>.
+                  A <termref def="dt-simple-function">simple function</termref> may optionally specify the keyword
+                  <code>simple</code>.</termdef>
+                </p>
+                <p>
+                  <termdef term="updating function" id="dt-updating-function">An <term>updating function</term>
+                  is a function whose declaration specifies the keyword <code>updating</code>.</termdef>
+                </p>
+                <p>
+                  <termdef term="sequential function" id="dt-sequential-function">A <term>sequential function</term>
+                  is a function whose declaration specifies the keyword <code>sequential</code>.</termdef>
+                </p>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Category Rules:</label>
+              <def>
+                <ulist>
+                <item><p>
+                  If the body of a <termref def="dt-simple-function">simple function</termref> is an EnclosedExpr,
+                  it must be a <termref def="dt-simple-expr">simple expression</termref>.
+                </p></item>
+                <item><p>
+                  If the body of an <termref def="dt-updating-function">updating function</termref> is an EnclosedExpr,
+                  it must be either an <termref def="dt-updating-expr">updating</termref> or
+                  <termref def="dt-simple-expr">simple expression</termref>.
+                </p></item>
+                <item><p>
+                  If the body of a <termref def="dt-sequential-function">sequential function</termref> is a Block
+                  it must be either a <termref def="dt-sequential-expr">sequential</termref>
+                  or <termref def="dt-simple-expr">simple expression</termref>.
+                </p></item>
+                <item><p>
+                  If the body of a function violates the category rules for it's declared category,
+                  <errorref code="0008" class="ST"/> is raised.
+                </p></item>
+                </ulist>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Semantics:</label>
+              <def>
+                <p>The semantics of <termref def="dt-simple-function">simple functions</termref>
+                   are defined in <bibref ref="XQueryUpdate"/> and <bibref ref="XQ10"/>, and remain
+                   unchanged in <termref def="dt-xqsx">XQSX</termref>.</p>
+                <p>The semantics of <termref def="dt-updating-function">updating functions</termref>
+                   as originally defined in <bibref ref="XQueryUpdate"/> are extended as follows:</p>
+                 <ulist>
+                   <item><p>A return type is permitted.</p></item>
+                   <item><p>If <code>external</code> is specified, the external function may return both a non-empty
+                     <termref def="dt-pul">pending update list</termref> and a non-empty
+                     <termref def="dt-xdm-instance">XDM instance</termref>.</p>
+                   </item>
+                  <item>
+                    <p>If the result of an <termref def="dt-updating-function">updating function</termref>
+                       does not match its declared result type (after applying function conversion rules
+                       as specified in <xspecref spec="XQ" ref="id-function-calls">
+                       <?xm-replace_text {xspecref}?></xspecref>), a type error is raised <xerrorref spec="XQ" code="0004" class="TY"/>. 
+                       The default result type of an <termref def="dt-updating-function">updating function</termref>
+                       is <code>item()*</code>.</p>
+                  </item>
+                 </ulist>
+                <p>The semantics of <termref def="dt-sequential-function">sequential functions</termref> are as follows:</p>
+                <ulist>
+                  <item>
+                    <p>The result of a <termref def="dt-sequential-function">sequential function</termref> is determined
+                      by the first <specref ref="id-exit"/> encountered during evaluation of the Block. 
+                      If no exit expression is encountered, the result of the function is the value returned by the Block
+                      that comprises its body.</p>
+                  </item>
+                  <item>
+                    <p>If the result of a <termref def="dt-sequential-function">sequential function</termref>
+                       does not match its declared result type (after applying function conversion rules
+                       as specified in <xspecref spec="XQ" ref="id-function-calls">
+                       <?xm-replace_text {xspecref}?></xspecref>), a type error is raised <xerrorref spec="XQ" code="0004" class="TY"/>. 
+                       The default result type of a <termref def="dt-sequential-function">sequential function</termref>
+                       is <code>item()*</code>.</p>
+                  </item>
+                  <item>
+                    <p>If a <termref def="dt-sequential-function">sequential function</termref>
+                       is declared <code>external</code>, its implementation is outside the XQuery environment. 
+                       The means by which parameters are passed to an external function and
+                       its result is returned to the calling expression are implementation-defined. 
+                       An external sequential function may not return a non-empty
+                       <termref def="dt-pul">pending update list</termref> <errorref code="0004" class="DY"/>.</p>
+                  </item>
+                </ulist>
+              </def>
+            </gitem>
+          </glist>
+        </div2>
+
+        <div2 id="id-query-mode-option">
+          <head>Query Mode Option</head>
+          <scrap><head/>
+            <prodrecap id="OptionDecl" ref="OptionDecl"/>
+          </scrap>
+          <p>
+            <termref def="dt-xqsx">XQSX</termref> defines the QName <code>xqsx:query-mode</code> as a well-known option name
+            for use in an OptionDecl, which sets the <termref def="dt-query-mode">query mode</termref> in the static context for the
+            module to the value specified. A static error is raised <errorref code="0009" class="ST"/> if the value for a
+            <code>xqsx:query-mode</code> option is not either <code>sequential</code> or <code>simple</code>.
+          </p>
+          <p>
+            Implementations of <termref def="dt-xqsx">XQSX</termref> must recognize the option namespace URI
+            <code>http://www.w3.org/2008/xquery-sx-10</code>, and the option <code>xqsx:query-mode</code>.
+          </p>
+        </div2>
+
+      </div1>
+      <div1 id="id-new-exprs">
+        <head>New Kinds of Expressions</head>
+        <p><termref def="dt-xqsx">XQSX</termref> extends the XQuery 1.0 syntax
+           by adding several new kinds of expressions. 
+           The effect of these new expressions on the XQuery grammar is as follows:</p>
+         <scrap><head/>
+           <prodrecap ref="Expr"/>
+           <prodrecap ref="ApplyExpr"/>
+           <prodrecap ref="ConcatExpr"/>
+           <prodrecap ref="ExprSingle"/>
+         </scrap>
+
+        <div2 id="id-apply">
+          <head>Apply Expression</head>
+          <scrap><head/>
+            <prodrecap id="ApplyExpr" ref="ApplyExpr"/>
+          </scrap>
+          <glist>
+            <gitem>
+              <label>Category Rules:</label>
+              <def>
+                <p><termdef  term="apply expression" id="dt-apply-expr">An <term>apply expression</term> is a list
+                of semicolon-terminated ConcatExpr productions, called operand expressions.
+                An ApplyExpr consisting of a single ConcatExpr with no semicolon is not an apply expression.</termdef>
+                An apply expression is a <termref def="dt-sequential-expr">sequential expression</termref>.</p>
+                <p>The operands of the apply expression may be an expression of any category.</p>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Semantics:</label>
+              <def>
+                <p>
+                  The operand expressions of an <termref def="dt-apply-expr">apply expression</termref> are evaluated in the order they appear.
+
+                   After the evaluation of each operand expression, the
+                   <termref def="dt-pul">pending update list</termref> returned by
+                   the expression is applied (by <code>upd:applyUpdates</code>).
+                   The <termref def="dt-xdm-instance">XDM instance</termref>
+                   returned by all expressions other than the last one is discarded.
+                   The side effects of each expression are visible during the evaluation of subsequent expressions.
+                </p>
+                <p>The result of the apply expression is
+                   the <termref def="dt-xdm-instance">XDM instance</termref> returned by the last operand expression,
+                   and an empty <termref def="dt-pul">pending update list</termref>.</p>
+              </def>
+            </gitem>
+          </glist>
+        </div2>
+        <div2 id="id-block">
+          <head>Block Expressions</head>
+          <scrap><head/>
+            <prodrecap id="BlockExpr" ref="BlockExpr"/>
+            <prodrecap id="Block" ref="Block"/>
+            <prodrecap id="BlockDecls" ref="BlockDecls"/>
+            <prodrecap id="BlockVarDecl" ref="BlockVarDecl"/>
+            <prodrecap id="BlockBody" ref="BlockBody"/>
+          </scrap>
+          <glist>
+            <gitem>
+              <label>Category Rules:</label>
+              <def>
+                <p>
+                  <termdef term="initializing expression" id="dt-initializing-expr">The expression on
+                  the right-hand side of a block variable declaration is called an
+                  <term>initializing expression</term>.</termdef>
+                  <termref def="dt-initializing-expr">Initializing expressions</termref> may be in any
+                  category.
+                </p>
+                <note>
+                  <p>Block variable declarations, unlike Prolog variable declarations,
+                     permit their <termref def="dt-initializing-expr">initializing expressions</termref>
+                     to be <termref def="dt-updating-expr">updating</termref> or
+                <termref def="dt-sequential-expr">sequential expressions</termref>.</p>
+                </note>
+                <p>If a BlockExpr contains <termref def="dt-initializing-expr">initializing expressions</termref>
+                that are either <termref def="dt-updating-expr">updating</termref> or
+                <termref def="dt-sequential-expr">sequential expression</termref>, then the BlockExpr is a
+                <termref def="dt-sequential-expr">sequential expression</termref>. In this case the BlockBody must be
+                either a <termref def="dt-simple-expr">simple</termref> or <termref def="dt-sequential-expr">sequential expression</termref>,
+                otherwise a static error <errorref code="0002" class="ST"/> is raised.
+                </p>
+
+                <p>If a BlockExpr only contains <termref def="dt-initializing-expr">initializing expressions</termref>
+                that are <termref def="dt-simple-expr">simple expressions</termref> (or contains no initializing expressions),
+                then the BlockBody may be an expression of any category. In this case the BlockExpr has the same category as the BlockBody.</p>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Semantics:</label>
+              <def>
+                <p>A block consists of zero or more block variable declarations followed by a body. 
+                   Each block variable declaration defines a modifiable local variable whose scope
+                   is the remainder of the block (not including its <termref def="dt-initializing-expr">initializing expression</termref>). 
+                   The variable defined in a block variable declaration occludes (hides)
+                   any variable of the same name that is in scope at the location where the block appears.</p>
+                <p>It is a static error <errorref code="0005" class="ST"/> if two or more variables declared in the same block
+                   have the same expanded QName.</p>
+                <p>The type of each declared variable is added to <emph>in-scope variables</emph>
+                   in the <emph>static context</emph>. 
+                   If no explicit type is declared, the type of the variable is <code>item()*</code>.
+
+                   If a variable has both an explicit type declaration and an
+                   <termref def="dt-initializing-expr">initializing expression</termref>,
+                   the value of the <termref def="dt-initializing-expr">initializing expression</termref> must match
+                   the declared type according to SequenceType matching rules; otherwise a type error is raised <xerrorref spec="XQ" code="0004" class="TY"/>.</p>
+                <p>The block variable declarations are evaluated in the order written.
+                   The block variable declaration evaluates its <termref def="dt-initializing-expr">initializing expression</termref>
+                   and adds the resulting <termref def="dt-xdm-instance">XDM instance</termref> to the <emph>variable values</emph> in
+                   the <emph>dynamic context</emph>.
+                   Any <termref def="dt-pul">pending update list</termref> returned is applied using <code>upd:applyUpdates</code>.
+                   If no <termref def="dt-initializing-expr">initializing expression</termref> is present, the variable has no initial value. 
+                   A reference to a variable, other than on the left-hand side of an assignment expression,
+                   is an error if the variable has no value in <emph>variable values</emph>
+                   when the reference is evaluated <errorref code="0006" class="TY"/>.</p>
+                <p>After all the block variable declarations have been evaluated, the BlockBody expression is evaluated. 
+                The result of the block expression is
+                the <termref def="dt-xdm-instance">XDM instance</termref> and <termref def="dt-pul">pending update list</termref>
+                returned by the BlockBody.</p>
+              </def>
+            </gitem>
+          </glist>
+        </div2>
+        <div2 id="id-assignment">
+          <head>Assignment Expression</head>
+          <scrap><head/>
+            <prodrecap id="AssignmentExpr" ref="AssignmentExpr"/>
+          </scrap>
+          <glist>
+            <gitem>
+              <label>Category Rules:</label>
+              <def>
+                <p>An assignment expression is a <termref def="dt-sequential-expr">sequential expression</termref>.</p>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Semantics:</label>
+              <def>
+                <p>The variable on the left-hand side of the assignment must have been declared in one of the following ways, otherwise a
+                static error <errorref code="0007" class="ST"/> is raised:
+                  <ulist>
+                    <item><p>By a block variable declaration</p></item>
+                    <item><p>As a parameter to a sequential function</p></item>
+                    <item><p>By a variable declaration in the Prolog declared as <termref def="dt-assignable">assignable</termref></p></item>
+                  </ulist>
+                  In all cases the variable must be in the in-scope variables, otherwise a static error is raised <xerrorref spec="XQ" code="0008" class="ST"/>.</p>
+                <note>
+                  <p>Variables bound in FLWOR, typeswitch, or quantified expressions may not appear
+                     on the left-hand side of an assignment.</p>
+                </note>
+                <p>
+                  The expression on the right-hand side is evaluated, resulting in an
+                  <termref def="dt-xdm-instance">XDM instance</termref>
+                  and a <termref def="dt-pul">pending update list</termref>.
+                </p>
+                <p>If the <termref def="dt-xdm-instance">XDM instance</termref>
+                   returned by the expression on the right-hand side does not match the declared type
+                   of the variable according to SequenceType matching rules,
+                   a type error is raised <xerrorref spec="XQ" code="0004" class="TY"/>. 
+                   If the types match, the <termref def="dt-xdm-instance">XDM instance</termref>
+                   returned by the expression is bound to the variable (added to <emph>variable values</emph>
+                   in the <emph>dynamic context</emph>.)</p>
+                <p>
+                   The <termref def="dt-pul">pending update list</termref> returned by
+                   the expression on the right-hand side is applied using <code>upd:applyUpdates</code>.
+                </p>
+                <p>The result of an Assignment Expression is an empty
+                   <termref def="dt-xdm-instance">XDM instance</termref> and an empty
+                   <termref def="dt-pul">pending update list</termref>.</p>
+              </def>
+            </gitem>
+          </glist>
+        </div2>
+        <div2 id="id-while">
+          <head>While Expression</head>
+          <scrap><head/>
+            <prodrecap id="WhileExpr" ref="WhileExpr"/>
+            <prodrecap id="WhileBody" ref="WhileBody"/>
+          </scrap>
+          <glist>
+            <gitem>
+              <label>Category Rules:</label>
+              <def>
+                <p>
+                  <termdef term="test expression" id="dt-test-expr">The expression enclosed in the
+                  parentheses of a while expression is called a <term>test expression</term>.</termdef>
+                  The <termref def="dt-test-expr">test expression</termref> may be in any
+                  category.
+                </p>
+                <p>
+                  A static error <errorref code="0002" class="ST"/> is raised if the WhileBody is an
+                  <termref def="dt-updating-expr">updating expression</termref>.
+                </p>
+                <p>A while expression is a <termref def="dt-sequential-expr">sequential expression</termref>.</p>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Semantics:</label>
+              <def>
+                <p>The while expression is used for conditional iteration.  It is evaluated as follows:</p>
+                <p>
+                  The <termref def="dt-test-expr">test expression</termref> is evaluated, resulting in an
+                  <termref def="dt-xdm-instance">XDM instance</termref>
+                  and a <termref def="dt-pul">pending update list</termref>.
+                  The <termref def="dt-pul">pending update list</termref> returned by
+                  the <termref def="dt-test-expr">test expression</termref> is applied using <code>upd:applyUpdates</code>.
+                </p>
+                <p>
+                  If the effective Boolean value of the <termref def="dt-test-expr">test expression</termref>
+                  is false, the block is not evaluated. If the effective Boolean value of the
+                  <termref def="dt-test-expr">test expression</termref> is true, the block is evaluated repeatedly. 
+                  Each evaluation of the block may cause side effects that affect the result of re-evaluating the
+                  <termref def="dt-test-expr">test expression</termref>. 
+                  The <termref def="dt-test-expr">test expression</termref> is re-evaluated after each evaluation of the block. 
+                  This process continues until the effective Boolean value of the <termref def="dt-test-expr">test expression</termref>
+                  is evaluated to be false.
+                </p>
+                <p>The result of a while expression is an empty <termref def="dt-xdm-instance">XDM instance</termref>
+                   and an empty <termref def="dt-pul">pending update list</termref>.</p>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Example:</label>
+              <def>
+                <p>In the following query, a while expression is used to compute a sequence
+                containing all the Fibonacci numbers that are less than 100.</p>
+                <eg>block {
+  declare $a as xs:integer := 0;
+  declare $b as xs:integer := 1;  
+  declare $c as xs:integer := $a + $b;
+  declare $fibseq as xs:integer* := ($a, $b);
+ 
+  while ($c &lt; 100) { 
+     $fibseq := ($fibseq, $c);
+     $a := $b;
+     $b := $c;
+     $c := $a + $b;
+  };
+
+  $fibseq;
+}
+</eg>
+              </def>
+            </gitem>
+          </glist>
+        </div2>
+        <div2 id="id-exit">
+          <head>Exit Expression</head>
+          <scrap><head/>
+            <prodrecap id="ExitExpr" ref="ExitExpr"/>
+          </scrap>
+
+          <glist>
+            <gitem>
+              <label>Category Rules:</label>
+              <def>
+                <p>The operand of an exit expression may be an expression of any category.</p>
+                <p>An exit expression is a <termref def="dt-sequential-expr">sequential expression</termref>.</p>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Semantics:</label>
+              <def>
+                <p>An exit expression serves to define the result of the enclosing function or query body.</p>
+                <p>
+                  The operand expression of the exit expression is evaluated, resulting in an
+                  <termref def="dt-xdm-instance">XDM instance</termref>
+                  and a <termref def="dt-pul">pending update list</termref>.
+                  The <termref def="dt-pul">pending update list</termref> returned by
+                  the operand expression is applied using <code>upd:applyUpdates</code>.
+                </p>
+                <p>If an exit expression is evaluated within the body of a function,
+                   further evaluation of the function body is interrupted and the
+                   <termref def="dt-xdm-instance">XDM instance</termref> returned by
+                   the operand expression is returned as the result of the function call.</p>
+                <p>If an exit expression is evaluated within a query body
+                   (i.e., not within the body of a function), further evaluation of the query
+                   is interrupted and the <termref def="dt-xdm-instance">XDM instance</termref>
+                   returned by the operand expression is returned as the result of the query.</p>
+                <note>
+                  <p>An exit expression in a block terminates evaluation of the
+                     enclosing function body or query, not just the immediately enclosing block.</p>
+                </note>
+              </def>
+            </gitem>
+          </glist>
+        </div2>
+        <div2 id="id-query-mode-pragma">
+          <head>Query Mode Pragma</head>
+          <scrap><head/>
+            <prodrecap id="ExtensionExpr" ref="ExtensionExpr"/>
+            <prodrecap id="Pragma" ref="Pragma"/>
+            <prodrecap id="PragmaContents" ref="PragmaContents"/>
+          </scrap>
+
+          <p>
+            <termref def="dt-xqsx">XQSX</termref> defines the QName <code>xqsx:query-mode</code> as a well-known pragma name
+            for use in an ExtensionExpr, which sets the <termref def="dt-query-mode">query mode</termref> in the static context for the
+            enclosed expression to the value specified. A static error is raised <errorref code="0009" class="ST"/> if the value for a
+            <code>xqsx:query-mode</code> pragma is not either <code>sequential</code> or <code>simple</code>.
+          </p>
+          <p>
+            Implementations of <termref def="dt-xqsx">XQSX</termref> must recognize the pragma namespace URI
+            <code>http://www.w3.org/2008/xquery-sx-10</code>, and the pragma name <code>xqsx:query-mode</code>.
+          </p>
+        </div2>
+      </div1>
+      <div1 id="id-existing-exprs">
+        <head>Changes to Existing Expressions</head>
+        <p> 
+          <termref def="dt-xqsx">XQSX</termref> imposes new category rules, evaluation order and additional semantics
+          on top of existing <bibref ref="XQ10"/> and <bibref ref="XQueryUpdate"/> expressions, detailed in this section.
+        </p>
+        <div2 id="id-parenthesized-expr">
+          <head>Parentheses</head>
+          <scrap><head/>
+            <prodrecap id="ParenthesizedExpr" ref="ParenthesizedExpr"/>
+          </scrap>
+          <glist>
+            <gitem>
+              <label>Category Rules:</label>
+              <def>
+                <p>An expression of any category may be enclosed in parentheses;
+                   the resulting expression has the same category as the original expression.
+                   An empty parenthesized expression <code>( )</code> is a
+                   <termref def="dt-simple-expr">simple expression</termref>.
+                 </p>
+              </def>
+            </gitem>
+          </glist>
+        </div2>
+        <div2 id="id-function-call">
+          <head>Function Calls</head>
+          <scrap><head/>
+            <prodrecap id="FunctionCall" ref="FunctionCall"/>
+          </scrap>
+          <glist>
+            <gitem>
+              <label>Category Rules:</label>
+              <def>
+                <p>
+                  If the function called is a <termref def="dt-simple-function">simple function</termref>, 
+                  the argument expressions can either be all <termref def="dt-simple-expr">simple</termref> and
+                  <termref def="dt-updating-expr">updating expressions</termref>, or all <termref def="dt-simple-expr">simple</termref> and
+                  <termref def="dt-sequential-expr">sequential expressions</termref>.
+
+                  If the argument expressions contain
+                  an <termref def="dt-updating-expr">updating expression</termref> then the function call is an
+                  <termref def="dt-updating-expr">updating expression</termref>,
+                  if they contain
+                  a <termref def="dt-sequential-expr">sequential expression</termref> then the function call is a
+                  <termref def="dt-sequential-expr">sequential expression</termref>,
+                  otherwise it is a 
+                  <termref def="dt-simple-expr">simple expression</termref>.
+                </p>
+                <p>
+                  If the function called is an <termref def="dt-updating-function">updating function</termref>, 
+                  the argument expressions must be <termref def="dt-simple-expr">simple expressions</termref> or
+                  <termref def="dt-updating-expr">updating expressions</termref>. The function call is an
+                  <termref def="dt-updating-expr">updating expression</termref>.
+                </p>
+                <p>
+                  If the function called is a <termref def="dt-sequential-function">sequential function</termref>, 
+                  the argument expressions must be <termref def="dt-simple-expr">simple expressions</termref> or
+                  <termref def="dt-sequential-expr">sequential expressions</termref>. The function
+                  call expression is a <termref def="dt-updating-expr">sequential expression</termref>.
+                </p>
+                <p>
+                  If the arguments of a function call violate the category rules for the function's category,
+                  <errorref code="0002" class="ST"/> is raised.
+                </p>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Evaluation Order:</label>
+              <def>
+                <p>
+                Argument expressions are evaluated from left to right, then the function is invoked.
+                </p>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Additional Semantics:</label>
+              <def>
+                <p>
+                  The <termref def="dt-pul">pending update lists</termref> returned by the argument expressions
+                  are merged with the <termref def="dt-pul">pending update list</termref> returned by the function
+                  itself by calling <code>upd:mergeUpdates</code>.
+                </p>
+              </def>
+            </gitem>
+          </glist>
+        </div2>
+        <div2 id="id-path-expr">
+          <head>Path Expressions</head>
+          <scrap><head/>
+            <prodrecap id="PathExpr" ref="PathExpr"/>
+            <prodrecap id="RelativePathExpr" ref="RelativePathExpr"/>
+          </scrap>
+          <glist>
+            <gitem>
+              <label>Category Rules:</label>
+              <def>
+                <p>The category of a path expression is determined by the following rules:</p>
+                <ulist>
+                  <item>
+                    <p>
+                      If <termref def="dt-query-mode">query mode</termref> is <code>simple</code>, <errorref code="0001" class="ST"/>
+                      is raised if any StepExpr in the RelativePathExpr is an <termref def="dt-updating-expr">updating</termref> or
+                      <termref def="dt-sequential-expr">sequential expression</termref>.
+                    </p>
+                  </item>
+                  <item>
+                    <p>If any StepExpr in the RelativePathExpr is an <termref def="dt-updating-expr">updating expression</termref>,
+                       then all StepExpr must be <termref def="dt-updating-expr">updating</termref> or
+                       <termref def="dt-simple-expr">simple expressions</termref>, otherwise a static error is raised <errorref code="0002" class="ST"/>.
+                       In this case, the path expression is an <termref def="dt-updating-expr">updating expression</termref>.</p>
+                  </item>
+                  <item>
+                    <p>If any StepExpr in the RelativePathExpr is a <termref def="dt-sequential-expr">sequential expression</termref>,
+                       then all StepExpr must be <termref def="dt-sequential-expr">sequential</termref> or
+                       <termref def="dt-simple-expr">simple expressions</termref>, otherwise a static error is raised <errorref code="0002" class="ST"/>. 
+                       In this case, the path expression is a <termref def="dt-sequential-expr">sequential expression</termref>.</p>
+                  </item>
+                  <item>
+                    <p>Otherwise, the path expression is a <termref def="dt-simple-expr">simple expression</termref>.</p>
+                  </item>
+                </ulist>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Evaluation Order:</label>
+              <def>
+                <p>
+                  StepExpr are evaluated in order from left to right.
+                </p>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Additional Semantics:</label>
+              <def>
+                <p>
+                  The <termref def="dt-pul">pending update lists</termref> returned by each of the StepExpr
+                  are merged by calling <code>upd:mergeUpdates</code>, and returned as part of the result of the path expression.
+                </p>
+              </def>
+            </gitem>
+          </glist>
+        </div2>
+        <div2 id="id-predicate">
+          <head>Predicates</head>
+          <scrap><head/>
+            <prodrecap id="AxisStep" ref="AxisStep"/>
+            <prodrecap id="FilterExpr" ref="FilterExpr"/>
+            <prodrecap id="PredicateList" ref="PredicateList"/>
+            <prodrecap id="Predicate" ref="Predicate"/>
+          </scrap>
+          <glist>
+            <gitem>
+              <label>Category Rules:</label>
+              <def>
+                <p>The category of a FilterExpr or AxisStep is determined by the following rules:</p>
+                <ulist>
+                  <item>
+                    <p>
+                      If <termref def="dt-query-mode">query mode</termref> is <code>simple</code>, <errorref code="0001" class="ST"/>
+                      is raised if the primary expression or a predicate expression of any FilterExpr or AxisStep is an
+                      <termref def="dt-updating-expr">updating</termref> or
+                      <termref def="dt-sequential-expr">sequential expression</termref>.
+                    </p>
+                  </item>
+                  <item>
+                    <p>If either the primary expression or any predicate expression of a FilterExpr or AxisStep
+                       is an <termref def="dt-updating-expr">updating expression</termref>,
+                       then all such expressions must be <termref def="dt-updating-expr">updating</termref> or
+                       <termref def="dt-simple-expr">simple expressions</termref>, otherwise a static error is raised <errorref code="0002" class="ST"/>.
+                       In this case, the FilterExpr or AxisStep is an <termref def="dt-updating-expr">updating expression</termref>.</p>
+                  </item>
+                  <item>
+                    <p>If either the primary expression or any predicate expression of a FilterExpr or AxisStep
+                       is a <termref def="dt-sequential-expr">sequential expression</termref>,
+                       then all such expressions must be <termref def="dt-sequential-expr">sequential</termref> or
+                       <termref def="dt-simple-expr">simple expressions</termref>, otherwise a static error is raised <errorref code="0002" class="ST"/>. 
+                       In this case, the FilterExpr or AxisStep is a <termref def="dt-sequential-expr">sequential expression</termref>.</p>
+                  </item>
+                  <item>
+                    <p>Otherwise, the FilterExpr or AxisStep is a <termref def="dt-simple-expr">simple expression</termref>.</p>
+                  </item>
+                </ulist>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Evaluation Order:</label>
+              <def>
+                <p>
+                  First the reverse step, forward step or primary expression is evaluated, then predicates are evaluated from left to right.
+                  Each predicate expression must be evaluated to completion before the next is evaluated.
+                </p>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Additional Semantics:</label>
+              <def>
+                <p>
+                  The <termref def="dt-pul">pending update list</termref> returned by the primary expression
+                  is merged with the <termref def="dt-pul">pending update lists</termref> returned by the predicate expressions
+                  by calling <code>upd:mergeUpdates</code>. The resulting pending update list is returned as part of the result
+                  of the FilterExpr or AxisStep.
+                </p>
+              </def>
+            </gitem>
+          </glist>
+        </div2>
+        <div2 id="id-concat-expr">
+          <head>Concatenation Expressions</head>
+          <scrap><head/>
+            <prodrecap id="ConcatExpr" ref="ConcatExpr"/>
+          </scrap>
+          <glist>
+            <gitem>
+              <label>Category Rules:</label>
+              <def>
+                <p>The category of a concatenation expression is determined by the following rules:</p>
+                <ulist>
+                  <item>
+                    <p>If any operand is an <termref def="dt-updating-expr">updating expression</termref>,
+                       then all operands must be <termref def="dt-updating-expr">updating</termref> or
+                       <termref def="dt-simple-expr">simple expressions</termref>, otherwise a static error is raised <errorref code="0002" class="ST"/>.
+                       In this case, the concatenation expression is an <termref def="dt-updating-expr">updating expression</termref>.</p>
+                  </item>
+                  <item>
+                    <p>If any operand is a <termref def="dt-sequential-expr">sequential expression</termref>,
+                       then all operands must be <termref def="dt-sequential-expr">sequential</termref> or
+                       <termref def="dt-simple-expr">simple expressions</termref>, otherwise a static error is raised <errorref code="0002" class="ST"/>. 
+                       In this case, the concatenation expression is a <termref def="dt-sequential-expr">sequential expression</termref>.</p>
+                  </item>
+                  <item>
+                    <p>Otherwise, the concatenation expression is a <termref def="dt-simple-expr">simple expression</termref>.</p>
+                  </item>
+                </ulist>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Evaluation Order:</label>
+              <def>
+                <p>
+                  Operand expressions are evaluated once, from left to right. Side effects of each sequential operand expression are visible to subsequent operand expressions.
+                </p>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Additional Semantics:</label>
+              <def>
+                <p>
+                  The concatenation expression evaluates each of its operands and concatenates the resulting 
+                  <termref def="dt-xdm-instance">XDM instances</termref> and
+                  <termref def="dt-pul">pending update lists</termref>, in order.
+                  <termref def="dt-pul">Pending update lists</termref> are concatenated by the
+                  <code>upd:mergeUpdates</code> operation.
+                </p>
+              </def>
+            </gitem>
+          </glist>
+        </div2>
+        <div2 id="id-node-constructors">
+          <head>Direct and Computed Node Constructors</head>
+          <scrap> 
+            <head></head>
+            <prodrecap id="DirElemConstructor" ref="DirElemConstructor"/> 
+            <prodrecap id="DirAttributeList" ref="DirAttributeList"/> 
+            <prodrecap id="CDataSection" ref="CDataSection"/>
+            <prodrecap id="DirPIConstructor" ref="DirPIConstructor"/>
+            <prodrecap id="DirCommentConstructor" ref="DirCommentConstructor"/>
+            <prodrecap id="CompElemConstructor" ref="CompElemConstructor"/>    
+            <prodrecap id="CompAttrConstructor" ref="CompAttrConstructor"/>
+            <prodrecap id="CompDocConstructor" ref="CompDocConstructor"/>
+            <prodrecap id="CompTextConstructor" ref="CompTextConstructor"/>
+            <prodrecap id="CompPIConstructor" ref="CompPIConstructor"/>
+            <prodrecap id="CompCommentConstructor" ref="CompCommentConstructor"/>
+          </scrap>
+          <glist>
+            <gitem>
+              <label>Category Rules:</label>
+              <def>
+                <p>The category of a node constructor is determined by the following rules:</p>
+                <ulist>
+                  <item>
+                    <p>If any operand is an <termref def="dt-updating-expr">updating expression</termref>,
+                       then all operands must be <termref def="dt-updating-expr">updating</termref> or
+                       <termref def="dt-simple-expr">simple expressions</termref>, otherwise a static error is raised <errorref code="0002" class="ST"/>.
+                       In this case, the node constructor is an <termref def="dt-updating-expr">updating expression</termref>.</p>
+                  </item>
+                  <item>
+                    <p>If any operand is a <termref def="dt-sequential-expr">sequential expression</termref>,
+                       then all operands must be <termref def="dt-sequential-expr">sequential</termref> or
+                       <termref def="dt-simple-expr">simple expressions</termref>, otherwise a static error is raised <errorref code="0002" class="ST"/>. 
+                       In this case, the node constructor is a <termref def="dt-sequential-expr">sequential expression</termref>.</p>
+                  </item>
+                  <item>
+                    <p>Otherwise, the node constructor is a <termref def="dt-simple-expr">simple expression</termref>.</p>
+                  </item>
+                </ulist>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Evaluation Order:</label>
+              <def>
+                <olist>
+                  <item><p>The name expression is evaluated (computed element/attribute/processing-instruction constructors only).</p></item>
+                  <item><p>The direct attribute constructors are evaluated from left to right (direct element constructors only).</p></item>
+                  <item><p>The child or value expressions are evaluated from left to right.</p></item>
+                </olist>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Additional Semantics:</label>
+              <def>
+                <p>
+                  The <termref def="dt-pul">pending update lists</termref> from each operand expression are concatenated by the
+                  <code>upd:mergeUpdates</code> operation, producing the resulting pending update list.
+                </p>
+              </def>
+            </gitem>
+          </glist>
+        </div2>
+        <div2 id="id-FLWOR-expr">
+          <head>FLWOR Expressions</head>
+          <scrap><head/>
+            <prodrecap id="FLWORExpr" ref="FLWORExpr"/>
+            <prodrecap id="ForClause" ref="ForClause"/>
+            <prodrecap id="PositionalVar" ref="PositionalVar"/>
+            <prodrecap id="LetClause" ref="LetClause"/>
+            <prodrecap id="WhereClause" ref="WhereClause"/>
+            <prodrecap id="OrderByClause" ref="OrderByClause"/>
+            <prodrecap id="OrderSpecList" ref="OrderSpecList"/>
+            <prodrecap id="OrderSpec" ref="OrderSpec"/>
+            <prodrecap id="OrderModifier" ref="OrderModifier"/>
+          </scrap>
+          <glist>
+            <gitem>
+              <label>Category Rules:</label>
+              <def>
+                <p>
+                  The <code>for</code>, <code>let</code>, <code>where</code>, and <code>order by</code>
+                  clauses
+
+                  can either be all
+                  <termref def="dt-simple-expr">simple</termref> and
+                  <termref def="dt-updating-expr">updating expressions</termref>, or all
+                  <termref def="dt-simple-expr">simple</termref> and
+                  <termref def="dt-sequential-expr">sequential expressions</termref>.
+
+                </p>
+                <ulist>
+                  <item>
+                    <p>
+                      If <termref def="dt-query-mode">query mode</termref> is <code>simple</code>, <errorref code="0001" class="ST"/>
+                      is raised if any <code>for</code>, <code>let</code>, <code>where</code>, or <code>order by</code> clause is an
+                      <termref def="dt-updating-expr">updating</termref> or
+                      <termref def="dt-sequential-expr">sequential expression</termref>.
+                    </p>
+                  </item>
+                  <item>
+                    <p>
+                      If the above clauses contain an <termref def="dt-updating-expr">updating expression</termref>,
+                      then all clauses must either be a <termref def="dt-simple-expr">simple expression</termref>
+                      or an <termref def="dt-updating-expr">updating expression</termref>, otherwise a static error
+                      is raised <errorref code="0002" class="ST"/>. The FLWOR expression itself is an
+                      <termref def="dt-updating-expr">updating expression</termref>.
+                    </p>
+                  </item>
+                  <item>
+                    <p>
+                      If the above clauses contain a <termref def="dt-sequential-expr">sequential expression</termref>,
+                      then all clauses must either be a <termref def="dt-simple-expr">simple expression</termref>
+                      or an <termref def="dt-sequential-expr">sequential expression</termref>, otherwise a static error
+                      is raised <errorref code="0002" class="ST"/>. The FLWOR expression itself is an
+                      <termref def="dt-sequential-expr">sequential expression</termref>.
+                    </p>
+                  </item>
+                  <item>
+                    <p>
+                      If the above clauses do not contain an <termref def="dt-updating-expr">updating expression</termref>
+                      or a <termref def="dt-sequential-expr">sequential expression</termref>,
+                      then the <code>return</code> clause may be an expression of any category. The category of the FLWOR expression
+                      is the same as the category of the expression in its <code>return</code> clause.
+                    </p>
+                  </item>
+                </ulist>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Evaluation Order:</label>
+              <def>
+                <ulist>
+                  <item><p>
+                    <emph>For Clause:</emph> The associated expression is evaluated first to produce the binding sequnce, then
+                    the next clause is evaluated once for each item in the binding sequence. Any side effects in the associated
+                    expression are visible to the evaluation of the next clause.
+                  </p></item>
+                  <item><p>
+                    <emph>Let Clause:</emph> The associated expression is evaluated first to produce the binding sequnce, then
+                    the next clause is evaluated. Any side effects in the associated
+                    expression are visible to the evaluation of the next clause.
+                  </p></item>
+                  <item><p>
+                    <emph>Where Clause:</emph> The where expression is evaluated once, then
+                    the next clause is evaluated. Any side effects in the where
+                    expression are visible to the evaluation of the next clause.
+                  </p></item>
+                  <item><p>
+                    <emph>Order By Clause:</emph> The orderspecs are evaluated from left to right on each tuple in the tuple stream.
+                    The tuple stream is reordered, then the next clause is evaluated.
+                  </p></item>
+                  <item><p>
+                    <emph>Return Clause:</emph> The return expresion is evaluated once.
+                  </p></item>
+                </ulist>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Additional Semantics:</label>
+              <def>
+                <p>The result of a FLWOR expression is the concatenation of the
+                   <termref def="dt-xdm-instance">XDM instances</termref> or
+                   <termref def="dt-pul">pending update lists</termref> returned by
+                   successive evaluations of the <code>return</code> clause in evaluation order, as well as
+                   the <termref def="dt-pul">pending update lists</termref> returned by any of the other
+                   FLWOR clauses.
+                   <termref def="dt-pul">Pending update lists</termref> are concatenated by the
+                   <code>upd:mergeUpdates</code> operation.</p>
+              </def>
+            </gitem>
+          </glist>
+        </div2>
+        <div2 id="id-conditional-expr">
+          <head>Conditional Expressions</head>
+          <scrap><head/>
+            <prodrecap id="IfExpr" ref="IfExpr"/>
+          </scrap>
+          <glist>
+            <gitem>
+              <label>Category Rules:</label>
+              <def>
+                <p>The test, then and else expressions can be of any type. An error <errorref code="0002" class="ST"/> is raised if
+                one of the expressions is <termref def="dt-updating-expr">updating</termref> and another is <termref def="dt-sequential-expr">sequential</termref>.
+                </p>
+                <ulist>
+                  <item><p>If the test, then or else expression is an <termref def="dt-updating-expr">updating expression</termref>,
+                  the conditional expression is an <termref def="dt-updating-expr">updating expression</termref>.</p></item>
+                  <item><p>If the test, then or else expression is a <termref def="dt-sequential-expr">sequential expression</termref>,
+                  the conditional expression is a <termref def="dt-sequential-expr">sequential expression</termref>.</p></item>
+                  <item><p>Otherise, the conditional expression is a <termref def="dt-simple-expr">simple expression</termref>.</p></item>
+                </ulist>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Evaluation Order:</label>
+              <def>
+                <p>
+                  The test expression is evaluated first. Next either the then expression or the else expression (but not both) is evaluated.
+                </p>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Additional Semantics:</label>
+              <def>
+                <p>
+                  The <termref def="dt-pul">pending update list</termref> returned by the conditional
+                  expression is calculated by merging the <termref def="dt-pul">pending update lists</termref>
+                  from the test expression and the executed branch of the conditional expression using <code>upd:mergeUpdates</code>.
+                </p>
+              </def>
+            </gitem>
+          </glist>
+        </div2>
+        <div2 id="id-quantified-expr">
+          <head>Quantified Expressions</head>
+          <scrap><head/>
+            <prodrecap id="QuantifiedExpr" ref="QuantifiedExpr"/>
+          </scrap>
+          <glist>
+            <gitem>
+              <label>Category Rules:</label>
+              <def>
+                <p>The category of a quantified expression is determined by the following rules:</p>
+                <ulist>
+                  <item>
+                    <p>
+                      If <termref def="dt-query-mode">query mode</termref> is <code>simple</code>, <errorref code="0001" class="ST"/>
+                      is raised if any quantified expression clause or the satisfies expression is an
+                      <termref def="dt-updating-expr">updating</termref> or
+                      <termref def="dt-sequential-expr">sequential expression</termref>.
+                    </p>
+                  </item>
+                  <item>
+                    <p>If any quantified expression clause or the satisfies expression
+                       is an <termref def="dt-updating-expr">updating expression</termref>,
+                       then all such expressions must be <termref def="dt-updating-expr">updating</termref> or
+                       <termref def="dt-simple-expr">simple expressions</termref>, otherwise a static error is raised <errorref code="0002" class="ST"/>.
+                       In this case, the quantified expression is an <termref def="dt-updating-expr">updating expression</termref>.</p>
+                  </item>
+                  <item>
+                    <p>If any quantified expression clause or the satisfies expression
+                       is a <termref def="dt-sequential-expr">sequential expression</termref>,
+                       then all such expressions must be <termref def="dt-sequential-expr">sequential</termref> or
+                       <termref def="dt-simple-expr">simple expressions</termref>, otherwise a static error is raised <errorref code="0002" class="ST"/>. 
+                       In this case, the quantified expression is a <termref def="dt-sequential-expr">sequential expression</termref>.</p>
+                  </item>
+                  <item>
+                    <p>Otherwise, the quantified expression is a <termref def="dt-simple-expr">simple expression</termref>.</p>
+                  </item>
+                </ulist>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Evaluation Order:</label>
+              <def>
+                <p>
+                  The quantified expression clauses are initially evaluated as specified
+                  by <bibref ref="XQ10"/>, generating a tuple stream. Then the satisfies clause is evaluated once for each tuple in the tuple stream, in order. 
+                  If the satisfies clause contains a sequential expression, the side effects of
+                  each iteration are visible to subsequent evaluations of the return clause.
+                </p>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Additional Semantics:</label>
+              <def>
+                <p>
+                  The <termref def="dt-pul">pending update list</termref> returned by the quantified
+                  expression is calculated by merging the <termref def="dt-pul">pending update lists</termref>
+                  from the quantified expression clauses and the satisfies expression using <code>upd:mergeUpdates</code>.
+                </p>
+              </def>
+            </gitem>
+          </glist>
+        </div2>
+        <div2 id="id-typeswitch-expr">
+          <head>Typeswitch Expressions</head>
+          <scrap><head/>
+            <prodrecap id="TypeswitchExpr" ref="TypeswitchExpr"/>
+          </scrap>
+          <glist>
+            <gitem>
+              <label>Category Rules:</label>
+              <def>
+                <p>The operand, case and default expressions can be of any type. An error <errorref code="0002" class="ST"/> is raised if
+                one of the expressions is <termref def="dt-updating-expr">updating</termref> and another is <termref def="dt-sequential-expr">sequential</termref>.
+                </p>
+                <ulist>
+                  <item><p>If an operand, case or default expression is an <termref def="dt-updating-expr">updating expression</termref>,
+                  the typeswitch expression is an <termref def="dt-updating-expr">updating expression</termref>.</p></item>
+                  <item><p>If an operand, case or default expression is a <termref def="dt-sequential-expr">sequential expression</termref>,
+                  the typeswitch expression is a <termref def="dt-sequential-expr">sequential expression</termref>.</p></item>
+                  <item><p>Otherise, the typeswitch expression is a <termref def="dt-simple-expr">simple expression</termref>.</p></item>
+                </ulist>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Evaluation Order:</label>
+              <def>
+                <p>
+                  The operand expression is evaluated first. Then, exactly one of the return expressions is evaluated.
+                </p>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Additional Semantics:</label>
+              <def>
+                <p>
+                  The <termref def="dt-pul">pending update list</termref> returned by the typeswitch
+                  expression is calculated by merging the <termref def="dt-pul">pending update lists</termref>
+                  from the operand expression and the executed branch of the typeswitch expression using <code>upd:mergeUpdates</code>.
+                </p>
+              </def>
+            </gitem>
+          </glist>
+        </div2>
+        <div2 id="id-update-expr">
+          <head>Insert, Delete, Replace, and Rename Expressions</head>
+          <scrap><head/>
+            <prodrecap id="InsertExpr" ref="InsertExpr"/>
+            <prodrecap id="InsertExprTargetChoice" ref="InsertExprTargetChoice"/>
+            <prodrecap id="DeleteExpr" ref="DeleteExpr"/>
+            <prodrecap id="ReplaceExpr" ref="ReplaceExpr"/>
+            <prodrecap id="RenameExpr" ref="RenameExpr"/>
+            <prodrecap id="SourceExpr" ref="SourceExpr"/>
+            <prodrecap id="TargetExpr" ref="TargetExpr"/>
+            <prodrecap id="NewNameExpr" ref="NewNameExpr"/>
+          </scrap>
+          <glist>
+            <gitem>
+              <label>Category Rules:</label>
+              <def>
+                <p>
+                  Insert, delete, replace, and rename expressions are <termref def="dt-updating-expr">updating expressions</termref>,
+                  and are extended to accept both <termref def="dt-updating-expr">updating</termref> and
+                  <termref def="dt-simple-expr">simple expressions</termref> as their operands. It is a static error
+                  <errorref code="0002" class="ST"/> for the operand of one of these expressions to be a
+                  <termref def="dt-sequential-expr">sequential expression</termref>.
+                </p>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Evaluation Order:</label>
+              <def>
+                <p>
+                  Order of evaluation for insert, delete, replace, and rename expressions is irrelevent since their operands
+                  cannot be sequential expressions.
+                </p>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Additional Semantics:</label>
+              <def>
+                <p>
+                  The <termref def="dt-pul">pending update list</termref> returned by insert, delete, replace, and rename expressions
+                  is calculated by merging the <termref def="dt-pul">pending update lists</termref>
+                  from the operands of the expression and the <termref def="dt-pul">pending update list</termref> produced by the
+                  expression itself using <code>upd:mergeUpdates</code>.
+                </p>
+              </def>
+            </gitem>
+          </glist>
+        </div2>
+        <div2 id="id-transform-expr">
+          <head>Transform Expressions</head>
+          <scrap><head/>
+            <prodrecap id="TransformExpr" ref="TransformExpr"/>
+          </scrap>
+          <glist>
+            <gitem>
+              <label>Category Rules:</label>
+              <def>
+                <p>
+                  The copy, modify and return clauses of a transform expression can be of any type. An error <errorref code="0002" class="ST"/> is raised if
+                  one of the copy or return clauses is <termref def="dt-updating-expr">updating</termref> and either the copy, modify or
+                  return clauses is <termref def="dt-sequential-expr">sequential</termref>.
+                </p>
+                <ulist>
+                  <item><p>If one of the copy or return clauses is an <termref def="dt-updating-expr">updating expression</termref>,
+                  the transform expression is an <termref def="dt-updating-expr">updating expression</termref>.</p></item>
+                  <item><p>If one of the copy, modify or return clauses is a <termref def="dt-sequential-expr">sequential expression</termref>,
+                  the transform expression is a <termref def="dt-sequential-expr">sequential expression</termref>.</p></item>
+                  <item><p>Otherise, the transform expression is a <termref def="dt-simple-expr">simple expression</termref>.</p></item>
+                </ulist>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Evaluation Order:</label>
+              <def>
+                <p>
+                  Copy clauses are evaluated in order, then the modify expression is evaluated. Finally the return clause is evaluated.
+                </p>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Additional Semantics:</label>
+              <def>
+                <p>
+                  The semantics of a transform expression as defined in <xspecref spec="XU" ref="id-transform"/>
+                  are extended as follows:
+                </p>
+                <ulist>
+                  <item><p>If the modify clause returns a non-empty <termref def="dt-xdm-instance">XDM instance</termref> it is discarded.</p></item>
+                  <item>
+                    <p>
+                      The <termref def="dt-pul">pending update list</termref> returned by the transform
+                      expression is calculated by merging the <termref def="dt-pul">pending update lists</termref>
+                      from the copy clause and the return clause using <code>upd:mergeUpdates</code>.
+                    </p>
+                  </item>
+                </ulist>
+              </def>
+            </gitem>
+          </glist>
+        </div2>
+        <div2 id="id-other-expr">
+          <head>Other Expressions</head>
+                <p>
+                  All expressions not listed above are extended as follows.
+                  This includes the following kinds of expressions:
+                </p>
+                <ulist>
+                  <item>
+                    <p>Range expressions</p>
+                  </item>
+                  <item>
+                    <p>Union, intersect, and except expressions</p>
+                  </item>
+                  <item>
+                    <p>Arithmetic, comparison, and logical expressions</p>
+                  </item>
+                  <item>
+                    <p>Ordered and unordered expressions</p>
+                  </item>
+                  <item>
+                    <p>Instance of, cast, castable, and treat expressions</p>
+                  </item>
+                  <item>
+                    <p>Validate expressions</p>
+                  </item>
+                  <item>
+                    <p>Extension expressions (pragmas)</p>
+                  </item>
+                </ulist>
+          <glist>
+            <gitem>
+              <label>Category Rules:</label>
+              <def>
+                <p>
+                  All other expressions are extended to accept any type of expressions as their operands. An error <errorref code="0002" class="ST"/> is raised if
+                  one of the operands is <termref def="dt-updating-expr">updating</termref> and another is <termref def="dt-sequential-expr">sequential</termref>.
+                  If an operand of the expression is
+                  <termref def="dt-updating-expr">updating</termref> then the expression itself is <termref def="dt-updating-expr">updating</termref>,
+                  if an operand is
+                  <termref def="dt-sequential-expr">sequential</termref> then the expression itself is <termref def="dt-sequential-expr">sequential</termref>,
+                  otherwise it is <termref def="dt-simple-expr">simple</termref>.
+                </p>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Evaluation Order:</label>
+              <def>
+                <p>
+                  Operand expressions are evaluated once, from left to right.
+                </p>
+              </def>
+            </gitem>
+            <gitem>
+              <label>Additional Semantics:</label>
+              <def>
+                <p>
+                  The <termref def="dt-pul">pending update list</termref> returned by any other expression
+                  is calculated by merging the <termref def="dt-pul">pending update lists</termref>
+                  from the operands of that expression using <code>upd:mergeUpdates</code>.
+                </p>
+              </def>
+            </gitem>
+          </glist>
+        </div2>
+      </div1>
+    <div1 id="id-example">
+      <head>Example</head>
+      <p>The following function returns <code>true</code> or <code>false</code>
+         according to whether its parameter is a known user name, and logs the event:</p>
+      <eg>declare sequential function validate-and-log($username as xs:string) 
+     as xs:boolean {
+        declare $log as document-node() := fn:doc("log.xml"); 
+        declare $entry as element() :=
+           &lt;access-attempt&gt;
+              &lt;timestamp&gt;{fn:current-dateTime()}&lt;/timestamp&gt;
+              &lt;user-name&gt;{$username}&lt;/user-name&gt;
+              &lt;access-allowed/&gt;
+           &lt;/access-attempt&gt; ;
+        declare $result as xs:boolean;
+        if ($username = doc("users.xml")/current-users/user/name )
+        then (
+           replace value of node $entry/access-allowed with "Yes";
+           $result := true();
+        ) else (
+           replace value of node $entry/access-allowed with "No";
+           $result := false();
+        );
+        insert node $entry as last into $log; 
+        fn:put($log, "log.xml"); 
+        exit returning $result;
+} 
+</eg>
+    </div1>
+  </body>
+
+  <back>
+<div1 id="id-grammar">
+		<head>EBNF for XQuery 1.0 Grammar with Scripting Extensions</head>
+
+<p>The EBNF in this document and in this section is aligned with
+the current XML Query 1.0 grammar (see <bibref ref="XQ10"/>).</p>
+
+		<scrap role="non-terminal-structure-expand"><head></head>
+<prodrecap ref="BNF-Grammar-prods" role="BNF-Grammar-prods" at="../build/temp-xquery-grammar.xml"/>
+</scrap>
+
+<div2 id="id-terminal-symbols"><head>Terminal Symbols</head><scrap headstyle="show">
+		    
+		  <head></head><prodrecap ref="DefinedLexemes" role="DefinedLexemes" at="../build/temp-xquery-grammar.xml"/> 
+		   
+		</scrap>
+<p>The following symbols are used only in the definition of
+  terminal symbols; they are not terminal symbols in the
+  grammar of <specref ref="id-grammar"/>.</p><scrap headstyle="show">
+		    
+		  <head></head><prodrecap ref="LocalTerminalSymbols" at="../build/temp-xquery-grammar.xml" role="LocalTerminalSymbols"/> 
+		   
+		</scrap>
+</div2>
+
+<div2 id="id-extra-grammatical-constraints"><head>Extra-grammatical Constraints</head>
+  <p>This section contains XQuery SX specific constraints on the EBNF productions, which are required to parse legal sentences.
+  The notes below are referenced from the right side of the production, with the notation: <emph>/* gn: &lt;id&gt; */</emph>.</p>
+<constraintnote id="parse-note-sx-reserved-function-names" type="xgc"><head>sx-reserved-function-names</head><p>
+  XQuery SX adds the term "while" to the list of names in
+  <xspecref spec="XQ" ref="id-reserved-fn-names"><?xm-replace_text {xspecref}?></xspecref>.
+  <note><p>This is a backwards incompatibility with <bibref ref="XQ10"/>.</p></note>
+</p></constraintnote>
+</div2>
+</div1>
+
+    &xqsx-xqueryx;
+
+    <div1 id="id-implementation-defined-items">
+      <head>Implementation-Defined Items</head>
+      <p>The following items in this specification are implementation-defined:</p>
+      <olist>
+        <item>
+          <p>The effects of <termref def="dt-snapshot">snapshot semantics</termref> on persistent storage. 
+             For example, it is implementation-defined whether the effects of an <code>fn:put</code> function
+             are visible to an <code>fn:doc</code>, <code>fn:doc-available</code>, or <code>fn:collection</code>
+             function executed in a subsequent <termref def="dt-snapshot">snapshot</termref>.</p>
+        </item>
+        <item>
+          <p>The mechanism (if any) by which the XQuery environment exchanges parameters and results
+             with an external function.</p>
+        </item>
+      </olist>
+    </div1>
+    <div1 id="id-references">
+      <head>References</head>
+      <blist>
+        <bibl id="XQ10" key="XQuery 1.0" href="http://www.w3.org/TR/xquery">
+          <loc href="http://www.w3.org/TR/xquery/">XQuery 1.0: An XML Query Language</loc>,
+          W3C Recommendation, 23 January 2007.</bibl>
+        <bibl id="XQX10" key="XML Syntax for XQuery 1.0" href="http://www.w3.org/TR/xqueryx">
+          <loc href="http://www.w3.org/TR/xqueryx/">XML Syntax for XQuery 1.0</loc>,
+          W3C Recommendation, 23 January 2007.</bibl>
+        <bibl id="XDM" key="XQuery Data Model" href="http://www.w3.org/TR/xpath-datamodel/">
+          <loc href="http://www.w3.org/TR/xpath-datamodel/">XQuery 1.0 and XPath 2.0 Data Model (XDM)</loc>,
+          W3C Recommendation, 23 January 2007.</bibl>
+        <bibl id="FO" key="XQuery 1.0 and XPath 2.0 Functions and Operators" href="http://www.w3.org/TR/xpath-functions/">
+          <loc href="http://www.w3.org/TR/xpath-functions/">XQuery 1.0 and XPath 2.0 Functions and Operators</loc>,
+          W3C Recommendation, 23 January 2007.</bibl>
+        <bibl href="http://www.w3.org/TR/xquery-update-10/" id="XQueryUpdate" key="XQuery Update Facility">
+          <loc href="http://www.w3.org/TR/xquery-update-10/">XQuery Update Facility 1.0</loc>,
+          W3C Candidate Recommendation, March 2008.</bibl>
+        <bibl href="http://www.w3.org/TR/xquery-sx-10-requirements/" id="ScriptingRequirements" key="XQuery Scripting Requirements">
+          <loc href="http://www.w3.org/TR/xquery-sx-10-requirements/">XQuery Scripting Extension 1.0 Requirements</loc>,
+          W3C Working Draft, 23 March 2007.</bibl>
+        <bibl href="http://www.w3.org/TR/xquery-sx-10-use-cases/" id="ScriptingUseCases" key="XQuery Scripting Use Cases">
+          <loc href="http://www.w3.org/TR/xquery-sx-10-use-cases/">XQuery Scripting Extension 1.0 Use Cases</loc>,
+          W3C Working Draft 23 March 2007.</bibl>
+        <bibl id="XQ11" key="XQuery 1.1" href="http://www.w3.org/TR/xquery">
+          <loc href="http://www.w3.org/TR/xquery-11/">XQuery 1.1: An XML Query Language</loc>,
+          W3C Working Draft, 15 December 2009.</bibl>
+      </blist>
+    </div1>
+    <div1 id="id-errors">	
+      <head>Error Conditions</head>	
+
+      <div2 id="id-new-error-codes">
+        <head>New Error Codes</head>
+        <error-list>
+          <error spec="SX" code="0002" class="ST" type="static">
+            <p>
+              It is a static error to mix both <termref def="dt-updating-expr">updating</termref> and
+              <termref def="dt-sequential-expr">sequential</termref> operands in an expression.
+            </p>
+          </error>
+          <error spec="SX" code="0003" class="DY" type="dynamic">
+            <p>
+              It is a dynamic
+              error if, after applying a pending update list (using <code>upd:applyUpdates</code>),
+              the XDM instance bound to any in-scope variable does not match the static type of that variable according
+              to SequenceType matching rules.
+            </p>
+          </error>
+          <error spec="SX" code="0004" class="DY" type="dynamic">
+            <p>
+              It is an dynamic error for an external sequential function to return a non-empty <termref def="dt-pul">pending update list</termref>.
+            </p>
+          </error>
+          <error spec="SX" code="0005" class="ST" type="static">
+            <p>
+              It is a static error if two or more variables declared in the same block expression
+              have the same expanded QName.
+            </p>
+          </error>
+          <error spec="SX" code="0006" class="TY" type="type">
+            <p>
+              A reference to a variable, other than on the left-hand side of an assignment expression,
+              is an error if the variable has no value in <emph>variable values</emph>
+              when the reference is evaluated.
+            </p>
+          </error>
+          <error spec="SX" code="0007" class="ST" type="static">
+            <p>
+              The variable on the left-hand side of an assignment must have been declared in one of the following ways:
+            </p>
+            <ulist>
+              <item><p>By a block variable declaration</p></item>
+              <item><p>As a parameter to a sequential function</p></item>
+              <item><p>By a variable declaration in the Prolog declared as <termref def="dt-assignable">assignable</termref></p></item>
+            </ulist>
+          </error>
+          <error spec="SX" code="0008" class="ST" type="static">
+            <p>
+              It is a static error if the body of a function violates the category rules for it's declared category.
+            </p>
+          </error>
+          <error spec="SX" code="0009" class="ST" type="static">
+            <p>
+              A static error is raised if the value for a
+              <code>xqsx:query-mode</code> option or pragma is not either <code>sequential</code> or <code>simple</code>.
+            </p>
+          </error>
+        </error-list>
+      </div2>
+      <div2 id="id-amended-error-codes">
+        <head>Amendments to Existing Error Codes</head>
+        <error-list>
+          <error spec="XU" code="0001" class="ST" type="static">
+            <p>
+              It is a static error for an <termref def="dt-updating-expr">updating</termref> or
+              <termref def="dt-sequential-expr">sequential expression</termref> to occur in the following places:
+            </p>
+            <olist>
+              <item>
+                <p>
+                  As the initializing expression of a prolog variable.
+                </p>
+              </item>
+              <item>
+                <p>
+                  As a StepExpr in a RelativePathExpr when <termref def="dt-query-mode">query mode</termref> is <code>simple</code>.
+                </p>
+              </item>
+              <item>
+                <p>
+                  As the primary expression or a predicate expression of a FilterExpr or AxisStep
+                  when <termref def="dt-query-mode">query mode</termref> is <code>simple</code>.
+                </p>
+              </item>
+              <item>
+                <p>
+                  In the <code>for</code>, <code>let</code>, <code>where</code>, or <code>order by</code>
+                  clauses of a FLWOR expression when <termref def="dt-query-mode">query mode</termref> is <code>simple</code>.
+                </p>
+              </item>
+              <item>
+                <p>
+                  In a quantified expression clause or as the satisfies expression of a quantified expression
+                  when <termref def="dt-query-mode">query mode</termref> is <code>simple</code>.
+                </p>
+              </item>
+            </olist>
+          </error>
+        </error-list>
+      </div2>
+    </div1>
+
+    <inform-div1 id="id-glossary">
+      <head>Glossary</head>
+      <?glossary ?>
+    </inform-div1>
+	  <inform-div1 id="id-revisions-log">
+	    <head>Revision Log</head>
+
+      <p>This log records the substantive changes that have been made to this document. 
+      Minor editorial changes are not included in this log.</p>
+
+        <p>
+        This document was built from files checked in on $Date: 2014/10/03 18:34:51 $.
+        </p>
+
+	    <div2 id="id-log-20081203">
+	      <head>Since the 3 December 2008 Working Draft</head>
+	      <ulist>
+          <item><p>Changed "exit with" to "exit returning"</p></item>
+          <item><p>Relaxed restrictions on where sequential expressions can occur.</p></item>
+          <item><p>The type of a block variable is never inferred from it's initializing expression.</p></item>
+          <item><p>Removed the "set" keyword from an assignment expression.</p></item>
+          <item><p>Changed "variable"/"constant" to "unassignable variable" and "assignable variable".</p></item>
+          <item><p>Made execution scope and snapshot scope analogous, so stable functions can change value in subsequent snapshots.</p></item>
+          <item><p>Added query mode to the static context, along with an option and pragma to change it.</p></item>
+          <item><p>Added error codes for all error conditions.</p></item>
+	      </ulist>
+	    </div2>
+
+	    <div2 id="id-log-20080328">
+	      <head>Since the 28 March 2008 Working Draft</head>
+	      <ulist>
+          <item><p>Relaxed the restrictions on where updating expressions can occur to a superset of those allowed by <bibref ref="XQueryUpdate"/>.</p></item>
+          <item><p>Re-check the SequenceType of bound variables after upd:applyUpdates is invoked.</p></item>
+          <item><p>Added the "block" keyword to the grammer for block expressions.</p></item>
+          <item><p>Removed the break and continue expressions.</p></item>
+          <item><p>Added the semi-colon (apply) expression to apply updates, removing the semi-colon separated list from block expressions.</p></item>
+          <item><p>Added the ability to set the value of parameters to sequential functions.</p></item>
+	      </ulist>
+	    </div2>
+
+	  </inform-div1>
+  </back>
+</spec>

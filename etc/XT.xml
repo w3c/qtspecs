@@ -1,0 +1,1185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<document-summary uri="http://www.w3.org/TR/xslt20/">
+<title>XSL Transformations (XSLT)</title>
+<div1 id="introduction">
+<head>
+1 Introduction</head>
+<div2 id="what-is-xslt">
+<head>
+1.1 What is XSLT?</head>
+</div2>
+<div2 id="whats-new-in-xslt2">
+<head>
+1.2 What's New in XSLT 2.0?</head>
+</div2>
+</div1>
+<div1 id="concepts">
+<head>
+2 Concepts</head>
+<div2 id="terminology">
+<head>
+2.1 Terminology</head>
+</div2>
+<div2 id="notation">
+<head>
+2.2 Notation</head>
+</div2>
+<div2 id="initiating">
+<head>
+2.3 Initiating a Transformation</head>
+</div2>
+<div2 id="executing-a-transformation">
+<head>
+2.4 Executing a Transformation</head>
+</div2>
+<div2 id="context">
+<head>
+2.5 The Evaluation Context</head>
+</div2>
+<div2 id="parsing-and-serialization">
+<head>
+2.6 Parsing and Serialization</head>
+</div2>
+<div2 id="extensibility">
+<head>
+2.7 Extensibility</head>
+</div2>
+<div2 id="stylesheets-and-schemas">
+<head>
+2.8 Stylesheets and XML Schemas</head>
+</div2>
+<div2 id="errors">
+<head>
+2.9 Error Handling</head>
+</div2>
+</div1>
+<div1 id="stylesheet-structure">
+<head>
+3 Stylesheet Structure</head>
+<div2 id="xslt-namespace">
+<head>
+3.1 XSLT Namespace</head>
+</div2>
+<div2 id="reserved-namespaces">
+<head>
+3.2 Reserved Namespaces</head>
+</div2>
+<div2 id="extension-attributes">
+<head>
+3.3 Extension Attributes</head>
+</div2>
+<div2 id="xslt-media-type">
+<head>
+3.4 XSLT Media Type</head>
+</div2>
+<div2 id="standard-attributes">
+<head>
+3.5 Standard Attributes</head>
+</div2>
+<div2 id="stylesheet-element">
+<head>
+3.6 Stylesheet Element</head>
+<div3 id="default-collation-attribute">
+<head>
+3.6.1 The default-collation attribute</head>
+</div3>
+<div3 id="user-defined-top-level">
+<head>
+3.6.2 User-defined Data Elements</head>
+</div3>
+</div2>
+<div2 id="simplified-stylesheet">
+<head>
+3.7 Simplified Stylesheet Modules</head>
+</div2>
+<div2 id="backwards">
+<head>
+3.8 Backwards-Compatible Processing</head>
+</div2>
+<div2 id="forwards">
+<head>
+3.9 Forwards-Compatible Processing</head>
+</div2>
+<div2 id="combining-modules">
+<head>
+3.10 Combining Stylesheet Modules</head>
+<div3 id="locating-modules">
+<head>
+3.10.1 Locating Stylesheet Modules</head>
+</div3>
+<div3 id="include">
+<head>
+3.10.2 Stylesheet Inclusion</head>
+</div3>
+<div3 id="import">
+<head>
+3.10.3 Stylesheet Import</head>
+</div3>
+</div2>
+<div2 id="embedded">
+<head>
+3.11 Embedded Stylesheet Modules</head>
+</div2>
+<div2 id="conditional-inclusion">
+<head>
+3.12 Conditional Element Inclusion</head>
+</div2>
+<div2 id="built-in-types">
+<head>
+3.13 Built-in Types</head>
+</div2>
+<div2 id="import-schema">
+<head>
+3.14 Importing Schema Components</head>
+</div2>
+</div1>
+<div1 id="data-model">
+<head>
+4 Data Model</head>
+<div2 id="xml-versions">
+<head>
+4.1 XML Versions</head>
+</div2>
+<div2 id="stylesheet-stripping">
+<head>
+4.2 Stripping Whitespace from the Stylesheet</head>
+</div2>
+<div2 id="stripping-annotations">
+<head>
+4.3 Stripping Type Annotations from a Source Tree</head>
+</div2>
+<div2 id="strip">
+<head>
+4.4 Stripping Whitespace from a Source Tree</head>
+</div2>
+<div2 id="id-in-data-model">
+<head>
+4.5 Attribute Types and DTD Validation</head>
+</div2>
+<div2 id="limits">
+<head>
+4.6 Limits</head>
+</div2>
+<div2 id="d-o-e-in-data-model">
+<head>
+4.7 Disable Output Escaping</head>
+</div2>
+</div1>
+<div1 id="constructs">
+<head>
+5 Features of the XSLT Language</head>
+<div2 id="qname">
+<head>
+5.1 Qualified Names</head>
+</div2>
+<div2 id="unprefixed-qnames">
+<head>
+5.2 Unprefixed QNames in Expressions and Patterns</head>
+</div2>
+<div2 id="expressions">
+<head>
+5.3 Expressions</head>
+</div2>
+<div2 id="static-and-dynamic-context">
+<head>
+5.4 The Static and Dynamic Context</head>
+<div3 id="static-context">
+<head>
+5.4.1 Initializing the Static Context</head>
+</div3>
+<div3 id="additional-static-context">
+<head>
+5.4.2 Additional Static Context Components used by XSLT</head>
+</div3>
+<div3 id="xpath-dynamic-context">
+<head>
+5.4.3 Initializing the Dynamic Context</head>
+<div4 id="focus">
+<head>
+5.4.3.1 Maintaining Position: the Focus</head>
+</div4>
+<div4 id="evaluation-context">
+<head>
+5.4.3.2 Other components of the XPath Dynamic Context</head>
+</div4>
+</div3>
+<div3 id="additional-dynamic-context">
+<head>
+5.4.4 Additional Dynamic Context Components used by XSLT</head>
+</div3>
+</div2>
+<div2 id="patterns">
+<head>
+5.5 Patterns</head>
+<div3 id="pattern-examples">
+<head>
+5.5.1 Examples of Patterns</head>
+</div3>
+<div3 id="pattern-syntax">
+<head>
+5.5.2 Syntax of Patterns</head>
+</div3>
+<div3 id="pattern-semantics">
+<head>
+5.5.3 The Meaning of a Pattern</head>
+</div3>
+<div3 id="pattern-errors">
+<head>
+5.5.4 Errors in Patterns</head>
+</div3>
+</div2>
+<div2 id="attribute-value-templates">
+<head>
+5.6 Attribute Value Templates</head>
+</div2>
+<div2 id="sequence-constructors">
+<head>
+5.7 Sequence Constructors</head>
+<div3 id="constructing-complex-content">
+<head>
+5.7.1 Constructing Complex Content</head>
+</div3>
+<div3 id="constructing-simple-content">
+<head>
+5.7.2 Constructing Simple Content</head>
+</div3>
+<div3 id="namespace-fixup">
+<head>
+5.7.3 Namespace Fixup</head>
+</div3>
+</div2>
+<div2 id="uri-references">
+<head>
+5.8 URI References</head>
+</div2>
+</div1>
+<div1 id="rules">
+<head>
+6 Template Rules</head>
+<div2 id="defining-templates">
+<head>
+6.1 Defining Templates</head>
+</div2>
+<div2 id="defining-template-rules">
+<head>
+6.2 Defining Template Rules</head>
+</div2>
+<div2 id="applying-templates">
+<head>
+6.3 Applying Template Rules</head>
+</div2>
+<div2 id="conflict">
+<head>
+6.4 Conflict Resolution for Template Rules</head>
+</div2>
+<div2 id="modes">
+<head>
+6.5 Modes</head>
+</div2>
+<div2 id="built-in-rule">
+<head>
+6.6 Built-in Template Rules</head>
+</div2>
+<div2 id="apply-imports">
+<head>
+6.7 Overriding Template Rules</head>
+</div2>
+</div1>
+<div1 id="for-each">
+<head>
+7 Repetition</head>
+</div1>
+<div1 id="conditionals">
+<head>
+8 Conditional Processing</head>
+<div2 id="xsl-if">
+<head>
+8.1 Conditional Processing with 
+				        </head>
+</div2>
+<div2 id="xsl-choose">
+<head>
+8.2 Conditional Processing with 
+				        </head>
+</div2>
+</div1>
+<div1 id="variables-and-parameters">
+<head>
+9 Variables and Parameters</head>
+<div2 id="variables">
+<head>
+9.1 Variables</head>
+</div2>
+<div2 id="parameters">
+<head>
+9.2 Parameters</head>
+</div2>
+<div2 id="variable-values">
+<head>
+9.3 Values of Variables and Parameters</head>
+</div2>
+<div2 id="temporary-trees">
+<head>
+9.4 Creating implicit document nodes</head>
+</div2>
+<div2 id="global-variables">
+<head>
+9.5 Global Variables and Parameters</head>
+</div2>
+<div2 id="local-variables">
+<head>
+9.6 Local Variables and Parameters</head>
+</div2>
+<div2 id="scope-of-variables">
+<head>
+9.7 Scope of Variables</head>
+</div2>
+<div2 id="circularity">
+<head>
+9.8 Circular Definitions</head>
+</div2>
+</div1>
+<div1 id="callable-components">
+<head>
+10 Callable Components</head>
+<div2 id="named-templates">
+<head>
+10.1 Named Templates</head>
+<div3 id="with-param">
+<head>
+10.1.1 Passing Parameters to Templates</head>
+</div3>
+<div3 id="tunnel-params">
+<head>
+10.1.2 Tunnel Parameters</head>
+</div3>
+</div2>
+<div2 id="attribute-sets">
+<head>
+10.2 Named Attribute Sets</head>
+</div2>
+<div2 id="stylesheet-functions">
+<head>
+10.3 Stylesheet Functions</head>
+</div2>
+</div1>
+<div1 id="creating-new-nodes">
+<head>
+11 Creating Nodes and Sequences</head>
+<div2 id="literal-result-element">
+<head>
+11.1 Literal Result Elements</head>
+<div3 id="setting-annotation-for-lre">
+<head>
+11.1.1 Setting the Type Annotation for Literal Result Elements</head>
+</div3>
+<div3 id="attributes-for-lres">
+<head>
+11.1.2 Attribute Nodes for Literal Result Elements</head>
+</div3>
+<div3 id="lre-namespaces">
+<head>
+11.1.3 Namespace Nodes for Literal Result Elements</head>
+</div3>
+<div3 id="namespace-aliasing">
+<head>
+11.1.4 Namespace Aliasing</head>
+</div3>
+</div2>
+<div2 id="xsl-element">
+<head>
+11.2 Creating Element Nodes Using xsl:element
+				        </head>
+<div3 id="annotation-for-constructed-element">
+<head>
+11.2.1 Setting the Type Annotation for a Constructed Element Node</head>
+</div3>
+</div2>
+<div2 id="creating-attributes">
+<head>
+11.3 Creating Attribute Nodes Using xsl:attribute
+				        </head>
+<div3 id="annotation-for-constructed-attribute">
+<head>
+11.3.1 Setting the Type Annotation for a Constructed Attribute Node</head>
+</div3>
+</div2>
+<div2 id="creating-text-nodes">
+<head>
+11.4 Creating Text Nodes</head>
+<div3 id="literal-text-nodes">
+<head>
+11.4.1 Literal Text Nodes</head>
+</div3>
+<div3 id="xsl-text">
+<head>
+11.4.2 Creating Text Nodes Using xsl:text
+					          </head>
+</div3>
+<div3 id="value-of">
+<head>
+11.4.3 Generating Text with 
+				           </head>
+</div3>
+</div2>
+<div2 id="creating-document-nodes">
+<head>
+11.5 Creating Document Nodes</head>
+</div2>
+<div2 id="creating-processing-instructions">
+<head>
+11.6 Creating Processing Instructions</head>
+</div2>
+<div2 id="creating-namespace-nodes">
+<head>
+11.7 Creating Namespace Nodes</head>
+</div2>
+<div2 id="creating-comments">
+<head>
+11.8 Creating Comments</head>
+</div2>
+<div2 id="copying">
+<head>
+11.9 Copying Nodes</head>
+<div3 id="shallow-copy">
+<head>
+11.9.1 Shallow Copy</head>
+</div3>
+<div3 id="copy-of">
+<head>
+11.9.2 Deep Copy</head>
+</div3>
+</div2>
+<div2 id="constructing-sequences">
+<head>
+11.10 Constructing Sequences</head>
+</div2>
+</div1>
+<div1 id="number">
+<head>
+12 Numbering</head>
+<div2 id="formatting-supplied-number">
+<head>
+12.1 Formatting a Supplied Number</head>
+</div2>
+<div2 id="numbering-based-on-position">
+<head>
+12.2 Numbering based on Position in a Document
+				</head>
+</div2>
+<div2 id="convert">
+<head>
+12.3 Number to String Conversion Attributes</head>
+</div2>
+</div1>
+<div1 id="sorting">
+<head>
+13 Sorting</head>
+<div2 id="xsl-sort">
+<head>
+13.1 The  Element</head>
+<div3 id="sorting-process">
+<head>
+13.1.1 The Sorting Process</head>
+</div3>
+<div3 id="comparing-sort-keys">
+<head>
+13.1.2 Comparing Sort Key Values</head>
+</div3>
+<div3 id="collating-sequences">
+<head>
+13.1.3 Sorting Using Collations</head>
+</div3>
+</div2>
+<div2 id="creating-sorted-sequence">
+<head>
+13.2 Creating a Sorted Sequence</head>
+</div2>
+<div2 id="sorted-iteration">
+<head>
+13.3 Processing a Sequence in Sorted Order</head>
+</div2>
+</div1>
+<div1 id="grouping">
+<head>
+14 Grouping</head>
+<div2 id="current-group">
+<head>
+14.1 The Current Group</head>
+</div2>
+<div2 id="current-grouping-key">
+<head>
+14.2 The Current Grouping Key</head>
+</div2>
+<div2 id="xsl-for-each-group">
+<head>
+14.3 The xsl:for-each-group Element</head>
+</div2>
+<div2 id="grouping-examples">
+<head>
+14.4 Examples of Grouping</head>
+</div2>
+<div2 id="non-transitivity">
+<head>
+14.5 Non-Transitivity</head>
+</div2>
+</div1>
+<div1 id="regular-expressions">
+<head>
+15 Regular Expressions</head>
+<div2 id="analyze-string">
+<head>
+15.1 The xsl:analyze-string instruction</head>
+</div2>
+<div2 id="regex-group">
+<head>
+15.2 Captured Substrings</head>
+</div2>
+<div2 id="regex-examples">
+<head>
+15.3 Examples of Regular Expression Matching</head>
+</div2>
+</div1>
+<div1 id="add-func">
+<head>
+16 Additional Functions</head>
+<div2 id="document">
+<head>
+16.1 Multiple Source Documents</head>
+</div2>
+<div2 id="unparsed-text">
+<head>
+16.2 Reading Text Files</head>
+</div2>
+<div2 id="key">
+<head>
+16.3 Keys</head>
+<div3 id="xsl-key">
+<head>
+16.3.1 The  Declaration</head>
+</div3>
+<div3 id="keys">
+<head>
+16.3.2 The key Function</head>
+</div3>
+</div2>
+<div2 id="format-number">
+<head>
+16.4 Number Formatting</head>
+<div3 id="defining-decimal-format">
+<head>
+16.4.1 Defining a Decimal Format</head>
+</div3>
+<div3 id="processing-picture-string">
+<head>
+16.4.2 Processing the Picture String</head>
+</div3>
+<div3 id="analysing-picture-string">
+<head>
+16.4.3 Analysing the Picture String</head>
+</div3>
+<div3 id="formatting-the-number">
+<head>
+16.4.4 Formatting the Number</head>
+</div3>
+</div2>
+<div2 id="format-date">
+<head>
+16.5 Formatting Dates and Times</head>
+<div3 id="date-picture-string">
+<head>
+16.5.1 The Picture String</head>
+</div3>
+<div3 id="lang-cal-country">
+<head>
+16.5.2 The Language, Calendar, and Country Arguments</head>
+</div3>
+<div3 id="date-time-examples">
+<head>
+16.5.3 Examples of Date and Time Formatting</head>
+</div3>
+</div2>
+<div2 id="misc-func">
+<head>
+16.6 Miscellaneous Additional Functions</head>
+<div3 id="current-function">
+<head>
+16.6.1 current</head>
+</div3>
+<div3 id="unparsed-entity-uri">
+<head>
+16.6.2 unparsed-entity-uri</head>
+</div3>
+<div3 id="unparsed-entity-public-id">
+<head>
+16.6.3 unparsed-entity-public-id</head>
+</div3>
+<div3 id="generate-id">
+<head>
+16.6.4 generate-id</head>
+</div3>
+<div3 id="system-property">
+<head>
+16.6.5 system-property</head>
+</div3>
+</div2>
+</div1>
+<div1 id="message">
+<head>
+17 Messages</head>
+</div1>
+<div1 id="extension">
+<head>
+18 Extensibility and Fallback</head>
+<div2 id="extension-functions">
+<head>
+18.1 Extension Functions</head>
+<div3 id="testing-function-availability">
+<head>
+18.1.1 Testing Availability of Functions</head>
+</div3>
+<div3 id="calling-extension-functions">
+<head>
+18.1.2 Calling Extension Functions</head>
+</div3>
+<div3 id="external-objects">
+<head>
+18.1.3 External Objects</head>
+</div3>
+<div3 id="testing-type-availability">
+<head>
+18.1.4 Testing Availability of Types</head>
+</div3>
+</div2>
+<div2 id="extension-instruction">
+<head>
+18.2 Extension Instructions</head>
+<div3 id="designating-extension-namespace">
+<head>
+18.2.1 Designating an Extension Namespace</head>
+</div3>
+<div3 id="testing-instruction-available">
+<head>
+18.2.2 Testing Availability of Instructions</head>
+</div3>
+<div3 id="fallback">
+<head>
+18.2.3 Fallback</head>
+</div3>
+</div2>
+</div1>
+<div1 id="result-trees">
+<head>
+19 Final Result Trees</head>
+<div2 id="creating-result-trees">
+<head>
+19.1 Creating Final Result Trees</head>
+</div2>
+<div2 id="validation">
+<head>
+19.2 Validation</head>
+<div3 id="validating-constructed-nodes">
+<head>
+19.2.1 Validating Constructed Elements and Attributes</head>
+<div4 id="validating-using-validation-attribute">
+<head>
+19.2.1.1 Validation using the [xsl:]validation Attribute</head>
+</div4>
+<div4 id="validation-xsl-type">
+<head>
+19.2.1.2 Validation using the [xsl:]type Attribute</head>
+</div4>
+<div4 id="validation-process">
+<head>
+19.2.1.3 The Validation Process</head>
+</div4>
+</div3>
+<div3 id="validating-document-nodes">
+<head>
+19.2.2 Validating Document Nodes</head>
+</div3>
+</div2>
+</div1>
+<div1 id="serialization">
+<head>
+20 Serialization</head>
+<div2 id="character-maps">
+<head>
+20.1 Character Maps</head>
+</div2>
+<div2 id="disable-output-escaping">
+<head>
+20.2 Disabling Output Escaping</head>
+</div2>
+</div1>
+<div1 id="conformance">
+<head>
+21 Conformance</head>
+<div2 id="basic-conformance">
+<head>
+21.1 Basic XSLT Processor</head>
+</div2>
+<div2 id="schema-aware-conformance">
+<head>
+21.2 Schema-Aware XSLT Processor</head>
+</div2>
+<div2 id="serialization-feature">
+<head>
+21.3 Serialization Feature</head>
+</div2>
+<div2 id="backwards-compatibility-feature">
+<head>
+21.4 Backwards Compatibility Feature</head>
+</div2>
+</div1>
+<div1 id="references">
+<head>
+A References</head>
+<div2 id="normative-references">
+<head>
+A.1 Normative References</head>
+</div2>
+<div2 id="other-references">
+<head>
+A.2 Other References</head>
+</div2>
+</div1>
+<div1 id="xslt-mime-definition">
+<head>
+B The XSLT Media Type</head>
+<div2 id="media-type-registration">
+<head>
+B.1 Registration of MIME Media Type application/xslt+xml</head>
+</div2>
+<div2 id="media-type-fragid">
+<head>
+B.2 Fragment Identifiers</head>
+</div2>
+</div1>
+<inform-div1 id="glossary">
+<head>
+C Glossary (Non-Normative)</head>
+</inform-div1>
+<inform-div1 id="element-syntax-summary">
+<head>
+D Element Syntax Summary (Non-Normative)</head>
+</inform-div1>
+<inform-div1 id="error-summary">
+<head>
+E Summary of Error Conditions (Non-Normative)</head>
+</inform-div1>
+<inform-div1 id="implementation-defined-features">
+<head>
+F Checklist of Implementation-Defined Features (Non-Normative)</head>
+</inform-div1>
+<inform-div1 id="schema-for-xslt">
+<head>
+G Schema for XSLT Stylesheets (Non-Normative)</head>
+</inform-div1>
+<inform-div1 id="acknowledgements">
+<head>
+H Acknowledgements (Non-Normative)</head>
+</inform-div1>
+<inform-div1 id="requirements-checklist">
+<head>
+I Checklist of Requirements (Non-Normative)</head>
+</inform-div1>
+<inform-div1 id="changes">
+<head>
+J Changes from XSLT 1.0 (Non-Normative)</head>
+</inform-div1>
+<inform-div1 id="changes-since-edition-1">
+<head>
+K Changes since the First Edition (Non-Normative)</head>
+</inform-div1>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-stylesheet" term="stylesheet"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-principal-stylesheet-module" term="principal stylesheet module"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-processor" term="processor"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-implementation" term="implementation"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-result-tree" term="result tree"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-final-result-tree" term="final result tree"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-source-tree" term="source tree"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-temporary-tree" term="temporary tree"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-implementation-defined" term="implementation-defined"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-implementation-dependent" term="implementation-dependent"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-atomization" term="atomize"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-typed-value" term="typed value"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-string-value" term="string value"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-compatibility-mode" term="XPath 1.0 compatibility mode"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-core-function" term="core function"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-xslt-element" term="XSLT element"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-deprecated" term="deprecated"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-initial-context-node" term="initial context node"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-base-output-uri" term="base output URI"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-initial-template" term="initial template"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-template-rule" term="template rule"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-instruction" term="instruction"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-xslt-instruction" term="XSLT instruction"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-serialization" term="serialization"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-schema-component" term="schema component"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-in-scope-schema-component" term="in-scope schema component"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-static-error" term="static error"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-dynamic-error" term="dynamic error"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-recoverable-error" term="recoverable error"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-optional-recovery-action" term="optional recovery action"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-nonrec-dynamic-error" term="non-recoverable dynamic error"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-type-error" term="type errors"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-serialization-error" term="serialization error"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-stylesheet-module" term="stylesheet module"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-standard-stylesheet-module" term="standard stylesheet module"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-simplified-stylesheet-module" term="simplified stylesheet module"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-standalone-stylesheet-module" term="standalone stylesheet module"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-embedded-stylesheet-module" term="embedded stylesheet module"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-xslt-namespace" term="XSLT namespace"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-reserved-namespace" term="reserved namespace"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-standard-function-namespace" term="standard function namespace"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="xml-namespace" term="XML namespace"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-schema-namespace" term="schema namespace"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-schema-instance-namespace" term="schema instance namespace"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-extension-attribute" term="extension attribute"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-standard-attributes" term="standard attributes"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-top-level" term="top-level"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-declaration" term="declaration"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-data-element" term="user-defined data element"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-backwards-compatible-behavior" term="backwards compatible behavior"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-forwards-compatible-behavior" term="forwards-compatible behavior"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-stylesheet-level" term="stylesheet level"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-declaration-order" term="declaration order"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-import-tree" term="import tree"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-import-precedence" term="import precedence"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-whitespace-text-node" term="whitespace text node"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-annotation" term="type annotation"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-qname" term="QName"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-lexical-qname" term="lexical QName"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-defining-element" term="defining element"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-expanded-qname" term="expanded-QName"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-expression" term="expression"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-required-type" term="required type"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-function-conversion-rules" term="function conversion rules"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-default-collation" term="default collation"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-focus" term="focus"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-context-item" term="context item"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-context-position" term="context position"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-context-size" term="context size"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-context-node" term="context node"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-singleton-focus" term="singleton focus"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-pattern" term="pattern"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-attribute-value-template" term="attribute value template"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-effective-value" term="effective value"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-sequence-constructor" term="sequence constructor"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-namespace-fixup" term="namespace fixup"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-uri-reference" term="URI Reference"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-template" term="template"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-default-priority" term="default priority"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-mode" term="mode"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-default-mode" term="default mode"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-current-mode" term="current mode"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-current-template-rule" term="current template rule"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-variable-binding-element" term="variable-binding element"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-variable" term="variable"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-parameter" term="parameter"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-value" term="value"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-supplied-value" term="supplied value"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-global-variable" term="global variable"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-stylesheet-parameter" term="stylesheet parameter"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-local-variable" term="local variable"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-template-parameter" term="template parameter"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-function-parameter" term="function parameter"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-shadows" term="shadows"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-circularity" term="circularity"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-named-template" term="named template"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-tunnel-parameter" term="tunnel parameter"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-attribute-set" term="attribute set"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-stylesheet-function" term="stylesheet function"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-arity" term="arity"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-literal-result-element" term="literal result element"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-literal-namespace-uri" term="literal namespace URI"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-target-namespace-uri" term="target namespace URI"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-alias" term="alias"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-place-marker" term="place marker"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-sort-key-specification" term="sort key specification"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-sort-key-component" term="sort key component"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-stable" term="stable"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-initial-sequence" term="initial sequence"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-sorted-sequence" term="sorted sequence"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-sort-key-value" term="sort key value"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-collation" term="collation"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-current-group" term="current group"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-current-grouping-key" term="current grouping key"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-group" term="group"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-population" term="population"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-population-order" term="population order"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-grouping-key" term="grouping key"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-initial-item" term="initial item"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-first-appearance" term="order of first appearance"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-processing-order" term="processing order"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-current-captured-substrings" term="current captured substrings"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-key" term="key"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-key-specifier" term="key specifier"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-decimal-format" term="decimal format"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-picture-string" term="picture string"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-date-formatting-function" term="date formatting function"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-extension-instruction" term="extension instruction"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-extension-function" term="extension function"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-extension-namespace" term="extension namespace"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-output-state" term="output state"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-final-output-state" term="final output state"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-temporary-output-state" term="temporary output state"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-output-definition" term="output definition"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-character-map" term="character map"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-basic-xslt-processor" term="basic XSLT processor"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-schema-aware-xslt-processor" term="schema-aware XSLT processor"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-serialization-feature" term="serialization feature"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-backwards-compatibility-feature" term="backwards compatibility feature"/>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-Pattern" xlink:type="simple">
+<nt def="NT-Pattern" xlink:type="simple">Pattern</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-Pattern" xlink:type="simple">
+<nt def="NT-Pattern" xlink:type="simple">Pattern</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-Pattern" xlink:type="simple">
+<nt def="NT-Pattern" xlink:type="simple">Pattern</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-PathPattern" xlink:type="simple">
+<nt def="NT-PathPattern" xlink:type="simple">PathPattern</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-Pattern" xlink:type="simple">
+<nt def="NT-Pattern" xlink:type="simple">Pattern</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-PathPattern" xlink:type="simple">
+<nt def="NT-PathPattern" xlink:type="simple">PathPattern</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-RelativePathPattern" xlink:type="simple">
+<nt def="NT-RelativePathPattern" xlink:type="simple">RelativePathPattern</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-RelativePathPattern" xlink:type="simple">
+<nt def="NT-RelativePathPattern" xlink:type="simple">RelativePathPattern</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-RelativePathPattern" xlink:type="simple">
+<nt def="NT-RelativePathPattern" xlink:type="simple">RelativePathPattern</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-IdKeyPattern" xlink:type="simple">
+<nt def="NT-IdKeyPattern" xlink:type="simple">IdKeyPattern</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-RelativePathPattern" xlink:type="simple">
+<nt def="NT-RelativePathPattern" xlink:type="simple">RelativePathPattern</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-PatternStep" xlink:type="simple">
+<nt def="NT-PatternStep" xlink:type="simple">PatternStep</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-RelativePathPattern" xlink:type="simple">
+<nt def="NT-RelativePathPattern" xlink:type="simple">RelativePathPattern</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-PatternAxis" xlink:type="simple">
+<nt def="NT-PatternAxis" xlink:type="simple">PatternAxis</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-IdValue" xlink:type="simple">
+<nt def="NT-IdValue" xlink:type="simple">IdValue</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-KeyValue" xlink:type="simple">
+<nt def="NT-KeyValue" xlink:type="simple">KeyValue</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-PathPattern" xlink:type="simple">
+<nt def="NT-PathPattern" xlink:type="simple">PathPattern</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-IdKeyPattern" xlink:type="simple">
+<nt def="NT-IdKeyPattern" xlink:type="simple">IdKeyPattern</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-PathPattern" xlink:type="simple">
+<nt def="NT-PathPattern" xlink:type="simple">PathPattern</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-Pattern" xlink:type="simple">
+<nt def="NT-Pattern" xlink:type="simple">Pattern</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-Pattern" xlink:type="simple">
+<nt def="NT-Pattern" xlink:type="simple">Pattern</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-PatternAxis" xlink:type="simple">
+<nt def="NT-PatternAxis" xlink:type="simple">PatternAxis</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-PatternAxis" xlink:type="simple">
+<nt def="NT-PatternAxis" xlink:type="simple">PatternAxis</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-PatternAxis" xlink:type="simple">
+<nt def="NT-PatternAxis" xlink:type="simple">PatternAxis</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-PatternAxis" xlink:type="simple">
+<nt def="NT-PatternAxis" xlink:type="simple">PatternAxis</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-PatternAxis" xlink:type="simple">
+<nt def="NT-PatternAxis" xlink:type="simple">PatternAxis</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-Pattern" xlink:type="simple">
+<nt def="NT-Pattern" xlink:type="simple">pattern</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-Pattern" xlink:type="simple">
+<nt def="NT-Pattern" xlink:type="simple">pattern</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="NT-Pattern" xlink:type="simple">
+<nt def="NT-Pattern" xlink:type="simple">Pattern</nt>
+</nt>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0010"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0020"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0030"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0040"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0045"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0047"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0050"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0060"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0080"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0090"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0110"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0120"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0125"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0130"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0150"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0160"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0165"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0170"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0180"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0190"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0200"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0210"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0215"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0220"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0260"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0265"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="RE" code="0270"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0280"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0290"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0340"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0350"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0370"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0410"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0420"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0430"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0440"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0485"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0500"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="type" class="TE" code="0505"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="type" class="TE" code="0510"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="type" class="TE" code="0520"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0530"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="RE" code="0540"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0550"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0560"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="type" class="TE" code="0570"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0580"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="type" class="TE" code="0590"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="type" class="TE" code="0600"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0610"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0620"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0630"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0640"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0650"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0660"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0670"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0680"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0690"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0700"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0710"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0720"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0740"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0760"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0770"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="type" class="TE" code="0780"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="type" class="TE" code="0790"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="RE" code="0795"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0805"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" class="SE" type="static" code="0808"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" class="SE" type="static" code="0809"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0810"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0812"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0820"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0830"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0835"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0840"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0850"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0855"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0860"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0865"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0870"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0880"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0890"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0905"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0910"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0920"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0925"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0930"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0940"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="type" class="TE" code="0950"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="0975"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="0980"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="type" class="TE" code="0990"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="type" class="TE" code="1000"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1015"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1017"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="type" class="TE" code="1020"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1030"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1035"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1040"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1060"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1070"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1080"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1090"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="type" class="TE" code="1100"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1110"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="type" class="TE" code="1120"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1130"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1140"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1145"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1150"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="RE" code="1160"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1170"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1190"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1200"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1205"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1210"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1220"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1260"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1270"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1280"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1290"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1295"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1300"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1310"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1340"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1350"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1360"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1370"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1380"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1390"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="MM" code="9000"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1400"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1420"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1425"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1428"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1430"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1440"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1450"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1460"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1480"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1490"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="RE" code="1495"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="RE" code="1500"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1505"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="type" class="TE" code="1510"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="type" class="TE" code="1512"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="type" class="TE" code="1515"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1520"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1530"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="type" class="TE" code="1540"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="type" class="TE" code="1545"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="type" class="TE" code="1550"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="type" class="TE" code="1555"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1560"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1570"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1580"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1590"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1600"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="RE" code="1620"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="RE" code="1630"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1650"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="static" class="SE" code="1660"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XT" type="dynamic" class="DE" code="1665"/>
+</document-summary>

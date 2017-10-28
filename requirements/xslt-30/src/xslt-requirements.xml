@@ -1,0 +1,2561 @@
+﻿<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="xmlspec.xsl"?>
+<!DOCTYPE spec PUBLIC "-//W3C//DTD Specification V2.2//EN"
+       "http://www.w3.org/2002/xmlspec/dtd/2.2/xmlspec.dtd" [
+       ]>
+<!--<spec w3c-doctype="note">-->
+<spec w3c-doctype="wd" role="editors-copy">
+    <header>
+        <title>Requirements and Use Cases for XSLT 3.0</title>
+        <w3c-designation>WD-xslt-30-requirements-20170406</w3c-designation>
+        <w3c-doctype>Editor's Draft</w3c-doctype>
+        <pubdate>
+            <day>4</day>
+            <month>April</month>
+            <year>2017</year>
+        </pubdate>
+        <publoc>
+            <loc href="http://www.w3.org/TR/2017/WD-xslt-30-requirements-20170406/">http://www.w3.org/TR/2017/WD-xslt-30-requirements-20170406/</loc>
+        </publoc>
+        <latestloc>
+          <loc href="https://www.w3.org/2017/04/xslt3/usecases">https://www.w3.org/2017/04/xslt3/usecases</loc>
+	</latestloc>
+	<authlist>
+	  <author>
+	    <name>Charles Foster</name>
+	    <affiliation>Invited Expert</affiliation>
+	  </author>
+	   <author>
+		<name>Petr Cimprich</name>
+		<affiliation>UNITY Mobile</affiliation>
+	     <email xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.unitymobile.com/" xlink:type="simple" xlink:show="new" xlink:actuate="onRequest">http://www.unitymobile.com/</email>
+	
+	   </author>
+	</authlist>
+
+<abstract><p>
+This document is a characterization of requirements and use cases for <bibref ref="xslt30"/>. The Requirements lists enhancements requested over time that may be addressed in XSLT 3.0. </p>
+</abstract>
+
+<status>
+    <p><emph>This section describes the status of this document at the time of 
+    its publication. Other documents may supersede this document. A list of 
+    current W3C publications and the latest revision of this technical report 
+    can be found in the <loc xmlns:xlink="http://www.w3.org/1999/xlink" 
+    href="http://www.w3.org/TR/" xlink:type="simple" xlink:show="replace" 
+    xlink:actuate="onRequest">W3C technical reports index.</loc></emph></p>
+
+   <p>This is the <loc xmlns:xlink="http://www.w3.org/1999/xlink" 
+   href="http://www.w3.org/2005/10/Process-20051014/tr.html#first-wd" 
+   xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">First
+   Public Working Draft</loc> of the Requirements and Use Cases for XSLT 3.0, 
+   produced by the <loc xmlns:xlink="http://www.w3.org/1999/xlink" 
+   href="http://www.w3.org/Style/XSL/" xlink:type="simple" xlink:show="replace"
+   xlink:actuate="onRequest">W3C XSL Working Group</loc>, which is part of 
+   the <loc xmlns:xlink="http://www.w3.org/1999/xlink" 
+   href="http://www.w3.org/XML/Activity" xlink:type="simple" 
+   xlink:show="replace" xlink:actuate="onRequest">XML Activity</loc>.
+   The Working Group expects to eventually publish this document as a Working 
+   Group Note.
+   </p>
+
+   <p>Please report errors in this document using W3C's <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/Bugs/Public/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">public Bugzilla system</loc> (instructions can be found at <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/XML/2005/04/qt-bugzilla" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest"/>). If access to that system is not feasible, you may send your comments to the W3C XSLT/XPath/XQuery public comments mailing list, <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="mailto:public-qt-comments@w3.org" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">public-qt-comments@w3.org</loc>. It will be very helpful if you include the string "[XSLT30Req]" in the subject line of your report, whether made in Bugzilla or in email. Please use multiple Bugzilla entries (or, if necessary, multiple email messages) if you have more th
+ an one comment to make. Archives of the comments and responses are available at <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://lists.w3.org/Archives/Public/public-qt-comments/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest"/>.</p>
+ 
+  <p> Publication as a Working Draft does not imply endorsement by the W3C Membership. This is a draft document and may be updated, replaced or obsoleted by other documents at any time. It is inappropriate to cite this document as other than work in progress. </p> 
+
+<p>This document was produced by a group operating under the <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/Consortium/Patent-Policy-20040205/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">5 February 2004 W3C Patent Policy</loc>. The group does not expect this document to become a W3C Recommendation. This document is informative only. W3C maintains a <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/2004/01/pp-impl/19552/status#disclosures" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">public list of any patent disclosures</loc> made in connection with the deliverables of the XSL Working Group; those pages also include instructions for disclosing a patent. An individual who has actual knowledge of a patent which the individual believes contains <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/Consortium/Patent-Policy-20040205/#def-essential" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Essential Claim(s)</loc> must disclose the information in accordance with <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/Consortium/Patent-Policy-20040205/#sec-Disclosure" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">section 6 of the W3C Patent Policy</loc>.</p>
+ </status>
+	<langusage>
+            <language id="en-US">English</language>
+	</langusage>
+      <revisiondesc><ednote><edtext></edtext></ednote></revisiondesc>
+</header>
+
+<body>
+
+<div1 id="introduction">
+
+<head>Introduction</head>
+
+<p>This document is a characterization of requirements and use cases for <bibref ref="xslt30"/>.
+The section <specref ref="requirements"/> lists enhancements requested over time that 
+may be addressed in XSLT 3.0. The relative priorities to be assigned to these different
+enhancements are still being decided.</p>
+
+<p>Use cases are presented in two different styles:
+section <specref ref="scenarios"/> contains real-world scenarios illustrating some 
+shortcomings of <bibref ref="xslt20"/>, while section <specref ref="tasks"/> contains descriptions
+of specific transformation tasks that make it possible to analyze the implementation in XSLT 2.0
+and the proposed implementation in XSLT 3.0.</p>
+
+</div1>
+
+<div1 id="requirements">
+
+<head>Requirements</head>
+
+<div2>
+<head>Enabling Streamable Processing</head>
+
+<p>XSLT should provide some facilities to enable transformation of a source document on the fly
+without constructing a complete tree representation of the document in memory. Difficulties with
+transformations when the entire document cannot fit into memory or when results must be produced
+while reading the input are the main motivation for this requirement.</p>
+
+<p>The streaming facilities can impose constraints on stylesheets to ensure that streamable 
+processing is possible. There must be a way to determine if a construct is streamable and whether 
+the processor can guarantee that it will be processed using streaming.</p>
+
+<p>To facilitate the analysis of streamability, new explicit constructs for some typical tasks may be added 
+to the language. The constructs would be useful in themselves not only in conjunction with streaming.</p>
+
+<ulist>
+  <item><p>Merging several sorted input sequences.</p></item>
+  <item><p>Computing multiple results during a single scan of the input data.</p></item>
+  <item><p>Adding an explicit instruction for iterative processing of a sequence.</p></item>
+  <item><p>Adding a declaration of mode so that properties like the streamability can be declared on the mode.</p></item>
+</ulist>
+</div2>
+
+<div2>
+<head>Modes and Schema-awareness</head>
+
+<p>The ability to take advantage of schema-awareness in XSLT 2.0 is
+limited by the fact that most of the code consists of template rules, and in a
+typical template rule written with match="elementname" there is no type
+information available statically about the type of the context node. Rewriting
+all the template rules to use match="schema-element(elementname)" is laborious,
+and only works for elements declared globally; it also makes it very difficult
+to maintain parallel schema-aware and non-schema-aware versions of the
+stylesheet.</p>
+
+<p>This problem can be reduced by making schema-awareness a property of a mode. 
+Modes could be declared so that rules in this mode will only match untyped nodes, 
+or to treat an element name E used at the start of a match pattern as schema-element(E); 
+either for all elements or for the elements that corresponds to the name of a global element 
+declaration.</p>
+</div2>
+
+<div2>
+<head>Composite Keys</head>
+
+<p>Composite (multi-part) sort keys are allowed in XSLT 2.0, but composite access keys (xsl:key) 
+or grouping keys are not allowed. Users are required to construct such keys by string concatenation, 
+which is clumsy and error prone because the result may not be unique, and it prevents use of non-string 
+types as keys.</p>
+
+<p>Composite access keys and composite grouping keys can be allowed.</p>
+</div2>
+
+<div2>
+<head>The <el>xsl:analyze-string</el> Instruction Applied to an Empty Sequence</head>
+
+<p>The <el>fn:analyze-string()</el> function which has been introduced in <bibref ref="xpath30-functions"/> 
+behaves like most string functions in that it accepts an empty sequence as input, and treats it in the same way 
+as a zero-length string. The <el>xsl:analyze-string</el> instruction in XSLT 2.0 does not work this way: it
+reports an error if the input is an 
+empty sequence.</p>
+
+<p>This can be changed for usability, for consistency, and to make it a little bit easier for 
+implementations to reuse code between <el>xsl:analyze-string</el> and <el>fn:analyze-string()</el>.</p>
+</div2>
+
+<div2>
+<head>Context Item for a Named Template</head>
+
+<p>The scope for static checking of named templates against a schema is very limited in XSLT 2.0, because 
+the type of the context item is not known and cannot be declared.</p>
+
+<p>A mechanism is needed to declare the type and other properties of the context item at the level of the 
+initial stylesheet invocation. It would be useful to reuse this construct to allow declaration of the context item 
+supplied to a named template. </p>
+</div2>
+
+<div2>
+<head>Traditional Hebrew Numbering</head>
+
+<p>There are issues with "Traditional Hebrew" numbering. Sometimes numbers are printed with 
+additional marks to indicate that they are numbers, sometimes they aren't.  The XSLT 2.0 specification
+ uses both conventions, once in the example for dates, once in the example for numbering.  The types 
+of additional marks also change.  In modern texts, numbers are sometimes marked with a geresh following 
+the number, and sometimes with a gershayim; In archaic texts, overdots are sometimes used to indicate that the
+value is numeric and not a word. When the number is represented as words, it could be masculine or feminine, in
+both ordinal and cardinal forms.  There's currently no way to specify masculine or feminine for cardinal forms.
+There are two conventions for how to specify a number in words: The modern convention (the equivalent of 
+representing 1234 as "one thousand two hundred thirty four") and the archaic convention ("four and thirty 
+and two hundred and one thousand").</p>
+
+<p>What can help is an additional way to provide the XSLT processor with nonstandard language-specific
+options.</p>
+</div2>
+
+<div2>
+<head>Separate Compilation of Stylesheet Modules</head>
+
+<p>As XSLT applications become larger, there is a requirement for separate
+compilation of stylesheet modules. The design of XSLT 2.0 makes this difficult
+because there are only few constraints on what an importing/including stylesheet
+can do to change the behavior of an imported/included stylesheet. Some of the
+changes that are needed to make separate compilation viable include:</p>
+
+<ulist>
+<item><p>a change to the syntax and/or semantics of xsl:include and xsl:import to
+recognize the existence of precompiled stylesheet modules,</p></item>
+<item><p>an addition of attributes controlling visibility of the declarations of
+functions, named templates, global variables and other objects such as
+attribute sets in a precompiled module,</p></item>
+<item><p>rules constraining the ability to override variables, templates and
+  functions,</p></item>
+  <item><p>some kind of connection between importing and modes,</p></item>
+<item><p>making some declarations such as <el>xsl:strip-space</el> and <el>xsl:output</el> less
+  global.</p></item>
+</ulist>
+
+<p>Some constraints will apply in stylesheet modules that are suitable for separate compilation.</p>
+</div2>
+
+<div2>
+<head>The <att>start-at</att> Attribute of <el>xsl:number</el></head>
+
+<p>A simple and useful addition to <el>xsl:number</el> would be an attribute
+<att>start-at="expression"</att> to control the first number in the numbering sequence (defaulting to 1).
+This will be useful for example where numbering is to run across the documents in a collection.</p>
+</div2>
+
+<div2>
+<head>Allowing <el>xsl:variable</el> before <el>xsl:param</el></head>
+
+<p>The XSLT 2.0 specification forbids intermixing of <el>xsl:variable</el> and <el>xsl:param</el> in templates. 
+This seems to be unnecessarily restrictive to some users.  Allowing <el>xsl:variable</el> before <el>xsl:param</el>
+in a template would be useful for some use cases, for example to calculate default parameter values. </p>
+</div2>
+
+<div2>
+<head>Combining <att>group-starting-with</att> and <att>group-ending-with</att></head>
+
+<p>The <att>group-starting-with</att> and <att>group-ending-with</att> attributes are not allow to coexist 
+on the <el>xsl:for-each-group</el> instruction in XSLT 2.0. Removing this restriction would provide a natural 
+solution to some grouping use cases. For example the grouping of the following sequence of elements into a true 
+hierarchy.</p>
+
+<eg id="scenarion-combining-xml"><![CDATA[
+<start/>
+<item/>
+<item/>
+<start/>
+<item/>
+<end/>
+<item/>
+<end/>
+]]></eg>
+</div2>
+
+<div2>
+<head>Improvements to Schema for Stylesheets</head>
+
+<p>The patterns for NCNames and QNames should be made consistent and more precise regarding the naming 
+rules for the first character and later characters. This affects xsl:QName, nametests, and method, and could be an
+opportunity to define "QName-but-not-NCName" as a type.</p>
+
+<p>The complexType declarations for "text-element-base-type" and "transform-element-base-type" belong 
+in Part A.</p>
+</div2>
+
+<div2>
+<head>Setting Initial Template Parameters</head>
+
+<p>Parameters passed to the transformation are matched against stylesheet parameters, not
+against the template parameters declared within the initial template. The initial template parameters 
+take their default values.</p>
+
+<p>This restriction can be relaxed. APIs will be allowed to allow the parameters to the initial template 
+to be set. This does not mean that every invocation API must offer this capability; some invocation
+interfaces do not allow parameters to be set at all.</p>
+</div2>
+
+<div2>
+<head>Invoking XQuery from XSLT</head>
+
+<p>XSLT should have a way to invoke XQuery, including one or more of these ways:</p>
+
+<ulist>
+<item><p>Dynamic evaluation, similar to an instruction to evaluate XSLT code dynamically from XSLT.</p></item>
+  <item><p>Importing an XQuery library, so that its functions can be called from an XSLT stylesheet.</p></item>
+  <item><p>Embedding XQuery in a stylesheet.</p></item>
+  <item><p>Invoking statically known queries, e.g., xquery-invoke("query.xqy", $src).</p></item>
+</ulist>
+</div2>
+
+<div2>
+<head>Enhancement to Sorting and Grouping</head>
+
+<p>The following extensions could be made to XSLT grouping and sorting capabilities:</p>
+
+<ulist>
+<item><p>Allow xsl:variable before xsl:sort, to compute a value that can be used
+both in the sort key expression and in the subsequent processing of the
+relevant item.</p></item>
+  <item><p>Allow grouping keys to be specified in a separate group element.</p></item>
+  <item><p>Use this to allow composite grouping keys.</p></item>
+  <item><p>Allow control over how a sequence-valued group key is handled.</p></item>
+  <item><p>Allow variables to be declared before the group-by OR group-starting-when in place of group-starting-with; 
+the value is an expression rather than a pattern, and a new group starts when the expression is
+true.</p></item>
+</ulist>
+</div2>
+
+<div2>
+<head>Enhancement to Conditional Modes</head>
+
+<p>It would be useful to set mode to the current mode to be able to set the mode conditionally, 
+based on the current mode. Additionally, it would help to make the mode conditional (dependent 
+on the current mode) but not be the same as the current mode. In other words, the requirement 
+is to dispatch to a different mode depending on what the current mode is.</p>
+
+<p>This requirement does not mean to allow the <att>mode</att> attribute on <el>xsl:apply-templates</el> 
+to be set dynamically. Other options like the current-mode() function should be considered.</p>
+</div2>
+
+<div2>
+<head>Default Initial Template</head>
+<p>It would be useful as the stylesheet author to be able to define a default initial template within the stylesheet.
+This would allow to run a transformation with no input without the need for the user to supply the name of initial 
+template. For example:</p>
+
+<eg id="scenarion-def-init-template"><![CDATA[
+<xsl:stylesheet ... 
+  default-initial-template="main">
+
+  <xsl:template name="main">
+  ...
+]]></eg>
+</div2>
+
+</div1>
+
+<div1 id="scenarios">
+
+<head>Real-World Scenarios</head>
+
+<p>The use cases described in this section illustrate when real users reach 
+limits of existing XML transformation standards. The use cases are elaborated in
+form of short stories.</p>
+
+<div2 id="scenario-mpeg21">
+
+<head>Transforming MPEG-21 BSDL</head>
+
+<p>The BSDL (Bitstream Syntax Description Language) is an XML schema developed 
+within the <bibref ref='iso-21000-7'/> standard (a part of MPEG-21 framework) 
+in order to describe the high-level structure of a scalable video bitstream. The 
+strength of BSDL lies in fact that it allows a bitstream adaptation by means of 
+changing an XML-based description of bitstream which makes it possible to create 
+a universal adaptation engine.</p>
+
+<p>As the size of BSDL files is proportional to the number of bitstream frames 
+the BSDL files can be rather large. Apart from the number of frames the size of 
+BSDL files depends on the coding format of the video stream and the level of 
+detail of the BSDL. The more detail a BSDL contains, the larger is its size.</p>
+
+<p>For example, an H.264/AVC encoded video stream lasting 7 minutes has a size 
+of 155 MB and contains approximately 10200 frames. The size of corresponding 
+BSDL file is 7.7 MB. XSLT transformations of BSDL files for longer streams often 
+touch limits of a processing environment. Transformations of BSDL descriptions 
+of "infinite" live streams require custom transformation tools.</p>
+
+<p>The following fragment of BSDL file - Bitstream Syntax schema for temporal 
+scalable H.264/AVC bitstreams - contains a <el>byte_stream_nal_unit</el> element, 
+representing a NAL (Network Abstraction Layer) unit. An BSDL file can contain many 
+thousands of such or similar repeating elements.</p>
+
+<eg id="scenarion-bsdl-xml"><![CDATA[
+<?xml version="1.0"?>
+<Byte_stream xmlns="h264_avc"
+	     bs1:bitstreamURI="example_cif.264"
+	     xmlns:bs1="urn:mpeg:mpeg21:2003:01-DIA-BSDL1-NS"
+	     xsi:schemaLocation="h264_avc h264_avc.xsd"
+	     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	     xmlns:jvt="h264_avc">
+
+  <byte_stream_nal_unit>
+    <zero_byte>00</zero_byte>
+    <startcode>000001</startcode>
+    <nal_unit>
+      <forbidden_zero_bit>0</forbidden_zero_bit>
+      <nal_ref_idc>3</nal_ref_idc>
+      <nal_unit_type>5</nal_unit_type>
+      <raw_byte_sequence_payload>
+	<slice_layer_without_partitioning_rbsp>
+	  <slice_header>
+	    <first_mb_in_slice>0</first_mb_in_slice>
+	    <slice_type>7</slice_type>
+	    <pic_parameter_set_id>0</pic_parameter_set_id>
+	    <frame_num xsi:type="b4">0</frame_num>
+	    <idr_pic_id>0</idr_pic_id>
+	    <pic_order_cnt_lsb xsi:type="b6">0</pic_order_cnt_lsb>
+	  </slice_header>
+	  <stuffbits>0</stuffbits>
+	  <payload_data>29 24031</payload_data>
+	</slice_layer_without_partitioning_rbsp>
+      </raw_byte_sequence_payload>
+    </nal_unit>
+  </byte_stream_nal_unit>
+  :
+
+</Byte_stream>
+]]></eg>
+
+<p>See <bibref ref="bsdl-content-adaptation"/> for more details.</p>
+
+</div2>
+
+<div2 id="scenario-soap-validation">
+
+<head>Validation of SOAP Digital Signatures</head>
+
+<p>The <bibref ref='xml-signature'/> technology has been widely adopted by Web 
+Services to provide message-level security. As the design of XML Signature
+introduces a number of complex processing steps the validation of signatures often 
+lead to performance and scalability problems.</p>
+
+<p>The processing steps include:</p>
+
+<olist>
+  <item><p>selection of a nodeset</p></item>
+  <item><p>canonicalization</p></item>
+  <item><p>applying a digest algorithm</p></item>
+</olist>
+
+<p>While the third step is a specific cryptographic task the first and the 
+second step can be seen as transformation of an XML message into an XML fragment. 
+Using traditional XML tools like DOM, XPath and XSLT, the first two steps are 
+considered a bottleneck of secure Web Service systems. With larger XML messages 
+the processing time becomes unacceptable for real-time services.</p>
+
+<p>Current services requiring better performance and scalability are thrown upon
+proprietary solutions, as described in <bibref ref='lu'/>.</p>
+
+</div2>
+
+<div2 id="scenario-rdf-dump">
+
+<head>Transformation of the RDF Dump of the Open Directory</head>
+
+<p>The Open Directory (http://www.dmoz.org) is a large open source web catalog, 
+whose content is organized into topics. These topics are hierarchically 
+organized (topics may contain subtopics). Every topic contains a list of 
+resources, consisting of a title, its URL, and a description. The complete 
+content of the Open Directory is available for download as one very large 
+(> 1 GB) RDF/XML dump.</p>
+
+<p>Processing this RDF/XML file with XML software obviously requires 
+streaming techniques. One possible task is to create a human readable 
+representation by transforming the RDF file into multiple HTML pages. The 
+resulting HTML should be similar to the existing web pages under 
+www.dmoz.org.</p>
+
+<p>The required transformation is rather simple: create a single HTML page for 
+every topic that contains links to its subtopics as well as the title,  the description 
+and the URL of its resources. Since all topic elements occur as a flat list this
+ transformation can be done using similar transforming strategies as demonstrated 
+ in <specref ref="d3-flat-hierarchical"/>. More detailed information about this 
+RDF transforming using STX is provided in <bibref ref="becker"/>.</p>
+
+<p>Another variant is to start a new group for each <el>Topic</el> containing values
+from all the following <el>ExternalPage</el> elements. This is the same task as
+<specref ref="d1-grouping"/>, task b2.</p>
+
+</div2>
+
+<div2 id="scenario-mobile">
+
+<head>Transformations on a Cell Phone</head>
+
+<p>Mobile devices such as cell phones, PDAs, etc. often provide very limited RAM
+memory. Applications for such devices must be specially designed to respect 
+these limitations. An XML processing which takes place on these devices should not 
+require to store both XML source and result concurrently in memory. A strategy that 
+consumes source XML and produces the result simultaneously is much more appropriate.</p>
+
+<p>A mobile blogging application is an example of application which needs to process 
+XML in the constrained environment. Using this application, people may create blog 
+entries on their mobile device and post them to special blog servers (aka blog service 
+providers - BSP). As different BSPs use different XML formats the challenge is to 
+provide an architecture for one mobile application that works with different BSPs.
+This can be achieved by transforming the entered blog data (which is represented 
+as XML in the mobile blog application) into the required XML format of the receiving 
+BSP directly on the mobile device. For every BSP there is a special plugin that knows 
+the transformation rules.</p>
+
+<p>Source XML:</p>
+
+<eg id="scenario-mobile-source"><![CDATA[
+<?xml version="1.0"?>
+<entry>
+  <title type='text'>New Post</title>
+  <content type='xhtml'>
+    <div id='content'>Text embedded with the picture. </div>
+    <div id='picture'>
+      <object type='image/jpeg' id='pic[0]'
+          data='data:image/jpeg;base64,Base64CodeEmbedded'/>
+    </div>
+  </content>
+  <author>
+    <name>This is where the authors are posted.</name>
+  </author>
+</entry>
+]]></eg>
+
+<p>Target XML (Flickr):</p>
+
+<eg id="scenarion-mobile-flicker"><![CDATA[
+<?xml version="1.0" encoding=" ISO-8859-1" ?>
+<a:entry xmlns:a="http://purl.org/atom/ns#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title mode="escaped">New Post</title>
+  <summary mode="escaped">Text embedded with the picture. </summary>
+  <content type="image/jpeg" mode="base64">
+    Base64CodeEmbedded
+  </content>
+  <issued />
+  <standalone xmlns="http://sixapart.com/atom/typepad#">
+    1
+  </standalone>
+</a:entry> 
+]]></eg>
+
+<p>One of the specific problems was the base64 encoded text for representing 
+images. It would be desirable to stream this text node, too. The current XML data 
+model represents this text as one text node so it is difficult or even impossible 
+to transform this text in smaller parts using XSLT, even if the whole task is to 
+ the text as it is to the result.</p>
+
+<p>See <bibref ref="mobile-blogging"/> for more details.</p>
+
+</div2>
+
+<div2 id="scenario-multiple-fo">
+
+<head>XSL FO Multiple Extraction/Processing</head>
+
+<p>Transformation of an extensive XML document consisting of sections,
+headings, paragraphs, and figures. The result consists of a formatted
+document containing three, consecutive, parts:</p>
+
+<ulist>
+<item><p>heading titles extracted from the source document (aka table of content)</p></item>
+  <item><p>figure titles extracted from the source document (aka list of figures)</p></item>
+  <item><p>the source document transformed in a simple, mostly linear, way</p></item>
+</ulist>
+
+<p>This kind of transformation is very common for producing an XSL FO
+instance that is then formatted.</p>
+
+<p>The complete stylesheet for this transformation can be downloaded from
+<loc href="http://www.w3.org/2010/06/ABmp_doc.xsl">http://www.w3.org/2010/06/ABmp_doc.xsl</loc>.</p>
+
+</div2>
+
+<div2 id="scenarion-eft-edi">
+
+<head>EFT/EDI Transformation</head>
+
+<p>Given a huge (more than 1GB) denormalized XML extraction from database 
+or other data source. The XSLT implementation needs to process nested regrouping 
+and sorting along with varies calculation and produce grouped and sorted output 
+as plain text.</p>
+
+<p>This is a rather simplified version of a typical EFT/EDI (Electronic Funds 
+Transfer/Electronic Data Interchange) transformation Oracle product handles. In real life 
+such XSLT transform is not written by hand, instead the product compiles an table based 
+EFT/EDI definition with PL/SQL alike syntax to XSLT by a processor, which usually yields in 
+a complicated transformation. Nevertheless, even the simplified version does include some 
+of the major challenging part of XSLT 2.0 in terms of streaming, e.g. regrouping with 
+sorting, sorting within grouped data, and aggregation.</p>
+
+<p>The xml data is some time normalized with structure, but most of the time it's 
+rather just straightforward rowset/row dataset like following xml, and the size of 
+that can easily reach hundreds of megabyte, even gigabyte level:</p>
+
+<eg id="scenarion-eft-edi-xml"><![CDATA[
+<?xml version="1.0"?>
+<rowset>
+  <row>
+    <c1>aa</c1>
+    <c2>ab</c2>   
+    <c3>ac</c3>
+    :
+  </row>
+  <row>
+    <c1>ba</c1>
+    <c2>bb</c2>   
+    <c3>bc</c3>
+    :
+  </row>
+  :
+</rowset>
+]]></eg>
+
+<p>The XSLT is like this:</p>
+
+<eg id="scenarion-eft-edi-xslt"><![CDATA[
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <xsl:output format="text"/>
+
+  <xsl:template match="/">
+    <xsl:for-each-group select="rowset/row" group-by="c1">
+      <xsl:sort select="current-grouping-key()"/>
+      <xsl:call-template name="process_rows"/>
+    </xsl:for-each-group>
+    <xsl:text>GRAND TOTAL:</xsl:text>
+    <xsl:value-of select="sum(rowset/row/c3)"/>
+  </xsl:template>
+
+  <xsl:template name="process_rows">
+    <xsl:for-each select="current-group()">
+      <xsl:sort select="c2"/>
+      <xsl:text>FROM:</xsl:text>
+      <xsl:value-of select="c1"/>
+      <xsl:text>,TO:</xsl:text>
+      <xsl:value-of select="c2"/>
+      <xsl:text>,AMOUNT:</xsl:text>
+      <xsl:value-of select="c3"/>
+    </xsl:for-each>
+    <xsl:text>TOTAL:</xsl:text>
+    <xsl:value-of select="sum(current-group()/c3)"/>
+  </xsl:template>
+</xsl:stylesheet>
+]]></eg>
+
+</div2>
+
+<!--
+<p>TBD:</p>
+
+<ulist>
+<item>Jabber/XMPP (Extensible Messaging and Presence Protocol) processing</item>
+<item>XML representation of a Lotus Notes email database, where each message can be transformed independently of each other.</item>
+</ulist>
+-->
+
+</div1>
+
+<div1 id="tasks">
+
+<head>Tasks</head>
+
+<p>Tasks are examples of relatively simple transformations whose definitions in XSLT 2.0 are not easy, 
+  straightforward or even possible. Some of these tasks are difficult solely because of the fact that
+  one or more input or output XML documents is so large that the entire document cannot be held in memory. 
+  Other difficulties are related to merging and forking documents, restricted capabilities to iterate and 
+  the lack of common constructs (dynamic evaluation of expressions, try/catch).</p>  
+
+<p>The transformation task illustrating troubles with huge XML documents (<specref ref="d1-splitting-flat"/>) 
+  can be defined in XSLT 2.0. The processor can even recognize that there is no need to keep the entire 
+  document in memory and can run the transformation in a memory-efficient way in some cases. But there no 
+  guarantee of this behavior. New facilities suggested for XSLT 3.0 aim to guarantee that a transformation 
+  must be processed in a streaming manner.</p>
+
+<div2 id="d1-splitting-flat">
+
+<head>Splitting Flat Data</head>
+
+<p><kw>Task:</kw> Split the document <specref ref="data-1a"/> so that each 
+<el>chapter</el> child is copied to a separate XML document, with a URI of the form 
+outer/chapterN.xml where N is a sequence number. The input document <specref ref="data-1a"/>
+is too large to fit into memory but each <el>chapter</el> subtree (and thus each 
+output document) fits into memory.</p>
+
+<p>XSLT 2.0 implementation.</p>
+  
+<eg id="d1-splitting-flat-xslt20"><![CDATA[
+<xsl:stylesheet version="2.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+   <xsl:template match="/wrapper">  
+    <xsl:for-each select="chapter">
+      <xsl:result-document href="chapter{position()}.xml">
+        <xsl:copy-of select="."/>
+      </xsl:result-document>
+    </xsl:for-each>
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+  
+<p>XSLT 3.0 implementation. The only difference is that the unnamed mode is explicitly
+marked as capable of being processed in a streaming manner.</p>
+
+<eg id="d1-splitting-flat-xslt30"><![CDATA[
+<xsl:stylesheet version="3.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  
+  <xsl:mode streamable="yes"/>
+  
+  <xsl:template match="/wrapper">  
+    <xsl:for-each select="chapter">
+      <xsl:result-document href="chapter{position()}.xml">
+        <xsl:copy-of select="." />
+      </xsl:result-document>
+    </xsl:for-each>
+  </xsl:template>
+  
+</xsl:stylesheet>
+]]></eg>
+
+</div2>
+
+<div2 id="d1-splitting-nested">
+
+<head>Splitting Nested Data</head>
+
+<p>The same task as <specref ref="d1-splitting-flat"/> but with a different input data.
+The main  difference is that <el>chapter</el> elements are not necessarily children of 
+the <el>wrapper</el> element.</p>
+
+<p><kw>Task:</kw> Split the document <specref ref="data-1b"/> so that each 
+<el>chapter</el> which is not descendant of another <el>chapter</el> element is copied 
+to a separate XML document, with a URI of the form chapterN.xml where N is 
+a sequence number.</p>
+
+<p>XSLT 2.0 implementation.</p>
+
+<eg id="d1-splitting-nested-xslt20"><![CDATA[
+<xsl:stylesheet version="2.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <xsl:template match="/wrapper">
+    <xsl:for-each select="//chapter[not(ancestor::chapter)]">
+      <xsl:result-document href="chapter{position()}.xml">
+        <xsl:copy-of select="."/>
+      </xsl:result-document>
+    </xsl:for-each>
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+
+<p>XSLT 3.0 implementation. Again, the only difference is that the unnamed mode is explicitly
+ marked as streamable.</p>
+
+<eg id="d1-splitting-nested-xslt30"><![CDATA[
+<xsl:stylesheet version="3.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  
+  <xsl:mode streamable="yes"/>
+  
+  <xsl:template match="/wrapper">
+    <xsl:for-each select="outermost(.//chapter)">
+      <xsl:result-document href="chapter{position()}.xml">
+        <xsl:copy-of select="."/>
+      </xsl:result-document>
+    </xsl:for-each>
+  </xsl:template>
+  
+</xsl:stylesheet>
+]]></eg>
+
+</div2>
+
+<div2 id="d1-joining">
+
+<head>Joining</head>
+
+<p><kw>Task:</kw> Do the inverse of the <specref ref="d1-splitting-flat"/> use 
+case. That is, join documents produced by the <specref ref="d1-splitting-flat"/>
+use case and create a single <specref ref="data-1a"/> document on the output.</p>
+
+<p>XSLT 2.0 implementation.</p>
+
+<eg id="d1-joining-xslt20"><![CDATA[
+<xsl:stylesheet version="2.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <xsl:param name="last-doc"/>
+
+  <xsl:template name="main">
+    <wrapper>
+      <xsl:for-each select="1 to $last-doc">
+        <xsl:copy-of select="document(concat('chapter', ., '.xml'))"/>
+      </xsl:for-each>
+    </wrapper>
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+
+<p>XSLT 3.0 implementation. This version uses a new construct <el>xsl:source-document</el> that reads a source document and processes the content of the document in a streaming manner.</p>
+
+<eg id="d1-joining-xslt30"><![CDATA[
+<xsl:stylesheet version="3.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                exclude-result-prefixes="xs">
+
+  <xsl:param name="last-doc" as="xs:integer" />
+  
+  <xsl:template name="xsl:initial-template">
+    <wrapper>
+      <xsl:for-each select="1 to $last-doc">
+        <xsl:source-document streamable="yes" href="{'chapter' || . || '.xml'}">
+          <xsl:copy-of select="." />
+        </xsl:source-document>
+      </xsl:for-each>
+    </wrapper>
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+
+</div2>
+
+<div2 id="d1-concatenation">
+
+<head>Concatenation</head>
+
+<p><kw>Task:</kw> Given two 1GB documents with structure of <specref ref="data-1a"/>, 
+create a single 2GB file with the same structure, that contains first all the 
+<el>chapter</el> children from the first file, then all the <el>chapter</el> children 
+from the second file. A relevant difference between this use case and 
+<specref ref="d1-joining"/> is that the two input documents are too large to fit 
+into memory in this use case, while <specref ref="d1-joining"/> concatenates a number 
+of smaller input documents each of them can be held in memory.</p>
+
+<p>XSLT 2.0 implementation.</p>
+
+<eg id="d1-concatenation-xslt20"><![CDATA[
+<xsl:stylesheet version="2.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <xsl:param name="doc1"/>
+  <xsl:param name="doc2"/>
+
+  <xsl:template name="main">
+    <wrapper>
+      <xsl:copy-of select="document($doc1)/wrapper/chapter"/>
+      <xsl:copy-of select="document($doc2)/wrapper/chapter"/>
+    </wrapper>
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+
+<p>XSLT 3.0 implementation.  The unnamed mode is explicitly marked as streamable 
+and the documents are read using <el>xsl:source-document</el>.</p>
+
+<eg id="d1-concatenation-xslt30"><![CDATA[
+<xsl:stylesheet version="3.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  
+  <xsl:mode streamable="yes"/>
+
+  <xsl:param name="doc1" />
+  <xsl:param name="doc2" />
+  
+  <xsl:template name="xsl:initial-template">
+    <wrapper>
+      <xsl:source-document streamable="yes" href="{$doc1}">
+        <xsl:copy-of select="wrapper/chapter"/>
+      </xsl:source-document>
+      <xsl:source-document streamable="yes" href="{$doc2}">  
+        <xsl:copy-of select="wrapper/chapter"/>
+      </xsl:source-document>  
+    </wrapper>
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+
+</div2>
+
+<div2 id="d1-adding-children">
+
+<head>Adding Children</head>
+
+<p><kw>Task:</kw> Given an input document with the structure of 
+<specref ref="data-1a"/>, produce a new 1GB document where a predefined 
+nested content (child elements) is added to each <el>chapter</el> element. 
+The existing contents of the <el>chapter</el> elements are retained. 
+The new contents are added at the beginning.</p>
+
+<p>XSLT 2.0 implementation.</p>
+
+<eg id="d1-adding-children-xslt20"><![CDATA[
+<xsl:stylesheet version="2.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <xsl:param name="content_to_add"/>
+
+  <xsl:template match="chapter">
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+      <xsl:copy-of select="document($content_to_add)"/>
+      <xsl:copy-of select="node()"/>
+    </xsl:copy>
+  </xsl:template>
+
+  <xsl:template match="@*|node()">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+
+<p>XSLT 3.0 implementation. The unnamed mode is marked as streamable. The <att>on-no-match</att> attribute specifies which built-in rules to use to process a node that does not match any user-written template. The value "shallow-copy" means that the source tree is copied unchanged to the output. This why the "identity template" can be left out from the stylesheet.</p>
+
+<eg id="d1-adding-children-xslt30"><![CDATA[
+<xsl:stylesheet version="3.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <xsl:mode streamable="yes" on-no-match="shallow-copy" />
+
+  <xsl:param name="content-to-add"/>
+
+  <xsl:template match="chapter">
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+      <xsl:copy-of select="doc($content-to-add)"/>
+      <xsl:copy-of select="node()"/>
+    </xsl:copy>
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+
+</div2>
+
+<div2 id="d1-renaming-nested">
+
+<head>Renaming and Counting Nested Elements</head>
+
+<p><kw>Task:</kw> Rename all <el>chapter</el> elements in <specref ref="data-1b"/> 
+to <el>section</el>. Additionally, print the number of renamed elements 
+at the end of the document.</p>
+
+<p>XSLT 2.0 implementation.</p>
+
+<eg id="d1-renaming-nested-xslt20"><![CDATA[
+<xsl:stylesheet version="2.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <xsl:template match="/wrapper">
+    <xsl:copy>
+      <xsl:apply-templates />
+      <renamed count="{count(//chapter)}" />
+    </xsl:copy>
+  </xsl:template>
+
+  <xsl:template match="chapter">
+    <section>
+      <xsl:copy-of select="@*" />
+      <xsl:apply-templates />
+    </section>
+  </xsl:template>  
+
+  <xsl:template match="node()">
+    <xsl:copy>
+      <xsl:copy-of select="@*" />
+      <xsl:apply-templates />
+    </xsl:copy>
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+
+<p>XSLT 3.0 implementation. The unnamed mode is marked as streamable. The default built-in rule is "shallow-copy". A new instruction <el>xsl:fork</el> is used to enable streamed processing in the case where several constructs (<el>xsl:apply-templates</el>, count()) need to be evaluated during a single pass over the input data. The result is exactly the same as if the xsl:fork  element was not there; it only provides a hint to processor that contained instructions should be evaluated during a single pass. The instruction must be independent.</p>
+
+<eg id="d1-renaming-nested-xslt30a"><![CDATA[
+<xsl:stylesheet version="3.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  
+  <xsl:mode name="rename" streamable="yes" on-no-match="shallow-copy" />
+  
+  <xsl:template match="/wrapper">
+    <xsl:copy>
+      <xsl:fork>  
+        <xsl:sequence>
+          <xsl:apply-templates />
+          <renamed count="{count(//chapter)}" />
+        </xsl:sequence>
+      </xsl:fork>
+    </xsl:copy>
+  </xsl:template>
+  
+  <xsl:template match="chapter">
+    <section>
+      <xsl:copy-of select="@*" />
+      <xsl:apply-templates />
+    </section>  
+  </xsl:template>
+  
+</xsl:stylesheet>
+]]></eg>
+
+</div2>
+
+<div2 id="d1-renaming-nested-more-counting">
+
+<head>Renaming and Counting Nested Elements and Counting Other Elements</head>
+
+<p><kw>Task:</kw> The same task like <specref ref="d1-renaming-nested"/> but in addition we also want 
+to count <el>removed</el> in <specref ref="data-1b"/>. The number of renamed <el>chapter</el> elements and the number of <el>removed</el> elements is printed out at the end of the document.</p>
+
+<p>XSLT 2.0 implementation.</p>
+
+<eg id="d1-renaming-nested-more-counting-xslt20"><![CDATA[
+<xsl:stylesheet version="2.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <xsl:template match="/wrapper">
+    <xsl:copy>
+      <xsl:apply-templates />
+      <renamed count="{count(//chapter)}" />
+      <removed count="{count(//removed)}" />
+    </xsl:copy>
+  </xsl:template>
+
+  <xsl:template match="chapter">
+    <section>
+      <xsl:copy-of select="@*" />
+      <xsl:apply-templates />
+    </section>
+  </xsl:template>  
+  
+  <xsl:template match="node()">
+    <xsl:copy>
+      <xsl:copy-of select="@*" />
+      <xsl:apply-templates />
+    </xsl:copy>
+  </xsl:template>
+
+</xsl:transform>
+]]></eg>
+
+<p>XSLT 3.0 implementation. The unnamed mode is marked as streamable. The default built-in rule is "shallow-copy". The <el>xsl:fork</el> instruction is used to enable streamed processing of three independent constructs: <el>xsl:apply-templates</el>, count(//chapter), count(//removed).</p>
+
+<eg id="d1-renaming-nested-more-counting-xslt30a"><![CDATA[
+<xsl:stylesheet version="3.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  
+  <xsl:mode name="rename-remove" streamable="yes" on-no-match="shallow-copy"/>
+  
+  <xsl:template match="/wrapper">
+    <xsl:copy>
+      <xsl:fork>
+        <xsl:sequence>
+          <xsl:apply-templates />
+          <renamed count="{count(//chapter)}" />
+          <removed count="{count(//removed)}" />
+        </xsl:sequence>
+      </xsl:fork>
+    </xsl:copy>
+  </xsl:template>
+  
+  <xsl:template match="chapter">
+    <section>
+      <xsl:copy-of select="@*" />
+      <xsl:apply-templates />
+    </section>  
+  </xsl:template>
+  
+</xsl:stylesheet>
+]]></eg>
+
+</div2>
+
+<div2 id="d1-filtering-att">
+
+<head>Filtering According to Attribute</head>
+
+<p><kw>Task:</kw> Given an input document with the structure of 
+<specref ref="data-1a"/>, remove all <el>chapter</el> elements which have
+the <att>removed</att> attribute.</p>
+
+<p>XSLT 2.0 implementation.</p>
+
+<eg id="d1-filtering-att-xslt20"><![CDATA[
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+               version="2.0">
+
+  <xsl:template match="chapter[@removed]" />
+  
+  <xsl:template match="node()">
+    <xsl:copy>
+      <xsl:copy-of select="@*" />
+      <xsl:apply-templates />
+    </xsl:copy>
+  </xsl:template>    
+
+</xsl:stylesheet>
+]]></eg>
+
+<p>XSLT 3.0 implementation. The unnamed mode is marked as streamable. The default built-in rule "shallow-copy" is used for all nodes but <el>chapter</el> elements with <att>removed</att> attribute.</p>
+
+<eg id="d1-filtering-att-xslt30"><![CDATA[
+<xsl:stylesheet version="3.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <xsl:mode streamable="yes" on-no-match="shallow-copy"/>
+  
+  <xsl:template match="chapter[@removed]" />
+
+</xsl:stylesheet>
+]]></eg>
+
+</div2>
+
+<div2 id="d1-filtering-child">
+
+<head>Filtering According to Child</head>
+
+<p><kw>Task:</kw> Given an input document with the structure of 
+<specref ref="data-1a"/>, remove all <el>chapter</el> elements which have 
+at least one <el>removed</el> child.</p>
+
+<p>XSLT 2.0 implementation.</p>
+
+<eg id="d1-filtering-child-xslt20"><![CDATA[
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+               version="2.0">
+
+  <xsl:template match="chapter[removed]"/>
+  
+  <xsl:template match="node()">
+    <xsl:copy>
+      <xsl:copy-of select="@*" />
+      <xsl:apply-templates />
+    </xsl:copy>
+  </xsl:template>    
+
+</xsl:stylesheet>
+]]></eg>
+
+<p>XSLT 3.0 implementation. This is a windowing example. Each chapter is processed in non-streaming mode but independently on other chapters. The transformation is initiated in the unnamed streamable mode. A copy of the subtree rooted at the <el>chapter</el> element is created for each chapter and processed in a non-streamable "chapter" mode. </p>
+
+<eg id="d1-filtering-child-xslt30"><![CDATA[
+<xsl:stylesheet version="3.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <xsl:mode streamable="yes" on-no-match="shallow-copy" />
+  <xsl:mode name="chapter" streamable="no"/>
+
+  <xsl:template match="/wrapper">
+    <xsl:copy>
+      <xsl:apply-templates />
+    </xsl:copy>
+  </xsl:template>
+  
+  <xsl:template match="chapter">
+    <xsl:apply-templates select="copy-of(.)" mode="chapter"/>
+  </xsl:template>
+  
+  <xsl:template match="chapter" mode="chapter">
+    <xsl:if test="not(removed)">
+      <xsl:copy>
+        <xsl:copy-of select="@*"/>
+        <xsl:copy-of select="node()"/>
+      </xsl:copy>
+    </xsl:if>
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+
+</div2>
+
+<div2 id="d1-histogram">
+
+<head>Histogram</head>
+
+<p><kw>Task:</kw> Given a 1GB document with the structure of 
+<specref ref="data-1a"/> produce a histogram showing the frequency 
+distribution of <el>chapter</el> elements by the number of 
+paragraphs (descendant <el>p</el> elements) in each document.</p>
+
+<p>XSLT 2.0 implementation.</p>
+
+<eg id="d1-histogram-xslt20"><![CDATA[
+<xsl:stylesheet version="2.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xsl:output method="text"/>
+
+  <xsl:template match="/wrapper">
+    <!-- count the number of <p> elements in each <chapter> -->
+    <xsl:variable name="counted_p">
+      <count>
+        <xsl:for-each select="chapter">
+          <ps><xsl:value-of select="count(p)"/></ps>
+        </xsl:for-each>
+      </count>
+    </xsl:variable>
+    <!-- find min and max -->
+    <xsl:variable name="min_ps" select="min($counted_p/count/ps) cast as xs:integer" />
+    <xsl:variable name="max_ps" select="max($counted_p/count/ps) cast as xs:integer" />
+
+    <!-- do the histogram -->
+    <xsl:text>Number of "chapter" elements with N "p" elements; N from </xsl:text>
+    <xsl:value-of select="$min_ps"/><xsl:text> to </xsl:text>
+    <xsl:value-of select="$max_ps"/>
+    <xsl:text>&#010;</xsl:text>
+    <xsl:for-each select="$min_ps to $max_ps">
+      <xsl:variable name="nr_ps" select="."/>
+      <xsl:variable name="nr_chapters" select="count($counted_p/count/ps[ . = $nr_ps])"/>
+      <xsl:call-template name="do_histo_bar">
+        <xsl:with-param name="nr" select="$nr_chapters"/>
+      </xsl:call-template>
+      <xsl:text>&#010;</xsl:text>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="do_histo_bar">
+    <xsl:param name="nr" select="0"/>
+
+    <xsl:for-each select="1 to $nr">
+      <xsl:text>X</xsl:text>
+    </xsl:for-each>
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+
+<p>XSLT 3.0 implementation. The unnamed mode is marked as streamable which is the only change needed to make this stylesheet streamable. The data is stored in a variable during a single pass through the input document. The subsequent processing only uses the stored data.</p>
+
+<eg id="d1-histogram-xslt30"><![CDATA[
+<xsl:stylesheet version="3.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xsl:output method="text"/>
+  <xsl:mode streamable="yes"/>
+
+  <xsl:template match="/wrapper">
+    <!-- count the number of <p> elements in each <chapter> -->
+    <xsl:variable name="counted_p">
+      <count>
+        <xsl:for-each select="chapter">
+          <ps><xsl:value-of select="count(p)"/></ps>
+        </xsl:for-each>
+      </count>
+    </xsl:variable>
+    <!-- find min and max -->
+    <xsl:variable name="min_ps"
+      select="min($counted_p/count/ps) cast as xs:integer"/>
+    <xsl:variable name="max_ps"
+      select="max($counted_p/count/ps) cast as xs:integer"/>
+    <!-- do the histogram -->
+    <xsl:text>Number of "chapter" elements with N "p" elements; N from </xsl:text>
+    <xsl:value-of select="$min_ps"/><xsl:text> to </xsl:text>
+    <xsl:value-of select="$max_ps"/>
+    <xsl:text>&#010;</xsl:text>
+    <xsl:for-each select="$min_ps to $max_ps">
+      <xsl:variable name="nr_ps" select="."/>
+      <xsl:variable name="nr_chapters"
+        select="count($counted_p/count/ps[ . = $nr_ps])"/>
+      <xsl:call-template name="do_histo_bar">
+        <xsl:with-param name="nr" select="$nr_chapters"/>
+      </xsl:call-template>
+      <xsl:text>&#010;</xsl:text>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="do_histo_bar">
+    <xsl:param name="nr" select="0"/>
+    <xsl:for-each select="1 to $nr">
+      <xsl:text>X</xsl:text>
+    </xsl:for-each>
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+
+</div2>
+
+<div2 id="d3-hierarchical-flat">
+
+<head>Hierarchical to Flat</head>
+
+<p><kw>Task:</kw> Starting with a tree structure convert it to a flat list of 
+node that keeps the relation between node (with addition of two attributes
+<att>@parent</att> and <att>@preceding-sibling</att>). See 
+<specref ref="data-3"/>.</p>
+
+<p>XSLT 2.0 implementation.  This version reads the parent and preceding-sibling ID 
+from the tree. Parent and preceding-sibling axes are used which makes the streaming processing difficult.</p>
+
+<eg id="d3-hierarchical-flat-xslt20a"><![CDATA[
+<xsl:stylesheet version="2.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <xsl:template match="/tree">
+    <nodes>
+      <xsl:apply-templates select="node"/>
+    </nodes>
+  </xsl:template>
+
+  <xsl:template match="node">
+  <xsl:text>&#010;</xsl:text>
+    <node>
+      <xsl:attribute name="id" select="@id"/>
+      <xsl:attribute name="parent" select="if (parent::tree) then 'ROOT' else parent::node/@id" />
+      <xsl:attribute name="preceding-sibling" select="preceding-sibling::node[1]/@id" />
+      <xsl:copy-of select="content"/>
+    </node>
+    <xsl:apply-templates select="node"/>
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+
+<p>Another XSLT 2.0 implementation. The parent and preceding-sibling ID are passed along as parameters. 
+which avoids both parent and preceding-sibling axes and is more convenient for streaming.</p>
+
+<eg id="d3-hierarchical-flat-xslt20b"><![CDATA[
+<xsl:stylesheet version="2.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <xsl:template match="/tree">
+    <nodes>
+      <xsl:apply-templates select="node[1]"/>
+    </nodes>
+  </xsl:template>
+
+  <xsl:template match="node">
+    <xsl:param name="pid" select="'ROOT'"/>
+    <xsl:param name="sid"/>
+    <xsl:text>&#010;</xsl:text>    
+    <node>
+      <xsl:attribute name="id" select="@id"/>
+      <xsl:attribute name="parent" select="$pid"/>
+      <xsl:attribute name="preceding-sibling" select="$sid"/>
+      <xsl:copy-of select="content"/>
+    </node>
+    <xsl:apply-templates select="node[1]">
+      <xsl:with-param name="pid" select="@id"/>
+      <xsl:with-param name="sid" select="''"/>
+    </xsl:apply-templates>
+    <xsl:apply-templates select="following-sibling::node[1]">
+      <xsl:with-param name="pid" select="$pid"/>
+      <xsl:with-param name="sid" select="@id"/>
+    </xsl:apply-templates>
+  </xsl:template>
+ 
+</xsl:stylesheet>
+]]></eg>
+
+<p>XSLT 3.0 implementation. It's based on the second XSLT 2.0 implementation of
+the task above. The unnamed mode is marked as streamable. There are three
+downwards selections in the last template - &lt;xsl:copy-of select="content"/&gt;,
+child::node[1] and following-sibling::node[1] of which would not be guaranteed
+to be streamable.</p>
+
+<eg id="d3-hierarchical-flat-xslt30a"><![CDATA[
+<xsl:stylesheet version="3.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  
+  <xsl:mode streamable="yes"/>  
+  
+  <xsl:template match="/tree">
+    <nodes>
+      <xsl:apply-templates select="node[1]"/>
+    </nodes>
+  </xsl:template>
+  
+  <xsl:template match="node">
+    <xsl:param name="pid" select="'ROOT'"/>
+    <xsl:param name="sid"/>
+    <xsl:text>&#010;</xsl:text>    
+    <node>
+      <xsl:attribute name="id" select="@id"/>
+      <xsl:attribute name="parent" select="$pid"/>
+      <xsl:attribute name="preceding-sibling" select="$sid"/>
+      <xsl:copy-of select="content"/>
+    </node>
+    <xsl:apply-templates select="node[1]">
+      <xsl:with-param name="pid" select="@id"/>
+      <xsl:with-param name="sid" select="''"/>
+    </xsl:apply-templates>
+    <xsl:apply-templates select="following-sibling::node[1]">
+      <xsl:with-param name="pid" select="$pid"/>
+      <xsl:with-param name="sid" select="@id"/>
+    </xsl:apply-templates>
+  </xsl:template>
+  
+</xsl:stylesheet>
+]]></eg>
+
+<p>Another XSLT 3.0 implementation with <el>xsl:iterate</el> rather than recursion. This removes 
+the issue with two downwards selections and is guaranteed streamable. However it relies on the fact that
+ <el>content</el> is the first element child of <el>node</el>.</p>
+
+<eg id="d3-hierarchical-flat-xslt30b"><![CDATA[
+<xsl:stylesheet version="3.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  
+  <xsl:mode streamable="yes"/>
+  
+  <xsl:template match="/tree">
+    <nodes>
+      <xsl:apply-templates select="*"/>
+    </nodes>
+  </xsl:template>
+  
+  <xsl:template match="node">
+    <xsl:param name="pid" select="'ROOT'"/>
+    <xsl:param name="sid" />
+    
+    <xsl:iterate select="*">
+      <xsl:param name="pid" select="$pid" />
+      <xsl:param name="sid" select="$sid" />
+      
+      <xsl:variable name="myid" select="string(@id)"/>
+      
+      <xsl:apply-templates select=".">
+        <xsl:with-param name="gpid" select="(ancestor::node[2]/@id/string(),'ROOT')[1]"/>
+        <xsl:with-param name="pid" select="parent::node/@id/string()"/>
+        <xsl:with-param name="sid" select="$sid"/>
+      </xsl:apply-templates>
+
+      <xsl:next-iteration>
+        <xsl:with-param name="pid" select="$pid"/>
+        <xsl:with-param name="sid" select="if (self::content) then '' else $myid"/>
+      </xsl:next-iteration>
+      
+    </xsl:iterate>
+  </xsl:template>
+  
+  <xsl:template match="content">
+    <xsl:param name="gpid"/>
+    <xsl:param name="pid"/>
+    <xsl:param name="sid"/>
+    
+    <xsl:text>&#xa;</xsl:text>
+    <node id="{$pid}" parent="{$gpid}" preceding-sibling="{$sid}">
+      <xsl:copy-of select="."/>
+    </node>
+  </xsl:template>
+  
+</xsl:stylesheet>
+]]></eg>
+
+</div2>
+
+<div2 id="d3-flat-hierarchical">
+
+<head>Flat to Hierarchical</head>
+
+<p><kw>Task:</kw> The reverse operation to <specref ref="d3-hierarchical-flat"/>. 
+The conversion of a flat list of nodes to a tree structure. See <specref ref="data-3"/>.</p>
+
+<p>XSLT 2.0 implementation.</p>
+
+<eg id="d3-flat-hierarchical-xslt20"><![CDATA[
+<xsl:stylesheet version="2.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <xsl:template match="/nodes">
+    <tree>
+      <xsl:apply-templates select="node[1]"/>
+    </tree>
+  </xsl:template>
+
+  <xsl:template match="node">
+    <xsl:variable name="id" select="@id"/>
+    <node id="{@id}">
+      <xsl:copy-of select="content"/>
+      <!-- descendants -->
+      <xsl:apply-templates select="following-sibling::node[@parent = $id and @preceding-sibling = ''][1]"/>
+    </node>
+    <!-- following sibling -->
+    <xsl:apply-templates select="following-sibling::node[@preceding-sibling = $id]"/>
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+
+<p>XSLT 3.0 implementation. This transformation is in theory streamable because all nodes that will be found with the first <el>apply-templates</el> (descendants) go before the nodes matching the second <el>apply-templates</el> (following siblings). But this fact is only evident to those who fully understand the meaning of the input data (<specref ref="data-3"/>) and semantics of its elements and attributes. It would be rather difficult to come to the same conclusion with the automatic analysis of the stylesheet and input data. Therefore this task can be another example of transformation that is not recognized as streamable by an XSLT 3.0 processor despite of the fact that it could be run in a streaming way. This transformation is not guaranteed streamable.</p>
+
+<eg id="d3-flat-hierarchical-xslt30"><![CDATA[
+<xsl:stylesheet version="3.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <xsl:mode streamable="yes"/>
+
+  <xsl:template match="/nodes">
+    <tree>
+      <xsl:apply-templates select="node[1]"/>
+    </tree>
+  </xsl:template>
+
+  <xsl:template match="node">
+    <xsl:variable name="id" select="@id/string()"/>
+    <node id="{@id}">
+      <xsl:copy-of select="content"/>
+      <!-- descendants -->
+      <xsl:apply-templates select="following-sibling::node[@parent = $id and @preceding-sibling = ''][1]"/>
+    </node>
+    <!-- following sibling -->
+    <xsl:apply-templates select="following-sibling::node[@preceding-sibling = $id]"/>
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+
+</div2>
+
+<div2 id="d4-csv">
+
+<head>CSV Result</head>
+
+<p><kw>Task:</kw> Given 1GB input document containing multiple <el>row</el> 
+elements with <el>col</el> children (<specref ref="data-4"/>), produce 
+a csv document with the content of <el>col</el> elements.</p>
+
+<p>XSLT 2.0 implementation.</p>
+
+<eg id="d4-csv-xslt20"><![CDATA[
+<xsl:stylesheet version="2.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <xsl:output method="text"/>
+  <xsl:strip-space elements="*"/>
+
+  <xsl:template match="row">
+    <xsl:value-of select="col" separator=", "/>
+    <xsl:text>&#010;</xsl:text>
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+
+<p>XSLT 3.0 implementation. The unnamed mode is marked as streamable.</p>
+
+<eg id="d4-csv-xslt30"><![CDATA[
+<xsl:stylesheet version="3.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  
+  <xsl:mode streamable="yes" />  
+  <xsl:output method="text"/>
+  <xsl:strip-space elements="*"/>
+  
+  <xsl:template match="row">
+    <xsl:value-of select="col" separator=", "/>
+    <xsl:text>&#010;</xsl:text>
+  </xsl:template>
+  
+</xsl:stylesheet>
+]]></eg>
+
+</div2>
+
+<div2 id="d1-local-sorting">
+
+<head>Local Sorting</head>
+
+<p><kw>Task:</kw> Given a 1GB document with the structure of 
+<specref ref="data-1a"/>, produce an output document containing the same 
+data, but with all elements <el>p</el> within each <el>chapter</el> element 
+sorted in the alphabetic order. The other elements within the <el>chapter</el> 
+element follow the sorted <el>p</el> elements in the same document order.</p>
+
+<p>XSLT 2.0 implementation.</p>
+
+<eg id="d1-local-sorting-xslt20"><![CDATA[
+<xsl:stylesheet version="2.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <xsl:template match="/wrapper">
+    <xsl:copy> 
+      <xsl:apply-templates select="chapter"/>
+    </xsl:copy>  
+  </xsl:template>
+
+  <xsl:template match="chapter">
+    <xsl:copy>
+      <xsl:apply-templates select="@*"/>
+      <xsl:for-each select="p">
+        <xsl:sort />
+        <xsl:copy-of select="."/>
+      </xsl:for-each>
+      <xsl:apply-templates select="* except p"/>
+    </xsl:copy>  
+  </xsl:template>
+  
+  <xsl:template match="@*|node()">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+
+<p>XSLT 3.0 implementation. Another windowing example. Each chapter is processed in non-streaming mode but independently on other chapters. The transformation is initiated in the unnamed streamable mode. Each chapter is then sorted in a non-streamable "chapter" mode.</p>
+
+<eg id="d1-local-sorting-xslt30"><![CDATA[
+<xsl:stylesheet version="3.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  
+  <xsl:mode streamable="yes" on-no-match="shallow-copy" />
+  <xsl:mode name="chapter" streamable="no" on-no-match="shallow-copy"/>
+  
+  <xsl:template match="/wrapper">
+    <xsl:copy> 
+      <xsl:apply-templates select="copy-of(chapter)" mode="chapter"/>
+    </xsl:copy>  
+  </xsl:template>
+  
+  <xsl:template match="chapter" mode="chapter">
+    <xsl:copy>
+      <xsl:apply-templates select="@*" />
+      <xsl:for-each select="p">
+        <xsl:sort />
+        <xsl:copy-of select="."/>
+      </xsl:for-each>
+      <xsl:apply-templates select="* except p"/>
+    </xsl:copy>  
+  </xsl:template>
+  
+</xsl:stylesheet>
+]]></eg>
+
+</div2>
+
+<div2 id="d2-references">
+
+<head>Resolving References</head>
+
+<p><kw>Task:</kw> Given the two documents <specref ref="data-2"/>, produce a new 
+document in which the code attribute is replaced by a description attribute, where 
+the description is derived from the product code by a lookup in a 100Kb product 
+codes document.</p>
+
+<p>XSLT 2.0 implementation.</p>
+
+<eg id="d2-references-20"><![CDATA[
+<xsl:stylesheet version="2.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <xsl:variable name="product_codes" select="document('data-2-codes.xml')"/>
+
+  <xsl:template match="product">
+    <product description="{$product_codes/*/code[@id = current()/@code]}">
+      <xsl:apply-templates/>
+    </product>
+  </xsl:template>
+
+  <!-- identity transform template -->
+  <xsl:template match="@*|node()">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+
+<p>XSLT 3.0 implementation. The unnamed mode is marked as streamable. All codes and their descriptions are stored in a variable.</p>
+
+<eg id="d2-references-21"><![CDATA[
+<xsl:stylesheet version="3.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  
+  <xsl:mode streamable="yes" on-no-match="shallow-copy" />
+  <xsl:variable name="product_codes" select="document('data-2-codes.xml')"/>
+  
+  <xsl:template match="product">
+    <product description="{$product_codes/*/code[@id = current()/@code]}">
+      <xsl:apply-templates/>
+    </product>
+  </xsl:template>
+  
+</xsl:stylesheet>
+]]></eg>
+
+</div2>
+
+<div2 id="d1-multiple-extraction">
+
+<head>Multiple Extraction/Processing</head>
+
+<p><kw>Task:</kw> Process <specref ref="data-1b"/> to produce a series of 
+<el>chapter-name</el> elements containing the content of the chapter/@name attributes 
+followed by a series of <el>chapter-id</el> elements containing the content of chapter/@id 
+attributes followed by  a <el>body</el> element containing all <el>p</el> elements and 
+their text content.</p>
+
+<p>XSLT 2.0 implementation.</p>
+
+<eg id="d2-multiple-extraction-20"><![CDATA[
+<xsl:stylesheet version="2.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <xsl:template match="/wrapper">
+    <result>
+      <xsl:apply-templates select=".//chapter" mode="name"/>
+      <xsl:apply-templates select=".//chapter" mode="id"/>
+      <body>
+        <xsl:apply-templates select=".//p"/>
+      </body>
+    </result>
+  </xsl:template>
+
+  <xsl:template match="chapter" mode="name">
+    <chapter-name>
+      <xsl:value-of select="@name"/>
+    </chapter-name>
+  </xsl:template>
+  
+  <xsl:template match="chapter" mode="id">
+    <chapter-id>
+      <xsl:value-of select="@id"/>
+    </chapter-id>
+  </xsl:template>
+ 
+  <xsl:template match="p">
+    <p>
+      <xsl:value-of select="text()"/>
+    </p>
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+
+<p>This transformation requires multiple scans of the input data. The single scan way 
+of processing would require to buffer basically  the whole document. Neither streaming
+facilities of XSLT 3.0 nor <el>xsl:fork</el> can help to avoid the multiple scanning or 
+the extensive buffering.</p>
+
+</div2>
+
+<div2 id="d1-grouping">
+
+<head>Grouping</head>
+
+<p><kw>Task:</kw> Process <specref ref="data-1a"/> data. Group <el>chapter</el> elements 
+by position and insert new contents between the groups. Copy the input and add an empty 
+<el>pagebreak</el> element every 3 chapters.</p>
+
+<p>XSLT 2.0 implementation.</p>
+
+<eg id="d1-grouping-a1-20"><![CDATA[
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+                version="2.0">
+
+  <xsl:template match="/*">
+    <xsl:copy>
+      <xsl:apply-templates/>
+    </xsl:copy>
+  </xsl:template>
+    
+  <xsl:template match="chapter">
+    <xsl:variable name="position">
+      <xsl:number />
+    </xsl:variable> 
+    <xsl:if test="$position != 1  and $position mod 3 = 1">
+      <pagebreak />
+    </xsl:if>
+    <xsl:copy-of select="." />
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+
+<p>XSLT 3.0 implementation. The unnamed mode is marked as streamable.
+We use <el>xsl:accumulator</el> and <el>xsl:accumulator-rule </el>
+instructions along with a <el>accumulator-before</el> function in place of the
+<el>xsl:number</el> instruction, which would not be guaranteed streamable.</p>  
+
+<eg id="d1-grouping-a1-21"><![CDATA[
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                version="3.0">
+
+  <xsl:mode streamable="yes" use-accumulators="a" />
+  
+  <xsl:accumulator name="a" initial-value="0" streamable="yes">
+    <xsl:accumulator-rule match="chapter" select="$value + 1"/>
+  </xsl:accumulator>
+
+  <xsl:template match="/*">
+    <xsl:copy>
+      <xsl:apply-templates/>
+    </xsl:copy>
+  </xsl:template>
+  
+  <xsl:template match="chapter">
+    <xsl:variable name="position" select="accumulator-before('a')"/>
+    <xsl:if test="$position != 1  and $position mod 3 = 1">
+      <pagebreak />
+    </xsl:if>
+    <xsl:copy-of select="." />
+  </xsl:template>
+  
+</xsl:stylesheet>
+]]></eg>
+
+<!--
+<p><kw>Task a2:</kw> Process <specref ref="data-1a"/> data. Group by position and 
+wrap each group within a new element. Copy the input and wrap groups of 3 adjacent 
+chapters within a <el>part</el> element.</p>
+
+<p>XSLT 2.0 implementation.</p>
+
+<eg id="d1-grouping-a2-xsl"><![CDATA[
+<?xml version="1.0"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+                version="2.0">
+
+  <xsl:template match="/wrapper">
+    <xsl:copy>
+      <xsl:for-each-group select="node()" group-adjacent="(count(preceding-sibling::chapter|self::chapter) - 1) idiv 3">
+        <part>
+          <xsl:for-each select="current-group()">
+            <xsl:copy-of select="." />
+          </xsl:for-each>
+        </part>
+      </xsl:for-each-group>
+    </xsl:copy>
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+
+<p>STX 1.0 implementation.</p>
+
+<eg id="d1-grouping-a2-stx"><![CDATA[
+<?xml version="1.0"?>
+<stx:transform xmlns:stx="http://stx.sourceforge.net/2002/ns"
+               version="1.0" pass-through="all">
+
+  <stx:template match="chapter">
+    <part>
+      <stx:process-self group="copy" />
+      <stx:process-siblings until="chapter[position() mod 3 = 1]" group="copy" />
+    </part>
+  </stx:template>
+
+  <stx:group name="copy" />
+
+</stx:transform>
+]]></eg>
+
+<p><kw>Task b1:</kw> Process <specref ref="data-1a"/> data. Group by value (without 
+sorting, i.e. the nodes to be grouped preserve their order) and insert new contents 
+between the groups. Copy the input, group the chapters by the initial letter of the 
+chapter name and insert a new <el>header</el> element with this initial letter as contents 
+before each chapter group.</p>
+
+<p>XSLT 2.0 implementation.</p>
+
+<eg id="d1-grouping-b1-xsl"><![CDATA[
+<?xml version="1.0"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+                version="2.0">
+
+  <xsl:template match="/*">
+    <xsl:copy>
+      <xsl:apply-templates/>
+    </xsl:copy>
+  </xsl:template>
+  
+  <xsl:template match="chapter">
+    <xsl:if test="substring(@name, 1, 1) != substring(preceding-sibling::chapter[1]/@name, 1, 1)">
+      <header>
+        <xsl:value-of select="substring(@name, 1, 1)" />
+      </header>
+    </xsl:if>
+    <xsl:copy-of select="." />
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+
+<p>STX 1.0 implementation.</p>
+
+<eg id="d1-grouping-b1-stx"><![CDATA[
+<?xml version="1.0"?>
+<stx:transform xmlns:stx="http://stx.sourceforge.net/2002/ns"
+               version="1.0" pass-through="all">
+
+  <stx:variable name="lastInitial" />
+
+  <stx:template match="chapter">
+    <stx:variable name="initial" select="substring(@name, 1, 1)" />
+    <stx:if test="$lastInitial != $initial">
+      <header>
+        <stx:value-of select="$initial"/>
+      </header>
+      <stx:assign name="lastInitial" select ="$initial" />
+    </stx:if>
+    <stx:process-self />
+  </stx:template>
+
+</stx:transform>
+]]></eg>
+
+<p><kw>Task b2:</kw> Process <specref ref="data-1a"/> data. Group by value (without 
+sorting, i.e. the nodes to be grouped preserve their order)and wrap each group within 
+a new element. Copy the input and wrap all adjacent chapters having the same initial name 
+letter within a new element <el>part</el> having this initial letter as an attribute 
+value.</p>
+
+<p>XSLT 2.0 implementation.</p>
+
+<eg id="d1-grouping-b2-xsl"><![CDATA[
+<?xml version="1.0"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+                version="2.0">
+
+  <xsl:template match="/wrapper">
+    <xsl:copy>
+      <xsl:for-each-group select="chapter" group-adjacent="substring(@name, 1, 1)">
+        <part letter="{current-grouping-key()}">
+          <xsl:for-each select="current-group()">
+            <xsl:copy-of select="." />
+            <xsl:copy-of select="following-sibling::node()[1][self::text()]" />
+          </xsl:for-each>
+        </part>
+      </xsl:for-each-group>
+    </xsl:copy>
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+
+<p>STX 1.0 implementation.</p>
+
+<eg id="d1-grouping-b2-stx"><![CDATA[
+<?xml version="1.0"?>
+<stx:transform xmlns:stx="http://stx.sourceforge.net/2002/ns"
+               version="1.0" pass-through="all">
+
+  <stx:template match="chapter">
+    <stx:variable name="initial" select="substring(@name, 1, 1)" />
+    <part letter="{$initial}">
+      <stx:process-self group="copy" />
+      <stx:process-siblings until="chapter[substring(@name, 1, 1) != $initial]"
+                            group="copy" />
+    </part>
+  </stx:template>
+
+  <stx:group name="copy" />
+
+</stx:transform>
+]]></eg>
+-->
+
+</div2>
+
+<div2 id="d1-iterate">
+
+<head>Iterations</head>
+
+<p><kw>Task:</kw> Transform the input document to the required output as described in 
+<specref ref="data-transactions"/>. The data of individual transactions are accumulated and 
+the current balance is maintained for each transaction.</p>
+
+<p>XSLT 2.0 implementation. A template is called recursively.</p>
+<eg id="dtran-iterate-xslt20"><![CDATA[
+<xsl:stylesheet version="2.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+                xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xsl:template match="/transactions">
+    <account>
+      <xsl:apply-templates select="transaction[1]" />
+    </account>
+  </xsl:template>  
+  
+  <xsl:template match="transaction">
+    <xsl:param name="balance" select="0.00" as="xs:decimal"/>
+    <xsl:variable name="newBalance" 
+                    select="$balance + xs:decimal(@value)"/>
+    <balance date="{@date}" value="{$newBalance}" change="{@value}"/>
+    <xsl:apply-templates select="following-sibling::transaction[1]">
+      <xsl:with-param name="balance" select="$newBalance"/>
+    </xsl:apply-templates>
+  </xsl:template>
+
+</xsl:stylesheet>    
+]]></eg>
+
+<p>XSLT 3.0 implementation. The tail recursion is replaced with an iteration - using the new 
+<el>xsl:iterate</el> construct.</p>
+
+<eg id="dtran-iterate-xslt30"><![CDATA[
+<?xml version="1.0"?>
+<xsl:stylesheet version="3.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+                xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  
+  <xsl:mode streamable="yes"/>
+  
+  <xsl:template match="/transactions">
+    <account>
+      <xsl:iterate select="transaction">
+        <xsl:param name="balance" select="0.00" as="xs:decimal"/>
+        <xsl:variable name="newBalance" 
+          select="$balance + xs:decimal(@value)"/>
+        <balance date="{@date}" value="{$newBalance}" change="{@value}"/>
+        <xsl:next-iteration>
+          <xsl:with-param name="balance" select="$newBalance"/>
+        </xsl:next-iteration>
+      </xsl:iterate>
+    </account>  
+  </xsl:template>
+  
+</xsl:stylesheet>
+]]></eg>
+
+</div2>
+
+<div2 id="d1-windowing">
+
+<head>Making Explicit Sections</head>
+
+<p><kw>Task:</kw> Process <specref ref="data-windowing"/> data. 
+Convert a structure with implicit sections to a structure with explicit sections.</p>
+
+<p>This use case has been described in  <bibref ref="xquery30-use-cases"/> (4.2.2. - Windowing Q2).</p>
+
+<p>XSLT 2.0 implementation.</p>
+
+<eg id="dwin-windowing-xslt20"><![CDATA[
+<?xml version="1.0"?>
+<xsl:stylesheet version="2.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <xsl:template match="/body">
+    <chapter>
+      <xsl:for-each select="h2">
+        <section title="{text()}">
+          <xsl:apply-templates select="following-sibling::p[1]" />
+        </section>
+      </xsl:for-each>
+    </chapter>
+  </xsl:template>  
+  
+  <xsl:template match="p">
+    <para>
+      <xsl:value-of select="text()" />
+    </para>  
+    <xsl:if test="name(following-sibling::*[1]) = 'p'">
+      <xsl:apply-templates select="following-sibling::p[1]"/>
+    </xsl:if>
+  </xsl:template>
+  
+</xsl:stylesheet>    
+]]></eg>
+
+<p>XSLT 3.0 implementation. The unnamed mode is marked as streamable.
+The tail recursion now takes the form of a <el>xsl:for-each-group</el> instruction which
+iterates through child nodes of the <el>body</el> element grouped by <el>h2</el>
+elements.
+</p>
+
+<eg id="dwin-windowing-xslt30"><![CDATA[
+<?xml version="1.0"?>
+<xsl:stylesheet version="3.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  
+  <xsl:mode streamable="yes"/>
+  
+  <xsl:template match="/body">
+    <chapter>
+      <xsl:for-each-group select="*" group-starting-with="h2">
+        <section>
+          <xsl:apply-templates select="current-group()"/>
+        </section>
+      </xsl:for-each-group>
+    </chapter>
+  </xsl:template>
+  
+  <xsl:template match="h2">
+    <xsl:attribute name="title" select="text()"/>
+  </xsl:template>
+  
+  <xsl:template match="p">
+    <para>
+      <xsl:value-of select="text()" />
+    </para>
+  </xsl:template>
+  
+</xsl:stylesheet>
+]]></eg>
+
+</div2>
+
+<div2 id="d1-merging">
+
+<head>Merging Sorted Sequences</head>
+
+<p><kw>Task:</kw> Merge the input document specified in <specref ref="data-transactions"/> 
+with another instance of the same document type to produce an output document of the same type 
+that contains all transactions from both input documents. Both input documents are already sorted. 
+The output keeps the same order.</p>
+
+<p>XSLT 2.0 implementation.</p>
+
+<eg id="d1-merging-xslt20"><![CDATA[
+<xsl:stylesheet version="2.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <xsl:variable name="other" select="document('transactions-2.xml')"/>
+                
+  <xsl:template match="/transactions">
+    <xsl:copy>
+      <xsl:apply-templates select="transaction[1]">
+        <xsl:with-param name="date" select="$other/transactions/transaction[1]/@date"/>
+      </xsl:apply-templates>
+    </xsl:copy>
+  </xsl:template>  
+  
+  <xsl:template match="transaction">
+    <xsl:param name="date"/>
+    <xsl:variable name="current_date" select="@date"/>
+    <xsl:for-each select="$other/transactions/transaction[@date &gt;= $date][@date &lt; $current_date]">
+      <transaction date="{@date}" value="{@value}"/>
+    </xsl:for-each>
+    <transaction date="{@date}" value="{@value}"/>
+    <xsl:apply-templates select="following-sibling::transaction[1]">
+      <xsl:with-param name="date" select="$current_date"/>
+    </xsl:apply-templates>
+    <xsl:if test="not(following-sibling::transaction)">
+      <xsl:for-each select="$other/transactions/transaction[@date &gt; $date]">
+        <transaction date="{@date}" value="{@value}"/>
+      </xsl:for-each>
+    </xsl:if>
+  </xsl:template>
+
+</xsl:stylesheet>    
+]]></eg>
+
+<p>XSLT 3.0 implementation. This transformation uses the <el>xsl:merge</el> instruction 
+which allows to construct a sorted sequence of items by merging several input pre-sorted sequences.
+The <el>xsl:merge</el> instruction is designed to enable the streaming processing.</p>
+
+<eg id="d1-merging-xslt30"><![CDATA[
+<xsl:stylesheet version="3.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+  <xsl:mode streamable="yes"/>
+
+  <xsl:template match="/transactions">
+    <xsl:copy>
+      <xsl:merge>
+        <xsl:merge-source select="transactions/transaction" streamable="yes"
+          for-each-stream="'transactions-1.xml', 'transactions-2.xml'">
+          <xsl:merge-key select="@date"/>
+        </xsl:merge-source>
+        <xsl:merge-action>
+          <xsl:copy-of select="current-merge-group()"/>
+        </xsl:merge-action>
+      </xsl:merge>
+    </xsl:copy>
+  </xsl:template>
+
+</xsl:stylesheet>
+]]></eg>
+
+</div2>
+
+<!--
+1. patterns
+DONE: 2. merge/fork
+DONE: 3. iterate 
+4. evaluate
+5. try/catch
+6. context-item</p>
+-->
+  
+</div1>
+
+</body>
+
+<back> <!-- Appendices -->
+
+<div1 id="sample-data">
+
+<head>Sample Data</head>
+
+<p>The following XML data are used in use cases</p> 
+
+<div2 id="data-1a">
+
+<head>Flat Collection</head>
+
+<p>A 1GB document consisting of a single <el>wrapper</el> element 
+with a number of <el>chapter</el> children, each of them having several 
+<el>p</el> children and an optional <el>removed</el> child. There are 
+no nested <el>chapter</el> elements.</p>
+
+<eg id="data-1a-sample"><![CDATA[
+<?xml version="1.0"?>
+<wrapper>
+  <chapter id="1" name="a_chapter_1">
+    <p>S the first element of the list.</p>
+    <p>Ele.</p>
+    <p>He first element of the list, passing the rema.</p>
+  </chapter>
+  <removed/>
+  <chapter id="2" name="a_chapter_2" removed="yes">
+    <p>A.</p>
+    <removed/>
+    <p>Fied as the first el.</p>
+    <p>Fied as the first element of the list, passing the remaining elements as.</p>
+    <p>Ified as the first ele.</p>
+    <p>First element of the list, passing the remaining elements as.</p>
+  </chapter>
+  <chapter id="3" name="b_chapter_3" removed="yes">
+    <p>As the first element of the list, passing the remaining element.</p>
+    <removed/>
+  </chapter>
+  :
+</wrapper>
+]]></eg>
+
+</div2>
+
+<div2 id="data-1b">
+
+<head>Nested Collection</head>
+
+<p>A less regular version of the strict <specref ref="data-1a"/> document. 
+<el>chapter</el> elements are not children of <el>wrapper</el> and they are not all 
+siblings. Also, the content of <el>chapter</el> is not limited to <el>p</el> 
+elements. The size of document is still about 1GB.</p>
+
+<eg id="data-1b-sample"><![CDATA[
+<?xml version="1.0"?>
+<wrapper>
+  <chapter id="1" name="chapter_1">
+    <p>S the first element of the list.</p>
+    <p>Ele.</p>
+    <chapter id="2" name="chapter_2">
+      <p>Element of the list, pao the syst.</p>
+    </chapter>
+    <p>He first element of tht, passing the rema.</p>
+  </chapter>
+  <set>
+    <chapter id="3" name="chapter_3">
+      <p>A.</p>
+      <chapter id="4" name="chapter_4" removed="yes">
+        <p>.</p>
+        <p>T element o.</p>
+      </chapter>
+      <removed/>
+      <p>Fied as the first el.</p>
+      <p>Fied as the fig the remaining elements as.</p>
+      <p>Ified as the first ele.</p>
+      <p>First element of the list, passing the remaining elements as.</p>
+    </chapter>
+  </set>  
+  <chapter id="5" name="chapter_5" removed="yes">
+    <p>As the first element of the list, passing the remaining element.</p>
+  </chapter>
+  <removed/>
+  :
+</wrapper>
+]]></eg>
+
+</div2>
+
+<div2 id="data-2">
+
+<head>Product Catalog</head>
+
+<p>A 1GB catalog document that contains <el>product</el> elements with 
+<att>code</att> attributes, and a 100kB product codes document.	</p>
+
+<p>Main document:</p>
+
+<eg id="data-2-sample"><![CDATA[
+<?xml version="1.0"?>
+<catalog>
+  <product code="111">
+    <description>
+      <p>This amazing carburettor choke valve is the best thing for you since 
+        pre-sliced bread. That is, unless, you live in a country where the bread is baked 
+        fresh and delivered to you for eating within a short period of time.
+        In this case this product is the best thing since steamed frech lobster.</p>
+      <p>Use of this product will make your car go twice as fast, consume less petrol, 
+        and pollute less.</p>
+    </description>
+  </product>
+  <product code="112">
+    <description>
+      <p>This amazing carburettor choke nut is the best thing for you since 
+        pre-sliced bread. That is, unless, you live in a country where the bread is baked 
+        fresh and delivered to you for eating within a short period of time.
+        In this case this product is the best thing since steamed frech lobster.</p>
+      <p>Use of this product will make your car go twice as fast, consume less petrol, 
+        and pollute less.</p>
+    </description>
+  </product>
+   :
+</catalog>
+]]></eg>
+
+<p>Product codes document:</p>
+
+<eg id="data-3-sample"><![CDATA[
+<?xml version="1.0"?>
+<product-codes>
+  <code id="111">carburetor choke valve</code>
+  <code id="112">carburettor choke nut</code>
+  <code id="113">carburettor choke bolt</code>
+  <code id="114">carburettor choke screw</code>
+  <code id="115">carburettor choke spanner</code>
+  <code id="116">carburettor choke screw driver</code>
+  <code id="117">carburettor choke chisel</code>
+  <code id="118">carburettor choke hammer</code>
+  <code id="119">carburettor choke jack</code>
+  :
+</product-codes>
+]]></eg>
+
+</div2>
+
+<div2 id="data-3">
+<head>Hierarchical to Flat</head>
+
+<p>This sample data consists of two documents:</p>
+
+<p>The first one is a 1GB document that contains tree structure of 
+<el>node</el> elements with <att>id</att> attributes. Each node has 
+exactly one <el>content</el> element.  The <el>content</el> element is 
+the first child of a <el>node</el>. There are no <el>node</el> descendants of 
+a <el>content</el> element.</p>
+
+<eg id="data-3-sample-hierarchical"><![CDATA[
+<?xml version="1.0"?>
+<tree>
+  <node id="id1">
+    <content>...</content>
+    <node id="id2">
+      <content>...</content>
+      :
+    </node>
+    <node id="id3">
+      <content>...</content>
+      :
+    </node>
+    :
+  </node>
+</tree>
+]]></eg>
+
+<p>The second document is a 1GB document that contains flat structure of 
+<el>node</el> elements with <att>id</att> attributes, and additional 
+<att>parent</att> and <att>preceding-sibling</att> attributes that keep 
+information about a hierarchical structure of the first document.</p>
+
+<eg id="data-3-sample-flat"><![CDATA[
+<?xml version="1.0"?>
+<nodes>
+  <node id="id1" parent="ROOT">
+    <content>.....</content>
+  </node>
+  <node id="id2" parent="id1" preceding-sibling="">
+    <content>.....</content>
+  </node>
+  <node id="id3" parent="id1" preceding-sibling="id2">
+    <content>.....</content>
+  </node>
+  :
+</nodes>
+]]></eg>
+</div2>
+
+<div2 id="data-4">
+<head>Rows and Columns</head>
+
+<p>This 1GB sample document contains multiple <el>row</el> 
+elements with <el>col</el> children.</p>
+
+<eg id="data-4-sample"><![CDATA[
+<?xml version="1.0"?>
+<table>
+  <row>
+    <col>aa</col>
+    <col>ab</col>   
+    <col>ac</col>
+    :
+  </row>
+  <row>
+    <col>ba</col>
+    <col>bb</col>   
+    <col>bc</col>
+    :
+  </row>
+  :
+</table>
+]]></eg>
+</div2>
+
+<div2 id="data-transactions">
+<head>Transactions and Balance</head>
+
+<p>The input XML document has this structure:</p>
+
+<eg id="data-transactions-input"><![CDATA[
+<transactions>
+  <transaction date="2008-09-01" value="12.00"/>
+  <transaction date="2008-09-01" value="8.00"/>
+  <transaction date="2008-09-02" value="-2.00"/>
+  <transaction date="2008-09-02" value="5.00"/>
+  <transaction date="2008-09-03" value="6.00"/>
+  <transaction date="2008-09-04" value="-3.00"/>
+   :
+</transactions>
+]]></eg>
+
+<p>The required output structure is:</p>
+
+<eg id="data-transactions-output"><![CDATA[
+<account>
+  <balance date="2008-09-01" value="12.00"/>
+  <balance date="2008-09-01" value="20.00"/>
+  <balance date="2008-09-02" value="18.00"/>
+  <balance date="2008-09-02" value="23.00"/>
+  <balance date="2008-09-03" value="29.00"/>
+  <balance date="2008-09-04" value="26.00"/>
+  :
+</account>
+
+]]></eg>
+
+</div2>
+
+<div2 id="data-windowing">
+<head>Explicit Sections</head>
+
+<p>The input XML document:</p>
+
+<eg id="data-windowing-data"><![CDATA[
+<body>
+  <h2>heading1</h2>
+  <p>para1</p>
+  <p>para2</p>
+  <h2>heading2</h2>
+  <p>para3</p>
+  <p>para4</p>
+  <p>para5</p>
+</body>
+]]></eg>
+
+<p>The expected result is:</p>
+
+<eg id="data-windowing-q2-result"><![CDATA[
+<chapter>
+  <section title="heading1">
+    <para>para1</para>
+    <para>para2</para>
+    <para>heading2</para>
+  </section>
+  <section title="heading2">
+    <para>para3</para>
+    <para>para4</para>
+    <para>para5</para>
+  </section>
+</chapter>
+]]></eg>
+
+</div2>
+</div1>
+
+<div1 id="references">
+
+<head>References</head>
+
+<blist>
+	
+<bibl key="XSL Transformations (XSLT) Version 2.0" id="xslt20"
+  href="http://www.w3.org/TR/xslt20/">
+W3C
+<titleref>XSL Transformations (XSLT) Version 2.0</titleref>
+W3C Recommendation
+</bibl>
+
+<bibl key="XSL Transformations (XSLT) Version 3.0" id="xslt30"
+  href="https://www.w3.org/TR/xslt-30/">
+W3C
+<titleref>XSL Transformations (XSLT) Version 3.0</titleref>
+W3C Candidate Recommendation
+</bibl>
+
+<bibl key="XPath and XQuery Functions and Operators 3.0" id="xpath30-functions"
+  href="https://www.w3.org/TR/xpath-functions-30/">
+W3C
+<titleref>XPath and XQuery Functions and Operators 3.0</titleref>
+W3C Recommendation
+</bibl>
+
+<bibl key="XQuery 3.0 Use Cases" id="xquery30-use-cases"
+  href="https://www.w3.org/TR/xquery-30-use-cases/">
+W3C
+<titleref>XQuery 3.0 Use Cases</titleref>
+W3C Working Group Note
+</bibl>
+
+<bibl key="ISO/IEC 21000-7:2004" id="iso-21000-7" 
+  href="http://www.iso.org/iso/en/CatalogueDetailPage.CatalogueDetail?CSNUMBER=37379">
+ISO/IEC
+<titleref>MPEG-21 -- Part 7: Digital Item Adaptation</titleref> 
+ISO Standard
+</bibl>
+
+<bibl key="BSDL: Application of Content Adaptation" id="bsdl-content-adaptation" 
+  href="http://www2002.org/CDROM/alternate/334/">
+Myriam Amielh, Sylvain Devillers
+<titleref>Bitstream Syntax Description Language: 
+Application of XML-Schema to Multimedia Content Adaptation</titleref> 
+</bibl>
+
+<!--
+<bibl key="MPEG-21 Bitstream Syntax Descriptions" id="mpeg-21-bsd" 
+  href="http://users.ugent.be/~ddschrij/MMSytems_ddschrij.pdf">
+Davy De Schrijver, Chris Poppe, Sam Lerouge, Wesley De Neve, Rik Van de Walle
+<titleref>MPEG-21 bitstream syntax descriptions for scalable video codecs</titleref> 
+</bibl>
+-->
+
+<bibl key="XML Signature" id="xml-signature" 
+  href="http://www.w3.org/TR/xmldsig-core/">
+W3C
+<titleref>XML-Signature Syntax and Processing</titleref> 
+W3C Recommendation
+</bibl>
+
+<bibl key="Streaming Validation for Digital Signatures" id="lu" 
+  href="http://www.cs.indiana.edu/~welu/c14n_hpdc05.pdf">
+Wei Lu, Kenneth Chiu, Aleksander Slominski and Dennis Gannon
+<titleref>A Streaming Validation Model for SOAP Digital Signature</titleref> 
+</bibl>
+
+<bibl key="Plug-in Based Architecture for Mobile Blogging" id="mobile-blogging" 
+  href="http://www.diva-portal.org/hj/abstract.xsql?dbid=989">
+César Zapata, Christoffer Jakobsen
+<titleref>Feasibility Study of a Plug-in Based Architecture for Mobile Blogging</titleref> 
+Master Thesis, Jönköping University
+</bibl>
+
+<bibl key="Transforming XML on the Fly" id="becker" 
+  href="http://www.idealliance.org/papers/dx_xmle03/papers/04-02-02/04-02-02.html">
+Oliver Becker
+<titleref>Transforming XML on the Fly</titleref> 
+XML Europe 2003
+</bibl>
+
+</blist>
+
+</div1>
+
+</back>
+
+</spec>

@@ -1,0 +1,876 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--XSLT Processor: SAXON 9.3.0.5 from Saxonica SAXON EE 9.3.0.5-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta name="generator" content=
+"HTML Tidy for Windows (vers 14 February 2006), see www.w3.org" />
+<title>XQuery 3.0 Requirements</title>
+
+<style type="text/css">
+/*<![CDATA[*/
+/* from xsl:query.xsl (C) */          
+code           { font-family: monospace; }
+
+div.constraint,
+div.issue,
+div.note,
+div.notice     { margin-left: 2em; }
+
+div.issue
+p.title        { margin-left: -2em; }
+
+ol.enumar      { list-style-type: decimal; }
+ol.enumla      { list-style-type: lower-alpha; }
+ol.enumlr      { list-style-type: lower-roman; }
+ol.enumua      { list-style-type: upper-alpha; }
+ol.enumur      { list-style-type: upper-roman; }
+
+li p           { margin-top: 0.3em;
+                 margin-bottom: 0.3em; }
+
+sup small      { font-style: italic;
+                 color: #8F8F8F;
+               }
+    
+/* from xsl:query.xsl (D) */          
+div.exampleInner pre { margin-left: 1em;
+                       margin-top: 0em; margin-bottom: 0em}
+div.exampleOuter {border: 4px double gray;
+                  margin: 0em; padding: 0em}
+div.exampleInner { background-color: #d5dee3;
+                   border-top-width: 4px;
+                   border-top-style: double;
+                   border-top-color: #d3d3d3;
+                   border-bottom-width: 4px;
+                   border-bottom-style: double;
+                   border-bottom-color: #d3d3d3;
+                   padding: 4px; margin: 0em }
+div.exampleWrapper { margin: 4px }
+div.exampleHeader { font-weight: bold;
+                    margin: 4px}
+
+div.issue { border-bottom-color: black;
+            border-bottom-style: solid;
+            border-bottom-width: 1pt;
+            margin-bottom: 20pt;
+}
+
+th.issue-toc-head { border-bottom-color: black;
+                    border-bottom-style: solid;
+                    border-bottom-width: 1pt;
+}
+
+      
+/* from xsl-query.xsl (B) */    
+table.small                             { font-size: x-small; }
+a.judgment:visited, a.judgment:link     { font-family: sans-serif;
+                                          color: black; 
+                                          text-decoration: none }
+a.processing:visited, a.processing:link { color: black; 
+                                                text-decoration: none }
+a.env:visited, a.env:link               { color: black; 
+                                          text-decoration: none }
+/*]]>*/
+</style>
+<link rel="stylesheet" type="text/css" href=
+"//www.w3.org/StyleSheets/TR/W3C-WG-NOTE.css" />
+</head>
+<body>
+<div class="head">
+<p><a href="http://www.w3.org/"><img src=
+"http://www.w3.org/Icons/w3c_home" alt="W3C" height="48" width=
+"72" /></a></p>
+<h1><a name="title" id="title"></a>XQuery 3.0 Requirements</h1>
+<h2><a name="w3c-doctype" id="w3c-doctype"></a>W3C Working Group
+Note 08 April 2014</h2>
+<dl>
+<dt>This version:</dt>
+<dd><a href=
+"http://www.w3.org/TR/2014/NOTE-xquery-30-requirements-20140408/">http://www.w3.org/TR/2014/NOTE-xquery-30-requirements-20140408/</a></dd>
+<dt>Latest version:</dt>
+<dd><a href=
+"http://www.w3.org/TR/xquery-30-requirements/">http://www.w3.org/TR/xquery-30-requirements/</a></dd>
+<dt>Previous versions:</dt>
+<dd><a href=
+"http://www.w3.org/TR/2013/WD-xquery-30-requirements-20130108/">http://www.w3.org/TR/2013/WD-xquery-30-requirements-20130108/</a>
+<a href=
+"http://www.w3.org/TR/2010/WD-xquery-30-requirements-20100916/">http://www.w3.org/TR/2010/WD-xquery-30-requirements-20100916/</a>,</dd>
+<dt>Editors:</dt>
+<dd>Jonathan Robie, EMC Corporation</dd>
+<dd>Daniel Engovatov, BEA Systems <a href=
+"mailto:dengovatov@bea.com">&lt;dengovatov@bea.com&gt;</a></dd>
+</dl>
+<p class="copyright"><a href=
+"http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a>&#160;©&#160;2014&#160;<a href="http://www.w3.org/"><acronym title="World Wide Web Consortium">W3C</acronym></a><sup>®</sup>
+(<a href="http://www.csail.mit.edu/"><acronym title=
+"Massachusetts Institute of Technology">MIT</acronym></a>, <a href=
+"http://www.ercim.eu/"><acronym title=
+"European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>,
+<a href="http://www.keio.ac.jp/">Keio</a>, <a href=
+"http://ev.buaa.edu.cn/">Beihang</a>), All Rights Reserved. W3C
+<a href=
+"http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>,
+<a href=
+"http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a>
+and <a href=
+"http://www.w3.org/Consortium/Legal/copyright-documents">document
+use</a> rules apply.</p>
+</div>
+<hr />
+<div>
+<h2><a name="abstract" id="abstract"></a>Abstract</h2>
+<p>This document specifies goals and requirements for XML Query
+(XQuery) 3.0.</p>
+</div>
+<div>
+<h2><a name="status" id="status"></a>Status of this Document</h2>
+<p><em>This section describes the status of this document at the
+time of its publication. Other documents may supersede this
+document. A list of current W3C publications and the latest
+revision of this technical report can be found in the <a href=
+"http://www.w3.org/TR/">W3C technical reports index</a> at
+http://www.w3.org/TR/.</em></p>
+<p>This is a <a href=
+"http://www.w3.org/2005/10/Process-20051014/tr.html#tr-end">Working
+Group Note</a> as described in the <a href=
+"http://www.w3.org/2005/10/Process-20051014/tr.html">Process
+Document</a>. It was developed by the W3C <a href=
+"http://www.w3.org/XML/Query/">XML Query Working Group</a>, which
+is part of the <a href="http://www.w3.org/XML/Activity">XML
+Activity</a>.</p>
+<p>These Requirements identify extensions to the <a href=
+"http://www.w3.org/TR/xquery/">XQuery 1.0 Recommendation</a>,
+published 23 January 2007, that have been requested by WG
+participants and by reviewers who do not participate in the W3C
+activities. The XML Query WG has reviewed these requirements and
+accepted them to the degree reflected in this document.</p>
+<p>No substantive changes have been made to this specification
+since its previous publication as a Working Draft.</p>
+<p>Please report errors in this document using W3C's <a href=
+"https://www.w3.org/Bugs/Public/">public Bugzilla system</a>
+(instructions can be found at <a href=
+"http://www.w3.org/XML/2005/04/qt-bugzilla">http://www.w3.org/XML/2005/04/qt-bugzilla</a>).
+If access to that system is not feasible, you may send your
+comments to the W3C XSLT/XPath/XQuery public comments mailing list,
+<a href=
+"mailto:public-qt-comments@w3.org">public-qt-comments@w3.org</a>.
+It will be very helpful if you include the string “[XQuery30Req]”
+in the subject line of your report, whether made in Bugzilla or in
+email. Please use multiple Bugzilla entries (or, if necessary,
+multiple email messages) if you have more than one comment to make.
+Archives of the comments and responses are available at <a href=
+"http://lists.w3.org/Archives/Public/public-qt-comments/">http://lists.w3.org/Archives/Public/public-qt-comments/</a>.</p>
+<p>Publication as a <a href=
+"http://www.w3.org/2005/10/Process-20051014/tr.html#tr-end">Working
+Group Note</a> does not imply endorsement by the W3C Membership.
+This is a draft document and may be updated, replaced or obsoleted
+by other documents at any time. It is inappropriate to cite this
+document as other than work in progress.</p>
+<p>This document was produced by a group operating under the
+<a href="http://www.w3.org/Consortium/Patent-Policy-20040205/">5
+February 2004 W3C Patent Policy</a>. W3C maintains a <a href=
+"http://www.w3.org/2004/01/pp-impl/18797/status#disclosures">public
+list of any patent disclosures</a> made in connection with the
+deliverables of the group; that page also includes instructions for
+disclosing a patent. An individual who has actual knowledge of a
+patent which the individual believes contains <a href=
+"http://www.w3.org/Consortium/Patent-Policy-20040205/#def-essential">
+Essential Claim(s)</a> must disclose the information in accordance
+with <a href=
+"http://www.w3.org/Consortium/Patent-Policy-20040205/#sec-Disclosure">
+section 6 of the W3C Patent Policy</a>.</p>
+</div>
+<div class="toc">
+<h2><a name="contents" id="contents"></a>Table of Contents</h2>
+<p class="toc">1 <a href="#goals">Goals</a><br />
+2 <a href="#Requirements">Requirements</a><br />
+&#160;&#160;&#160;&#160;2.1 <a href=
+"#terminology">Terminology</a><br />
+&#160;&#160;&#160;&#160;2.2 <a href="#general-requirements">General
+Requirements</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.2.1 <a href=
+"#backward-compatibility">Backward compatibility</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.2.2 <a href=
+"#extension-compatibility">Extension compatibility</a><br />
+&#160;&#160;&#160;&#160;2.3 <a href="#xml-query-functionality">XML
+Query Functionality</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.1 <a href=
+"#d3e312">Value-based grouping</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.2 <a href=
+"#error-processing-and-recovery">Error processing and
+recovery</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.3 <a href=
+"#numeric-formatting">Numeric formatting</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.4 <a href=
+"#date-formatting">Date formatting</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.5 <a href=
+"#default-values-for-external-variables">Default values for
+external variables</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.6 <a href=
+"#non-deterministic-external-functions">Non-deterministic external
+functions</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.7 <a href=
+"#positional-grouping">Positional grouping</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.8 <a href=
+"#windowing">Windowing</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.9 <a href=
+"#output-numbering">Output numbering</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.10 <a href=
+"#dynamic-creation-of-namespace-bindings">Dynamic creation of
+namespace bindings</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.11 <a href=
+"#declaration-of-serialization-parameters">Declaration of
+serialization parameters</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.12 <a href=
+"#node-references">Node references</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.13 <a href=
+"#outer-for">Outer for</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.14 <a href=
+"#type-declaration-for-context-item">Type declaration for context
+item</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.15 <a href=
+"#support-for-new-data-types">Support for new data types</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.16 <a href=
+"#higher-order-functions">Higher order functions</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.17 <a href=
+"#conditional-constructors">Conditional constructors</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.18 <a href=
+"#validation">Validation</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.20 <a href=
+"#module-composition-restrictions">Module composition
+restrictions</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.21 <a href=
+"#invocation-of-external-functionality">Invocation of external
+functionality</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.22 <a href=
+"#static-typing-extensions">Static typing extensions</a><br />
+3 <a href="#references">References</a><br />
+&#160;&#160;&#160;&#160;3.1 <a href=
+"#normative-references">Normative</a><br />
+&#160;&#160;&#160;&#160;3.2 <a href=
+"#non-normative-references">Non-normative</a><br /></p>
+</div>
+<hr />
+<div class="body">
+<div class="div1">
+<h2><a name="goals" id="goals"></a>1 Goals</h2>
+<p>The goal of XML Query 3.0 is to extend XML Query 1.0 with
+additional functionality in response to requests from users and
+implementors.</p>
+<p>Satisfying these goals may require changes to the set of seven
+documents that have progressed to Recommendation together (Data
+Model, Functions and Operators, Serialization, XPath 2.0, XQuery
+1.0, XQueryX, and XSLT 2.0).</p>
+</div>
+<div class="div1">
+<h2><a name="Requirements" id="Requirements"></a>2
+Requirements</h2>
+<div class="div2">
+<h3><a name="terminology" id="terminology"></a>2.1 Terminology</h3>
+<p>The following keywords are used throughout the document to
+specify the extent to which an item is a requirement for the work
+of the XML Query Working Group:</p>
+<dl>
+<dt class="label"><a name="terminology-must" id=
+"terminology-must"></a>MUST</dt>
+<dd>
+<p>The item is an absolute requirement.</p>
+</dd>
+<dt class="label"><a name="terminology-should" id=
+"terminology-should"></a>SHOULD</dt>
+<dd>
+<p>There may exist valid reasons not to treat this item as a
+requirement, but the full implications should be understood and the
+case carefully weighed before discarding this item.</p>
+</dd>
+<dt class="label"><a name="terminology-may" id=
+"terminology-may"></a>MAY</dt>
+<dd>
+<p>An item deserves attention, but further study is needed to
+determine whether the item should be treated as a requirement.</p>
+</dd>
+</dl>
+<p>When the words <a href="#terminology-must">MUST</a>, <a href=
+"#terminology-should">SHOULD</a>, or <a href=
+"#terminology-may">MAY</a> are used in this technical sense
+[<a href="http://www.ietf.org/rfc/rfc2119.txt">IETF RFC 2119</a>],
+they occur as a hyperlink to these definitions. These words will
+also be used with their conventional English meaning, in which case
+there is no hyperlink. For instance, the phrase "the full
+implications should be understood" uses the word "should" in its
+conventional English sense, and therefore occurs without the
+hyperlink.</p>
+<p id="req-status">Each requirement also includes a status section,
+indicating its current situation in the XQuery/XPath/XSLT family of
+specifications. Three status levels are used:</p>
+<dl>
+<dt class="label">"Green" status</dt>
+<dd>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> This indicates that the requirement, according to
+its original formulation, has been completely met. Optional
+clarifying text may follow.</p>
+</dd>
+<dt class="label">"Yellow" status</dt>
+<dd>
+<p><img src="http://www.w3.org/Icons/yellow-ball.gif" alt=
+"yellow status" /> This indicates that the requirement has been
+partially met according to its original formulation. When this
+happens, explanatory text is provided to better clarify the current
+scope of the requirement.</p>
+</dd>
+<dt class="label">"Red" status</dt>
+<dd>
+<p><img src="http://www.w3.org/Icons/red-ball.gif" alt=
+"red status" /> This indicates that the requirement, according to
+its original formulation, has not been met. If this is the case,
+explanatory text is provided.</p>
+</dd>
+</dl>
+</div>
+<div class="div2">
+<h3><a name="general-requirements" id=
+"general-requirements"></a>2.2 General Requirements</h3>
+<div class="div3">
+<h4><a name="backward-compatibility" id=
+"backward-compatibility"></a>2.2.1 Backward compatibility</h4>
+<dl>
+<dd>
+<p>XQuery 3.0 <a href="#terminology-must">MUST</a> be backward
+compatible.</p>
+<p>Every valid XQuery 1.0 expression <a href=
+"#terminology-must">MUST</a> be valid in XQuery 3.0 and it <a href=
+"#terminology-must">MUST</a> evaluate to the same result.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+</dl>
+</div>
+<div class="div3">
+<h4><a name="extension-compatibility" id=
+"extension-compatibility"></a>2.2.2 Extension compatibility</h4>
+<dl>
+<dd>
+<p>XQuery 3.0 <a href="#terminology-must">MUST</a> be compatible
+with XQuery 1.0 extensions developed by the <a href=
+"http://www.w3.org/XML/Query/">XML Query Working Group</a>,
+including <a href="#xquery-update-30-requirements-use-cases">XQuery
+Update Facility</a> and <a href=
+"#xpath-full-text-30-requirements-use-cases">XQuery 1.0 and XPath
+2.0 Full-Text</a>.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="div2">
+<h3><a name="xml-query-functionality" id=
+"xml-query-functionality"></a>2.3 XML Query Functionality</h3>
+<div class="div3">
+<h4><a name="d3e312" id="d3e312"></a>2.3.1 Value-based
+grouping</h4>
+<dl>
+<dd>
+<p>XQuery 3.0 <a href="#terminology-must">MUST</a> include a
+language facility to specify value-based grouping.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+</dl>
+</div>
+<div class="div3">
+<h4><a name="error-processing-and-recovery" id=
+"error-processing-and-recovery"></a>2.3.2 Error processing and
+recovery</h4>
+<dl>
+<dd>
+<p>XQuery 3.0 <a href="#terminology-must">MUST</a> provide a
+mechanism to process errors raised by an expression and to return
+an alternative value.</p>
+<p>This <a href="#terminology-may">MAY</a> be implemented by
+introducing a <em>try-catch</em> expression.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+</dl>
+</div>
+<div class="div3">
+<h4><a name="numeric-formatting" id="numeric-formatting"></a>2.3.3
+Numeric formatting</h4>
+<dl>
+<dd>
+<p>XQuery 3.0 <a href="#terminology-must">MUST</a> include
+additional library functions or an equivalent mechanism to perform
+formatting of numeric values.</p>
+<p>It <a href="#terminology-should">SHOULD</a> be similar to the
+functionality provided in <a href="#XSLT20">XSLT 2.0</a>, such as
+by function <code>format-number()</code>.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+</dl>
+</div>
+<div class="div3">
+<h4><a name="date-formatting" id="date-formatting"></a>2.3.4 Date
+formatting</h4>
+<dl>
+<dd>
+<p>XQuery 3.0 <a href="#terminology-must">MUST</a> include
+additional library functions or an equivalent mechanism to perform
+formatting of date and time values.</p>
+<p>It <a href="#terminology-should">SHOULD</a> be similar to the
+functionality provided in <a href="#XSLT20">XSLT 2.0</a>, such as
+by functions <code>format-date()</code>,
+<code>format-time()</code>, <code>format-dateTime()</code>.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+</dl>
+</div>
+<div class="div3">
+<h4><a name="default-values-for-external-variables" id=
+"default-values-for-external-variables"></a>2.3.5 Default values
+for external variables</h4>
+<dl>
+<dd>
+<p>XQuery 3.0 <a href="#terminology-must">MUST</a> have a mechanism
+to specify default values for external variables.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+</dl>
+</div>
+<div class="div3">
+<h4><a name="non-deterministic-external-functions" id=
+"non-deterministic-external-functions"></a>2.3.6 Non-deterministic
+external functions</h4>
+<dl>
+<dd>
+<p>XQuery 3.0 <a href="#terminology-must">MUST</a> provide a way to
+denote that an external function is non-deterministic.</p>
+<p><img src="http://www.w3.org/Icons/red-ball.gif" alt=
+"red status" /> <em>Status:</em> this requirement has not been
+met.</p>
+</dd>
+</dl>
+</div>
+<div class="div3">
+<h4><a name="positional-grouping" id=
+"positional-grouping"></a>2.3.7 Positional grouping</h4>
+<dl>
+<dd>
+<p>XQuery 3.0 <a href="#terminology-should">SHOULD</a> provide a
+facility for positional grouping of items in a sequence according
+to specified partitioning conditions.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+</dl>
+</div>
+<div class="div3">
+<h4><a name="windowing" id="windowing"></a>2.3.8 Windowing</h4>
+<dl>
+<dd>
+<p>XQuery 3.0 <a href="#terminology-should">SHOULD</a> provide a
+way to iterate over a sequence by several values at a time.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+</dl>
+</div>
+<div class="div3">
+<h4><a name="output-numbering" id="output-numbering"></a>2.3.9
+Output numbering</h4>
+<dl>
+<dd>
+<p>XQuery 3.0 <a href="#terminology-should">SHOULD</a> provide a
+mechanism to associate ordinal numbers with the items returned by a
+FLWOR expression.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+</dl>
+</div>
+<div class="div3">
+<h4><a name="dynamic-creation-of-namespace-bindings" id=
+"dynamic-creation-of-namespace-bindings"></a>2.3.10 Dynamic
+creation of namespace bindings</h4>
+<dl>
+<dd>
+<p>XQuery 3.0 <a href="#terminology-should">SHOULD</a> allow
+dynamic creation of namespace bindings.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+</dl>
+</div>
+<div class="div3">
+<h4><a name="declaration-of-serialization-parameters" id=
+"declaration-of-serialization-parameters"></a>2.3.11 Declaration of
+serialization parameters</h4>
+<dl>
+<dd>
+<p>XQuery 3.0 <a href="#terminology-should">SHOULD</a> have a
+mechanism to specify serialization parameters in the query
+prolog.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+</dl>
+</div>
+<div class="div3">
+<h4><a name="node-references" id="node-references"></a>2.3.12 Node
+references</h4>
+<dl>
+<dd>
+<p>XQuery 3.0 <a href="#terminology-should">SHOULD</a> support
+creation of a reference to an existing node having the following
+properties:</p>
+<p>a) the reference could be included in a constructed element</p>
+<p>b) the reference can be dereferenced, returning the original
+node with the original node id.</p>
+<p><img src="http://www.w3.org/Icons/red-ball.gif" alt=
+"red status" /> <em>Status:</em> this requirement has not been
+met.</p>
+</dd>
+</dl>
+</div>
+<div class="div3">
+<h4><a name="outer-for" id="outer-for"></a>2.3.13 Outer for</h4>
+<dl>
+<dd>
+<p>XQuery 3.0 <a href="#terminology-should">SHOULD</a> provide
+additional mechanisms to specify joins between sequences. A
+possible approach would be to add an "<em>outer-for</em>" clause to
+the FLWOR expression to specify variable binding which is
+guaranteed to be bound to an empty sequence if there are no other
+bindings generated.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+</dl>
+</div>
+<div class="div3">
+<h4><a name="type-declaration-for-context-item" id=
+"type-declaration-for-context-item"></a>2.3.14 Type declaration for
+context item</h4>
+<dl>
+<dd>
+<p>XQuery 3.0 <a href="#terminology-should">SHOULD</a> allow
+explicit type declaration for the context item.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+</dl>
+</div>
+<div class="div3">
+<h4><a name="support-for-new-data-types" id=
+"support-for-new-data-types"></a>2.3.15 Support for new data
+types</h4>
+<dl>
+<dd>
+<p>XQuery 3.0 <a href="#terminology-should">SHOULD</a> support new
+data types introduced in <a href="#XMLSchema11rec">XML Schema
+1.1</a>.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+</dl>
+</div>
+<div class="div3">
+<h4><a name="higher-order-functions" id=
+"higher-order-functions"></a>2.3.16 Higher order functions</h4>
+<dl>
+<dd>
+<p>XQuery 3.0 <a href="#terminology-may">MAY</a> provide an ability
+to pass a function as an argument to another function and to invoke
+a function that has been passed as an argument.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been met.
+(The proposal is not yet integrated into our internal Working
+Draft.)</p>
+<p>XQuery 3.0 <a href="#terminology-may">MAY</a> also provide the
+ability to define anonymous functions e.g., lambda expressions.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been met.
+(The proposal is not yet integrated into our internal Working
+Draft.)</p>
+</dd>
+</dl>
+</div>
+<div class="div3">
+<h4><a name="conditional-constructors" id=
+"conditional-constructors"></a>2.3.17 Conditional constructors</h4>
+<dl>
+<dd>
+<p>XQuery 3.0 <a href="#terminology-may">MAY</a> add a language
+extension to the node constructors to specify, in a compact
+notation, that a node should be constructed only if its typed value
+would not be an empty sequence or if it would satisfy some other
+condition.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement is already met
+by XQuery 1.0, there is no need to introduce new syntax. Either of
+the following solutions works:</p>
+<div class="exampleInner">
+<pre>
+if ($mentor) then attribute mentor { $mentor } else ()
+</pre></div>
+<div class="exampleInner">
+<pre>
+(attribute mentor { $mentor })[$mentor]
+</pre></div>
+</dd>
+</dl>
+</div>
+<div class="div3">
+<h4><a name="validation" id="validation"></a>2.3.18 Validation</h4>
+<dl>
+<dd>
+<p>XQuery 3.0 <a href="#terminology-may">MAY</a> provide a
+mechanism to validate an element or document node with respect to a
+global named type</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+<p>or against non-global element declarations or types.</p>
+<p><img src="http://www.w3.org/Icons/red-ball.gif" alt=
+"red status" /> <em>Status:</em> this requirement has not been
+met.</p>
+<p>XQuery 3.0 <a href="#terminology-may">MAY</a> provide a
+mechanism to validate an element or document node against a named
+schema without importing the schema.</p>
+<p><img src="http://www.w3.org/Icons/red-ball.gif" alt=
+"red status" /> <em>Status:</em> this requirement has not been
+met.</p>
+</dd>
+</dl>
+</div>
+<div class="div3">
+<h4><a name="module-composition-restrictions" id=
+"module-composition-restrictions"></a>2.3.20 Module composition
+restrictions</h4>
+<dl>
+<dd>
+<p>XQuery 3.0 <a href="#terminology-may">MAY</a> relax the
+restrictions on the module import feature relating to forward
+references and circular imports.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+</dl>
+</div>
+<div class="div3">
+<h4><a name="invocation-of-external-functionality" id=
+"invocation-of-external-functionality"></a>2.3.21 Invocation of
+external functionality</h4>
+<dl>
+<dd>
+<p>XQuery 3.0 <a href="#terminology-may">MAY</a> provide a
+normative way to invoke external functions and modules that are not
+implemented in XQuery, such as functions defined as web services or
+XSLT functions and templates.</p>
+<p><img src="http://www.w3.org/Icons/red-ball.gif" alt=
+"red status" /> <em>Status:</em> this requirement has not been
+met.</p>
+</dd>
+</dl>
+</div>
+<div class="div3">
+<h4><a name="static-typing-extensions" id=
+"static-typing-extensions"></a>2.3.22 Static typing extensions</h4>
+<dl>
+<dd>
+<p>XQuery 3.0 <a href="#terminology-may">MAY</a> extend static
+typing rules.</p>
+<p><img src="http://www.w3.org/Icons/red-ball.gif" alt=
+"red status" /> <em>Status:</em> this requirement has not been met.
+Static typing is no longer a normative part of XQuery 3.0.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="div1">
+<h2><a name="references" id="references"></a>3 References</h2>
+<div class="div2">
+<h3><a name="normative-references" id=
+"normative-references"></a>3.1 Normative</h3>
+<dl>
+<dt class="label"><span><a name="xquery-30" id=
+"xquery-30"></a>XQuery 3.0: An XML Query Language</span></dt>
+<dd>
+<div><a href="http://www.w3.org/TR/xquery-30/"><cite>XQuery 3.0: An
+XML Query Language</cite></a>, Jonathan Robie, Don Chamberlin,
+Michael Dyck, John Snelson, Editors. World Wide Web Consortium, 08
+April 2014. This version is
+http://www.w3.org/TR/2014/REC-xquery-30-20140408/. The <a href=
+"http://www.w3.org/TR/xquery-30/">latest version</a> is available
+at http://www.w3.org/TR/xquery-30/.</div>
+</dd>
+<dt class="label"><span><a name="xpath-datamodel-30" id=
+"xpath-datamodel-30"></a>XQuery and XPath Data Model (XDM)
+3.0</span></dt>
+<dd>
+<div><a href=
+"http://www.w3.org/TR/xpath-datamodel-30/"><cite>XQuery and XPath
+Data Model (XDM) 3.0</cite></a>, Norman Walsh, Anders Berglund,
+John Snelson, Editors. World Wide Web Consortium, 08 April 2014.
+This version is
+http://www.w3.org/TR/2014/REC-xpath-datamodel-30-20140408/. The
+<a href="http://www.w3.org/TR/xpath-datamodel-30/">latest
+version</a> is available at
+http://www.w3.org/TR/xpath-datamodel-30/.</div>
+</dd>
+<dt class="label"><span><a name="xslt-30" id="xslt-30"></a>XSL
+Transformations (XSLT) Version 3.0</span></dt>
+<dd>
+<div><a href="http://www.w3.org/TR/xslt-30/"><cite>XSL
+Transformations (XSLT) Version 3.0</cite></a>, Michael Kay, Editor.
+World Wide Web Consortium, 12 December 2013. This version is
+http://www.w3.org/TR/2013/WD-xslt-30-20131212/. The <a href=
+"http://www.w3.org/TR/xslt-30/">latest version</a> is available at
+http://www.w3.org/TR/xslt-30/.</div>
+</dd>
+<dt class="label"><span><a name=
+"xquery-update-30-requirements-use-cases" id=
+"xquery-update-30-requirements-use-cases"></a>XQuery Update
+Facility 3.0 Requirements and Use Cases</span></dt>
+<dd>
+<div><a href=
+"http://www.w3.org/TR/xquery-update-30-requirements-use-cases/"><cite>
+XQuery Update Facility 3.0 Requirements and Use Cases</cite></a>,
+Andrew Coleman, Editor. World Wide Web Consortium,
+13&#160;December&#160;2011. This version is
+http://www.w3.org/TR/2012/WD-xquery-update-30-requirements-use-cases-20120327/.
+The <a href=
+"http://www.w3.org/TR/xquery-update-30-requirements-use-cases/">latest
+version</a> is available at
+http://www.w3.org/TR/xquery-update-30-requirements-use-cases/.</div>
+</dd>
+<dt class="label"><span><a name=
+"xpath-full-text-30-requirements-use-cases" id=
+"xpath-full-text-30-requirements-use-cases"></a>XQuery and XPath
+Full Text 3.0 Requirements and Use Cases</span></dt>
+<dd>
+<div><a href=
+"http://www.w3.org/TR/xpath-full-text-30-requirements-use-cases/"><cite>
+XQuery and XPath Full Text 3.0 Requirements and Use
+Cases</cite></a>, Pat Case, Editor. World Wide Web Consortium,
+27&#160;March&#160;2012. This version is
+http://www.w3.org/TR/2012/WD-xpath-full-text-30-requirements-use-cases-20120327/.
+The <a href=
+"http://www.w3.org/TR/xpath-full-text-30-requirements-use-cases/">latest
+version</a> is available at
+http://www.w3.org/TR/xpath-full-text-30-requirements-use-cases/.</div>
+</dd>
+<dt class="label"><span><a name="XQ10" id="XQ10"></a>XQuery
+1.0</span></dt>
+<dd>
+<div><a href="http://www.w3.org/TR/xquery/">XQuery 1.0: An XML
+Query Language</a>, W3C Recommendation, 23 January 2007 and
+references therein.</div>
+</dd>
+<dt class="label"><span><a name="XSLT20" id="XSLT20"></a>XSLT
+2.0</span></dt>
+<dd>
+<div><a href="http://www.w3.org/TR/xslt20/">XSL Transformations
+(XSLT) Version 2.0</a>, W3C Recommendation, 23 January 2007 and
+references therein.</div>
+</dd>
+<dt class="label"><span><a name="XDM" id="XDM"></a>XDM</span></dt>
+<dd>
+<div><a href="http://www.w3.org/TR/xpath-datamodel/">XQuery 1.0 and
+XPath 2.0 Data Model (XDM)</a>, W3C Recommendation, 23 January
+2007</div>
+</dd>
+<dt class="label"><span><a name="XQ10R" id="XQ10R"></a>XQuery 1.0
+requirements</span></dt>
+<dd>
+<div><a href="http://www.w3.org/TR/xquery-requirements/">XML Query
+(XQuery) Requirements</a>, W3C Working Draft 3 June 2005</div>
+</dd>
+</dl>
+</div>
+<div class="div2">
+<h3><a name="non-normative-references" id=
+"non-normative-references"></a>3.2 Non-normative</h3>
+<p>The following references are some of the works considered by the
+WG in deriving its requirements.</p>
+<dl>
+<dt class="label"><span><a name="XML" id="XML"></a>XML</span></dt>
+<dd>
+<div><a href="http://www.w3.org/TR/REC-xml/">Extensible Markup
+Language (XML) 1.0 (Fourth Edition)</a>. W3C Recommendation, 29
+September 2006.</div>
+</dd>
+<dt class="label"><span><a name="XMLSchema0" id=
+"XMLSchema0"></a>XML Schema Part 0</span></dt>
+<dd>
+<div><a href="http://www.w3.org/TR/xmlschema-0/">XML Schema Part 0:
+Primer Second Edition</a>, W3C Recommendation 28 October
+2004.</div>
+</dd>
+<dt class="label"><span><a name="XMLSchema1" id=
+"XMLSchema1"></a>XML Schema Part 1</span></dt>
+<dd>
+<div><a href="http://www.w3.org/TR/xmlschema-1/">XML Schema Part 1:
+Structures Second Edition</a>, W3C Recommendation 28 October
+2004.</div>
+</dd>
+<dt class="label"><span><a name="XMLSchema2" id=
+"XMLSchema2"></a>XML Schema Part 2</span></dt>
+<dd>
+<div><a href="http://www.w3.org/TR/xmlschema-2/">XML Schema Part 2:
+Datatypes Second Edition</a>, W3C Recommendation 28 October
+2004.</div>
+</dd>
+<dt class="label"><span><a name="XMLSchema11rec" id=
+"XMLSchema11rec"></a>XML Schema 1.1 requirements</span></dt>
+<dd>
+<div><a href="http://www.w3.org/TR/xmlschema-11-req/">Requirements
+for XML Schema 1.1</a>, W3C Working Draft, 2003.</div>
+</dd>
+<dt class="label"><span><a name="Kay06" id=
+"Kay06"></a>Kay06</span></dt>
+<dd>
+<div>"Positional Grouping in XQuery", Kay, M.H. XIME-P
+International workshop proceedings, 2006</div>
+</dd>
+<dt class="label"><span><a name="Colby05" id=
+"Colby05"></a>Colby05</span></dt>
+<dd>
+<div>"Extending XQuery for Analytics", Beyer K., Chamberlin D. et
+al. SIGMOD 2005</div>
+</dd>
+<dt class="label"><span><a name="Borkar04" id=
+"Borkar04"></a>Borkar04</span></dt>
+<dd>
+<div>"Extending XQuery for Grouping, Duplicate Elimination, and
+Outer Joins.", Borkar V. and Carey M. XML 2004, Idealliance</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</body>
+</html>

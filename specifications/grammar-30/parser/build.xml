@@ -1,0 +1,1687 @@
+<?xml version="1.0"?>
+
+<!-- Build file for use with Ant (http://jakarta.apache.org/ant). -->
+<project name="grammar-parser-javacc" default="all" basedir=".">
+
+  <description>
+This buildfile is used to build the XPath family of grammar descriptions,
+specifications, and parser tests.
+
+Properties (first value given is the default):
+--------------------------------------
+Property name: debug
+Property values: false|true
+Description: Turns debugging trace on for the parsers.
+--------------------------------------
+
+You can set a property from the command line via -Dpropname=propvalue.
+
+Keep in mind that you can use multiple targets.
+Example:  build jars test
+</description>
+
+  <!-- ===================================================================== -->
+
+  <!--
+    These are variables that you might have reasonable cause
+    to set differently from the command-line.
+    E.g., ant -Ddebug=true
+  -->
+
+  <!-- Turns debugging trace on for the parsers. -->
+  <property name="debug" value="false"/>
+
+  <!-- This is passed to javacc's -JAVA_UNICODE_ESCAPE arg. -->
+  <property name="unicodeinput" value="false"/>
+
+  <!-- 
+       legitimate values for $dump are:
+         -dumptree
+         -dumpxml
+         -xqueryx
+
+       empty is not a legitimate value
+  -->
+  <property name="dump" value="-dumptree"/>
+
+  <!-- This is the directory where the by-products of the build go. -->
+  <property name="build-dir" value="build"/>
+
+  <!-- This is the directory where the various parsing applets will be assembled. -->
+  <property name="applets-dir" value="applets"/>
+
+  <!-- This is the directory where the XQuery Test Suite v1 lives. -->
+  <property name="xqts-dir" value="/PATH_TO_LOCAL_COPY_OF_XQTS"/>
+
+  <!-- This is the directory where the XQuery Update Test Suite lives. -->
+  <property name="xquts-dir" value="/PATH_TO_LOCAL_COPY_OF_XQUTS"/>
+
+  <!-- This is the directory where the XQuery/XPath Full Text Test Suite lives. -->
+  <property name="xqftts-dir" value="/PATH_TO_LOCAL_COPY_OF_XQFTTS"/>
+
+  <!-- This is the directory where the QT3 Test Suite lives. -->
+  <property name="qt3ts-dir" value="/PATH_TO_LOCAL_COPY_OF_QT3TS"/>
+
+  <!--
+    Note re test suite directory properties:
+
+    Assuming you have a local working copy of a test suite,
+    this file can't make a reasonable guess at its relative location,
+    because the test suite and this file belong to different CVS repositories.
+    So, for the xq*ts-dir properties above, we don't even try.  (Instead,
+    we use values that will stick out if they haven't been overriden.)
+
+    You could simply change the above values to whatever is appropriate
+    for your local setup. However, then there'd be the danger of accidentally
+    committing those settings at some point. You could pass in the correct
+    setting on the command-line, e.g.:
+        ant -Dxqts-dir=/foo/bar/xquery-test-suite test-xquery-test-suite-v1
+    but that would be a pain. So instead, I recommend that you set the
+    xq*ts-dir properties via the ANT_ARGS environment variable. E.g.:
+        ANT_ARGS="$ANT_ARGS -Dxqts-dir=/foo/bar/xquery-test-suite"
+        ANT_ARGS="$ANT_ARGS -Dxqftts-dir=/baz/qux/xpath-full-text-10-test-suite"
+    You could put those commands in your shell inititialization, or you could
+    put them in ~/.antrc, which is sourced as part of ant's initialization.
+  -->
+
+  <!-- ===================================================================== -->
+
+  <!--
+    Each of these properties identifies a pre-existing file/dir
+    outside this directory. It's unlikely you'd want to set them
+    differently from the command-line.
+  -->
+
+  <property name="grammar-file"              value="../xpath-grammar.xml"/>
+  <property name="fulltext-spec-file"        value="../../xpath-full-text-10/src/xpath-full-text.xml"/>
+  <property name="fulltext-uc-file"          value="../../../use-cases/xpath-full-text-10/src/xpath-full-text-use-cases.xml"/>
+  <property name="scripting-uc-file"         value="../../../use-cases/xquery-sx-10/src/xquery-sx-use-cases.xml"/>
+  <property name="xquery-spec-file"          value="../../xquery-30/src/xquery.xml"/>
+  <property name="xquery-uc-file"            value="../../../use-cases/xquery-30/src/xquery-use-cases.xml"/>
+  <property name="xquery-regression-tests"   value="../tests/use-cases.xquery"/>
+  <property name="update-regression-tests"   value="../tests/update.xquery"/>
+  <property name="pathx1-tests"              value="../tests/pathx1-tests.xml"/>
+  <!--
+  <property name="javacchome"                value="../../lib"/>
+  -->
+
+  <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+
+  <defaultexcludes add="**/.*.sw?"/> <!-- vim temp files -->
+
+  <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+
+  <!--
+    Each target in this section deals with multiple languages.
+  -->
+
+  <target name="clean">
+    <delete dir="${build-dir}"/>
+    <delete><fileset dir="${applets-dir}" excludes="CVS"/></delete>
+    <delete file="xpath_ex_from_sp.xml"/>
+    <delete file="xquery_ex_from_uc.xquery"/>
+    <delete file="xquery_ex_from_sp.xquery"/>
+    <delete file="xquery_ex_from_ftsp.xquery"/>
+    <delete file="xquery_ex_from_ftsp_simple.xquery"/>
+    <delete file="fulltext_ex_from_sp.xquery"/>
+    <delete file="fulltext_ex_from_uc.xquery"/>
+  </target>
+
+
+  <target name="validate">
+    <xmlvalidate file="${grammar-file}" failonerror="yes" lenient="no" warn="yes"/>
+  </target>
+
+
+  <target name="applets" description="Build applets directory"
+          depends="
+            xslt2-patterns.applet,
+            xslt30-patterns.applet,
+            xpath1.applet,
+            xpath20.applet,
+            xpath30.applet,
+            xpath31.applet,
+            xquery10.applet,
+            xquery30.applet,
+            xquery31.applet,
+            xquery10-fulltext.applet,
+            xquery30-fulltext.applet,
+            xquery10-update.applet,
+            xquery30-update.applet,
+            xquery30-update-scripting.applet,
+            xquery31-update-scripting.applet,
+            xquery10-fulltext-update.applet,
+            xquery30-fulltext-update.applet,
+            xquery-core.applet
+    ">
+    <copy todir="${applets-dir}" file="${grammar-file}"/>
+    <copy todir="${applets-dir}" file="../grammar.dtd"/>
+    <antcall target="xgrammar_zips"/>
+  </target>
+
+
+  <target name="test" description="Runs all quick tests on all grammars."
+    depends="
+      xslt2-patterns.tests,
+      xslt30-patterns.tests,
+      xpath1.tests,
+      xpath20.tests,
+      xpath30.tests,
+      xpath31.tests,
+      xquery10.tests,
+      xquery30.tests,
+      xquery31.tests,
+      xquery10-update.tests,
+      xquery30-update.tests,
+      xquery30-update-scripting.tests,
+      xquery10-fulltext.tests,
+      xquery30-fulltext.tests,
+      xquery-core.tests
+    ">
+    <!-- xpath1.tests -->
+  </target>
+
+  <target name="long-tests" description="Runs all long tests on all parsers.">
+    <antcall.xpath20 target="test-xquery-test-suite-v1"/>
+    <antcall.xpath30 target="test-xquery-test-suite-v1"/>
+
+    <antcall.xquery10 target="test-xquery-test-suite-v1"/>
+    <antcall.xquery30 target="test-xquery-test-suite-v1"/>
+
+    <antcall.xquery10-update target="test-update-test-suite"/>
+    <antcall.xquery30-update target="test-update-test-suite"/>
+
+    <antcall.xquery10-fulltext target="test-fulltext-test-suite"/>
+    <antcall.xquery30-fulltext target="test-fulltext-test-suite"/>
+
+    <antcall.xpath20 target="test-xquery-test-suite-v3"/>
+    <antcall.xpath30 target="test-xquery-test-suite-v3"/>
+    <antcall.xpath31 target="test-xquery-test-suite-v3"/>
+    <antcall.xquery10 target="test-xquery-test-suite-v3"/>
+    <antcall.xquery30 target="test-xquery-test-suite-v3"/>
+    <antcall.xquery31 target="test-xquery-test-suite-v3"/>
+  </target>
+
+
+  <!--============= Build everything important ===============-->
+  <target name="all" depends="clean, applets, test"
+    description="Build all jars and grammar BNFs.">
+  </target>
+
+  <target name="xgrammar_zips">
+
+    <copy todir="xgrammar/grammar" includeEmptyDirs="false">
+      <fileset dir=".." >
+        <include name="*"/>
+        <include name="extractors/*"/>
+        <include name="tests/*"/>
+        <include name="parser/*"/>
+      </fileset>
+    </copy>
+
+    <copy todir="xgrammar/lib" includeEmptyDirs="false">
+      <fileset dir="../../../lib" > 
+        <include name="*"/>
+      </fileset>
+    </copy>
+
+    <zip zipfile="${applets-dir}/xgrammar_libs.zip">
+      <fileset dir="." includes="xgrammar/lib/**"/>
+    </zip>
+
+    <zip zipfile="${applets-dir}/xgrammar_src.zip">
+      <fileset dir="." includes="xgrammar/grammar/**"/>
+    </zip>
+
+    <delete dir="xgrammar"/>
+
+  </target>
+
+  <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+
+  <!--
+    Each of the targets in this section deals with a single fixed language.
+    Almost all of them are simply an antcall to a generic target
+    that effectively takes a language as a parameter.
+  -->
+
+  <!-- =========================================================== -->
+  <!-- Targets that deal with XSLT 2.0 and XSLT 3.0 Patterns -->
+
+  <target name="xslt2-patterns.applet">
+    <antcall.xslt2-patterns target="applet"/>
+  </target>
+  
+  <target name="xslt30-patterns.applet">
+    <antcall.xslt30-patterns target="applet"/>
+  </target>
+
+  <target name="xslt2-patterns.tests">
+    <java fork="yes" classname="org.w3c.xqparser.Test">
+      <assertions><enable/></assertions>
+      <classpath>
+        <pathelement path="${applets-dir}/xslt2-patterns/applet.jar"/>
+      </classpath>
+      <arg value="-dumptree"/>
+      <arg value="-expr"/> <arg value='para'/>
+      <arg value="-expr"/> <arg value='*'/>
+      <arg value="-expr"/> <arg value='chapter|appendix'/>
+      <arg value="-expr"/> <arg value='olist/entry'/>
+      <arg value="-expr"/> <arg value='appendix//para'/>
+      <arg value="-expr"/> <arg value='schema-element(us:address)'/>
+      <arg value="-expr"/> <arg value='attribute(*, xs:date)'/>
+      <arg value="-expr"/> <arg value='/'/>
+      <arg value="-expr"/> <arg value='document-node()'/>
+      <arg value="-expr"/> <arg value='document-node(schema-element(my:invoice))'/>
+      <arg value="-expr"/> <arg value='text()'/>
+      <arg value="-expr"/> <arg value='node()'/>
+      <arg value="-expr"/> <arg value='id("W33")'/>
+      <arg value="-expr"/> <arg value='para[1]'/>
+      <arg value="-expr"/> <arg value='//para'/>
+      <arg value="-expr"/> <arg value='bullet[position() mod 2 = 0]'/>
+      <arg value="-expr"/> <arg value='div[@class="appendix"]//p'/>
+      <arg value="-expr"/> <arg value='@class'/>
+      <arg value="-expr"/> <arg value='@*'/>
+    </java>
+  </target>
+  
+  <target name="xslt30-patterns.tests">
+    <java fork="yes" classname="org.w3c.xqparser.Test">
+      <assertions><enable/></assertions>
+      <classpath>
+        <pathelement path="${applets-dir}/xslt30-patterns/applet.jar"/>
+      </classpath>
+      <arg value="-dumptree"/>
+      <!-- repeat the tests in xslt2-patterns.tests: -->
+      <arg value="-expr"/> <arg value='para'/>
+      <arg value="-expr"/> <arg value='*'/>
+      <arg value="-expr"/> <arg value='chapter|appendix'/>
+      <arg value="-expr"/> <arg value='olist/entry'/>
+      <arg value="-expr"/> <arg value='appendix//para'/>
+      <arg value="-expr"/> <arg value='schema-element(us:address)'/>
+      <arg value="-expr"/> <arg value='attribute(*, xs:date)'/>
+      <arg value="-expr"/> <arg value='/'/>
+      <arg value="-expr"/> <arg value='document-node()'/>
+      <arg value="-expr"/> <arg value='document-node(schema-element(my:invoice))'/>
+      <arg value="-expr"/> <arg value='text()'/>
+      <arg value="-expr"/> <arg value='node()'/>
+      <arg value="-expr"/> <arg value='id("W33")'/>
+      <arg value="-expr"/> <arg value='para[1]'/>
+      <arg value="-expr"/> <arg value='//para'/>
+      <arg value="-expr"/> <arg value='bullet[position() mod 2 = 0]'/>
+      <arg value="-expr"/> <arg value='div[@class="appendix"]//p'/>
+      <arg value="-expr"/> <arg value='@class'/>
+      <arg value="-expr"/> <arg value='@*'/>
+      <!-- and now some 3.0-specific tests: -->
+      <arg value="-expr"/> <arg value='chapter union appendix'/>
+      <arg value="-expr"/> <arg value='* except appendix'/>
+      <arg value="-expr"/> <arg value="*[@a='1'] intersect *[@b='1']"/>
+      <arg value="-expr"/> <arg value="id('a001')//para"/>
+      <arg value="-expr"/> <arg value="doc('a001.xml')//para"/>
+      <arg value="-expr"/> <arg value="element-with-id('E21256')/empnr"/>
+      <arg value="-expr"/> <arg value="key('bib',$name)"/>
+      <arg value="-expr"/> <arg value="$var//para"/>
+      <arg value="-expr"/> <arg value="$var"/>
+      <arg value="-expr"/> <arg value="$var[@x = '22']"/>
+      <!-- ensure that the names of the 4 special RootedPath functions can still be used in NameTests: -->
+      <arg value="-expr"/> <arg value="doc/(chapter|appendix)/para"/>
+      <arg value="-expr"/> <arg value="element-with-id//foo"/>
+      <arg value="-expr"/> <arg value="id/foo"/>
+      <arg value="-expr"/> <arg value="key/foo"/>
+    </java>
+  </target>
+
+  <!-- =========================================================== -->
+  <!-- Targets that deal with XPath 1.0 -->
+
+  <target name="xpath1.jar">
+    <antcall.xpath1 target="jar"/>
+  </target>
+
+  <target name="xpath1.applet">
+    <antcall.xpath1 target="applet"/>
+  </target>
+
+  <target name="xpath1.tests" description="Smoke test for XPath1.">
+    <java fork="yes" classname="org.w3c.xqparser.Test">
+      <assertions><enable/></assertions>
+      <classpath>
+        <pathelement path="${applets-dir}/xpath1/applet.jar"/>
+      </classpath>
+      <arg value="-dumptree"/>
+      <arg value="-expr"/>
+      <arg value="abc"/>
+      <arg value="-expr"/>
+      <arg value="1+1*3"/>
+      <arg value="-expr"/>
+      <arg value="1*1+3"/>
+      <arg value="-expr"/>
+      <arg value="1 &lt; 1 &lt; 2"/>
+      <arg value="-expr"/>
+      <arg value="1 = 1 = 2"/>
+    </java>
+    <antcall.xpath1 target="test-against-xpath1-exprs"/>
+  </target>
+
+  <!-- =========================================================== -->
+  <!-- Targets that deal with XPath 2+ -->
+
+  <target name="xpath20.jar">
+    <antcall.xpath20 target="jar"/>
+  </target>
+
+  <target name="xpath20.applet">
+    <antcall.xpath20 target="applet"/>
+  </target>
+
+  <target name="xpath20.tests">
+    <antcall.xpath20 target="test-xpath"/>
+  </target>
+
+  <!-- -->
+
+  <target name="xpath30.jar">
+    <antcall.xpath30 target="jar"/>
+  </target>
+
+  <target name="xpath30-noast.jar">
+    <antcall.xpath30 target="jar-noast">
+      <param name="jarfilename" value="${applets-dir}/xpath30-noast/applet.jar"/>
+    </antcall.xpath30>
+  </target>
+
+  <target name="xpath30.jjdoc">
+    <antcall.xpath30 target="jjdoc"/>
+  </target>
+
+  <target name="xpath30.applet">
+    <antcall.xpath30 target="applet"/>
+  </target>
+
+  <target name="xpath30.tests">
+    <antcall.xpath30 target="test-xpath"/>
+  </target>
+
+  <!-- -->
+
+  <target name="xpath31.applet">
+    <antcall.xpath31 target="applet"/>
+  </target>
+
+  <target name="xpath31.tests">
+    <antcall.xpath31 target="test-xpath"/>
+  </target>
+
+  <!-- -->
+
+  <target name="test-xpath" description="All quick tests for XPath 2+"
+    depends="
+      test-xpath-smoke,
+      test-xpath-doc-frags,
+      test-against-xpath1-exprs
+    ">
+  </target>
+
+  <target name="test-xpath-smoke" description="Smoke test for XPath2+">
+    <java fork="no" classname="org.w3c.xqparser.Test">
+      <assertions><enable/></assertions>
+      <classpath>
+        <pathelement path="${jarfilename}" />
+        <pathelement path="${java.class.path}/" />
+      </classpath>
+      <arg value="-dumptree"/>
+      <arg value="-expr"/>
+      <arg value="abc"/>
+      <arg value="-expr"/>
+      <arg value="1+1*3"/>
+
+      <!-- The following should succeed for XPath 2.0+ -->
+      <arg value="-expr"/>
+      <arg value="1*1*(if(***) then if(div div div) then (/) * (/) else /*** else div:div*.)"/>
+
+      <!-- The following should raise an error for XPath 2.0, succeed for 3.0+ -->
+      <arg value="-expr"/>
+      <arg value="$f(2, 3)"/>
+      <arg value="-expr"/>
+      <arg value="function($a) { $a }"/>
+      <arg value="-expr"/>
+      <arg value="Q{http://www.w3.org/2005/xpath-functions/math}pi"/>
+      <arg value="-expr"/>
+      <arg value="'con' || 'cat' || 'enate'"/>
+      <arg value="-expr"/>
+      <arg value="$docs ! ( //employee)"/>
+
+      <!-- The following should raise an error for XPath 2.0 and 3.0, succeed for 3.1+ -->
+      <arg value="-expr"/>
+      <arg value="map { 'Su' : 'Sunday', foo(x) : bar(y) }"/>
+      <arg value="-expr"/>
+      <arg value="[ 'a', 123, for $x in (1,2,3) return $x*$x ]"/>
+      <arg value="-expr"/>
+      <arg value="array { 'licorice', (), [1,'b'] }"/>
+      <arg value="-expr"/>
+      <arg value="?1 + $a?*"/>
+      <arg value="-expr"/>
+      <arg value="$x instance of map(a,b)"/>
+
+      <!-- The following should raise an error for XPath 2.0 and 3.0.
+           How XPath 3.1 treats them depends on the precedence of the arrow operator
+           This is a selection from the 15 examples at:
+           https://www.w3.org/Bugs/Public/show_bug.cgi?id=27537#c9
+      -->
+      <arg value="-expr"/>
+      <arg value="- $x =>f()"/>
+      <arg value="-expr"/>
+      <arg value="$a ! $b =>f()"/>
+      <arg value="-expr"/>
+      <arg value="/ a =>f()"/>
+      <arg value="-expr"/>
+      <arg value="$a =>f() [1]"/>
+
+      <!-- -->
+
+      <arg value="-expr"/>
+      <arg value="\u0058"/>
+      <!--
+          On 2011-08-20, in response to Bug 13796, I set up these tests
+          (the one above and the three below).
+
+          At that time, the generated lexer recognized Java-style Unicode escapes,
+          which was/is non-conformant behavior.  For example, it would accept
+          the expression above (treating it the same as the character 'X'),
+          when in fact it's a syntax error.
+
+          This was because we invoked JavaCC with the JAVA_UNICODE_ESCAPE option
+          enabled (via setting the local property 'unicodeinput' to true).
+
+          The solution seemed simple: just disable the option.  When I tried
+          to do so, the generated lexer stopped recognizing Java-style Unicode
+          escapes as expected, BUT various valid tests (not involving Unicode
+          escapes) suddenly failed to parse.  (I boiled some of those down into
+          the following three tests.)
+
+          This appeared to be a bug in JavaCC, and I didn't see an easy way to
+          find it, let alone fix it. Since the lexer was non-conformant either way,
+          I decided it was better to leave JAVA_UNICODE_ESCAPE enabled, since
+          at least then, it was easy to characterize the non-conformance.
+
+          On 2016-04-27, after Bug 13796 had come up again, I set out to see if
+          I could fix the bug (possibly by installing a newer version of JavaCC).
+          To refamiliarize myself with the buggy behavior, I set the local
+          unicodeinput property to false, thus disabling the JAVA_UNICODE_ESCAPE
+          option, built the parsers, and ran the tests.
+          
+          To my surprise, the bug was no longer present. For example, the three
+          smoke tests below did not cause the parser to raise syntax errors.
+
+          I don't know why the bug is gone. The version of javacc.jar in qtspecs/lib
+          is still the same as it's been since 2007-08-10. What *has* changed is my
+          versions of Java (1.6 to 1.7) and Apache Ant (1.7.1 to 1.8.4), so my best
+          guess is that the bug was actually somewhere in there.
+
+          Anyway, I'm leaving the smoke tests here, in case the bug ever returns.
+      -->
+      <arg value="-expr"/>
+      <arg value="'(&#226;&#8364;&#176;)'"/>
+      <!-- Based on test #573 (line 590) of ../tests/pathx1-tests.xml -->
+      <arg value="-expr"/>
+      <arg value='"&#60000;"'/>
+      <!-- Based on Operators/CompExpr/ValComp/StringComp/StringLT/K2-StringLT-1.xq -->
+      <arg value="-expr"/>
+      <arg value="'b&#223;&#1682;&#12365;'"/>
+      <!-- Based on Functions/AllStringFunc/AssDisassStringFunc/StringToCodepointFunc/fn-string-to-codepoints1args-4.xq -->
+    </java>
+  </target>
+
+  <target name="test-xpath-doc-frags">
+    <xslt style="../extractors/xpath_sp.xsl" in="${xquery-spec-file}"
+      out="xpath_ex_from_sp.xml" force="yes" extension=".xml" destdir=".">
+      <!-- param name="not-spec" expression="xpath"/ -->
+    </xslt>
+    <java fork="yes"  classname="org.w3c.xqparser.Test">
+      <assertions><enable/></assertions>
+      <classpath>
+        <pathelement path="${jarfilename}" />
+        <pathelement path="${java.class.path}/" />
+      </classpath>
+<!--      <arg value="${dump}"/> -->
+      <arg value="xpath_ex_from_sp.xml"/>
+    </java>
+  </target>
+
+  <!-- =========================================================== -->
+  <!-- Targets that deal with XQuery Core -->
+
+  <target name="xquery-core.jar">
+    <antcall.xcore target="jar"/>
+  </target>
+
+  <target name="xquery-core.jjdoc">
+    <antcall.xcore target="jjdoc"/>
+  </target>
+
+  <target name="xquery-core.applet-html">
+    <antcall.xcore target="gen-applet-html"/>
+  </target>
+
+  <target name="xquery-core.applet">
+    <antcall.xcore target="applet"/>
+  </target>
+
+  <target name="xquery-core.tests">
+    <echo message="There are no tests for xquery-core!"/>
+  </target>
+
+  <!-- =========================================================== -->
+  <!-- Targets that deal with XQuery -->
+
+  <target name="xquery10.jar">
+    <antcall.xquery10 target="jar"/>
+  </target>
+
+  <target name="xquery10.applet">
+    <antcall.xquery10 target="applet"/>
+  </target>
+
+  <target name="xquery10.tests">
+    <antcall.xquery10 target="test-xquery"/>
+  </target>
+
+  <!-- -->
+
+  <target name="xquery30.jar">
+    <antcall.xquery30 target="jar"/>
+  </target>
+
+  <target name="xquery30-nogen.jar">
+    <antcall.xquery30 target="jar-nogen"/>
+  </target>
+
+  <target name="xquery30.jjdoc">
+    <antcall.xquery30 target="jjdoc"/>
+  </target>
+
+  <target name="xquery30.applet">
+    <antcall.xquery30 target="applet"/>
+  </target>
+
+  <target name="xquery30.tests">
+    <antcall.xquery30 target="test-xquery"/>
+  </target>
+
+  <!-- -->
+
+  <target name="xquery31.applet">
+    <antcall.xquery31 target="applet"/>
+  </target>
+
+  <target name="xquery31.tests">
+    <antcall.xquery31 target="test-xquery"/>
+  </target>
+
+  <!-- -->
+
+  <target name="test-xquery" description="All quick tests for XQuery"
+    depends="
+      test-xquery-smoke,
+      test-xquery-xqx-smoke,
+      test-xquery-major,
+      test-xquery-doc-frags,
+      test-xquery-use-cases-doc-frags,
+      test-fulltext-semantic-functions
+    ">
+    <!-- Not test-xquery-test-suite-v1, it takes too long. -->
+  </target>
+
+  <target name="test-xquery-smoke"  description="Smoke test for XQuery">
+    <java fork="yes" classname="org.w3c.xqparser.Test">
+      <assertions><enable/></assertions>
+      <classpath>
+        <pathelement path="${jarfilename}" />
+        <pathelement path="${java.class.path}/" />
+      </classpath>
+      <arg value="-dumptree"/>
+
+      <!-- This should parse in all versions: -->
+      <arg value="-expr"/>
+      <arg value="if(&lt;abc/>) then $efg else 2 + 2 or false()"/>
+
+      <!-- This should raise an error in xquery10, parse in xquery30+: -->
+      <arg value="-expr"/>
+      <arg value="try { 1 / 0 } catch * { 42 }"/>
+
+      <!-- This should raise an error in xquery10 & xquery30, parse in xquery31+: -->
+      <arg value="-expr"/>
+      <arg value="let $m := map { 'a' : 1, foo(x) : bar(y) } return $m(3)"/>
+      <arg value="-expr"/>
+      <arg value="``[Well, `{ 'Hello', 'World' }`!]``"/>
+
+    </java>
+  </target>
+
+  <target name="test-xquery-xqx-smoke" description="Smoke test for conversion to XQueryX">
+    <java fork="yes" classname="org.w3c.xqparser.Test">
+      <assertions><enable/></assertions>
+      <classpath>
+        <pathelement path="${jarfilename}"/>
+      </classpath>
+      <arg value="-xqueryx"/>
+      <arg value="-xqueryxfile"/>
+      <arg value="t.xqueryx"/>
+      <arg value="-expr"/>
+      <arg value="for $i in 0 to $n - 1 return &lt;x i='{$i}'/>"/>
+
+      <arg value="-expr"/>
+      <arg value='&lt;e a="b&#10;= {"d e" eq "d&#10;e"}"/&gt;'/>
+      <!-- The latter exposes a bug in the converter code. -->
+      <!-- That bug is now fixed, but keep the test as a regression-detector. -->
+
+      <arg value="-expr"/>
+      <arg value='&lt;e a="b&#xD;&#xA;c{1}"/&gt;'/>
+      <!-- Bug: In result, 'b' and 'c' are separated by 2 spaces, should be 1. -->
+      <!-- That bug is now fixed, but keep the test as a regression-detector. -->
+
+      <arg value="-expr"/>
+      <arg value="
+        xquery version 'O''Malley''s version';
+        import schema 'http://name''space' at 'http://schema''location';
+        processing-instruction('foo''bar')
+      "/>
+      <!-- Bug: In result, occurrences of EscapeApos are not converted to '. -->
+      <!-- Also, the schema-import hint is mis-handled. -->
+      <!-- Those bugs are now fixed, but keep the test as a regression-detector. -->
+
+      <arg value="-expr"/>
+      <arg value="&lt;!-- a-&#xD;&#xA;b --&gt;"/>
+      <!-- Bug: coming right after a hyphen, the CR doesn't get normalized away. -->
+
+      <arg value="-expr"/>
+      <arg value="(# Foo content&#xD;&#xA;if x &lt; 3 &amp; such #){1}"/>
+      <!-- Bug: left-angle-bracket and ampersand are not escaped in generated xqx. -->
+      <!-- Also, the CR is not elided, though that's hard to see. -->
+      <!-- Those bugs are now fixed, but keep the test as a regression-detector. -->
+    </java>
+  </target>
+
+  <target name="test-xquery-major" description="Smoke test for XQuery expressions. &#10;
+          You must specify&#10;
+          -Ddump=-dump if you want the jjtree dump&#10;
+          (note the dash after the =).">
+    <java fork="yes"  classname="org.w3c.xqparser.Test">
+      <assertions><enable/></assertions>
+      <classpath>
+        <pathelement path="${jarfilename}" />
+        <pathelement path="${java.class.path}/" />
+      </classpath>
+      <arg value="${dump}"/> 
+      <arg value="${xquery-regression-tests}"/>
+    </java>
+  </target>
+
+  <target name="test-xquery-doc-frags">
+    <xslt style="../extractors/xquery_sp.xsl" in="${xquery-spec-file}"
+      out="xquery_ex_from_sp.xquery" force="yes" extension=".xquery" destdir=".">
+      <!-- param name="not-spec" expression="xpath"/ -->
+    </xslt>
+    <java fork="yes"  classname="org.w3c.xqparser.Test">
+      <assertions><enable/></assertions>
+      <classpath>
+        <pathelement path="${jarfilename}" />
+        <pathelement path="..\..\..\lib\javacc.jar"/>
+        <pathelement path="..\..\..\lib\optional.jar"/>
+        <pathelement path="..\..\..\lib\xalan.jar"/>
+        <pathelement path="..\..\..\lib\xml-apis.jar"/>
+        <pathelement path="${java.class.path}/" />
+      </classpath>
+<!--      <arg value="${dump}"/> -->
+      <arg value="xquery_ex_from_sp.xquery"/>
+    </java>
+  </target>
+
+
+  <target name="test-xquery-use-cases-doc-frags">
+    <xslt style="../extractors/xquery_uc.xsl" in="${xquery-uc-file}"
+      out="xquery_ex_from_uc.xquery" force="yes" extension=".xquery" destdir=".">
+      <!-- param name="not-spec" expression="xpath"/ -->
+    </xslt>
+    <java fork="yes"  classname="org.w3c.xqparser.Test">
+      <assertions><enable/></assertions>
+      <classpath>
+        <pathelement path="${jarfilename}" />
+        <pathelement path="..\..\..\lib\javacc.jar"/>
+        <pathelement path="..\..\..\lib\optional.jar"/>
+        <pathelement path="..\..\..\lib\xalan.jar"/>
+        <pathelement path="..\..\..\lib\xml-apis.jar"/>
+        <pathelement path="${java.class.path}/" />
+      </classpath>
+<!--      <arg value="${dump}"/> -->
+      <arg value="xquery_ex_from_uc.xquery"/>
+    </java>
+  </target>
+
+  <target name="test-xquery-test-suite-v1" description="Major test suite.">
+    <echo message="parser language = ${language}"/>
+    <java fork="yes" maxmemory="128m" classname="org.w3c.xqparser.Test">
+      <assertions><enable/></assertions>
+      <classpath>
+        <pathelement path="..\..\..\lib\xml-apis.jar" />
+        <pathelement path="..\..\..\lib\xercesImpl.jar" />
+        <pathelement path="${jarfilename}" />
+        <pathelement path="${java.class.path}/" />
+      </classpath>
+      <arg line="-XQueryXOutputHierarchyRoot _test_suite_v1_xqx/${language}"/>
+      <arg value="-catalog1"/>
+      <arg value="${xqts-dir}/TestSuiteStagingArea/XQTSCatalog.xml"/>
+    </java>
+  </target>
+
+  <target name="test-xquery-test-suite-v3" description="Major test suite.">
+    <echo message="parser language = ${language}"/>
+    <java fork="yes" maxmemory="128m" classname="org.w3c.xqparser.Test">
+      <assertions><enable/></assertions>
+      <classpath>
+        <pathelement path="..\..\..\lib\xml-apis.jar" />
+        <pathelement path="..\..\..\lib\xercesImpl.jar" />
+        <pathelement path="${jarfilename}" />
+        <pathelement path="${java.class.path}/" />
+      </classpath>
+      <arg line="-XQueryXOutputHierarchyRoot _test_suite_v3_xqx/${language}"/>
+      <arg value="-catalog3"/>
+      <arg value="${qt3ts-dir}/catalog.xml"/>
+    </java>
+  </target>
+
+  <target name="test-fulltext-semantic-functions">
+    <!--
+        Note that although this target involves fragments
+        extracted from the Full Text spec, it is not a test of the
+        XQuery+Fulltext parser, but rather just the XQuery parser.
+        (The fragments are taken from the spec's section 4, which
+        defines the semantics of Full Text using "plain" XQuery.)
+    -->
+    <xslt style="../extractors/fulltext_sp_other.xsl" in="${fulltext-spec-file}"
+      out="allmatches.xsd" force="yes" extension=".xquery" destdir=".">
+      <param name="targetrole" expression="semfunc-file-allmatches-xsd"/>
+    </xslt>
+
+    <xslt style="../extractors/fulltext_sp_other.xsl" in="${fulltext-spec-file}"
+      out="ftselection.xsd" force="yes" extension=".xquery" destdir=".">
+      <param name="targetrole" expression="semfunc-file-ftselection-xsd"/>
+    </xslt>
+
+    <xslt style="../extractors/fulltext_sp_other.xsl" in="${fulltext-spec-file}"
+      out="xquery_ex_from_ftsp.xquery" force="yes" extension=".xquery" destdir=".">
+      <param name="targetrole" expression="semfunc-file-fts-xquery"/>
+    </xslt>
+
+    <!-- test whether we can parse the extracted XQuery functions  -->
+    <antcall target="test-fulltext-semantic-functions-do-parse">
+      <param name="filetotest" value="xquery_ex_from_ftsp.xquery"/>
+    </antcall>
+
+    <xslt style="../extractors/fulltext_sp_other.xsl" in="${fulltext-spec-file}"
+      out="xquery_ex_from_ftsp_simple.xquery" force="yes" extension=".xquery" destdir=".">
+      <param name="targetrole" expression="semfunc-file-ftssimple-xquery"/>
+    </xslt>
+
+    <!-- test whether we can parse the extracted XQuery functions  -->
+    <antcall target="test-fulltext-semantic-functions-do-parse">
+      <param name="filetotest" value="xquery_ex_from_ftsp_simple.xquery"/>
+    </antcall>
+  </target>
+
+  <target name="test-fulltext-semantic-functions-do-parse">
+    <java fork="yes"  classname="org.w3c.xqparser.Test">
+      <assertions><enable/></assertions>
+      <classpath>
+        <pathelement path="${jarfilename}" />
+        <pathelement path="${java.class.path}/" />
+      </classpath>
+<!--      <arg value="${dump}"/> -->
+      <arg value="${filetotest}"/>
+    </java>
+  </target>
+
+  <!-- =========================================================== -->
+  <!-- Targets that deal with XQuery + Update Extensions -->
+
+  <target name="xquery10-update.jar">
+    <antcall.xquery10-update target="jar"/>
+  </target>
+
+  <target name="xquery10-update.applet">
+    <antcall.xquery10-update target="applet"/>
+  </target>
+
+  <target name="xquery10-update.tests">
+    <antcall.xquery10-update target="test-update"/>
+  </target>
+
+  <!-- -->
+
+  <target name="xquery30-update.jar">
+    <antcall.xquery30-update target="jar"/>
+  </target>
+
+  <target name="xquery30-update-noast.jar">
+    <antcall.xquery30-update target="jar-noast">
+      <param name="jarfilename" value="${applets-dir}/xquery30-update-noast/applet.jar"/>
+    </antcall.xquery30-update>
+  </target>
+
+  <target name="xquery30-update.jjdoc">
+    <antcall.xquery30-update target="jjdoc"/>
+  </target>
+
+  <target name="xquery30-update.applet-html">
+    <antcall.xquery30-update target="gen-applet-html"/>
+  </target>
+
+  <target name="xquery30-update.applet">
+    <antcall.xquery30-update target="applet"/>
+  </target>
+
+  <target name="xquery30-update.tests">
+    <antcall.xquery30-update target="test-update"/>
+  </target>
+
+  <!-- -->
+
+  <target name="test-update" description="All quick tests for XQuery Update."
+    depends="
+      test-update-smoke,
+      test-update-xqx-smoke
+    ">
+    <!-- Not test-update-test-suite, it takes too long. -->
+  </target>
+
+  <target name="test-update-smoke" description="Test for XQuery update language.">
+    <java fork="yes"  classname="org.w3c.xqparser.Test">
+      <assertions><enable/></assertions>
+      <classpath>
+        <pathelement path="${jarfilename}" />
+        <pathelement path="${java.class.path}/" />
+      </classpath>
+<!--      <arg value="${dump}"/> -->
+      <arg value="${update-regression-tests}"/>
+    </java>
+  </target>
+
+  <target name="test-update-xqx-smoke" description="Smoke test for conversion to XQueryX">
+    <java fork="yes" classname="org.w3c.xqparser.Test">
+      <assertions><enable/></assertions>
+      <classpath>
+        <pathelement path="${jarfilename}"/>
+      </classpath>
+      <arg value="-xqueryx"/>
+      <arg value="-xqueryxfile"/>
+      <arg value="t.xqueryx"/>
+
+      <!-- This should parse in all versions of Update: -->
+      <arg value="-expr"/>
+      <arg value="rename node /a/b as $new-name"/>
+
+      <!-- These should raise a syntax error in update10, parse in update30+: -->
+      <arg value="-expr"/>
+      <arg value="invoke updating $f(a('b'), 1)"/>
+
+      <arg value="-expr"/>
+      <arg value="$item transform with { delete node text(), rename node . as 'foo' }"/>
+
+      <!--
+          These are 5 examples relating to A-591-06.
+          In each case, the expected outcome differs depending on whether
+          we adopt the proposal to change the precedence of TransformWithExpr.
+          See https://lists.w3.org/Archives/Member/w3c-xsl-query/2015Jan/0006.html
+      -->
+      <arg value="-expr"/>
+      <arg value="- $x transform with {Expr}"/>
+
+      <arg value="-expr"/>
+      <arg value="validate {Expr} transform with {Expr}"/>
+
+      <arg value="-expr"/>
+      <arg value="(#pragma#) {Expr} transform with {Expr}"/>
+
+      <arg value="-expr"/>
+      <arg value="$a transform with {Expr} ! $b transform with {Expr}"/>
+
+      <arg value="-expr"/>
+      <arg value="/a/b ! /c/d transform with {Expr}"/>
+
+    </java>
+  </target>
+
+  <target name="test-update-test-suite">
+    <echo message="parser language = ${language}"/>
+    <java fork="yes" classname="org.w3c.xqparser.Test">
+      <assertions><enable/></assertions>
+      <classpath>
+        <pathelement path="${jarfilename}" />
+      </classpath>
+      <arg line="-XQueryXOutputHierarchyRoot _test_suite_v1_xqx/${language}"/>
+      <arg value="-catalog1"/>
+      <arg value="${xquts-dir}/XQUTSCatalog.xml"/>
+    </java>
+  </target>
+
+  <!-- =========================================================== -->
+  <!-- Targets that deal with XQuery + Scripting Extensions -->
+
+  <target name="xquery30-update-scripting.applet">
+    <antcall.xquery30-update-scripting target="applet"/>
+  </target>
+
+  <target name="xquery30-update-scripting.tests">
+    <antcall.xquery30-update-scripting target="test-xquery-update-scripting"/>
+  </target>
+
+  <!-- -->
+
+  <target name="xquery31-update-scripting.applet">
+    <antcall.xquery31-update-scripting target="applet"/>
+  </target>
+
+  <!-- -->
+
+  <target name="test-xquery-update-scripting"
+    depends="
+      test-scripting-use-cases
+    ">
+  </target>
+
+  <target name="test-scripting-use-cases">
+    <xslt style="../extractors/scripting_uc.xsl" in="${scripting-uc-file}"
+      out="scripting_ex_from_uc.xquery" force="yes" extension=".xquery" destdir="."/>
+    <java fork="yes" jar="${jarfilename}">
+      <assertions><enable/></assertions>
+      <arg value="scripting_ex_from_uc.xquery"/>
+    </java>
+  </target>
+
+  <!-- =========================================================== -->
+  <!-- Targets that deal with XQuery + Full Text Extensions -->
+
+  <target name="xquery10-fulltext.jar">
+    <antcall.xquery10-fulltext target="jar"/>
+  </target>
+
+  <target name="xquery10-fulltext.applet">
+    <antcall.xquery10-fulltext target="applet"/>
+  </target>
+
+  <target name="xquery10-fulltext.tests">
+    <antcall.xquery10-fulltext target="test-xquery-fulltext"/>
+  </target>
+
+  <!-- -->
+
+  <target name="xquery30-fulltext.jar">
+    <antcall.xquery30-fulltext target="jar"/>
+  </target>
+
+  <target name="xquery30-fulltext.jjdoc">
+    <antcall.xquery30-fulltext target="jjdoc"/>
+  </target>
+
+  <target name="xquery30-fulltext.applet-html">
+    <antcall.xquery30-fulltext target="gen-applet-html"/>
+  </target>
+
+  <target name="xquery30-fulltext.applet">
+    <antcall.xquery30-fulltext target="applet"/>
+  </target>
+
+  <target name="xquery30-fulltext.tests">
+    <antcall.xquery30-fulltext target="test-xquery-fulltext"/>
+  </target>
+
+  <!-- -->
+
+  <target name="test-xquery-fulltext" description="All quick tests for XQuery/XPath Full Text"
+    depends="
+      test-fulltext-xqx-smoke,
+      test-fulltext-doc-frags,
+      test-fulltext-use-cases-doc-frags
+    ">
+    <!-- Not test-fulltext-test-suite, it takes too long. -->
+  </target>
+
+  <target name="test-fulltext-xqx-smoke" description="Smoke test for conversion to XQueryX">
+    <java fork="yes" classname="org.w3c.xqparser.Test">
+      <assertions><enable/></assertions>
+      <classpath>
+        <pathelement path="${jarfilename}"/>
+      </classpath>
+      <arg value="-xqueryx"/>
+      <arg value="-xqueryxfile"/>
+      <arg value="t.xqueryx"/>
+      <arg value="-expr"/>
+      <arg value="$x contains text 'a' ftand {$y} phrase occurs exactly 2 times using stemming weight {10} distance at least 3 sentences"/>
+    </java>
+  </target>
+
+  <target name="test-fulltext-use-cases-doc-frags">
+    <xslt style="../extractors/fulltext_ucsp.xsl" in="${fulltext-uc-file}"
+      out="fulltext_ex_from_uc.xquery" force="yes" extension=".xquery" destdir=".">
+      <!-- param name="not-spec" expression="xpath"/ -->
+    </xslt>
+    <java fork="yes"  classname="org.w3c.xqparser.Test">
+      <assertions><enable/></assertions>
+      <classpath>
+        <pathelement path="${jarfilename}" />
+        <pathelement path="..\..\..\lib\javacc.jar"/>
+        <pathelement path="..\..\..\lib\optional.jar"/>
+        <pathelement path="..\..\..\lib\xalan.jar"/>
+        <pathelement path="..\..\..\lib\xml-apis.jar"/>
+        <pathelement path="${java.class.path}/" />
+      </classpath>
+<!--      <arg value="${dump}"/> -->
+      <arg value="fulltext_ex_from_uc.xquery"/>
+    </java>
+  </target>
+
+  <target name="test-fulltext-doc-frags">
+    <xslt style="../extractors/fulltext_ucsp.xsl" in="${fulltext-spec-file}"
+      out="fulltext_ex_from_sp.xquery" force="yes" extension=".xquery" destdir=".">
+      <!-- param name="not-spec" expression="xpath"/ -->
+    </xslt>
+    <java fork="yes"  classname="org.w3c.xqparser.Test">
+      <assertions><enable/></assertions>
+      <classpath>
+        <pathelement path="${jarfilename}" />
+        <pathelement path="..\..\..\lib\javacc.jar"/>
+        <pathelement path="..\..\..\lib\optional.jar"/>
+        <pathelement path="..\..\..\lib\xalan.jar"/>
+        <pathelement path="..\..\..\lib\xml-apis.jar"/>
+        <pathelement path="${java.class.path}/" />
+      </classpath>
+<!--      <arg value="${dump}"/> -->
+      <arg value="fulltext_ex_from_sp.xquery"/>
+    </java>
+  </target>
+
+  <target name="test-fulltext-test-suite">
+    <echo message="parser language = ${language}"/>
+    <java fork="yes" classname="org.w3c.xqparser.Test">
+      <assertions><enable/></assertions>
+      <classpath>
+        <pathelement path="${jarfilename}" />
+      </classpath>
+      <arg line="-XQueryXOutputHierarchyRoot _test_suite_v1_xqx/${language}"/>
+      <arg value="-catalog1"/>
+      <arg value="${xqftts-dir}/TestSuiteStagingArea/XQFTTSCatalog.xml"/>
+    </java>
+  </target>
+
+  <!-- =========================================================== -->
+  <!-- Targets that deal with XQuery + Full Text Extensions + Update Extensions -->
+
+  <target name="xquery10-fulltext-update.applet">
+    <antcall.xquery10-fulltext-update target="applet"/>
+  </target>
+
+  <!-- -->
+
+  <target name="xquery30-fulltext-update.applet">
+    <antcall.xquery30-fulltext-update target="applet"/>
+  </target>
+
+  <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+
+  <!--
+    Here we define several presets based on the <antcall> task,
+    one preset for each language that this build file handles.
+
+    Each language is defined by exactly one 'base language' ($spec)
+    and zero to two 'extensions' ($spec2, $spec3).
+  -->
+
+  <presetdef name="antcall.xslt2-patterns">
+    <antcall inheritAll="false">
+      <param name="spec"        value="xslt2-patterns"/>
+      <param name="language"    value="xslt2-patterns"/>
+    </antcall>
+  </presetdef>
+  
+  <presetdef name="antcall.xslt30-patterns">
+    <antcall inheritAll="false">
+      <param name="spec"        value="xslt30-patterns"/>
+      <param name="language"    value="xslt30-patterns"/>
+    </antcall>
+  </presetdef>
+
+  <presetdef name="antcall.xpath1">
+    <antcall inheritAll="false">
+      <param name="spec"        value="xpath1"/>
+      <param name="language"    value="xpath1"/>
+    </antcall>
+  </presetdef>
+
+  <presetdef name="antcall.xpath20">
+    <antcall inheritAll="false">
+      <param name="spec"        value="xpath20"/>
+      <param name="language"    value="xpath20"/>
+    </antcall>
+  </presetdef>
+
+  <presetdef name="antcall.xpath30">
+    <antcall inheritAll="false">
+      <param name="spec"        value="xpath30"/>
+      <param name="language"    value="xpath30"/>
+    </antcall>
+  </presetdef>
+
+  <presetdef name="antcall.xpath31">
+    <antcall inheritAll="false">
+      <param name="spec"        value="xpath31"/>
+      <param name="language"    value="xpath31"/>
+    </antcall>
+  </presetdef>
+
+  <presetdef name="antcall.xcore">
+    <antcall inheritAll="false">
+      <param name="spec"        value="xcore"/>
+      <param name="language"    value="xquery-core"/>
+    </antcall>
+  </presetdef>
+
+  <presetdef name="antcall.xquery10">
+    <antcall inheritAll="false">
+      <param name="spec"        value="xquery10"/>
+      <param name="language"    value="xquery10"/>
+      <param name="include-XQueryXConverter" value="yes"/>
+    </antcall>
+  </presetdef>
+
+  <presetdef name="antcall.xquery30">
+    <antcall inheritAll="false">
+      <param name="spec"        value="xquery30"/>
+      <param name="language"    value="xquery30"/>
+      <param name="include-XQueryXConverter" value="yes"/>
+    </antcall>
+  </presetdef>
+
+  <presetdef name="antcall.xquery31">
+    <antcall inheritAll="false">
+      <param name="spec"        value="xquery31"/>
+      <param name="language"    value="xquery31"/>
+      <param name="include-XQueryXConverter" value="yes"/>
+    </antcall>
+  </presetdef>
+
+  <presetdef name="antcall.xquery10-update">
+    <antcall inheritAll="false">
+      <param name="spec"        value="xquery10"/>
+      <param name="spec2"       value="update10"/>
+      <param name="language"    value="xquery10-update"/>
+      <param name="include-XQueryXConverter" value="yes"/>
+    </antcall>
+  </presetdef>
+
+  <presetdef name="antcall.xquery30-update">
+    <antcall inheritAll="false">
+      <param name="spec"        value="xquery30"/>
+      <param name="spec2"       value="update30"/>
+      <param name="language"    value="xquery30-update"/>
+      <param name="include-XQueryXConverter" value="yes"/>
+    </antcall>
+  </presetdef>
+
+  <presetdef name="antcall.xquery10-fulltext">
+    <antcall inheritAll="false">
+      <param name="spec"        value="xquery10"/>
+      <param name="spec2"       value="fulltext"/>
+      <param name="language"    value="xquery10-fulltext"/>
+      <param name="include-XQueryXConverter" value="yes"/>
+    </antcall>
+  </presetdef>
+
+  <presetdef name="antcall.xquery30-fulltext">
+    <antcall inheritAll="false">
+      <param name="spec"        value="xquery30"/>
+      <param name="spec2"       value="fulltext"/>
+      <param name="language"    value="xquery30-fulltext"/>
+      <param name="include-XQueryXConverter" value="yes"/>
+    </antcall>
+  </presetdef>
+
+  <presetdef name="antcall.xquery30-update-scripting">
+    <antcall inheritAll="false">
+      <param name="spec"        value="xquery30"/>
+      <param name="spec2"       value="update30"/>
+      <param name="spec3"       value="scripting"/>
+      <param name="language"    value="xquery30-update-scripting"/>
+      <!-- not yet: <param name="include-XQueryXConverter" value="yes"/> -->
+      <param name="status"      value="experimental-combo"/>
+    </antcall>
+  </presetdef>
+
+  <presetdef name="antcall.xquery31-update-scripting">
+    <antcall inheritAll="false">
+      <param name="spec"        value="xquery31"/>
+      <param name="spec2"       value="update30"/>
+      <param name="spec3"       value="scripting"/>
+      <param name="language"    value="xquery31-update-scripting"/>
+      <!-- not yet: <param name="include-XQueryXConverter" value="yes"/> -->
+      <param name="status"      value="experimental-combo"/>
+    </antcall>
+  </presetdef>
+
+  <presetdef name="antcall.xquery10-fulltext-update">
+    <antcall inheritAll="false">
+      <param name="spec"        value="xquery10"/>
+      <param name="spec2"       value="fulltext"/>
+      <param name="spec3"       value="update10"/>
+      <param name="language"    value="xquery10-fulltext-update"/>
+      <param name="include-XQueryXConverter" value="yes"/>
+      <param name="status"      value="experimental-combo"/>
+    </antcall>
+  </presetdef>
+
+  <presetdef name="antcall.xquery30-fulltext-update">
+    <antcall inheritAll="false">
+      <param name="spec"        value="xquery30"/>
+      <param name="spec2"       value="fulltext"/>
+      <param name="spec3"       value="update30"/>
+      <param name="language"    value="xquery30-fulltext-update"/>
+      <param name="include-XQueryXConverter" value="yes"/>
+      <param name="status"      value="experimental-combo"/>
+    </antcall>
+  </presetdef>
+
+  <!--
+    The following properties normally get their values based on
+    the values of parameters specified in the presets above.
+  -->
+
+  <!-- Specifies the desired grammar subset for many targets. -->
+  <property name="spec"  value="dummy"/>
+  <property name="spec2" value="dummy"/>
+  <property name="spec3" value="dummy"/>
+
+  <property name="status" value=""/>
+
+  <property name="language-build-dir" value="${build-dir}/${language}"/>
+
+  <property name="java-gen" value="${language-build-dir}/java"/>
+
+  <property name="extracted-grammar" value="${language-build-dir}/grammar.xml"/>
+  <property name="jjt"      value="${java-gen}/org/w3c/xqparser/xpath-grammar.jjt"/>
+  <property name="jj"       value="${java-gen}/org/w3c/xqparser/xpath-grammar.jj"/>
+  <property name="jj-extra" value="${java-gen}/xpath-grammar.jj"/>
+
+  <property name="jjdoc-output" value="${language-build-dir}/jjdoc.html"/>
+
+  <property name="class-root" value="${language-build-dir}/classes"/>
+
+  <property name="jarfilename" value="${applets-dir}/${language}/applet.jar"/>
+
+  <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+
+  <!--
+    Each target in this section deals with a single language at a time,
+    effectively taking that language as a parameter.
+
+    Normally, they are invoked (directly or indirectly) via one of the
+    'antcall' presets defined in the previous section.
+  -->
+
+  <!--============= JavaCC Parser Builds ===============-->
+
+  <target name="extract-grammar" depends="validate">
+    <echo message="spec: ${spec}"/>
+    <echo message="spec2: ${spec2}"/>
+    <echo message="spec3: ${spec3}"/>
+    <xslt style="strip.xsl" in="${grammar-file}"
+           out="${extracted-grammar}" force="yes" extension=".jjt" destdir="${java-gen}">
+      <param name="spec1" expression="${spec}"/>
+      <param name="spec2" expression="${spec2}"/>
+      <param name="spec3" expression="${spec3}"/>
+    </xslt>
+  </target>
+
+  <target name="prep-if-xqx" if="include-XQueryXConverter">
+    <!--
+        For each language/package, we generate a parser for the language,
+        but for those in which the base language is some version of XQuery,
+        the package *also* includes code to convert
+        instances of the package's language into XQueryX.
+        (XQueryApplet.java and Test.java instantiate ConversionController
+        to perform this conversion.)
+
+        The ConversionController class (generated in this target
+        by ConversionController.xsl) is mostly boilerplate,
+        but its constructor is specialized to create
+        an instance of XQueryXConverter_${specN} (a subclass of XQueryXConverter)
+        for each of the XSLT script's specN parameters.
+
+        Then, the ConversionController transforms a (parse-tree) node
+        by passing it to the transform() method of each of
+        those XQueryXConverter instances (in reverse order),
+        stopping when it finds one that knows how to handle the node.
+    -->
+    <xslt
+        style="ConversionController.xsl"
+        in="${extracted-grammar}"
+        out="${java-gen}/org/w3c/xqparser/ConversionController.java">
+      <!--
+        The stylesheet doesn't actually use ${extracted-grammar},
+        but we're obliged to provide a source document.
+      -->
+      <param name="spec1" expression="${spec}"/>
+      <param name="spec2" expression="${spec2}"/>
+      <param name="spec3" expression="${spec3}"/>
+    </xslt>
+    <!--
+        XQueryXConverter.java declares the base class XQueryXConverter,
+        which actually knows almost nothing about XQuery or XQueryX,
+        but defines some useful helper functions.
+
+        Each other XQueryXConverter*.java file declares
+        a distinctly-named subclass of XQueryXConverter.
+        (It would be simpler if each class XQueryXConverter_foo
+        were declared in a file named XQueryXConverter_foo.java,
+        but they aren't, for historical reasons, and because
+        CVS is clunky when it comes to renaming files.)
+    -->
+    <copy file="XQueryXConverter.java"              todir="${java-gen}/org/w3c/xqparser"/>
+    <copy file="XQueryXConverterBase-${spec}.java" tofile="${java-gen}/org/w3c/xqparser/XQueryXConverter_${spec}.java"/>
+    <copy file="XQueryXConverter-${spec2}.java"    tofile="${java-gen}/org/w3c/xqparser/XQueryXConverter_${spec2}.java"/>
+    <copy file="XQueryXConverter-${spec3}.java"    tofile="${java-gen}/org/w3c/xqparser/XQueryXConverter_${spec3}.java"/>
+    <copy file="XQueryApplet.java"                 tofile="${java-gen}/org/w3c/xqparser/XPathApplet.java"/>
+    <copy file="XMLWriter.java"                     todir="${java-gen}/org/w3c/xqparser"/>
+    <copy file="XMLValidator.java"                  todir="${java-gen}/org/w3c/xqparser"/>
+    <antcall target="prep-if-xqx--extra-for-update30" inheritAll='false'/>
+    <antcall target="prep-if-xqx--extra-for-xquery31" inheritAll='false'/>
+  </target>
+
+  <target name="prep-if-xqx--extra-for-update30" if="language-involves-update30">
+    <!--
+        The update30 converter invokes the update10 converter
+        for constructs that are the same in Update 1.0 and 3.0.
+        So we need to include the update10 converter class
+        for any (convertible) language that involves update30.
+    -->
+    <copy file="XQueryXConverter-update10.java" tofile="${java-gen}/org/w3c/xqparser/XQueryXConverter_update10.java"/>
+  </target>
+
+  <condition property="language-involves-update30">
+    <or>
+      <equals arg1="${spec2}" arg2="update30"/>
+      <equals arg1="${spec3}" arg2="update30"/>
+    </or>
+  </condition>
+
+  <target name="prep-if-xqx--extra-for-xquery31" if="language-involves-xquery31">
+    <!--
+        The xquery31 converter invokes the xquery30 converter
+        for constructs that are the same in XQuery 3.0 and 3.1.
+        So we need to include the xquery30 converter class
+        for any (convertible) language that involves xquery31.
+    -->
+    <copy file="XQueryXConverterBase-xquery30.java" tofile="${java-gen}/org/w3c/xqparser/XQueryXConverter_xquery30.java"/>
+  </target>
+
+  <condition property="language-involves-xquery31">
+    <equals arg1="${spec}" arg2="xquery31"/>
+  </condition>
+
+  <target name="prep-unless-xqx" unless="include-XQueryXConverter">
+    <copy file="XPathApplet.java" tofile="${java-gen}/org/w3c/xqparser/XPathApplet.java"/>
+  </target>
+
+  <target name="gen-grammar" depends="extract-grammar, prep-if-xqx, prep-unless-xqx">
+    <!-- style="javacc.xsl" -->
+    <mkdir dir="${java-gen}/org/w3c/xqparser"/>
+    <copy file="SimpleNode.java" todir="${java-gen}/org/w3c/xqparser"/>
+    <copy file="Xq2xml.java" todir="${java-gen}/org/w3c/xqparser"/>
+    <copy file="PostParseException.java" todir="${java-gen}/org/w3c/xqparser"/>
+    <copy file="Test.java" todir="${java-gen}/org/w3c/xqparser">
+      <filterset>
+        <filter token="language" value="${language}"/>
+      </filterset>
+    </copy>
+    <copy file="ParseBAL.java" todir="${java-gen}/org/w3c/xqparser"/>
+    <xslt style="jjtree.xsl" in="${extracted-grammar}"
+           out="${jjt}" force="yes" extension=".jjt" destdir="${java-gen}">
+      <classpath>
+        <pathelement path="../../../lib/saxon9.jar"/>
+      </classpath>
+    </xslt>
+  </target>
+
+  <target name="gen-grammar-noast" depends="extract-grammar">
+    <!-- style="javacc.xsl" -->
+    <mkdir dir="${java-gen}/org/w3c/xqparser"/>
+    <copy file="PostParseException.java" todir="${java-gen}/org/w3c/xqparser"/>
+    <xslt style="noast.xsl" in="${extracted-grammar}"
+           out="${jj}" force="yes" extension=".jj" destdir="${java-gen}">
+      <classpath>
+        <pathelement path="../../../lib/xalan.jar"/>
+      </classpath>
+    </xslt>
+  </target>
+
+  <target name="jjtree" depends="gen-grammar">
+    <!-- jjtree target="${jjt}"
+            javacchome="${javacchome}"
+            / -->
+    <java fork="yes" classname="jjtree">
+       <classpath>
+         <pathelement path="${java.class.path}/" />
+         <pathelement path="..\..\..\lib\javacc.jar"/>
+         <pathelement path="..\..\..\lib\optional.jar"/>
+         <pathelement path="..\..\..\lib\xalan.jar"/>
+         <pathelement path="..\..\..\lib\xml-apis.jar"/>
+       </classpath>
+       <arg line="-OUTPUT_DIRECTORY=${java-gen}/org/w3c/xqparser ${jjt}"/>
+     </java>
+  </target>
+
+  <target name="jjtree-nogen">
+    <!-- for debugging when you want to modify the .jjt file directly -->
+    <!-- jjtree target="${jjt}" javacchome="${javacchome}" -->
+    <java fork="yes" classname="jjtree">
+       <classpath>
+         <pathelement path="${java.class.path}/" />
+         <pathelement path="..\..\..\lib\javacc.jar"/>
+         <pathelement path="..\..\..\lib\optional.jar"/>
+         <pathelement path="..\..\..\lib\xalan.jar"/>
+         <pathelement path="..\..\..\lib\xml-apis.jar"/>
+       </classpath>
+       <arg line="-OUTPUT_DIRECTORY=${java-gen} ${jjt}"/>
+     </java>
+     <!-- generates ${jj-extra} -->
+  </target>
+
+  <target name="javacc-noast" depends="gen-grammar-noast">
+    <!-- javacc target="${jj}"
+            javacchome="${javacchome}"
+            debugtokenmanager="${debug}"
+            debugparser="${debug}"
+            sanitycheck="true"
+            javaunicodeescape="${unicodeinput}"
+            / -->
+    <java fork="yes" classname="javacc">
+      <classpath>
+        <pathelement path="${java.class.path}/" />
+        <pathelement path="..\..\..\lib\javacc.jar"/>
+        <pathelement path="..\..\..\lib\optional.jar"/>
+        <pathelement path="..\..\..\lib\xalan.jar"/>
+        <pathelement path="..\..\..\lib\xml-apis.jar"/>
+      </classpath>
+      <arg line="-OUTPUT_DIRECTORY=${java-gen}/org/w3c/xqparser -DEBUG_LOOKAHEAD=${debug} -DEBUG_TOKEN_MANAGER=${debug} -DEBUG_PARSER=${debug} -JAVA_UNICODE_ESCAPE=${unicodeinput} ${jj}"/>
+    </java>
+    <mkdir dir="${java-gen}/org/w3c/xqparser"/>
+    <move todir="${java-gen}/org/w3c/xqparser">
+      <fileset dir="${java-gen}" casesensitive="no">
+        <include name="*.java"/>
+      </fileset>
+    </move>
+
+  </target>
+
+  <target name="javacc" depends="jjtree">
+    <!-- javacc target="${jj}"
+            javacchome="${javacchome}"
+            debugtokenmanager="${debug}"
+            debugparser="${debug}"
+            sanitycheck="true"
+            javaunicodeescape="${unicodeinput}"
+            / -->
+    <java fork="yes" classname="javacc">
+      <classpath>
+        <pathelement path="${java.class.path}/" />
+        <pathelement path="..\..\..\lib\javacc.jar"/>
+        <pathelement path="..\..\..\lib\optional.jar"/>
+        <pathelement path="..\..\..\lib\xalan.jar"/>
+        <pathelement path="..\..\..\lib\xml-apis.jar"/>
+      </classpath>
+      <arg line="-OUTPUT_DIRECTORY=${java-gen}/org/w3c/xqparser -DEBUG_LOOKAHEAD=${debug} -DEBUG_TOKEN_MANAGER=${debug} -DEBUG_PARSER=${debug} -JAVA_UNICODE_ESCAPE=${unicodeinput} ${jj}"/>
+    </java>
+    <!-- mkdir dir="${java-gen}/org/w3c/xqparser"/>
+    <move todir="${java-gen}/org/w3c/xqparser">
+      <fileset dir="${java-gen}/org/w3c/xqparser" casesensitive="no">
+        <include name="*.java"/>
+      </fileset>
+    </move -->
+
+  </target>
+
+  <target name="javacc-nogen" depends="jjtree-nogen">
+    <!-- javacc target="${jj-extra}"
+            javacchome="${javacchome}"
+            debugtokenmanager="${debug}"
+            debugparser="${debug}"
+            sanitycheck="true"
+            javaunicodeescape="${unicodeinput}"
+            / -->
+    <java fork="yes" classname="javacc">
+      <classpath>
+        <pathelement path="${java.class.path}/" />
+        <pathelement path="..\..\..\lib\javacc.jar"/>
+        <pathelement path="..\..\..\lib\optional.jar"/>
+        <pathelement path="..\..\..\lib\xalan.jar"/>
+        <pathelement path="..\..\..\lib\xml-apis.jar"/>
+      </classpath>
+        <arg line="-OUTPUT_DIRECTORY=${java-gen} -DEBUG_LOOKAHEAD=${debug} -DEBUG_TOKEN_MANAGER=${debug} -DEBUG_PARSER=${debug} -JAVA_UNICODE_ESCAPE=${unicodeinput} ${jj-extra}"/>
+    </java>
+
+  </target>
+
+  <target name="compile-nogen" depends="javacc-nogen">
+    <mkdir dir="${class-root}"/>
+    <java_compile srcdir="${java-gen}" destdir="${class-root}"/>
+  </target>
+
+  <target name="compile-noast" depends="javacc-noast">
+    <mkdir dir="${class-root}"/>
+    <java_compile srcdir="${java-gen}" destdir="${class-root}"/>
+  </target>
+
+  <target name="compile" depends="javacc">
+    <mkdir dir="${class-root}"/>
+    <java_compile srcdir="${java-gen}" destdir="${class-root}">
+      <classpath>
+        <pathelement path="..\..\..\lib\javacc.jar"/>
+        <pathelement path="..\..\..\lib\optional.jar"/>
+        <pathelement path="..\..\..\lib\xalan.jar"/>
+        <pathelement path="..\..\..\lib\xml-apis.jar"/>
+        <pathelement path="${java.class.path}/" />
+        <pathelement path="${class-root}/" />
+      </classpath>
+    </java_compile>
+  </target>
+
+  <target name="compile-only">
+    <mkdir dir="${class-root}"/>
+    <java_compile srcdir="${java-gen}" destdir="${class-root}"/>
+  </target>
+
+  <!-- Factor out the options that we'll always want to pass to the javac task. -->
+  <presetdef name="java_compile">
+    <javac source="1.4" target="1.4" debug="true" debuglevel="lines,vars,source" />
+  </presetdef>
+
+  <target name="jar-nogen" depends="compile-nogen"
+          description="Build one of the grammar parser jars.">
+    <jar jarfile="${jarfilename}" manifest="manifest.txt">
+      <fileset dir="${class-root}"/>
+    </jar>
+  </target>
+
+  <target name="jar-noast" depends="compile-noast"
+          description="Build one of the grammar parser jars.">
+    <jar jarfile="${jarfilename}" manifest="manifest.txt">
+      <fileset dir="${class-root}"/>
+    </jar>
+  </target>
+
+  <target name="jar" depends="compile"
+          description="Build one of the grammar parser jars.">
+    <jar jarfile="${jarfilename}" manifest="manifest.txt">
+      <fileset dir="${class-root}"/>
+    </jar>
+  </target>
+
+  <!--============= demo applets ===============-->
+
+  <target name="gen-applet-html" description="build html file to hold demo applet.">
+    <mkdir dir="${applets-dir}/${language}"/>
+    <xslt style="applet.xsl" in="applet.xml"
+           out="${applets-dir}/${language}/Overview.html" force="yes" extension=".html" destdir=".">
+      <param name="spec"  expression="${spec}"/>
+      <param name="spec2" expression="${spec2}"/>
+      <param name="spec3" expression="${spec3}"/>
+      <param name="status" expression="${status}"/>
+    </xslt>
+  </target>
+
+  <target name="applet" depends="gen-applet-html, jar, jjdoc"
+          description="Build one of the grammar parser jars.">
+    <copy file="${jjt}" tofile="${applets-dir}/${language}/grammar.jjt"/>
+    <copy file="${jj}"  tofile="${applets-dir}/${language}/grammar.jj"/>
+    <copy file="${jjdoc-output}" tofile="${applets-dir}/${language}/jjdoc.html"/>
+  </target>
+
+
+  <!--============= Parser testing ===============-->
+
+  <!-- This won't work right now because of arg size limitations. -->
+  <target name="test-against-xpath1-exprs" description="Smoke test for XPath1 expressions.">
+    <java fork="yes"  classname="org.w3c.xqparser.Test">
+      <assertions><enable/></assertions>
+      <classpath>
+        <pathelement path="${jarfilename}" />
+        <pathelement path="${java.class.path}/" />
+      </classpath>
+      <arg value="-dumptree"/>
+      <arg value="${pathx1-tests}"/>
+    </java>
+  </target>
+
+  <!-- ============= Spec targets =============== -->
+
+  <target name="jjdoc" depends="gen-grammar"
+          description="Build a jjdoc-produced BNF.">
+    <java fork="yes" classname="org.javacc.jjdoc.JJDocMain">
+      <classpath>
+        <pathelement path="..\..\..\lib\javacc.jar"/>
+        <pathelement path="..\..\..\lib\optional.jar"/>
+        <pathelement path="..\..\..\lib\xalan.jar"/>
+        <pathelement path="..\..\..\lib\xml-apis.jar"/>
+        <pathelement path="${java.class.path}/" />
+      </classpath>
+      <arg line="-ONE_TABLE=true -OUTPUT_FILE=${jjdoc-output} ${jj}"/>
+    </java>
+  </target>
+
+  <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+
+  <target name="AntStructure">
+    <antstructure output="build.dtd"/>
+  </target>
+
+</project>
+<!-- vim: sw=2 ts=2 expandtab
+-->

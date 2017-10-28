@@ -1,0 +1,325 @@
+<?xml version="1.0"?>
+<!--
+let $uid := doc("users.xml")/users/user_tuple[name = "Roger Smith"]/userid
+let $topbid := max(doc("bids.xml")/bids/bid_tuple[itemno = 1007]/bid)
+let $newbid := $topbid * 1.1
+return
+  if($newbid <= 240) then {
+    insert nodes
+      <bid_tuple>
+        <userid>{ data($uid) }</userid>
+        <itemno>1002</itemno>
+        <bid>{ $newbid }</bid>
+        <bid_date>1999-03-03</bid_date>
+      </bid_tuple>
+    into doc("bids.xml")/bids;
+    exit returning <new_bid>{ $newbid }</new_bid>;
+  } else {
+    exit returning <top_bid>{ $topbid }</top_bid>;
+  }
+-->
+<xqx:module xmlns:xqx="http://www.w3.org/2005/XQueryX"
+            xmlns:xqxuf="http://www.w3.org/2007/xquery-update-10"
+            xmlns:xqxsx="http://www.w3.org/2008/xquery-sx-10"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.w3.org/2005/XQueryX
+file:///e:/w3ccvs/WWW/XML/Group/qtspecs/specifications/xqueryx-11/src/xqueryx.xsd
+                                http://www.w3.org/2007/xquery-update-10
+file:///e:/w3ccvs/WWW/XML/Group/qtspecs/specifications/xquery-update-11/src/xquery-update-11-xqueryx.xsd
+                                http://www.w3.org/2008/xquery-sx-10
+file:///e:/w3ccvs/WWW/XML/Group/qtspecs/specifications/xquery-sx-10/src/xqsx-schema.xsd">
+
+<!-- http://www.w3.org/2008/xquery-sx-10/xquery-sx-10-xqueryx.xsd"> -->
+
+  <xqx:mainModule>
+    <xqx:queryBody>
+      <xqx:flworExpr>
+<!-- let $uid := doc("users.xml")/users/user_tuple[name = "Roger Smith"]/userid -->
+        <xqx:letClause>
+          <xqx:letClauseItem>
+            <xqx:typedVariableBinding>
+              <xqx:varName>uid</xqx:varName>
+            </xqx:typedVariableBinding>
+            <xqx:letExpr>
+              <xqx:pathExpr>
+                <xqx:stepExpr>
+                  <xqx:filterExpr>
+                    <xqx:functionCallExpr>
+                      <xqx:functionName
+                        xqx:prefix="fn">doc</xqx:functionName>
+                      <xqx:arguments>
+                        <xqx:stringConstantExpr>
+                          <xqx:value>users.xml</xqx:value>
+                        </xqx:stringConstantExpr>
+                      </xqx:arguments>
+                    </xqx:functionCallExpr>
+                  </xqx:filterExpr>
+                </xqx:stepExpr>
+                <xqx:stepExpr>
+                  <xqx:xpathAxis>child</xqx:xpathAxis>
+                  <xqx:nameTest>users</xqx:nameTest>
+                </xqx:stepExpr>
+                <xqx:stepExpr>
+                  <xqx:xpathAxis>child</xqx:xpathAxis>
+                  <xqx:nameTest>user-tuple</xqx:nameTest>
+                  <xqx:predicates>
+                    <xqx:equalOp>
+                      <xqx:firstOperand>
+                        <xqx:pathExpr>
+                          <xqx:stepExpr>
+                            <xqx:xpathAxis>child</xqx:xpathAxis>
+                            <xqx:nameTest>name</xqx:nameTest>
+                          </xqx:stepExpr>
+                        </xqx:pathExpr>
+                      </xqx:firstOperand>
+                      <xqx:secondOperand>
+                        <xqx:stringConstantExpr>
+                          <xqx:value>Roger Smith</xqx:value>
+                        </xqx:stringConstantExpr>
+                      </xqx:secondOperand>
+                    </xqx:equalOp>
+                  </xqx:predicates>
+                </xqx:stepExpr>
+                <xqx:stepExpr>
+                  <xqx:xpathAxis>child</xqx:xpathAxis>
+                  <xqx:nameTest>userid</xqx:nameTest>
+                </xqx:stepExpr>
+              </xqx:pathExpr>
+            </xqx:letExpr>
+          </xqx:letClauseItem>
+        </xqx:letClause>
+<!-- let $topbid := max(doc("bids.xml")/bids/bid_tuple[itemno = 1007]/bid) -->
+        <xqx:letClause>
+          <xqx:letClauseItem>
+            <xqx:typedVariableBinding>
+              <xqx:varName>topbid</xqx:varName>
+            </xqx:typedVariableBinding>
+            <xqx:letExpr>
+              <xqx:pathExpr>
+                <xqx:stepExpr>
+                  <xqx:filterExpr>
+                    <xqx:functionCallExpr>
+                      <xqx:functionName
+                        xqx:prefix="fn">max</xqx:functionName>
+                      <xqx:arguments>
+                        <xqx:pathExpr>
+                          <xqx:stepExpr>
+                            <xqx:filterExpr>
+                              <xqx:functionCallExpr>
+                                <xqx:functionName
+                                  xqx:prefix="fn">doc</xqx:functionName>
+                                <xqx:arguments>
+                                  <xqx:stringConstantExpr>
+                                    <xqx:value>bids.xml</xqx:value>
+                                  </xqx:stringConstantExpr>
+                                </xqx:arguments>
+                              </xqx:functionCallExpr>
+                            </xqx:filterExpr>
+                          </xqx:stepExpr>
+                          <xqx:stepExpr>
+                            <xqx:xpathAxis>child</xqx:xpathAxis>
+                            <xqx:nameTest>bids</xqx:nameTest>
+                          </xqx:stepExpr>
+                          <xqx:stepExpr>
+                            <xqx:xpathAxis>child</xqx:xpathAxis>
+                            <xqx:nameTest>bid-tuple</xqx:nameTest>
+                            <xqx:predicates>
+                              <xqx:equalOp>
+                                <xqx:firstOperand>
+                                  <xqx:pathExpr>
+                                    <xqx:stepExpr>
+                                      <xqx:xpathAxis>child</xqx:xpathAxis>
+                                      <xqx:nameTest>itemno</xqx:nameTest>
+                                    </xqx:stepExpr>
+                                  </xqx:pathExpr>
+                                </xqx:firstOperand>
+                                <xqx:secondOperand>
+                                  <xqx:integerConstantExpr>
+                                    <xqx:value>1007</xqx:value>
+                                  </xqx:integerConstantExpr>
+                                </xqx:secondOperand>
+                              </xqx:equalOp>
+                            </xqx:predicates>
+                          </xqx:stepExpr>
+                          <xqx:stepExpr>
+                            <xqx:xpathAxis>child</xqx:xpathAxis>
+                            <xqx:nameTest>bid</xqx:nameTest>
+                          </xqx:stepExpr>
+                        </xqx:pathExpr>
+                      </xqx:arguments>
+                    </xqx:functionCallExpr>
+                  </xqx:filterExpr>
+                </xqx:stepExpr>
+              </xqx:pathExpr>
+            </xqx:letExpr>
+          </xqx:letClauseItem>
+        </xqx:letClause>
+<!-- let $newbid := $topbid * 1.1 -->
+        <xqx:letClause>
+          <xqx:letClauseItem>
+            <xqx:typedVariableBinding>
+              <xqx:varName>newbid</xqx:varName>
+            </xqx:typedVariableBinding>
+            <xqx:letExpr>
+              <xqx:multiplyOp>
+                <xqx:firstOperand>
+                  <xqx:varRef>
+                    <xqx:name>topbid</xqx:name>
+                  </xqx:varRef>
+                </xqx:firstOperand>
+                <xqx:secondOperand>
+                  <xqx:decimalConstantExpr>
+                    <xqx:value>1.1</xqx:value>
+                  </xqx:decimalConstantExpr>
+                </xqx:secondOperand>
+              </xqx:multiplyOp>
+            </xqx:letExpr>
+          </xqx:letClauseItem>
+        </xqx:letClause>
+<!-- return -->
+        <xqx:returnClause>
+<!--   if($newbid <= 240)        -->
+          <xqx:ifThenElseExpr>
+            <xqx:ifClause>
+              <xqx:lessThanOrEqualOp>
+                <xqx:firstOperand>
+                  <xqx:varRef>
+                    <xqx:name>newbid</xqx:name>
+                  </xqx:varRef>
+                </xqx:firstOperand>
+                <xqx:secondOperand>
+                  <xqx:integerConstantExpr>
+                    <xqx:value>240</xqx:value>
+                  </xqx:integerConstantExpr>
+                </xqx:secondOperand>
+              </xqx:lessThanOrEqualOp>
+            </xqx:ifClause>
+<!--                      then { -->
+            <xqx:thenClause>
+              <xqxsx:block>
+                <xqxsx:blockBody>
+                  <xqxsx:applyExpr>
+                    <xqxsx:concatExpr>
+<!--     insert nodes -->
+                      <xqxuf:insertExpr>
+                        <xqxuf:sourceExpr>
+<!--       <bid_tuple> -->
+                          <xqx:elementConstructor>
+                            <xqx:tagName>bid_tuple</xqx:tagName>
+                            <xqx:elementContent>
+<!--         <userid>{ data($uid) }</userid> -->
+                              <xqx:elementConstructor>
+                                <xqx:tagName>userid</xqx:tagName>
+                                <xqx:elementContent>
+                                  <xqx:functionCallExpr>
+                                    <xqx:functionName
+                                      xqx:prefix="fn">data</xqx:functionName>
+                                    <xqx:arguments>
+                                      <xqx:varRef>
+                                        <xqx:name>uid</xqx:name>
+                                      </xqx:varRef>
+                                    </xqx:arguments>
+                                  </xqx:functionCallExpr>
+                                </xqx:elementContent>
+                              </xqx:elementConstructor>
+<!--         <itemno>1002</itemno> -->
+                              <xqx:elementConstructor>
+                                <xqx:tagName>itemno</xqx:tagName>
+                                <xqx:elementContent>
+                                  <xqx:integerConstantExpr>
+                                    <xqx:value>1002</xqx:value>
+                                  </xqx:integerConstantExpr>
+                                </xqx:elementContent>
+                              </xqx:elementConstructor>
+<!--         <bid>{ $newbid }</bid> -->
+                              <xqx:elementConstructor>
+                                <xqx:tagName>bid</xqx:tagName>
+                                <xqx:elementContent>
+                                  <xqx:varRef>
+                                    <xqx:name>newbid</xqx:name>
+                                  </xqx:varRef>
+                                </xqx:elementContent>
+                              </xqx:elementConstructor>
+<!--         <bid_date>1999-03-03</bid_date> -->
+                              <xqx:elementConstructor>
+                                <xqx:tagName>bid_date</xqx:tagName>
+                                <xqx:elementContent>
+                                  <xqx:stringConstantExpr>
+                                    <xqx:value>1999-03-03</xqx:value>
+                                  </xqx:stringConstantExpr>
+                                </xqx:elementContent>
+                              </xqx:elementConstructor>
+                            </xqx:elementContent>
+                          </xqx:elementConstructor>
+                        </xqxuf:sourceExpr>
+<!--     into doc("bids.xml")/bids; -->
+                        <xqxuf:insertInto/>
+                        <xqxuf:targetExpr>
+                          <xqx:pathExpr>
+                            <xqx:stepExpr>
+                              <xqx:filterExpr>
+                                <xqx:functionCallExpr>
+                                  <xqx:functionName
+                                    xqx:prefix="fn">doc</xqx:functionName>
+                                  <xqx:arguments>
+                                    <xqx:stringConstantExpr>
+                                      <xqx:value>bids.xml</xqx:value>
+                                    </xqx:stringConstantExpr>
+                                  </xqx:arguments>
+                                </xqx:functionCallExpr>
+                              </xqx:filterExpr>
+                            </xqx:stepExpr>
+                            <xqx:stepExpr>
+                              <xqx:xpathAxis>child</xqx:xpathAxis>
+                              <xqx:nameTest>bids</xqx:nameTest>
+                            </xqx:stepExpr>
+                          </xqx:pathExpr>
+                        </xqxuf:targetExpr>
+                      </xqxuf:insertExpr>
+                    </xqxsx:concatExpr>
+<!--     exit returning <new_bid>{ $newbid }</new_bid>; -->
+                    <xqxsx:concatExpr>
+                      <xqxsx:exitExpr>
+                        <xqx:elementConstructor>
+                          <xqx:tagName>new_bid</xqx:tagName>
+                          <xqx:elementContent>
+                            <xqx:varRef>
+                              <xqx:name>newbid</xqx:name>
+                            </xqx:varRef>
+                          </xqx:elementContent>
+                        </xqx:elementConstructor>
+                      </xqxsx:exitExpr>
+                    </xqxsx:concatExpr>
+                  </xqxsx:applyExpr>
+                </xqxsx:blockBody>
+              </xqxsx:block>
+            </xqx:thenClause>
+<!--   } else { -->
+            <xqx:elseClause>
+<!--     exit returning <top_bid>{ $topbid }</top_bid>; -->
+              <xqxsx:block>
+                <xqxsx:blockBody>
+                  <xqxsx:applyExpr>
+                    <xqxsx:concatExpr>
+                      <xqxsx:exitExpr>
+                        <xqx:elementConstructor>
+                          <xqx:tagName>top_bid</xqx:tagName>
+                          <xqx:elementContent>
+                            <xqx:varRef>
+                              <xqx:name>topbid</xqx:name>
+                            </xqx:varRef>
+                          </xqx:elementContent>
+                        </xqx:elementConstructor>
+                      </xqxsx:exitExpr>
+                    </xqxsx:concatExpr>
+                  </xqxsx:applyExpr>
+                </xqxsx:blockBody>
+              </xqxsx:block>
+            </xqx:elseClause>
+          </xqx:ifThenElseExpr>
+        </xqx:returnClause>
+<!-- } -->
+      </xqx:flworExpr>
+    </xqx:queryBody>
+  </xqx:mainModule>
+</xqx:module>

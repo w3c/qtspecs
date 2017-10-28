@@ -1,0 +1,22 @@
+( let $uid:=fn:doc("users.xml")/child::users/
+        child::user-tuple[(child::name = "Roger Smith")]/
+        child::userid
+  let $topbid:=fn:max(fn:doc("bids.xml")/
+        child::bids/child::bid-tuple[(child::itemno = 1007)]/
+        child::bid)
+  let $newbid:=($topbid*1.1)
+  return
+    ( if (($newbid <= 240)) then block {
+        insert nodes 
+          <bid_tuple>
+            <userid>{fn:data($uid)}</userid>
+            <itemno>{1002}</itemno>
+            <bid>{$newbid}</bid>
+            <bid_date>{"1999-03-03"}</bid_date>
+          </bid_tuple>
+        into 
+          fn:doc("bids.xml")/child::bids;
+        exit returning <new_bid>{$newbid}</new_bid>; }
+      else block { 
+        exit returning <top_bid>{$topbid}</top_bid>; } )
+)

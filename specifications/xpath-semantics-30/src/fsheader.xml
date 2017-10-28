@@ -1,0 +1,236 @@
+<header id="spec-header">
+  <title>&spec.language;</title>
+  <version/>
+  <w3c-designation>&doc.w3c-designation;</w3c-designation>
+<!--  <w3c-doctype>W3C Internal Draft</w3c-doctype> -->
+  <w3c-doctype>W3C &doc.w3c-doctype-full;</w3c-doctype>
+  <pubdate>
+    <day>&date.day;</day>
+    <month>&date.month;</month>
+    <year>&date.year;</year>
+  </pubdate>
+  <publoc>
+    <loc href="&doc.publoc;">&doc.publoc;</loc>
+  </publoc>
+  <altlocs>
+      <loc href="&doc.publoc;xpath-semantics-30.xml">XML</loc>
+    <!--* <loc href="&url.this;diff-from-20061121.html">Recent revisions</loc> *-->
+  </altlocs>
+  <latestloc>
+    <loc href="&doc.latestloc;">&doc.latestloc;</loc>
+  </latestloc>
+  <prevlocs>
+    <loc href="http://www.w3.org/TR/2007/REC-xquery-semantics-20070123/">http://www.w3.org/TR/2007/REC-xquery-semantics-20070123/</loc>
+  </prevlocs>
+
+  <authlist>
+    <author>
+      <name>Michael Dyck (XML Query WG)</name>
+      <affiliation>(self)</affiliation>
+      <email href="mailto:jmdyck@ibiblio.org">jmdyck@ibiblio.org</email>
+    </author>
+  </authlist>
+
+<!--   <errataloc 
+href="http://www.w3.org/XML/2009/qt-errata/xquery-semantics-errata.html" 
+xlink:type="simple"/> -->
+
+  <translationloc 
+    href="http://www.w3.org/2003/03/Translations/byTechnology?technology=xpath-semantics"/>
+
+&status-section;
+
+  <abstract>
+    <p>This document defines formally the semantics of <phrase
+    role="xquery">XQuery 3.0 &xq_xquerydoc;</phrase> <phrase
+    role="shared">and</phrase> <phrase role="xpath">XPath 3.0
+    &xq_xpath;</phrase>.</p>
+  </abstract>
+
+  <langusage>
+    <language id="EN">English</language>
+    <language id="ebnf">EBNF</language>
+  </langusage>
+
+  <revisiondesc>
+    <p>JS January 2005. Major revision, aligning the Formal Semantics
+    with decisions taken up to October 2004.</p>
+
+    <p>JS April 22/2003: Revised version implementing decisions from
+    the December 2002 and March 2003 f2f meetings.</p>
+
+    <p>JS November 4/2002: Revised version implementing decisions from
+    the September 2002 f2f meeting in North Carolina.</p>
+
+    <p>JS July 26/2002: Revised version which implements most of the
+    recent decisions of the XML Query and XSLT working groups. Notably
+    implements semantics of element constructors.</p>
+
+    <p>JS June 15/2002: Revised version which fixes many problems
+    pointed out by reviewers. Revised version of Sections 4.3 and
+    4.13.</p>
+
+    <p>JS May 05/2002: New major revision which integrates named
+    typing, mapping from XML Schema and the semantics of XPath
+    2.0.</p>
+
+    <p>JS March 22/2002: Most of the document is new. This is the
+    basis for the new Formal Semantics of XPath 2.0 and XQuery
+    1.0. The current version is up to date and aligned with the
+    December 2002 XQuery 1.0 and XPath 2.0 working drafts.</p>
+  
+    <p>JS January 2002: Comprehensive editorial rewrite. Update to
+    align the formal semantics with the new &language; language
+    document. Update to align the formal semantics with the new
+    &xq_functions; document. Update to align the formal semantics with
+    XML Schema.</p>
+
+    <p>DD August 2001: Comprehensive editorial rewrite.  Introduced
+    new section <specref ref="sec_preliminaries"/> with new text and
+    amalgamated material that was previously spread over the entire
+    document.  Merged previously separate static, dynamic, and core
+    rewrite sections into a single section.  Switched to the type
+    system and syntax as defined J&eacute;r&ocirc;me's presentation
+    from the last face-to-face. Text is marked according to various
+    properties:</p>
+    <slist>
+      <sitem role="newtext">Substantially new text.</sitem>
+      <sitem role="iffy">Text that seems likely to be somewhat controversial.</sitem>
+      <sitem role="missing">Areas where there is known to be missing text.</sitem>
+      <sitem role="notdone">Old text, dropped into position, but not yet incorporated.</sitem>
+    </slist>
+  
+    <p>MF June 06/2001: Added FS-Issue-0099</p>
+  
+    <p>PF, MF May 31/2001: Added FS-Issue-0094, FS-Issue-0095, FS
+     Issue-0096, FS-Issue-0097, FS-Issue-0098.
+    </p>
+  
+    <p>PF, MF May 28/2001: Large number of syntax errors and editorial
+    fixes.</p>
+  
+    <p>JS, May 11/2001: Large number of syntax errors and editorial
+    fixes. Added FS-Issue-0092.</p>
+  
+    <p>MF, Apr 30/2001: Resolved FS-Issue-0076.  Added FS-Issue-0089,
+    FS-Issue-0090, FS-Issue-0091.</p>
+  
+    <p>JS, Apr 21/2001: Populated Section 6: &language; Mapping to the
+    Core</p>
+  
+    <p>PF, Apr 18/2001: (Re)introduced example on joins on unordered
+    sequences in Section 2, a section on typing descendant-or-self in
+    Section 4, and some new optimization rules for unordered().</p>
+  
+    <p>MF, Apr 04/2001: Syntax overhaul through Sec 4.8 : changed all
+    examples to &language; syntax.</p>
+  
+    <p>PF, Jan 30/2001: Simplified design for dealing with unordered
+    collections along the lines presented at the F2F in Nov 2000.</p>
+  
+    <p>MF, Jan 15/2000: Addressed many issues raised by Micheal
+    Brundage.Added FS-Issue-0081, FS-Issue-0082, FSIssue-0083, FS
+    Issue-0084, FS-Issue-0085, FS-Issue-0086 and FS-Issue-0087.
+    Resolved FS-Issue-0038, FS-Issue-0062, FS-Issue-0066, and FS
+    Issue-0071.
+    </p>
+  
+    <p>MF, Jan 5/2000: Added introductory paragraph on static and
+    dynamic semantics and a section on dynamic/operational semantics.
+    WARNING: This material has not been reviewed by Algebra editors
+    yet.  Commented out unnecessary references.</p>
+  
+    <p>MF, Dec 19/2000: Addendum to FS-Issue-0011.  Added FS
+    Issue-0081.</p>
+  
+    <p>MF, Dec 11/2000: Added sections on parent and dynamic and
+    static casts, and on references and node identity.  Separated
+    built-in functions and operators from core syntax and moved into
+    own section.  Improved correspondence with data model (See
+    accompanying release of data model document.)  Added Jerome's text
+    on querying order.  Clarified that semantics of operators will be
+    defined by joint task force.  Closed FS-Issue-0003; added FS
+    Issue-0079.  Pending approval of group, can also close FS
+    Issue-0062, FS-Issue-0071.</p>
+  
+    <p>PF, Dec 11/2000: Introduced unordered forests, implying changes
+    to Section 2 (example), Section 3 (expressions and amended type
+    system), and Section 4 (amended type equivalences and type
+    inference rules). Resolved related issues, and raised new issue
+    "unordered types".</p>
+  
+    <p>MF, Dec 9/2000: Added sections on PIs/comments and mixed
+    content.  Added <code>nodes</code> and <code>string</code>
+    built-in functions.  Changed <code>bag</code> operator to a
+    built-in function.  Substituted ^ for &amp; for consistency.</p>
+  
+    <p>PF, Dec 4/2000: Minor editorial corrections for W3C pubrules,
+    some clean-up of associated stylesheets</p>
+  
+    <p>PF, Nov 20/2000: Added abstract, status section from Paul, and
+    Issue-0075 "Overloading user defined functions". Integrated Phil's
+    motivation for the type system into the introduction.  Slightly
+    edited (anonymized) some issues, and corrected some XML-stuff to
+    generate valid HTML.</p>
+  
+    <p>MF, Nov 16/2000: Corrected many typos.  Added Issue-0074
+    "Operational semantics for expressions".</p>
+  
+    <p>MF, Oct 23/2000: Major changes: Added support for attributes,
+    namespaces, all-groups. Changed syntax (and semantics) of case,
+    for, sort. Introduced new built-in and derived operators
+    (children, data). Refined approach for wildcards. Introduced
+    concrete syntax for special kinds of types (ContentType,
+    ElementGroup, etc.). Adapted type inference rules to these
+    changes, and introduced more specific type system for iteration by
+    for. For more details see the resolutions around Sep/Oct 2000 in
+    Issue list in Appendix B.</p>
+  
+    <p>PF, Oct 22/2000: Discarded obsolete issue clustering.  Resolved
+    some issues, amended some issue descriptions, and added some
+    issues, see Issues List in Appendix B for details.</p>
+  
+    <p>PF, MF: Oct 16/2000. WARNING. This document has not been
+    thoroughly reviewed by the editorial team, and may thus contain a
+    number of editorial inconsistencies.  The editorial team plans to
+    correct them by about October 24. During this time the body of the
+    document may undergo some changes. Nevertheless, the editorial
+    team welcomes comments.</p>
+  
+    <p>PF, Oct 15/2000: Major changes: substantial update of the
+    issues list. Resolved some, added some, see Issues list in
+    Appendix B for details.</p>
+  
+    <p>PF, Aug 23/2000. Added Issue-0061 from Group 3 F2F in Redmond,
+     added reference to I18N character doc.</p>
+  
+    <p>MF, Aug 11/2000: Proofread, typographical and editorial
+    corrections</p>
+  
+    <p>PF, Aug 09/2000: Added more issues by LA-Team and I18N, added
+    links to dtd, xml, and stylesheets.</p>
+      
+    <p>PF, Aug 05/2000: Major changes: Added Appendix on Issues, moved
+    issues list in Discussion to Appendix on Issues.</p>
+   
+    <p>PF, July 21/2000: First version by Fern&aacute;ndez,
+    Sim&eacute;on, Wadler. All copy-editing mistakes resulting from
+    the transformation to the XML spec.dtd are due to me.</p>
+  
+    <p>Fern&aacute;ndez, Sim&eacute;on, Wadler: June/July 2000:
+    Original Version</p>
+  
+    <p>Fankhauser, July 21 2000. Transformed original version to
+    conform to XML spec.dtd</p>
+  
+    <p>Fankhauser, August 05 2000. Made various editorial corrections
+    (in particular whitespace-magic for mixed content...). Compiled
+    list of issues for appendix. Merged Discussion Section with list
+    of issues.</p>
+  
+    <p>Fernandez, August 11 2000. Made various typographical
+    corrections.</p>
+  </revisiondesc>
+
+</header>
+

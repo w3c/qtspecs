@@ -1,0 +1,638 @@
+<?xml version="1.0"?>
+<project name="qtspecs" default="all" basedir="..">
+
+  <import file="${etc.dir}/build-constants.xml"/>
+
+  <property name="shortname" value="NOSHORTNAME"/>
+  <property name="spec.uri" value="http://example.com/you-got-the-spec.uri-wrong"/>
+  <property name="spec.xml" value="${src.dir}/NOSPEC.xml"/>
+  <property name="spec.html" value="${dist.dir}/Overview.html"/>
+  <property name="spec.diffs.html" value="${dist.dir}/Overview-diff.html"/>
+  <property name="spec.code" value="NOCODE"/>
+
+  <!-- Here, we define the property 'spec.style' to point to the default      -->
+  <!--   stylesheet for transforming the various qtspecs documents.           -->
+  <!-- The value of this property is overridden by several build.xml files    -->
+  <property name="spec.style" value="${shared.style.dir}/xsl-query.xsl"/>
+
+
+  <!-- 2008-09-03, Jim: The following properties have no meaning at present,  -->
+  <!--   because we do not build errata in the qtspecs tree. Maybe later...   -->
+<!--
+  <property name="errata.xml" value="${src.dir}/NOERRATA.xml"/>
+  <property name="errata.html" value="${dist.dir}/errata.html"/>
+-->
+
+<!-- ======================================================================== -->
+
+  <target name="main" depends="all" description="Alias for all."/>
+
+<!-- ======================================================================== -->
+
+  <target name="all" depends="spec, errata" description="This is the default target."/>
+
+<!-- ======================================================================== -->
+
+  <target name="clean">
+    <delete dir="${build.dir}"/>
+    <delete>
+      <fileset dir="${dist.dir}" includes="**/*.html"/>
+      <fileset dir="${dist.dir}" includes="**/*.xhtml"/>
+      <fileset dir="${dist.dir}" includes="**/*.rdf"/>
+      <fileset dir="${dist.dir}" includes="**/*.xml"/>
+      <fileset dir="${dist.dir}" includes="**/*.jpg"/>
+      <fileset dir="${dist.dir}" includes="**/*.gif"/>
+      <fileset dir="${dist.dir}" includes="**/*.png"/>
+      <fileset dir="${dist.dir}" includes="**/*.svg"/>
+      <fileset dir="${dist.dir}" includes="**/*.xsd"/>
+      <fileset dir="${dist.dir}" includes="**/*.xsl"/>
+    </delete>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="spec" depends="init, style-spec, copy-images"/>
+
+<!-- ======================================================================== -->
+
+  <target name="style-spec" depends="init, -tidy-style-spec, anchor-summary"/>
+
+<!-- ======================================================================== -->
+
+  <target name="-tidy-style-spec" depends="init, chk.runtidy, -style-spec" if="run.tidy">
+    <antcall target="tidy">
+      <param name="html.file" value="${spec.html}"/>
+    </antcall>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="-style-spec" depends="init, chk.spec, validate-spec"
+          if="build.spec" unless="spec.exists">
+    <echo message="Building ${shortname} ..."/>
+
+    <xslt in="${spec.xml}" out="${dist.dir}/Overview.html" style="${spec.style}">
+      <classpath refid="saxon9.classpath"/>
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+    </xslt>
+  </target>
+
+
+<!-- ======================================================================== -->
+
+  <target name="chk.spec" depends="init">
+    <condition property="spec.exists">
+      <uptodate srcfile="${spec.xml}" targetfile="${spec.html}"/>
+    </condition>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="anchor-summary" depends="init, chk.anchor-summary, -style-spec, -copy-xml"
+          if="run.anchor-summary">
+    <xslt in="${dist.dir}/${shortname}.xml" out="${etc.dir}/${spec.code}.xml"
+          style="${shared.style.dir}/extract.xsl" force="yes" classpathref="saxon9.classpath">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+      <param name="specdoc" expression="${spec.code}"/>
+      <param name="uri" expression="${spec.uri}"/>
+    </xslt>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="chk.anchor-summary" depends="init, chk.format-spec, chk.code">
+    <condition property="run.anchor-summary">
+      <and>
+        <isset property="format.spec"/>
+        <isset property="code.exists"/>
+      </and>
+    </condition>
+  </target>
+
+<!-- ======================================================================== -->
+<!-- 2009-11-25, Jim: Added tstamp task to set DSTAMP, TSTAMP, TODAY props    -->
+
+  <target name="init">
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${dist.dir}"/>
+    <available property="build.spec" file="${spec.xml}"/>
+    <available property="build.errata" file="${errata.xml}"/>
+    <tstamp/>
+    <echo message="This document is being created on ${DSTAMP} at ${TSTAMP} (local time)."/>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="validate-spec">
+    <xmlvalidate file="${spec.xml}" failonerror="yes" lenient="no"
+                 warn="yes" classname="org.apache.xerces.parsers.SAXParser">
+      <classpath refid="saxon6.classpath"/>
+    </xmlvalidate>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="copy-images" depends="init">
+<!-- There is no need to create the local images directory, because it will
+     always exist.  JM 2014-04-26
+     I don't think that's true. MK 2016-11-10
+ -->    
+     <mkdir dir="${local.images.dir}"/>
+
+    <copy todir="${dist.dir}" flatten="true">
+      <fileset dir="${local.images.dir}"/>
+    </copy>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="-copy-xml" depends="init, chk.spec"
+          if="build.spec" unless="spec.exists">
+    <echo message="Copying XML for ${shortname}..."/>
+
+    <xslt in="${spec.xml}" out="${dist.dir}/${shortname}.xml"
+          style="${shared.style.dir}/identity.xsl" force="yes"
+          classpathref="saxon9.classpath">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+    </xslt>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="chk.code" depends="init">
+    <condition property="code.exists">
+      <not>
+        <equals arg1="${spec.code}" arg2="NOCODE"/>
+      </not>
+    </condition>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="chk.format-spec" depends="init, chk.spec">
+    <condition property="format.spec">
+      <and>
+        <isset property="build.spec"/>
+        <not>
+          <isset property="spec.exists"/>
+        </not>
+      </and>
+    </condition>
+  </target>
+
+<!-- ======================================================================== -->
+<!-- NOTE: property skiptidy is never set anywhere in the build system        -->
+
+  <target name="chk.runtidy" depends="init, chk.format-spec">
+    <condition property="run.tidy">
+      <and>
+        <isset property="format.spec"/>
+        <not>
+          <isset property="skiptidy"/>
+        </not>
+      </and>
+    </condition>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="tidy" depends="init">
+    <echo message="Tidying ${html.file} in target 'tidy'..."/>
+<!-- Using tidy transforms the sometimes-clumsy HTML files generated into files that will (almost) pass pubrules -->
+    <exec executable="tidy">
+      <arg value="-q"/>
+      <arg value="-utf8"/>
+      <arg value="-mn"/>
+      <arg value="-asxml"/>
+      <arg value="${html.file}"/>
+    </exec>
+<!-- However, tidy removes the newly (2014-09-02) id attribute on an anchor href to the Process document, so we have to reinstate it here -->
+    <xslt in="${html.file}"
+          out="${html.file}-fixed"
+          style="${shared.style.dir}/add-id-to-process-anchor.xsl"
+          classpathref="saxon9.classpath" force="yes">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <!-- This attribute means that Saxon, rather than Ant, control the XML parsing, which
+             enables Saxon to use its own copy of the XHTML and SVG DTDs, without relying
+             on the Ant catalog resolver mechanism. Requires a recent Saxon release, e.g. 9.6 -->
+        <attribute name="http://saxon.sf.net/feature/ignoreSAXSourceParser" value="true"/>
+      </factory>
+    </xslt>
+<!-- Eventually, we won't create a "before-fix" file; it is only for debugging/confidence purposes -->
+    <move file="${html.file}" tofile="${html.file}-before-fix"/>
+    <move file="${html.file}-fixed" tofile="${html.file}" overwrite="yes"/>
+  </target>
+
+
+<!-- ======================================================================== -->
+
+  <target name="namespacedocs"/>
+
+<!-- ======================================================================== -->
+
+  <target name="chk.namespacedocs"/>
+
+<!-- ======================================================================== -->
+
+  <target name="build-namespace-document">
+    <echo message="Transforming namespace XML source to HTML with RDDL"/>
+
+    <xslt in="${src.dir}/${nsdoc.file.name}.xml"
+	        out="${build.dir}/${nsdoc.file.name}.html"
+	        style="${nsdoc.stylesheet}" force="yes"
+	        classpathref="saxon9.classpath">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+      <param name="pubdate" expression="2017-03-21"/>
+    </xslt>
+
+    <echo message="Generating RDF from HTML"/>
+    <xslt in="${build.dir}/${nsdoc.file.name}.html"
+	        out="${dist.dir}/${nsdoc.file.name}.rdf"
+	        style="${shared.style.dir}/qt-ns-grddl.xsl" force="yes"
+	        classpathref="saxon9.classpath">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+      <param name="doc" expression="${nsdoc.doc.URI}"/>
+    </xslt>
+
+    <echo message="Fixing up HTML namespace document by removing traces of RDDL"/>
+    <xslt in="${build.dir}/${nsdoc.file.name}.html"
+	        out="${dist.dir}/${nsdoc.file.name}.html"
+	        style="${shared.style.dir}/html-namespace-fixup.xsl" force="yes"
+	        classpathref="saxon9.classpath">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+    </xslt>
+
+    <echo message="Fixing up RDDL namespace document to add xhtml namespace"/>
+    <xslt in="${build.dir}/${nsdoc.file.name}.html"
+	        out="${dist.dir}/${nsdoc.file.name}.xhtml"
+	        style="${shared.style.dir}/rddl-namespace-fixup.xsl" force="yes"
+	        classpathref="saxon9.classpath">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+    </xslt>
+
+    <echo message="Tidy up the namespace HTML file for pubrules"/>
+    <exec executable="tidy">
+      <arg value="--doctype"/>
+      <arg value="transitional"/>
+      <arg value="-utf8"/>
+      <arg value="-mnq"/>
+      <arg value="-asxml"/>
+      <arg value="${dist.dir}/${nsdoc.file.name}.html"/>
+    </exec>
+
+  </target>
+  
+<!-- ======================================================================== -->
+  
+  <!-- Subroutine to convert an XML file (whose vocabulary is HTML5) to its HTML5 serialization -->
+  
+  <!-- Parameters:  xml-to-html5.input - the input XML file
+                    xml-to-html5.output - the output HTML5 file -->
+
+  <target name="xml-to-html5">
+    <java classname="net.sf.saxon.Query" classpathref="saxon9.classpath">
+      <arg value="-qs:."/>
+      <arg value="-s:${xml-to-html5.input}"/>
+      <arg value="-o:${xml-to-html5.output}"/>
+      <arg value="!method=html"/>
+      <arg value="!version=5"/>
+      <arg value="!indent=yes"/>
+      <arg value='!suppress-indentation=p pre'/> 	
+    </java>
+  </target>
+
+
+<!-- ======================================================================== -->
+
+  <target name="errata" depends="init, style-errata"/>
+
+<!-- ======================================================================== -->
+
+  <target name="style-errata" depends="-tidy-style-errata"/>
+
+<!-- ======================================================================== -->
+<!-- NOTE: property skiptidy is never set anywhere in the build system        -->
+
+  <target name="-tidy-style-errata" depends="init, -style-errata" unless="skiptidy">
+<!--
+FOR NOW, DO NOT EVEN TIDY THE ERRATA!
+    <antcall target="tidy">
+      <param name="html.file" value="${errata.html}"/>
+    </antcall>
+-->
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="-style-errata" depends="init, chk.errata"
+          if="build.errata" unless="errata.exists">
+    <echo message="Formating ${shortname} errata..."/>
+
+    <xslt in="${errata.xml}" out="${dist.dir}/errata.html"
+          style="${spec.style}" force="yes" classpathref="saxon6.classpath"/>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="chk.errata" depends="init">
+    <condition property="errata.exists">
+      <uptodate srcfile="${errata.xml}" targetfile="${errata.html}"/>
+    </condition>
+  </target>
+
+<!-- ======================================================================== -->
+<!-- Utility targets used from other build.xml scripts                        -->
+<!-- ======================================================================== -->
+
+  <target name="xsdvalidate" depends="init">
+    <java fork="true" failonerror="true" classname="com.sun.msv.driver.textui.Driver">
+      <classpath refid="msv.classpath"/>
+      <arg value="${xsd.file}"/>
+      <arg value="${xml.file}"/>
+    </java>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="format-document" depends="init">
+    <xmlvalidate file="${source}" failonerror="yes" lenient="no" warn="yes"/>
+
+    <xslt in="${source}" out="${target}" style="${style}"
+          force="yes" classpathref="saxon6.classpath"/>
+
+    <antcall target="tidy-document">
+      <param name="html.file" value="${target}"/>
+    </antcall>
+  </target>
+
+<!-- ======================================================================== -->
+<!-- NOTE: property skiptidy is never set anywhere in the build system        -->
+
+  <target name="tidy-document" unless="skiptidy">
+    <antcall target="tidy">
+      <arg value="--output-file"/>
+      <arg value="${html.file}-edited"/>
+      <param name="html.file" value="${html.file}"/>
+    </antcall>
+  </target>
+
+
+<!-- **************************************************************************************
+The following <target>s are all concerned with staging documents for publication. 
+     ************************************************************************************** -->
+
+<!-- **************************************************************************************
+     MAIN DOCUMENT STAGING
+     ************************************************************************************** -->
+
+<!-- **************************************************************************************
+The <target> "stage" sets a number of properties, which Ant makes unmodifiable.
+Consequently, one must run the shell command "ant stage" from within each document's
+  directory (e.g., ...qtspecs/specifications/xquery-31/).  Alternatively, in the
+  ...qtspecs/specifications/ directory, one could run the shell command
+  "ant stage-xquery-31".  The restriction is that it will be impossible to stage TWO
+  or more documents in the same Ant invocation.
+The only exception to that statement is that it is possible to stage all of the namespace
+  documents of a single specification document in one Ant invocation "ant stage-nsdocs"
+  Alternatively, in the ...qtspecs/specifications/ directory, one could run the shell
+  command "ant stage-xquery-31-nsdocs". 
+When staging Requirements documents instead of specifications, the same rules apply,
+  substituting "requirements" for "specifications" in the directory paths. 
+     ************************************************************************************** -->
+
+  <target name="stage"
+          description="Stage a specification for publication">
+
+    <input message="Enter the stage of processing for the specification document to be staged (WD, CR, PR, PER, REC, NOTE): "
+           validargs="WD,CR,PR,PER,REC,NOTE"
+           addproperty="doc.docstage"
+           defaultvalue=""/>
+
+    <input message="Enter the year of the planned publication date of the specification document to be staged (yyyy): "
+           addproperty="doc.pubyear"
+           defaultvalue=""/>
+
+    <input message="Enter the month of the planned publication date of the specification document to be staged (mm): "
+           addproperty="doc.pubmonth"
+           defaultvalue=""/>
+
+    <input message="Enter the day of the month of the planned publication date of the specification document to be staged (dd): "
+           addproperty="doc.pubday"
+           defaultvalue=""/>
+
+    <property name="doc.pubdate"
+              value="${doc.pubyear}${doc.pubmonth}${doc.pubday}"/>
+
+    <property name="staging.dirname"
+              value="${doc.docstage}-${shortname}-${doc.pubdate}"/>
+
+    <input message="Would you like to check the staging directory and files into the W3C CVS repository (y/n)?"
+           addproperty="doc.checkin"
+           defaultvalue="n"/>
+
+    <condition property="do.checkin">
+      <equals arg1="y" arg2="${doc.checkin}"/>
+    </condition>
+
+    <!-- The target "stage-copy" appears in the build file for each document -->
+    <antcall target="stage-copy" inheritAll="true">
+      <param name="staging.directory"
+             value="${docstage.dir}/${staging.dirname}/"/>
+      <param name="staging.localdirname"
+             value="${staging.dirname}/"/>
+    </antcall>
+
+    <echo level="info">The document files for ${shortname} have been staged in your local directory system and checked in.</echo>
+
+    <ant antfile="${etc.dir}/build-pubrequest.xml"
+         target="write-pubrequest-text"
+         dir="${dist.dir}"
+         inheritAll="false">
+      <property name="DOCUMENT-STAGE" value="${doc.docstage}"/>
+      <property name="DOCUMENT-DATE" value="${doc.pubdate}"/>
+      <property name="DOCUMENT-FILES" value="Overview.html
+${shortname}-diff.html
+${shortname}.xml
+*** Enter other filenames manually ***"/>
+<!-- Liam requested that the instructions indicate local filesystem directory names instead of W3C URIs
+      <property name="DOCUMENT-STAGING-DIRECTORY" value="${qtspecs.dir}/document_staging/${staging.dirname}/"/>
+      <property name="DOCUMENT-PUBLICATION-DIRECTORY" value="http://www.w3.org/TR/ *** Enter the year manually *** /${doc.docstage}-${shortname}-${doc.pubdate}/"/>
+-->
+      <property name="DOCUMENT-STAGING-DIRECTORY" value="${docstage.dir}/${staging.dirname}/"/>
+      <property name="DOCUMENT-PUBLICATION-DIRECTORY" value="WWW/TR/${doc.pubyear}/${doc.docstage}-${shortname}-${doc.pubdate}/"/>
+      <property name="DOCUMENT-OTHER-FILES" value=" *** Enter other filenames manually *** "/>
+      <property name="DOCUMENT-OTHER-FILES-PUBLICATION-DIRECTORY" value="WWW/TR/ *** Enter target directory name for other files manually *** "/>
+      <property name="DOCUMENT-SHORTNAME" value="${shortname}"/>
+    </ant>
+
+    <antcall target="stage-nsdocs"/>
+
+    <ant antfile="${etc.dir}/build-pubrequest.xml"
+         dir="${dist.dir}"
+         target="write-pubrequest-text-redirects"
+         inheritAll="false">
+      <property name="DOCUMENT-PUBLICATION-DIRECTORY" value="${W3C.TR}/${doc.pubyear}/${doc.docstage}-${shortname}-${doc.pubdate}/"/>
+      <property name="DOCUMENT-SHORTNAME" value="${shortname}"/>
+    </ant>
+
+  </target>
+
+<!-- **************************************************************************************
+     NAMESPACE DOCUMENT STAGING
+     ************************************************************************************** -->
+
+  <target name="stage-nsdocs"
+          description="Stage namespace documents for publication"/>
+
+  <target name="stage-a-nsdoc"
+          description="Stage the provided namespace document for publication">
+    <property name="staging.ns-dirname"
+              value="ns-${nsname}-${doc.pubdate}"/>
+    <property name="staging.ns-directory"
+              value="${docstage.dir}/${staging.ns-dirname}/"/>
+
+    <antcall target="stage-nsdocs-copy"
+             inheritAll="true">
+      <param name="staging.directory"
+             value="${staging.ns-directory}/"/>
+      <param name="staging.localdirname"
+             value="${staging.ns-dirname}/"/>
+      <param name="nsname2"
+             value="${nsname}"/>
+    </antcall>
+
+    <echo level="info">The namespace files have been staged in your local directory system.</echo>
+
+<!-- Liam requested that the instructions indicate local filesystem directory names instead of W3C URIs -->
+    <property name="staging.ns-directory-pubrequest"
+              value="${docstage.dir}/${staging.ns-dirname}/"/>
+
+    <ant antfile="${etc.dir}/build-pubrequest.xml"
+         dir="${dist.dir}"
+         target="write-pubrequest-text-for-namespace"
+         inheritAll="false">
+      <property name="DOCUMENT-STAGE" value="${doc.docstage}"/>
+      <property name="DOCUMENT-FILES" value="Overview.html
+Overview.rdf"/>
+      <property name="DOCUMENT-NAMESPACE-STAGING-DIRECTORY" value="${staging.ns-directory-pubrequest}"/>
+      <property name="DOCUMENT-NAMESPACE-PUBLICATION-DIRECTORY" value="${namespace.fullname}/"/>
+      <property name="DOCUMENT-SHORTNAME" value="${shortname}"/>
+    </ant>
+
+  </target>
+
+  <!-- ====================================================================== -->
+
+<!-- **************************************************************************************
+THE FOLLOWING <target> MUST BE MANUALLY EDITED IF ANY NAMESPACE DOCUMENT HAS OTHER FILES:
+  There must be one <copy> task for each of the files (NON-binary and BINARY) to be placed
+    into the staging directory. 
+  The <property name="nonbinary-files"> task must contain the exact list of the names of
+    the NON-binary files that have been placed into the staging directory.  The list is
+    permitted to use wildcards such as *.html. 
+  The <property name="binary-files"> task must contain the exact list of the names of
+    the BINARY files that have been placed into the staging directory.  The list is
+    permitted to use wildcards such as *.jpg. 
+  Please note that the value of each <property> list MUST NOT BE EMPTY!  If there are
+    NO NON-binary or NO BINARY files to include, there MUST be a filename for which
+    there is no actual file (e.g., x.x)!
+     ************************************************************************************** -->
+  <target name="stage-nsdocs-copy">
+    <copy file="html/ns-${nsname2}.xhtml"
+          tofile="${staging.directory}/Overview.html"/>
+    <copy file="html/ns-${nsname2}.rdf"
+          tofile="${staging.directory}/Overview.rdf"/>
+
+    <antcall target="checkin.staged.stuff">
+      <param name="staging.directory"
+             value="${staging.ns-directory}/"/>
+      <param name="staging.localdirname"
+             value="${staging.localdirname}/"/>
+      <param name="nonbinary-files" value="Overview.html
+Overview.rdf"/>
+      <param name="binary-files" value="x.x"/>
+    </antcall>
+  </target>
+
+  <!-- ====================================================================== -->
+
+<!-- **************************************************************************************
+     MAIN AND NAMESPACE DOCUMENT STAGING
+     ************************************************************************************** -->
+
+  <target name="checkin.staged.stuff"
+          if="do.checkin">
+
+    <antcall target="cvs-add-staging-directory">
+      <param name="staging.localdirname"
+             value="${staging.localdirname}/"/>
+    </antcall>
+    <echo level="info">The staging directory ${staging.localdirname} has been added to the W3C CVS repository.</echo>
+
+    <antcall target="cvs-add-files-to-staging-directory">
+      <param name="staging.directory"
+             value="${staging.directory}/"/>
+      <param name="nonbinary-files" value="${nonbinary-files}"/>
+      <param name="binary-files" value="${binary-files}"/>
+    </antcall>
+    <echo level="info">The files in the staging directory ${staging.localdirname} have been added to the W3C CVS repository.</echo>
+
+    <antcall target="cvs-commit-staging-directory-and-files">
+      <param name="staging.localdirname"
+             value="${staging.localdirname}/"/>
+    </antcall>
+    <echo level="info">...and the directory and files are now committed to the W3C CVS repository.</echo>
+
+  </target>
+
+
+  <target name="cvs-add-staging-directory"
+          description="Uses CVS to add to the CVS archive a staging directory whose name is passed from the caller of this project/target.">
+    <cvs cvsRoot=":ext:jmelton@cvs.w3.org:/w3ccvs"
+         dest="${docstage.dir}/"
+         command="add ${staging.localdirname}"/>
+  </target>
+
+
+  <target name="cvs-add-files-to-staging-directory"
+          description="Uses CVS to add to the staging directory (whose name is passed) in the CVS archive one or more files whose names are also passed.">
+
+    <cvs cvsRoot=":ext:jmelton@cvs.w3.org:/w3ccvs"
+         dest="${staging.directory}"
+         command="add ${nonbinary-files}"/>
+
+    <cvs cvsRoot=":ext:jmelton@cvs.w3.org:/w3ccvs"
+         dest="${staging.directory}/"
+         command="add -kb ${binary-files}"/>
+
+  </target>
+
+
+  <target name="cvs-commit-staging-directory-and-files"
+          description="Uses CVS to commit the staging directory and the files it contains to the CVS archive.">
+    <cvs cvsRoot=":ext:jmelton@cvs.w3.org:/w3ccvs"
+         dest="${staging.directory}/.."
+         command="commit -m 'Committing the staging directory and files for the ${shortname} ${doc.docstage} document'
+                  ${staging.localdirname}"/>
+  </target>
+
+
+<!-- **************************************************************************************
+The preceding <target>s are all concerned with staging documents for publication. 
+     ************************************************************************************** -->
+
+</project>

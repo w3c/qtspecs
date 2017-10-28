@@ -1,0 +1,3148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--XSLT Processor: SAXON 9.1.0.2 from Saxonica SAXON SA 9.1.0.2--><document-summary uri="http://www.w3.org/TR/xquery-update-10/">
+   <title>XQuery Update Facility 1.0</title>
+   <div1 id="introduction">
+      <head>
+         <h2 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <a name="introduction" id="introduction"/>1 Introduction</h2>
+      </head>
+      <div2 id="id-terminology">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-terminology" id="id-terminology"/>1.1 Terminology</h3>
+         </head>
+      </div2>
+   </div1>
+   <div1 id="id-extensions">
+      <head>
+         <h2 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <a name="id-extensions" id="id-extensions"/>2 Extensions to XQuery 1.0</h2>
+      </head>
+      <div2 id="id-processing-model">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-processing-model" id="id-processing-model"/>2.1 Extensions to the Processing Model</h3>
+         </head>
+      </div2>
+      <div2 id="id-prolog-extensions">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-prolog-extensions" id="id-prolog-extensions"/>2.2 Extensions to the Prolog</h3>
+         </head>
+         <div3 id="id-revalidation-declaration">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-revalidation-declaration" id="id-revalidation-declaration"/>2.2.1 Revalidation Declaration</h4>
+            </head>
+         </div3>
+         <div3 id="id-variable-declaration">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-variable-declaration" id="id-variable-declaration"/>2.2.2 Variable Declaration</h4>
+            </head>
+         </div3>
+         <div3 id="id-function-declaration">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-function-declaration" id="id-function-declaration"/>2.2.3 Function Declaration</h4>
+            </head>
+         </div3>
+      </div2>
+      <div2 id="id-static-context-extensions">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-static-context-extensions" id="id-static-context-extensions"/>2.3 Extensions to the Static Context</h3>
+         </head>
+      </div2>
+      <div2 id="id-new-expressions">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-new-expressions" id="id-new-expressions"/>2.4 New Kinds of Expressions</h3>
+         </head>
+         <div3 id="id-insert">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-insert" id="id-insert"/>2.4.1 Insert</h4>
+            </head>
+         </div3>
+         <div3 id="id-delete">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-delete" id="id-delete"/>2.4.2 Delete</h4>
+            </head>
+         </div3>
+         <div3 id="id-replace">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-replace" id="id-replace"/>2.4.3 Replace</h4>
+            </head>
+            <div4 id="id-replacing-node">
+               <head>
+                  <h5 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                     <a name="id-replacing-node" id="id-replacing-node"/>2.4.3.1 Replacing a Node</h5>
+               </head>
+            </div4>
+            <div4 id="id-replacing-node-value">
+               <head>
+                  <h5 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                     <a name="id-replacing-node-value" id="id-replacing-node-value"/>2.4.3.2 Replacing the Value of a Node</h5>
+               </head>
+            </div4>
+         </div3>
+         <div3 id="id-rename">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-rename" id="id-rename"/>2.4.4 Rename</h4>
+            </head>
+         </div3>
+         <div3 id="id-transform">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-transform" id="id-transform"/>2.4.5 Transform</h4>
+            </head>
+         </div3>
+         <div3 id="id-compatibility">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-compatibility" id="id-compatibility"/>2.4.6 Compatibility of Updating Expressions</h4>
+            </head>
+         </div3>
+      </div2>
+      <div2 id="id-extensions-to-existing">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-extensions-to-existing" id="id-extensions-to-existing"/>2.5 Extensions to Existing Expressions</h3>
+         </head>
+         <div3 id="id-flwor-expr">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-flwor-expr" id="id-flwor-expr"/>2.5.1 FLWOR Expression</h4>
+            </head>
+         </div3>
+         <div3 id="id-typeswitch-expr">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-typeswitch-expr" id="id-typeswitch-expr"/>2.5.2 Typeswitch Expression</h4>
+            </head>
+         </div3>
+         <div3 id="id-conditional-expr">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-conditional-expr" id="id-conditional-expr"/>2.5.3 Conditional Expression</h4>
+            </head>
+         </div3>
+         <div3 id="id-comma-expr">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-comma-expr" id="id-comma-expr"/>2.5.4 Comma Expression</h4>
+            </head>
+         </div3>
+         <div3 id="id-parenthesized-expr">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-parenthesized-expr" id="id-parenthesized-expr"/>2.5.5 Parenthesized Expression</h4>
+            </head>
+         </div3>
+         <div3 id="id-function-call">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-function-call" id="id-function-call"/>2.5.6 Function Call</h4>
+            </head>
+         </div3>
+         <div3 id="id-other-expr">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-other-expr" id="id-other-expr"/>2.5.7 Other Expressions</h4>
+            </head>
+         </div3>
+      </div2>
+      <div2 id="id-new-functions">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-new-functions" id="id-new-functions"/>2.6 Extensions to Built-in Function Library</h3>
+         </head>
+         <div3 id="id-func-put">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-func-put" id="id-func-put"/>2.6.1 fn:put</h4>
+            </head>
+         </div3>
+      </div2>
+   </div1>
+   <div1 id="id-update-operations">
+      <head>
+         <h2 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <a name="id-update-operations" id="id-update-operations"/>3 Update Operations</h2>
+      </head>
+      <div2 id="id-update-primitives">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-update-primitives" id="id-update-primitives"/>3.1 Update Primitives</h3>
+         </head>
+         <div3 id="id-upd-insert-before">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-upd-insert-before" id="id-upd-insert-before"/>3.1.1 upd:insertBefore</h4>
+            </head>
+         </div3>
+         <div3 id="id-upd-insert-after">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-upd-insert-after" id="id-upd-insert-after"/>3.1.2 upd:insertAfter</h4>
+            </head>
+         </div3>
+         <div3 id="id-upd-insert-into">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-upd-insert-into" id="id-upd-insert-into"/>3.1.3 upd:insertInto</h4>
+            </head>
+         </div3>
+         <div3 id="id-upd-insert-into-as-first">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-upd-insert-into-as-first" id="id-upd-insert-into-as-first"/>3.1.4 upd:insertIntoAsFirst</h4>
+            </head>
+         </div3>
+         <div3 id="id-upd-insert-into-as-last">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-upd-insert-into-as-last" id="id-upd-insert-into-as-last"/>3.1.5 upd:insertIntoAsLast</h4>
+            </head>
+         </div3>
+         <div3 id="id-upd-insert-attributes">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-upd-insert-attributes" id="id-upd-insert-attributes"/>3.1.6 upd:insertAttributes</h4>
+            </head>
+         </div3>
+         <div3 id="id-upd-delete">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-upd-delete" id="id-upd-delete"/>3.1.7 upd:delete</h4>
+            </head>
+         </div3>
+         <div3 id="id-upd-replacenode">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-upd-replacenode" id="id-upd-replacenode"/>3.1.8 upd:replaceNode</h4>
+            </head>
+         </div3>
+         <div3 id="id-upd-replace-value">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-upd-replace-value" id="id-upd-replace-value"/>3.1.9 upd:replaceValue</h4>
+            </head>
+         </div3>
+         <div3 id="id-upd-replace-element-content">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-upd-replace-element-content" id="id-upd-replace-element-content"/>3.1.10 upd:replaceElementContent</h4>
+            </head>
+         </div3>
+         <div3 id="id-upd-rename">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-upd-rename" id="id-upd-rename"/>3.1.11 upd:rename</h4>
+            </head>
+         </div3>
+         <div3 id="id-upd-put">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-upd-put" id="id-upd-put"/>3.1.12 upd:put</h4>
+            </head>
+         </div3>
+      </div2>
+      <div2 id="id-update-routines">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-update-routines" id="id-update-routines"/>3.2 Update Routines</h3>
+         </head>
+         <div3 id="id-upd-merge-updates">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-upd-merge-updates" id="id-upd-merge-updates"/>3.2.1 upd:mergeUpdates</h4>
+            </head>
+         </div3>
+         <div3 id="id-upd-apply-updates">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-upd-apply-updates" id="id-upd-apply-updates"/>3.2.2 upd:applyUpdates</h4>
+            </head>
+         </div3>
+         <div3 id="id-upd-revalidate">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-upd-revalidate" id="id-upd-revalidate"/>3.2.3 upd:revalidate</h4>
+            </head>
+         </div3>
+         <div3 id="id-upd-remove-type">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-upd-remove-type" id="id-upd-remove-type"/>3.2.4 upd:removeType</h4>
+            </head>
+         </div3>
+         <div3 id="id-upd-set-to-untyped">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-upd-set-to-untyped" id="id-upd-set-to-untyped"/>3.2.5 upd:setToUntyped</h4>
+            </head>
+         </div3>
+         <div3 id="id-upd-propagate-namespace">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-upd-propagate-namespace" id="id-upd-propagate-namespace"/>3.2.6 upd:propagateNamespace</h4>
+            </head>
+         </div3>
+      </div2>
+   </div1>
+   <div1 id="id-update-static">
+      <head>
+         <h2 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <a name="id-update-static" id="id-update-static"/>4 Static Typing Feature</h2>
+      </head>
+      <div2 id="id-update-overview">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-update-overview" id="id-update-overview"/>4.1 Overview and notations</h3>
+         </head>
+      </div2>
+      <div2 id="id-static-typing-changes">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-static-typing-changes" id="id-static-typing-changes"/>4.2 Change to Static Typing Rules of XQuery 1.0</h3>
+         </head>
+      </div2>
+      <div2 id="id-update-core">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-update-core" id="id-update-core"/>4.3 Core Grammar</h3>
+         </head>
+      </div2>
+      <div2 id="id-update-norm-prolog">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-update-norm-prolog" id="id-update-norm-prolog"/>4.4 XQuery Update Facility 1.0 Prolog</h3>
+         </head>
+      </div2>
+      <div2 id="id-update-norm-expr">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-update-norm-expr" id="id-update-norm-expr"/>4.5 XQuery Update Facility 1.0 Expressions</h3>
+         </head>
+         <div3 id="id-update-typing-insert">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-update-typing-insert" id="id-update-typing-insert"/>4.5.1 Insert</h4>
+            </head>
+         </div3>
+         <div3 id="id-update-typing-delete">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-update-typing-delete" id="id-update-typing-delete"/>4.5.2 Delete</h4>
+            </head>
+         </div3>
+         <div3 id="id-update-typing-replace">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-update-typing-replace" id="id-update-typing-replace"/>4.5.3 Replace</h4>
+            </head>
+         </div3>
+         <div3 id="id-update-typing-rename">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-update-typing-rename" id="id-update-typing-rename"/>4.5.4 Rename</h4>
+            </head>
+         </div3>
+         <div3 id="id-update-typing-transform">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-update-typing-transform" id="id-update-typing-transform"/>4.5.5 Transform</h4>
+            </head>
+         </div3>
+         <div3 id="id-update-typing-examples">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-update-typing-examples" id="id-update-typing-examples"/>4.5.6 Examples</h4>
+            </head>
+         </div3>
+      </div2>
+   </div1>
+   <div1 id="id-xquery-update-conformance">
+      <head>
+         <h2 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <a name="id-xquery-update-conformance" id="id-xquery-update-conformance"/>5 Conformance</h2>
+      </head>
+      <div2 id="id-minimal-conformance">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-minimal-conformance" id="id-minimal-conformance"/>5.1 Minimal Conformance</h3>
+         </head>
+      </div2>
+      <div2 id="id-conform-optional-features">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-conform-optional-features" id="id-conform-optional-features"/>5.2 Optional Features</h3>
+         </head>
+         <div3 id="id-update-facility-static-typing-feature">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-update-facility-static-typing-feature"
+                     id="id-update-facility-static-typing-feature"/>5.2.1 Update Facility Static Typing Feature</h4>
+            </head>
+         </div3>
+      </div2>
+   </div1>
+   <div1 id="id-xqueryx-update-conformance">
+      <head>
+         <h2 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <a name="id-xqueryx-update-conformance" id="id-xqueryx-update-conformance"/>6 XQueryX Conformance</h2>
+      </head>
+   </div1>
+   <div1 id="id-grammar">
+      <head>
+         <h2 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <a name="id-grammar" id="id-grammar"/>A EBNF for XQuery 1.0 Grammar with Update extensions</h2>
+      </head>
+      <div2 id="id-terminal-symbols">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-terminal-symbols" id="id-terminal-symbols"/>A.1 Terminal Symbols</h3>
+         </head>
+      </div2>
+   </div1>
+   <div1 id="id-impl-defs">
+      <head>
+         <h2 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <a name="id-impl-defs" id="id-impl-defs"/>B Implementation-Defined Items</h2>
+      </head>
+   </div1>
+   <div1 id="References">
+      <head>
+         <h2 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <a name="References" id="References"/>C References</h2>
+      </head>
+      <div2 id="id-normative-references">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-normative-references" id="id-normative-references"/>C.1 Normative References</h3>
+         </head>
+      </div2>
+      <div2 id="id-non-normative-references">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-non-normative-references" id="id-non-normative-references"/>C.2 Non-normative References</h3>
+         </head>
+      </div2>
+   </div1>
+   <div1 id="id-errors">
+      <head>
+         <h2 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <a name="id-errors" id="id-errors"/>D Error Conditions</h2>
+      </head>
+      <div2 id="id-new-error-codes">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-new-error-codes" id="id-new-error-codes"/>D.1 New Error Codes</h3>
+         </head>
+      </div2>
+      <div2 id="id-amended-error-codes">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-amended-error-codes" id="id-amended-error-codes"/>D.2 Amendments to Existing Error Codes</h3>
+         </head>
+      </div2>
+   </div1>
+   <div1 id="id-xquf-xqueryx">
+      <head>
+         <h2 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <a name="id-xquf-xqueryx" id="id-xquf-xqueryx"/>E XML Syntax (XQueryX) for XQuery Update Facility 1.0</h2>
+      </head>
+      <div2 id="id-xquf-update-schema">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-xquf-update-schema" id="id-xquf-update-schema"/>E.1 Schema</h3>
+         </head>
+      </div2>
+      <div2 id="id-xquf-update-stylesheet">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-xquf-update-stylesheet" id="id-xquf-update-stylesheet"/>E.2 Stylesheet</h3>
+         </head>
+      </div2>
+      <div2 id="id-xquf-update-examples">
+         <head>
+            <h3 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+               <a name="id-xquf-update-examples" id="id-xquf-update-examples"/>E.3 Example</h3>
+         </head>
+         <div3 id="id-xquery-rep">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-xquery-rep" id="id-xquery-rep"/>E.3.1 XQuery Representation</h4>
+            </head>
+         </div3>
+         <div3 id="id-xqueryx-rep">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-xqueryx-rep" id="id-xqueryx-rep"/>E.3.2 XQueryX Representation</h4>
+            </head>
+         </div3>
+         <div3 id="id-transformed-rep">
+            <head>
+               <h4 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <a name="id-transformed-rep" id="id-transformed-rep"/>E.3.3 Transformed XQuery Representation</h4>
+            </head>
+         </div3>
+      </div2>
+   </div1>
+   <inform-div1 id="id-glossary">
+      <head>
+         <h2 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <a name="id-glossary" id="id-glossary"/>F Glossary (Non-Normative)</h2>
+      </head>
+   </inform-div1>
+   <inform-div1 id="id-precedence-rationale">
+      <head>
+         <h2 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <a name="id-precedence-rationale" id="id-precedence-rationale"/>G Rationale for Precedence of Update Primitives (Non-Normative)</h2>
+      </head>
+   </inform-div1>
+   <inform-div1 id="id-revision-log">
+      <head>
+         <h2 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <a name="id-revision-log" id="id-revision-log"/>H Revision Log (Non-Normative)</h2>
+      </head>
+   </inform-div1>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="XQuery"
+            id="dt-xquery"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="data model"
+            id="dt-data-model"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="XDM instance"
+            id="dt-xdm-instance"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="node identity"
+            id="dt-node-identity"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            term="implied namespace binding"
+            id="dt-implied-namespace-binding"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="conflict"
+            id="dt-conflict"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            term="basic updating expression"
+            id="dt-basic-updating-expression"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            term="updating expression"
+            id="dt-updating-expression"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="simple expression"
+            id="dt-simple-expression"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="vacuous expression"
+            id="dt-vacuous-expression"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="dt-pending-update-list"
+            term="pending update list"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="update operation"
+            id="dt-update-operation"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="update primitive"
+            id="dt-update-primitive"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="target node"
+            id="dt-target-node"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="update routine"
+            id="dt-update-routine"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-snapshot"
+            term="snapshot"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            term="revalidation declaration"
+            id="dt-revalidation-decl"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="updating function"
+            id="dt-updating-function"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="revalidation mode"
+            id="dt-revalidation-mode"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="mark" id="dt-mark"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="must" term="must"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="may" term="may"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="should" term="should"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="upd-static-typing-feature"
+            term="static typing feature"/>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-BoundarySpaceDecl"
+       xlink:type="simple">
+      <nt def="prod-xquery-BoundarySpaceDecl" xlink:type="simple">BoundarySpaceDecl</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-DefaultCollationDecl"
+       xlink:type="simple">
+      <nt def="prod-xquery-DefaultCollationDecl" xlink:type="simple">DefaultCollationDecl</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-BaseURIDecl"
+       xlink:type="simple">
+      <nt def="prod-xquery-BaseURIDecl" xlink:type="simple">BaseURIDecl</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ConstructionDecl"
+       xlink:type="simple">
+      <nt def="prod-xquery-ConstructionDecl" xlink:type="simple">ConstructionDecl</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-OrderingModeDecl"
+       xlink:type="simple">
+      <nt def="prod-xquery-OrderingModeDecl" xlink:type="simple">OrderingModeDecl</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-EmptyOrderDecl"
+       xlink:type="simple">
+      <nt def="prod-xquery-EmptyOrderDecl" xlink:type="simple">EmptyOrderDecl</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-RevalidationDecl"
+       xlink:type="simple">
+      <nt def="doc-xquery-RevalidationDecl" xlink:type="simple">RevalidationDecl</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-CopyNamespacesDecl"
+       xlink:type="simple">
+      <nt def="prod-xquery-CopyNamespacesDecl" xlink:type="simple">CopyNamespacesDecl</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-Setter"
+       xlink:type="simple">
+      <nt def="doc-xquery-Setter" xlink:type="simple">Setter</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-QName"
+       xlink:type="simple">
+      <nt def="prod-xquery-QName" xlink:type="simple">QName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ParamList"
+       xlink:type="simple">
+      <nt def="prod-xquery-ParamList" xlink:type="simple">ParamList</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-SequenceType"
+       xlink:type="simple">
+      <nt def="prod-xquery-SequenceType" xlink:type="simple">SequenceType</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-EnclosedExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-EnclosedExpr" xlink:type="simple">EnclosedExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-FLWORExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-FLWORExpr" xlink:type="simple">FLWORExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-QuantifiedExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-QuantifiedExpr" xlink:type="simple">QuantifiedExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-TypeswitchExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-TypeswitchExpr" xlink:type="simple">TypeswitchExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-IfExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-IfExpr" xlink:type="simple">IfExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-InsertExpr"
+       xlink:type="simple">
+      <nt def="doc-xquery-InsertExpr" xlink:type="simple">InsertExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-DeleteExpr"
+       xlink:type="simple">
+      <nt def="doc-xquery-DeleteExpr" xlink:type="simple">DeleteExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-RenameExpr"
+       xlink:type="simple">
+      <nt def="doc-xquery-RenameExpr" xlink:type="simple">RenameExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-ReplaceExpr"
+       xlink:type="simple">
+      <nt def="doc-xquery-ReplaceExpr" xlink:type="simple">ReplaceExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-TransformExpr"
+       xlink:type="simple">
+      <nt def="doc-xquery-TransformExpr" xlink:type="simple">TransformExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-OrExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-OrExpr" xlink:type="simple">OrExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="doc-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-SourceExpr"
+       xlink:type="simple">
+      <nt def="doc-xquery-SourceExpr" xlink:type="simple">SourceExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-InsertExprTargetChoice"
+       xlink:type="simple">
+      <nt def="doc-xquery-InsertExprTargetChoice" xlink:type="simple">InsertExprTargetChoice</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-TargetExpr"
+       xlink:type="simple">
+      <nt def="doc-xquery-TargetExpr" xlink:type="simple">TargetExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="doc-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="doc-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-SourceExpr"
+       xlink:type="simple">
+      <nt def="doc-xquery-SourceExpr" xlink:type="simple">SourceExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-SourceExpr"
+       xlink:type="simple">
+      <nt def="doc-xquery-SourceExpr" xlink:type="simple">SourceExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-TargetExpr"
+       xlink:type="simple">
+      <nt def="doc-xquery-TargetExpr" xlink:type="simple">TargetExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="doc-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-TargetExpr"
+       xlink:type="simple">
+      <nt def="doc-xquery-TargetExpr" xlink:type="simple">TargetExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="doc-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="doc-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-TargetExpr"
+       xlink:type="simple">
+      <nt def="doc-xquery-TargetExpr" xlink:type="simple">TargetExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-NewNameExpr"
+       xlink:type="simple">
+      <nt def="doc-xquery-NewNameExpr" xlink:type="simple">NewNameExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="doc-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="doc-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-NewNameExpr"
+       xlink:type="simple">
+      <nt def="doc-xquery-NewNameExpr" xlink:type="simple">NewNameExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-NewNameExpr"
+       xlink:type="simple">
+      <nt def="doc-xquery-NewNameExpr" xlink:type="simple">NewNameExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-NewNameExpr"
+       xlink:type="simple">
+      <nt def="doc-xquery-NewNameExpr" xlink:type="simple">NewNameExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-NewNameExpr"
+       xlink:type="simple">
+      <nt def="doc-xquery-NewNameExpr" xlink:type="simple">NewNameExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-NewNameExpr"
+       xlink:type="simple">
+      <nt def="doc-xquery-NewNameExpr" xlink:type="simple">NewNameExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-VarName"
+       xlink:type="simple">
+      <nt def="prod-xquery-VarName" xlink:type="simple">VarName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="doc-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-VarName"
+       xlink:type="simple">
+      <nt def="prod-xquery-VarName" xlink:type="simple">VarName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="doc-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="doc-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="doc-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-core-FLWORExpr"
+       xlink:type="simple">
+      <nt def="prod-core-FLWORExpr" xlink:type="simple">FLWORExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-core-QuantifiedExpr"
+       xlink:type="simple">
+      <nt def="prod-core-QuantifiedExpr" xlink:type="simple">QuantifiedExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-core-TypeswitchExpr"
+       xlink:type="simple">
+      <nt def="prod-core-TypeswitchExpr" xlink:type="simple">TypeswitchExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-core-IfExpr"
+       xlink:type="simple">
+      <nt def="prod-core-IfExpr" xlink:type="simple">IfExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-core-InsertExpr"
+       xlink:type="simple">
+      <nt def="doc-core-InsertExpr" xlink:type="simple">InsertExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-core-DeleteExpr"
+       xlink:type="simple">
+      <nt def="doc-core-DeleteExpr" xlink:type="simple">DeleteExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-core-RenameExpr"
+       xlink:type="simple">
+      <nt def="doc-core-RenameExpr" xlink:type="simple">RenameExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-core-ReplaceExpr"
+       xlink:type="simple">
+      <nt def="doc-core-ReplaceExpr" xlink:type="simple">ReplaceExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-core-TransformExpr"
+       xlink:type="simple">
+      <nt def="doc-core-TransformExpr" xlink:type="simple">TransformExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-core-OrExpr"
+       xlink:type="simple">
+      <nt def="prod-core-OrExpr" xlink:type="simple">OrExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-core-SourceExpr"
+       xlink:type="simple">
+      <nt def="doc-core-SourceExpr" xlink:type="simple">SourceExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-core-InsertExprTargetChoice"
+       xlink:type="simple">
+      <nt def="doc-core-InsertExprTargetChoice" xlink:type="simple">InsertExprTargetChoice</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-core-TargetExpr"
+       xlink:type="simple">
+      <nt def="doc-core-TargetExpr" xlink:type="simple">TargetExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-core-ExprSingle"
+       xlink:type="simple">
+      <nt def="doc-core-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-core-ExprSingle"
+       xlink:type="simple">
+      <nt def="doc-core-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-core-TargetExpr"
+       xlink:type="simple">
+      <nt def="doc-core-TargetExpr" xlink:type="simple">TargetExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-core-TargetExpr"
+       xlink:type="simple">
+      <nt def="doc-core-TargetExpr" xlink:type="simple">TargetExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-core-ExprSingle"
+       xlink:type="simple">
+      <nt def="doc-core-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-core-TargetExpr"
+       xlink:type="simple">
+      <nt def="doc-core-TargetExpr" xlink:type="simple">TargetExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-core-NewNameExpr"
+       xlink:type="simple">
+      <nt def="doc-core-NewNameExpr" xlink:type="simple">NewNameExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-core-ExprSingle"
+       xlink:type="simple">
+      <nt def="doc-core-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-core-VarName"
+       xlink:type="simple">
+      <nt def="prod-core-VarName" xlink:type="simple">VarName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-core-ExprSingle"
+       xlink:type="simple">
+      <nt def="doc-core-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-core-VarName"
+       xlink:type="simple">
+      <nt def="prod-core-VarName" xlink:type="simple">VarName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-core-ExprSingle"
+       xlink:type="simple">
+      <nt def="doc-core-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-core-ExprSingle"
+       xlink:type="simple">
+      <nt def="doc-core-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="doc-core-ExprSingle"
+       xlink:type="simple">
+      <nt def="doc-core-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-VersionDecl"
+       xlink:type="simple">
+      <nt def="prod-xquery-VersionDecl" xlink:type="simple">VersionDecl</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-LibraryModule"
+       xlink:type="simple">
+      <nt def="prod-xquery-LibraryModule" xlink:type="simple">LibraryModule</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-MainModule"
+       xlink:type="simple">
+      <nt def="prod-xquery-MainModule" xlink:type="simple">MainModule</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-StringLiteral"
+       xlink:type="simple">
+      <nt def="prod-xquery-StringLiteral" xlink:type="simple">StringLiteral</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-StringLiteral"
+       xlink:type="simple">
+      <nt def="prod-xquery-StringLiteral" xlink:type="simple">StringLiteral</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Separator"
+       xlink:type="simple">
+      <nt def="prod-xquery-Separator" xlink:type="simple">Separator</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Prolog"
+       xlink:type="simple">
+      <nt def="prod-xquery-Prolog" xlink:type="simple">Prolog</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-QueryBody"
+       xlink:type="simple">
+      <nt def="prod-xquery-QueryBody" xlink:type="simple">QueryBody</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ModuleDecl"
+       xlink:type="simple">
+      <nt def="prod-xquery-ModuleDecl" xlink:type="simple">ModuleDecl</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Prolog"
+       xlink:type="simple">
+      <nt def="prod-xquery-Prolog" xlink:type="simple">Prolog</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-NCName"
+       xlink:type="simple">
+      <nt def="prod-xquery-NCName" xlink:type="simple">NCName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-URILiteral"
+       xlink:type="simple">
+      <nt def="prod-xquery-URILiteral" xlink:type="simple">URILiteral</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Separator"
+       xlink:type="simple">
+      <nt def="prod-xquery-Separator" xlink:type="simple">Separator</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-DefaultNamespaceDecl"
+       xlink:type="simple">
+      <nt def="prod-xquery-DefaultNamespaceDecl" xlink:type="simple">DefaultNamespaceDecl</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Setter"
+       xlink:type="simple">
+      <nt def="prod-xquery-Setter" xlink:type="simple">Setter</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-NamespaceDecl"
+       xlink:type="simple">
+      <nt def="prod-xquery-NamespaceDecl" xlink:type="simple">NamespaceDecl</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Import"
+       xlink:type="simple">
+      <nt def="prod-xquery-Import" xlink:type="simple">Import</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Separator"
+       xlink:type="simple">
+      <nt def="prod-xquery-Separator" xlink:type="simple">Separator</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-VarDecl"
+       xlink:type="simple">
+      <nt def="prod-xquery-VarDecl" xlink:type="simple">VarDecl</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-FunctionDecl"
+       xlink:type="simple">
+      <nt def="prod-xquery-FunctionDecl" xlink:type="simple">FunctionDecl</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-OptionDecl"
+       xlink:type="simple">
+      <nt def="prod-xquery-OptionDecl" xlink:type="simple">OptionDecl</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Separator"
+       xlink:type="simple">
+      <nt def="prod-xquery-Separator" xlink:type="simple">Separator</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-BoundarySpaceDecl"
+       xlink:type="simple">
+      <nt def="prod-xquery-BoundarySpaceDecl" xlink:type="simple">BoundarySpaceDecl</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-DefaultCollationDecl"
+       xlink:type="simple">
+      <nt def="prod-xquery-DefaultCollationDecl" xlink:type="simple">DefaultCollationDecl</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-BaseURIDecl"
+       xlink:type="simple">
+      <nt def="prod-xquery-BaseURIDecl" xlink:type="simple">BaseURIDecl</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ConstructionDecl"
+       xlink:type="simple">
+      <nt def="prod-xquery-ConstructionDecl" xlink:type="simple">ConstructionDecl</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-OrderingModeDecl"
+       xlink:type="simple">
+      <nt def="prod-xquery-OrderingModeDecl" xlink:type="simple">OrderingModeDecl</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-EmptyOrderDecl"
+       xlink:type="simple">
+      <nt def="prod-xquery-EmptyOrderDecl" xlink:type="simple">EmptyOrderDecl</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-RevalidationDecl"
+       xlink:type="simple">
+      <nt def="prod-xquery-RevalidationDecl" xlink:type="simple">RevalidationDecl</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-CopyNamespacesDecl"
+       xlink:type="simple">
+      <nt def="prod-xquery-CopyNamespacesDecl" xlink:type="simple">CopyNamespacesDecl</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-SchemaImport"
+       xlink:type="simple">
+      <nt def="prod-xquery-SchemaImport" xlink:type="simple">SchemaImport</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ModuleImport"
+       xlink:type="simple">
+      <nt def="prod-xquery-ModuleImport" xlink:type="simple">ModuleImport</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-NCName"
+       xlink:type="simple">
+      <nt def="prod-xquery-NCName" xlink:type="simple">NCName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-URILiteral"
+       xlink:type="simple">
+      <nt def="prod-xquery-URILiteral" xlink:type="simple">URILiteral</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-URILiteral"
+       xlink:type="simple">
+      <nt def="prod-xquery-URILiteral" xlink:type="simple">URILiteral</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-QName"
+       xlink:type="simple">
+      <nt def="prod-xquery-QName" xlink:type="simple">QName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-StringLiteral"
+       xlink:type="simple">
+      <nt def="prod-xquery-StringLiteral" xlink:type="simple">StringLiteral</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-PreserveMode"
+       xlink:type="simple">
+      <nt def="prod-xquery-PreserveMode" xlink:type="simple">PreserveMode</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-InheritMode"
+       xlink:type="simple">
+      <nt def="prod-xquery-InheritMode" xlink:type="simple">InheritMode</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-URILiteral"
+       xlink:type="simple">
+      <nt def="prod-xquery-URILiteral" xlink:type="simple">URILiteral</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-URILiteral"
+       xlink:type="simple">
+      <nt def="prod-xquery-URILiteral" xlink:type="simple">URILiteral</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-SchemaPrefix"
+       xlink:type="simple">
+      <nt def="prod-xquery-SchemaPrefix" xlink:type="simple">SchemaPrefix</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-URILiteral"
+       xlink:type="simple">
+      <nt def="prod-xquery-URILiteral" xlink:type="simple">URILiteral</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-URILiteral"
+       xlink:type="simple">
+      <nt def="prod-xquery-URILiteral" xlink:type="simple">URILiteral</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-URILiteral"
+       xlink:type="simple">
+      <nt def="prod-xquery-URILiteral" xlink:type="simple">URILiteral</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-NCName"
+       xlink:type="simple">
+      <nt def="prod-xquery-NCName" xlink:type="simple">NCName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-NCName"
+       xlink:type="simple">
+      <nt def="prod-xquery-NCName" xlink:type="simple">NCName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-URILiteral"
+       xlink:type="simple">
+      <nt def="prod-xquery-URILiteral" xlink:type="simple">URILiteral</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-URILiteral"
+       xlink:type="simple">
+      <nt def="prod-xquery-URILiteral" xlink:type="simple">URILiteral</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-URILiteral"
+       xlink:type="simple">
+      <nt def="prod-xquery-URILiteral" xlink:type="simple">URILiteral</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-QName"
+       xlink:type="simple">
+      <nt def="prod-xquery-QName" xlink:type="simple">QName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-TypeDeclaration"
+       xlink:type="simple">
+      <nt def="prod-xquery-TypeDeclaration" xlink:type="simple">TypeDeclaration</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-QName"
+       xlink:type="simple">
+      <nt def="prod-xquery-QName" xlink:type="simple">QName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ParamList"
+       xlink:type="simple">
+      <nt def="prod-xquery-ParamList" xlink:type="simple">ParamList</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-SequenceType"
+       xlink:type="simple">
+      <nt def="prod-xquery-SequenceType" xlink:type="simple">SequenceType</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-EnclosedExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-EnclosedExpr" xlink:type="simple">EnclosedExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Param"
+       xlink:type="simple">
+      <nt def="prod-xquery-Param" xlink:type="simple">Param</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Param"
+       xlink:type="simple">
+      <nt def="prod-xquery-Param" xlink:type="simple">Param</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-QName"
+       xlink:type="simple">
+      <nt def="prod-xquery-QName" xlink:type="simple">QName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-TypeDeclaration"
+       xlink:type="simple">
+      <nt def="prod-xquery-TypeDeclaration" xlink:type="simple">TypeDeclaration</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Expr"
+       xlink:type="simple">
+      <nt def="prod-xquery-Expr" xlink:type="simple">Expr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Expr"
+       xlink:type="simple">
+      <nt def="prod-xquery-Expr" xlink:type="simple">Expr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-FLWORExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-FLWORExpr" xlink:type="simple">FLWORExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-QuantifiedExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-QuantifiedExpr" xlink:type="simple">QuantifiedExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-TypeswitchExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-TypeswitchExpr" xlink:type="simple">TypeswitchExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-IfExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-IfExpr" xlink:type="simple">IfExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-InsertExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-InsertExpr" xlink:type="simple">InsertExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-DeleteExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-DeleteExpr" xlink:type="simple">DeleteExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-RenameExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-RenameExpr" xlink:type="simple">RenameExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ReplaceExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-ReplaceExpr" xlink:type="simple">ReplaceExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-TransformExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-TransformExpr" xlink:type="simple">TransformExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-OrExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-OrExpr" xlink:type="simple">OrExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ForClause"
+       xlink:type="simple">
+      <nt def="prod-xquery-ForClause" xlink:type="simple">ForClause</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-LetClause"
+       xlink:type="simple">
+      <nt def="prod-xquery-LetClause" xlink:type="simple">LetClause</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-WhereClause"
+       xlink:type="simple">
+      <nt def="prod-xquery-WhereClause" xlink:type="simple">WhereClause</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-OrderByClause"
+       xlink:type="simple">
+      <nt def="prod-xquery-OrderByClause" xlink:type="simple">OrderByClause</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-VarName"
+       xlink:type="simple">
+      <nt def="prod-xquery-VarName" xlink:type="simple">VarName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-TypeDeclaration"
+       xlink:type="simple">
+      <nt def="prod-xquery-TypeDeclaration" xlink:type="simple">TypeDeclaration</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-PositionalVar"
+       xlink:type="simple">
+      <nt def="prod-xquery-PositionalVar" xlink:type="simple">PositionalVar</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-VarName"
+       xlink:type="simple">
+      <nt def="prod-xquery-VarName" xlink:type="simple">VarName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-TypeDeclaration"
+       xlink:type="simple">
+      <nt def="prod-xquery-TypeDeclaration" xlink:type="simple">TypeDeclaration</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-PositionalVar"
+       xlink:type="simple">
+      <nt def="prod-xquery-PositionalVar" xlink:type="simple">PositionalVar</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-VarName"
+       xlink:type="simple">
+      <nt def="prod-xquery-VarName" xlink:type="simple">VarName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-VarName"
+       xlink:type="simple">
+      <nt def="prod-xquery-VarName" xlink:type="simple">VarName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-TypeDeclaration"
+       xlink:type="simple">
+      <nt def="prod-xquery-TypeDeclaration" xlink:type="simple">TypeDeclaration</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-VarName"
+       xlink:type="simple">
+      <nt def="prod-xquery-VarName" xlink:type="simple">VarName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-TypeDeclaration"
+       xlink:type="simple">
+      <nt def="prod-xquery-TypeDeclaration" xlink:type="simple">TypeDeclaration</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-OrderSpecList"
+       xlink:type="simple">
+      <nt def="prod-xquery-OrderSpecList" xlink:type="simple">OrderSpecList</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-OrderSpec"
+       xlink:type="simple">
+      <nt def="prod-xquery-OrderSpec" xlink:type="simple">OrderSpec</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-OrderSpec"
+       xlink:type="simple">
+      <nt def="prod-xquery-OrderSpec" xlink:type="simple">OrderSpec</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-OrderModifier"
+       xlink:type="simple">
+      <nt def="prod-xquery-OrderModifier" xlink:type="simple">OrderModifier</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-URILiteral"
+       xlink:type="simple">
+      <nt def="prod-xquery-URILiteral" xlink:type="simple">URILiteral</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-VarName"
+       xlink:type="simple">
+      <nt def="prod-xquery-VarName" xlink:type="simple">VarName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-TypeDeclaration"
+       xlink:type="simple">
+      <nt def="prod-xquery-TypeDeclaration" xlink:type="simple">TypeDeclaration</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-VarName"
+       xlink:type="simple">
+      <nt def="prod-xquery-VarName" xlink:type="simple">VarName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-TypeDeclaration"
+       xlink:type="simple">
+      <nt def="prod-xquery-TypeDeclaration" xlink:type="simple">TypeDeclaration</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Expr"
+       xlink:type="simple">
+      <nt def="prod-xquery-Expr" xlink:type="simple">Expr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-CaseClause"
+       xlink:type="simple">
+      <nt def="prod-xquery-CaseClause" xlink:type="simple">CaseClause</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-VarName"
+       xlink:type="simple">
+      <nt def="prod-xquery-VarName" xlink:type="simple">VarName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-VarName"
+       xlink:type="simple">
+      <nt def="prod-xquery-VarName" xlink:type="simple">VarName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-SequenceType"
+       xlink:type="simple">
+      <nt def="prod-xquery-SequenceType" xlink:type="simple">SequenceType</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Expr"
+       xlink:type="simple">
+      <nt def="prod-xquery-Expr" xlink:type="simple">Expr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-AndExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-AndExpr" xlink:type="simple">AndExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-AndExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-AndExpr" xlink:type="simple">AndExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ComparisonExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-ComparisonExpr" xlink:type="simple">ComparisonExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ComparisonExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-ComparisonExpr" xlink:type="simple">ComparisonExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-RangeExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-RangeExpr" xlink:type="simple">RangeExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ValueComp"
+       xlink:type="simple">
+      <nt def="prod-xquery-ValueComp" xlink:type="simple">ValueComp</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-GeneralComp"
+       xlink:type="simple">
+      <nt def="prod-xquery-GeneralComp" xlink:type="simple">GeneralComp</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-NodeComp"
+       xlink:type="simple">
+      <nt def="prod-xquery-NodeComp" xlink:type="simple">NodeComp</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-RangeExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-RangeExpr" xlink:type="simple">RangeExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-AdditiveExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-AdditiveExpr" xlink:type="simple">AdditiveExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-AdditiveExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-AdditiveExpr" xlink:type="simple">AdditiveExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-MultiplicativeExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-MultiplicativeExpr" xlink:type="simple">MultiplicativeExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-MultiplicativeExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-MultiplicativeExpr" xlink:type="simple">MultiplicativeExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-UnionExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-UnionExpr" xlink:type="simple">UnionExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-UnionExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-UnionExpr" xlink:type="simple">UnionExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-IntersectExceptExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-IntersectExceptExpr" xlink:type="simple">IntersectExceptExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-IntersectExceptExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-IntersectExceptExpr" xlink:type="simple">IntersectExceptExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-InstanceofExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-InstanceofExpr" xlink:type="simple">InstanceofExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-InstanceofExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-InstanceofExpr" xlink:type="simple">InstanceofExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-TreatExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-TreatExpr" xlink:type="simple">TreatExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-SequenceType"
+       xlink:type="simple">
+      <nt def="prod-xquery-SequenceType" xlink:type="simple">SequenceType</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-CastableExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-CastableExpr" xlink:type="simple">CastableExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-SequenceType"
+       xlink:type="simple">
+      <nt def="prod-xquery-SequenceType" xlink:type="simple">SequenceType</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-CastExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-CastExpr" xlink:type="simple">CastExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-SingleType"
+       xlink:type="simple">
+      <nt def="prod-xquery-SingleType" xlink:type="simple">SingleType</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-UnaryExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-UnaryExpr" xlink:type="simple">UnaryExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-SingleType"
+       xlink:type="simple">
+      <nt def="prod-xquery-SingleType" xlink:type="simple">SingleType</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ValueExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-ValueExpr" xlink:type="simple">ValueExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ValidateExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-ValidateExpr" xlink:type="simple">ValidateExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-PathExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-PathExpr" xlink:type="simple">PathExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExtensionExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExtensionExpr" xlink:type="simple">ExtensionExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ValidationMode"
+       xlink:type="simple">
+      <nt def="prod-xquery-ValidationMode" xlink:type="simple">ValidationMode</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Expr"
+       xlink:type="simple">
+      <nt def="prod-xquery-Expr" xlink:type="simple">Expr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Pragma"
+       xlink:type="simple">
+      <nt def="prod-xquery-Pragma" xlink:type="simple">Pragma</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Expr"
+       xlink:type="simple">
+      <nt def="prod-xquery-Expr" xlink:type="simple">Expr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-S"
+       xlink:type="simple">
+      <nt def="prod-xquery-S" xlink:type="simple">S</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-QName"
+       xlink:type="simple">
+      <nt def="prod-xquery-QName" xlink:type="simple">QName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-S"
+       xlink:type="simple">
+      <nt def="prod-xquery-S" xlink:type="simple">S</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-PragmaContents"
+       xlink:type="simple">
+      <nt def="prod-xquery-PragmaContents" xlink:type="simple">PragmaContents</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Char"
+       xlink:type="simple">
+      <nt def="prod-xquery-Char" xlink:type="simple">Char</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-RelativePathExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-RelativePathExpr" xlink:type="simple">RelativePathExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-RelativePathExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-RelativePathExpr" xlink:type="simple">RelativePathExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-RelativePathExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-RelativePathExpr" xlink:type="simple">RelativePathExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-StepExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-StepExpr" xlink:type="simple">StepExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-StepExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-StepExpr" xlink:type="simple">StepExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-FilterExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-FilterExpr" xlink:type="simple">FilterExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-AxisStep"
+       xlink:type="simple">
+      <nt def="prod-xquery-AxisStep" xlink:type="simple">AxisStep</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ReverseStep"
+       xlink:type="simple">
+      <nt def="prod-xquery-ReverseStep" xlink:type="simple">ReverseStep</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ForwardStep"
+       xlink:type="simple">
+      <nt def="prod-xquery-ForwardStep" xlink:type="simple">ForwardStep</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-PredicateList"
+       xlink:type="simple">
+      <nt def="prod-xquery-PredicateList" xlink:type="simple">PredicateList</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ForwardAxis"
+       xlink:type="simple">
+      <nt def="prod-xquery-ForwardAxis" xlink:type="simple">ForwardAxis</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-NodeTest"
+       xlink:type="simple">
+      <nt def="prod-xquery-NodeTest" xlink:type="simple">NodeTest</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-AbbrevForwardStep"
+       xlink:type="simple">
+      <nt def="prod-xquery-AbbrevForwardStep" xlink:type="simple">AbbrevForwardStep</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-NodeTest"
+       xlink:type="simple">
+      <nt def="prod-xquery-NodeTest" xlink:type="simple">NodeTest</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ReverseAxis"
+       xlink:type="simple">
+      <nt def="prod-xquery-ReverseAxis" xlink:type="simple">ReverseAxis</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-NodeTest"
+       xlink:type="simple">
+      <nt def="prod-xquery-NodeTest" xlink:type="simple">NodeTest</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-AbbrevReverseStep"
+       xlink:type="simple">
+      <nt def="prod-xquery-AbbrevReverseStep" xlink:type="simple">AbbrevReverseStep</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-KindTest"
+       xlink:type="simple">
+      <nt def="prod-xquery-KindTest" xlink:type="simple">KindTest</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-NameTest"
+       xlink:type="simple">
+      <nt def="prod-xquery-NameTest" xlink:type="simple">NameTest</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-QName"
+       xlink:type="simple">
+      <nt def="prod-xquery-QName" xlink:type="simple">QName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Wildcard"
+       xlink:type="simple">
+      <nt def="prod-xquery-Wildcard" xlink:type="simple">Wildcard</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-NCName"
+       xlink:type="simple">
+      <nt def="prod-xquery-NCName" xlink:type="simple">NCName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-NCName"
+       xlink:type="simple">
+      <nt def="prod-xquery-NCName" xlink:type="simple">NCName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-PrimaryExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-PrimaryExpr" xlink:type="simple">PrimaryExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-PredicateList"
+       xlink:type="simple">
+      <nt def="prod-xquery-PredicateList" xlink:type="simple">PredicateList</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Predicate"
+       xlink:type="simple">
+      <nt def="prod-xquery-Predicate" xlink:type="simple">Predicate</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Expr"
+       xlink:type="simple">
+      <nt def="prod-xquery-Expr" xlink:type="simple">Expr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Literal"
+       xlink:type="simple">
+      <nt def="prod-xquery-Literal" xlink:type="simple">Literal</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-VarRef"
+       xlink:type="simple">
+      <nt def="prod-xquery-VarRef" xlink:type="simple">VarRef</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ParenthesizedExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-ParenthesizedExpr" xlink:type="simple">ParenthesizedExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ContextItemExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-ContextItemExpr" xlink:type="simple">ContextItemExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-FunctionCall"
+       xlink:type="simple">
+      <nt def="prod-xquery-FunctionCall" xlink:type="simple">FunctionCall</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-OrderedExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-OrderedExpr" xlink:type="simple">OrderedExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-UnorderedExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-UnorderedExpr" xlink:type="simple">UnorderedExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Constructor"
+       xlink:type="simple">
+      <nt def="prod-xquery-Constructor" xlink:type="simple">Constructor</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-NumericLiteral"
+       xlink:type="simple">
+      <nt def="prod-xquery-NumericLiteral" xlink:type="simple">NumericLiteral</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-StringLiteral"
+       xlink:type="simple">
+      <nt def="prod-xquery-StringLiteral" xlink:type="simple">StringLiteral</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-IntegerLiteral"
+       xlink:type="simple">
+      <nt def="prod-xquery-IntegerLiteral" xlink:type="simple">IntegerLiteral</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-DecimalLiteral"
+       xlink:type="simple">
+      <nt def="prod-xquery-DecimalLiteral" xlink:type="simple">DecimalLiteral</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-DoubleLiteral"
+       xlink:type="simple">
+      <nt def="prod-xquery-DoubleLiteral" xlink:type="simple">DoubleLiteral</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-VarName"
+       xlink:type="simple">
+      <nt def="prod-xquery-VarName" xlink:type="simple">VarName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-QName"
+       xlink:type="simple">
+      <nt def="prod-xquery-QName" xlink:type="simple">QName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Expr"
+       xlink:type="simple">
+      <nt def="prod-xquery-Expr" xlink:type="simple">Expr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Expr"
+       xlink:type="simple">
+      <nt def="prod-xquery-Expr" xlink:type="simple">Expr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Expr"
+       xlink:type="simple">
+      <nt def="prod-xquery-Expr" xlink:type="simple">Expr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-QName"
+       xlink:type="simple">
+      <nt def="prod-xquery-QName" xlink:type="simple">QName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-DirectConstructor"
+       xlink:type="simple">
+      <nt def="prod-xquery-DirectConstructor" xlink:type="simple">DirectConstructor</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ComputedConstructor"
+       xlink:type="simple">
+      <nt def="prod-xquery-ComputedConstructor" xlink:type="simple">ComputedConstructor</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-DirElemConstructor"
+       xlink:type="simple">
+      <nt def="prod-xquery-DirElemConstructor" xlink:type="simple">DirElemConstructor</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-DirCommentConstructor"
+       xlink:type="simple">
+      <nt def="prod-xquery-DirCommentConstructor" xlink:type="simple">DirCommentConstructor</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-DirPIConstructor"
+       xlink:type="simple">
+      <nt def="prod-xquery-DirPIConstructor" xlink:type="simple">DirPIConstructor</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-QName"
+       xlink:type="simple">
+      <nt def="prod-xquery-QName" xlink:type="simple">QName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-DirAttributeList"
+       xlink:type="simple">
+      <nt def="prod-xquery-DirAttributeList" xlink:type="simple">DirAttributeList</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-DirElemContent"
+       xlink:type="simple">
+      <nt def="prod-xquery-DirElemContent" xlink:type="simple">DirElemContent</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-QName"
+       xlink:type="simple">
+      <nt def="prod-xquery-QName" xlink:type="simple">QName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-S"
+       xlink:type="simple">
+      <nt def="prod-xquery-S" xlink:type="simple">S</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-S"
+       xlink:type="simple">
+      <nt def="prod-xquery-S" xlink:type="simple">S</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-QName"
+       xlink:type="simple">
+      <nt def="prod-xquery-QName" xlink:type="simple">QName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-S"
+       xlink:type="simple">
+      <nt def="prod-xquery-S" xlink:type="simple">S</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-S"
+       xlink:type="simple">
+      <nt def="prod-xquery-S" xlink:type="simple">S</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-DirAttributeValue"
+       xlink:type="simple">
+      <nt def="prod-xquery-DirAttributeValue" xlink:type="simple">DirAttributeValue</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-EscapeQuot"
+       xlink:type="simple">
+      <nt def="prod-xquery-EscapeQuot" xlink:type="simple">EscapeQuot</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-QuotAttrValueContent"
+       xlink:type="simple">
+      <nt def="prod-xquery-QuotAttrValueContent" xlink:type="simple">QuotAttrValueContent</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-EscapeApos"
+       xlink:type="simple">
+      <nt def="prod-xquery-EscapeApos" xlink:type="simple">EscapeApos</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-AposAttrValueContent"
+       xlink:type="simple">
+      <nt def="prod-xquery-AposAttrValueContent" xlink:type="simple">AposAttrValueContent</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-QuotAttrContentChar"
+       xlink:type="simple">
+      <nt def="prod-xquery-QuotAttrContentChar" xlink:type="simple">QuotAttrContentChar</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-CommonContent"
+       xlink:type="simple">
+      <nt def="prod-xquery-CommonContent" xlink:type="simple">CommonContent</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-AposAttrContentChar"
+       xlink:type="simple">
+      <nt def="prod-xquery-AposAttrContentChar" xlink:type="simple">AposAttrContentChar</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-CommonContent"
+       xlink:type="simple">
+      <nt def="prod-xquery-CommonContent" xlink:type="simple">CommonContent</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-DirectConstructor"
+       xlink:type="simple">
+      <nt def="prod-xquery-DirectConstructor" xlink:type="simple">DirectConstructor</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-CDataSection"
+       xlink:type="simple">
+      <nt def="prod-xquery-CDataSection" xlink:type="simple">CDataSection</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-CommonContent"
+       xlink:type="simple">
+      <nt def="prod-xquery-CommonContent" xlink:type="simple">CommonContent</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ElementContentChar"
+       xlink:type="simple">
+      <nt def="prod-xquery-ElementContentChar" xlink:type="simple">ElementContentChar</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-PredefinedEntityRef"
+       xlink:type="simple">
+      <nt def="prod-xquery-PredefinedEntityRef" xlink:type="simple">PredefinedEntityRef</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-CharRef"
+       xlink:type="simple">
+      <nt def="prod-xquery-CharRef" xlink:type="simple">CharRef</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-EnclosedExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-EnclosedExpr" xlink:type="simple">EnclosedExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-DirCommentContents"
+       xlink:type="simple">
+      <nt def="prod-xquery-DirCommentContents" xlink:type="simple">DirCommentContents</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Char"
+       xlink:type="simple">
+      <nt def="prod-xquery-Char" xlink:type="simple">Char</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Char"
+       xlink:type="simple">
+      <nt def="prod-xquery-Char" xlink:type="simple">Char</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-PITarget"
+       xlink:type="simple">
+      <nt def="prod-xquery-PITarget" xlink:type="simple">PITarget</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-S"
+       xlink:type="simple">
+      <nt def="prod-xquery-S" xlink:type="simple">S</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-DirPIContents"
+       xlink:type="simple">
+      <nt def="prod-xquery-DirPIContents" xlink:type="simple">DirPIContents</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Char"
+       xlink:type="simple">
+      <nt def="prod-xquery-Char" xlink:type="simple">Char</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-CDataSectionContents"
+       xlink:type="simple">
+      <nt def="prod-xquery-CDataSectionContents" xlink:type="simple">CDataSectionContents</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Char"
+       xlink:type="simple">
+      <nt def="prod-xquery-Char" xlink:type="simple">Char</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-CompDocConstructor"
+       xlink:type="simple">
+      <nt def="prod-xquery-CompDocConstructor" xlink:type="simple">CompDocConstructor</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-CompElemConstructor"
+       xlink:type="simple">
+      <nt def="prod-xquery-CompElemConstructor" xlink:type="simple">CompElemConstructor</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-CompAttrConstructor"
+       xlink:type="simple">
+      <nt def="prod-xquery-CompAttrConstructor" xlink:type="simple">CompAttrConstructor</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-CompTextConstructor"
+       xlink:type="simple">
+      <nt def="prod-xquery-CompTextConstructor" xlink:type="simple">CompTextConstructor</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-CompCommentConstructor"
+       xlink:type="simple">
+      <nt def="prod-xquery-CompCommentConstructor" xlink:type="simple">CompCommentConstructor</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-CompPIConstructor"
+       xlink:type="simple">
+      <nt def="prod-xquery-CompPIConstructor" xlink:type="simple">CompPIConstructor</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Expr"
+       xlink:type="simple">
+      <nt def="prod-xquery-Expr" xlink:type="simple">Expr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-QName"
+       xlink:type="simple">
+      <nt def="prod-xquery-QName" xlink:type="simple">QName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Expr"
+       xlink:type="simple">
+      <nt def="prod-xquery-Expr" xlink:type="simple">Expr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ContentExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-ContentExpr" xlink:type="simple">ContentExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Expr"
+       xlink:type="simple">
+      <nt def="prod-xquery-Expr" xlink:type="simple">Expr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-QName"
+       xlink:type="simple">
+      <nt def="prod-xquery-QName" xlink:type="simple">QName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Expr"
+       xlink:type="simple">
+      <nt def="prod-xquery-Expr" xlink:type="simple">Expr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Expr"
+       xlink:type="simple">
+      <nt def="prod-xquery-Expr" xlink:type="simple">Expr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Expr"
+       xlink:type="simple">
+      <nt def="prod-xquery-Expr" xlink:type="simple">Expr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Expr"
+       xlink:type="simple">
+      <nt def="prod-xquery-Expr" xlink:type="simple">Expr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-NCName"
+       xlink:type="simple">
+      <nt def="prod-xquery-NCName" xlink:type="simple">NCName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Expr"
+       xlink:type="simple">
+      <nt def="prod-xquery-Expr" xlink:type="simple">Expr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Expr"
+       xlink:type="simple">
+      <nt def="prod-xquery-Expr" xlink:type="simple">Expr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-AtomicType"
+       xlink:type="simple">
+      <nt def="prod-xquery-AtomicType" xlink:type="simple">AtomicType</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-SequenceType"
+       xlink:type="simple">
+      <nt def="prod-xquery-SequenceType" xlink:type="simple">SequenceType</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ItemType"
+       xlink:type="simple">
+      <nt def="prod-xquery-ItemType" xlink:type="simple">ItemType</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-OccurrenceIndicator"
+       xlink:type="simple">
+      <nt def="prod-xquery-OccurrenceIndicator" xlink:type="simple">OccurrenceIndicator</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-KindTest"
+       xlink:type="simple">
+      <nt def="prod-xquery-KindTest" xlink:type="simple">KindTest</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-AtomicType"
+       xlink:type="simple">
+      <nt def="prod-xquery-AtomicType" xlink:type="simple">AtomicType</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-QName"
+       xlink:type="simple">
+      <nt def="prod-xquery-QName" xlink:type="simple">QName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-DocumentTest"
+       xlink:type="simple">
+      <nt def="prod-xquery-DocumentTest" xlink:type="simple">DocumentTest</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ElementTest"
+       xlink:type="simple">
+      <nt def="prod-xquery-ElementTest" xlink:type="simple">ElementTest</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-AttributeTest"
+       xlink:type="simple">
+      <nt def="prod-xquery-AttributeTest" xlink:type="simple">AttributeTest</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-SchemaElementTest"
+       xlink:type="simple">
+      <nt def="prod-xquery-SchemaElementTest" xlink:type="simple">SchemaElementTest</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-SchemaAttributeTest"
+       xlink:type="simple">
+      <nt def="prod-xquery-SchemaAttributeTest" xlink:type="simple">SchemaAttributeTest</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-PITest"
+       xlink:type="simple">
+      <nt def="prod-xquery-PITest" xlink:type="simple">PITest</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-CommentTest"
+       xlink:type="simple">
+      <nt def="prod-xquery-CommentTest" xlink:type="simple">CommentTest</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-TextTest"
+       xlink:type="simple">
+      <nt def="prod-xquery-TextTest" xlink:type="simple">TextTest</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-AnyKindTest"
+       xlink:type="simple">
+      <nt def="prod-xquery-AnyKindTest" xlink:type="simple">AnyKindTest</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ElementTest"
+       xlink:type="simple">
+      <nt def="prod-xquery-ElementTest" xlink:type="simple">ElementTest</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-SchemaElementTest"
+       xlink:type="simple">
+      <nt def="prod-xquery-SchemaElementTest" xlink:type="simple">SchemaElementTest</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-NCName"
+       xlink:type="simple">
+      <nt def="prod-xquery-NCName" xlink:type="simple">NCName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-StringLiteral"
+       xlink:type="simple">
+      <nt def="prod-xquery-StringLiteral" xlink:type="simple">StringLiteral</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-AttribNameOrWildcard"
+       xlink:type="simple">
+      <nt def="prod-xquery-AttribNameOrWildcard" xlink:type="simple">AttribNameOrWildcard</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-TypeName"
+       xlink:type="simple">
+      <nt def="prod-xquery-TypeName" xlink:type="simple">TypeName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-AttributeName"
+       xlink:type="simple">
+      <nt def="prod-xquery-AttributeName" xlink:type="simple">AttributeName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-AttributeDeclaration"
+       xlink:type="simple">
+      <nt def="prod-xquery-AttributeDeclaration" xlink:type="simple">AttributeDeclaration</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-AttributeName"
+       xlink:type="simple">
+      <nt def="prod-xquery-AttributeName" xlink:type="simple">AttributeName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ElementNameOrWildcard"
+       xlink:type="simple">
+      <nt def="prod-xquery-ElementNameOrWildcard" xlink:type="simple">ElementNameOrWildcard</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-TypeName"
+       xlink:type="simple">
+      <nt def="prod-xquery-TypeName" xlink:type="simple">TypeName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ElementName"
+       xlink:type="simple">
+      <nt def="prod-xquery-ElementName" xlink:type="simple">ElementName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ElementDeclaration"
+       xlink:type="simple">
+      <nt def="prod-xquery-ElementDeclaration" xlink:type="simple">ElementDeclaration</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ElementName"
+       xlink:type="simple">
+      <nt def="prod-xquery-ElementName" xlink:type="simple">ElementName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-QName"
+       xlink:type="simple">
+      <nt def="prod-xquery-QName" xlink:type="simple">QName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-QName"
+       xlink:type="simple">
+      <nt def="prod-xquery-QName" xlink:type="simple">QName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-QName"
+       xlink:type="simple">
+      <nt def="prod-xquery-QName" xlink:type="simple">QName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-StringLiteral"
+       xlink:type="simple">
+      <nt def="prod-xquery-StringLiteral" xlink:type="simple">StringLiteral</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-SourceExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-SourceExpr" xlink:type="simple">SourceExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-InsertExprTargetChoice"
+       xlink:type="simple">
+      <nt def="prod-xquery-InsertExprTargetChoice" xlink:type="simple">InsertExprTargetChoice</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-TargetExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-TargetExpr" xlink:type="simple">TargetExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-TargetExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-TargetExpr" xlink:type="simple">TargetExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-TargetExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-TargetExpr" xlink:type="simple">TargetExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-TargetExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-TargetExpr" xlink:type="simple">TargetExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-NewNameExpr"
+       xlink:type="simple">
+      <nt def="prod-xquery-NewNameExpr" xlink:type="simple">NewNameExpr</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-VarName"
+       xlink:type="simple">
+      <nt def="prod-xquery-VarName" xlink:type="simple">VarName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-VarName"
+       xlink:type="simple">
+      <nt def="prod-xquery-VarName" xlink:type="simple">VarName</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-ExprSingle"
+       xlink:type="simple">
+      <nt def="prod-xquery-ExprSingle" xlink:type="simple">ExprSingle</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Digits"
+       xlink:type="simple">
+      <nt def="prod-xquery-Digits" xlink:type="simple">Digits</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Digits"
+       xlink:type="simple">
+      <nt def="prod-xquery-Digits" xlink:type="simple">Digits</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Digits"
+       xlink:type="simple">
+      <nt def="prod-xquery-Digits" xlink:type="simple">Digits</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Digits"
+       xlink:type="simple">
+      <nt def="prod-xquery-Digits" xlink:type="simple">Digits</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Digits"
+       xlink:type="simple">
+      <nt def="prod-xquery-Digits" xlink:type="simple">Digits</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Digits"
+       xlink:type="simple">
+      <nt def="prod-xquery-Digits" xlink:type="simple">Digits</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-PredefinedEntityRef"
+       xlink:type="simple">
+      <nt def="prod-xquery-PredefinedEntityRef" xlink:type="simple">PredefinedEntityRef</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-CharRef"
+       xlink:type="simple">
+      <nt def="prod-xquery-CharRef" xlink:type="simple">CharRef</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-EscapeQuot"
+       xlink:type="simple">
+      <nt def="prod-xquery-EscapeQuot" xlink:type="simple">EscapeQuot</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-PredefinedEntityRef"
+       xlink:type="simple">
+      <nt def="prod-xquery-PredefinedEntityRef" xlink:type="simple">PredefinedEntityRef</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-CharRef"
+       xlink:type="simple">
+      <nt def="prod-xquery-CharRef" xlink:type="simple">CharRef</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-EscapeApos"
+       xlink:type="simple">
+      <nt def="prod-xquery-EscapeApos" xlink:type="simple">EscapeApos</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Char"
+       xlink:type="simple">
+      <nt def="prod-xquery-Char" xlink:type="simple">Char</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Char"
+       xlink:type="simple">
+      <nt def="prod-xquery-Char" xlink:type="simple">Char</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Char"
+       xlink:type="simple">
+      <nt def="prod-xquery-Char" xlink:type="simple">Char</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-CommentContents"
+       xlink:type="simple">
+      <nt def="prod-xquery-CommentContents" xlink:type="simple">CommentContents</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Comment"
+       xlink:type="simple">
+      <nt def="prod-xquery-Comment" xlink:type="simple">Comment</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+       def="prod-xquery-Char"
+       xlink:type="simple">
+      <nt def="prod-xquery-Char" xlink:type="simple">Char</nt>
+   </nt>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0001"
+          class="ST"
+          type="static"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0002"
+          class="ST"
+          type="static"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0003"
+          class="ST"
+          type="static"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0004"
+          class="TY"
+          type="type"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0005"
+          class="TY"
+          type="type"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0006"
+          class="TY"
+          type="type"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0007"
+          class="TY"
+          type="type"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0008"
+          class="TY"
+          type="type"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0009"
+          class="DY"
+          type="dynamic"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0010"
+          class="TY"
+          type="type"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0011"
+          class="TY"
+          type="type"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0012"
+          class="TY"
+          type="type"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0013"
+          class="TY"
+          type="type"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0014"
+          class="DY"
+          type="dynamic"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0015"
+          class="DY"
+          type="dynamic"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0016"
+          class="DY"
+          type="dynamic"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0017"
+          class="DY"
+          type="dynamic"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0018"
+          class="DY"
+          type="dynamic"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0019"
+          class="DY"
+          type="dynamic"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0021"
+          class="DY"
+          type="dynamic"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0022"
+          class="TY"
+          type="type"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0023"
+          class="DY"
+          type="dynamic"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0024"
+          class="DY"
+          type="dynamic"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0025"
+          class="DY"
+          type="dynamic"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0026"
+          class="ST"
+          type="static"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0027"
+          class="DY"
+          type="dynamic"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0028"
+          class="ST"
+          type="static"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0029"
+          class="DY"
+          type="dynamic"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0030"
+          class="DY"
+          type="dynamic"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XU" code="0031"
+          class="DY"
+          type="dynamic"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="FO" code="0001"
+          class="UP"
+          type="dynamic"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="FO" code="0002"
+          class="UP"
+          type="dynamic"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XP" code="0005"
+          class="ST"
+          type="static"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XQ" code="0026"
+          class="DY"
+          type="dynamic"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XQ" code="0041"
+          class="DY"
+          type="dynamic"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XQ" code="0072"
+          class="DY"
+          type="dynamic"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XQ" code="0074"
+          class="DY"
+          type="dynamic"/>
+</document-summary>

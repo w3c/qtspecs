@@ -1,0 +1,705 @@
+<div1 id="ft-issues">
+	<head>Issues List</head>
+
+<p> This section contains the current issues related to this document. </p>
+<olist>
+<item>
+<issue id="scoring-properties" status="open">
+	<head>Scoring Properties</head>
+	<p>Is it possible to specify anything
+    other than range ? Examples: do we want to define scoring rules
+    for efficient scoring, rules to guarantee score monotonicity?</p>
+        <resolution>
+           <p>NONE. </p>
+           <p>OPEN.</p>
+        </resolution>
+</issue>
+</item>
+<item>
+<issue id="scoring-values" status="open">
+	<head>Scoring Values</head>
+	<p>Do we require that 0 be returned if there are 
+no matches?</p>
+        <resolution>
+           <p>NONE. </p>
+           <p>OPEN.</p>
+        </resolution>
+</issue>
+</item>
+
+<item>
+<issue id="data-model" status="closed">
+	<head>Semantics Data Model</head>
+	<p>Data model incorporates new
+    names - TokenInfo, Match, AllMatches.</p>
+        <resolution>
+           <p>CLOSED.</p> <p>All occurrences of FullMatch,
+           SimpleMatch, and Position in the text, in the schemas, and
+           in the XQuery implementations of the semantics have been
+           replaced with AllMatches, Match, and TokenInfo
+           respectively.</p>
+        </resolution>
+</issue>
+</item>
+<item>
+<issue id="ftcontains-grammar" status="closed">
+	<head>FTContains Grammar</head>
+	<p>Expr "ftcontains" FTSelection
+    FTIgnoreCtxMod?. One production for FTSelection which includes
+    FTIgnoreCtxMod?</p>
+        <resolution>
+           <p>CLOSED.</p>
+           <p>We replaced the previous grammar production Expr
+           "ftcontains" FTSelection that allowed FTIgnoreCtxMod to be
+           combined with any FTSelection with the new one
+           thatrestricts the application of FTIgnoreCtxMod to the
+           highest level.</p>
+        </resolution>
+</issue>
+</item>
+<item>
+<issue id="ftcontextmodifiers" status="closed">
+	<head>FTContextModifiers</head> <p> Paull C.: Change the name
+	of the FTContextModifer production which modify the
+	operational semantics of the FTSelections they are applied
+	to. Abandon the use of "ContextModifier" as in FTCaseCtxMod,
+	FTStemCtxMod, FTIgnoreCtxMod.  Issue raised at FTTF Feb 5-6,
+	2004 meeting. Find in the minutes at:
+	http://lists.w3.org/Archives/Member/member-query-fttf/2004Feb/0010.html
+	(Cntl-F on FTContextModifiers)</p>
+        <resolution>
+           <p> CLOSED.</p>
+           <p>Replaced FTContextModfiers with FTMatchOptions as in
+FTCaseOption, FTStemOption, FTIgnoreOption in the Feburary 26, 2004
+Editor's Draft.  </p><p> CLOSED February 26, 2004.</p>
+        </resolution>
+</issue>
+</item>
+<item>
+<issue id="grammar" status="closed">
+	<head>Grammar</head>
+	<p>Grammar: Where does the ftcontains
+    expression belong in the XQuery grammar: Boolean expression or
+    comparison expression?</p>
+        <resolution>
+           <p> CLOSED.</p>
+           <p>Steve to provide resolution.</p>
+        </resolution>
+</issue>
+</item>
+<item>
+<issue id="wildcards" status="open">
+	<head>Wildcards</head> <p>Pat Case: There are a few
+	inconsistencies between this document and the Use Cases
+	Working Draft. </p> <p>This document and the Use Cases Working
+	Draft present different syntax in regex examples. I can find
+	no syntax provided in this document for the starts-with and
+	exact match functionality. Should we rename the Wildcard
+	section in the Use Cases to Regex Section and possibly rethink
+	the use cases?</p>
+        <resolution>
+           <p>NONE. </p>
+           <p>OPEN.</p>
+        </resolution>
+</issue>
+</item>
+<item>
+<issue id="thesaurus" status="open">
+	<head>Thesaurus</head> <p>Thesaurus names: "synonyms",
+	"narrower terms", "soundex", "spellcheck" and "wordnet". We
+	need to define Thesaurus operators. We need more options when
+	specifying thesaurs: Name, URI, Depth,
+	Dimension. Standards. ISO 2788/ANSI Z39.19.</p> <p>We need to
+	discuss what the grammar of ThesaurusMatchOption is. Current
+	grammar is: </p><p>FTThesaurusOption ::= ("with"?  "thesaurus"
+	Expr) | "without thesaurus". </p> <p>Proposed grammar is:</p>
+	<p>FTThesaurusOption ::= ("with"?  "thesaurus" Expr
+	"operation" Expr) | "without thesaurus". </p>
+        <resolution>
+           <p>NONE. </p>
+           <p>OPEN. </p>
+        </resolution>
+</issue>
+</item>
+<item>
+<issue id="window" status="open">
+	<head>Window</head> <p>Currently, FTDistanceSpec only permits
+	a single distance specification for all of the terms specified
+	by an FTSelection.</p>
+        <p>For example:</p>
+
+        <p>("dog" &amp;&amp; "cat" &amp;&amp; "bird") with word
+        distance at most 10</p>
+
+        <p>In this scenario above, the terms "dog", "cat", and "bird"
+        must all occur within 10 words of one another.</p>
+        
+        <p>However, if one would want to return documents where "dog"
+	occurs within 10 words of "cat" and this SAME "cat" term
+	occurs within 5 words of "bird", it is currently not possible
+	with the current language specification.  The best that could
+	be done is the following:</p>
+
+        <p>(("dog" &amp;&amp; "cat") with word distance at most 10) and
+           (("cat" &amp;&amp; "bird") with word distance at most 5)</p>
+ 
+        <p>But, this will not lead to the exact desired result because
+	the "cat" and "bird' comparison will not use only those "cat"
+	terms which occurred within 10 positions of "dog" ... it can
+	use any "cat" term within the search context.</p>
+
+        <resolution>
+           <p>NONE.</p>
+           <p>OPEN. </p>
+        </resolution>
+</issue> 
+</item>
+<item>  
+<issue id="mildnot" status="open">
+	<head>MildNot</head> <p>Andrew E.: Should we remove the mild
+	not? It has never been included in a query language
+	before. </p><p>Pat Case has provided use cases to justify its
+	inclusion at:
+	http://lists.w3.org/Archives/Member/member-query-fttf/2003Dec/0034.html
+	</p> <p>Discussion followed. Michael Rys' reply:
+	http://lists.w3.org/Archives/Member/member-query-fttf/2003Dec/0038.html
+	</p><p>Pat Case's reply:
+	http://lists.w3.org/Archives/Member/member-query-fttf/2003Dec/0043.html
+	</p>
+        <resolution>
+           <p>NONE. </p>
+           <p>OPEN. </p>
+        </resolution>
+</issue>
+</item>
+<item>    
+<issue id="markup-vs-structure" status="open">
+	<head>Markup vs Structure</head>
+	<p>Some
+     tags are "markup" - e.g. b - some are "structure" -
+     e.g. title.  We generally want to treat structure tags as word
+     boundaries, but not markup tags.  How do we distinguish between
+     markup and structure?</p>
+           <p>Michael to provide reformulation. </p>
+        <resolution>
+           <p>NONE. </p>
+           <p>OPEN. </p>
+        </resolution>
+</issue>
+</item>
+<item>      
+<issue id="matchoption-policy" status="open">
+	<head>MatchOption Policy</head> 
+        <p>We need some indirection to
+	specify match context, defaults "Thesaurus name" gives us a
+	way to define a thesaurus, then specify it in the query - an
+	indirection.  Steve Buxton proposes there are many classes of
+	things that are needed for context-match (stoplist, special
+	characters, etc.) that need an indirection. So we need an
+	extra level of indirection - a named policy that refers to a
+	set of named things.</p>
+        <resolution>
+           <p>NONE. </p>
+           <p>OPEN. </p>
+        </resolution>
+</issue>
+</item>
+<item>       
+<issue id="loose-grammar" status="open">
+	<head>Loose Grammar</head> <p>The grammar allows lots of
+        queries that do not make sense.  e.g. "(dog || cat) within
+        word distance N", "dog within word distance N", "(dog || cat)
+        ordered", "!dog 5 times" If the grammar does not provide a way
+        of identifying these "nonsense queries", then the
+        implementation still has to identify them - i.e. implementors
+        will have to augment the grammar to identify nonsense queries,
+        and augment the semantics to do something with them.  </p><p>
+        J. Dorre asks if we should allow nested FTNegations in the RHS
+        of a FTMildNegation. See point 3 in his email:
+        http://lists.w3.org/Archives/Member/member-query-fttf/2004Apr/0019.html</p>
+        <resolution>
+           <p>NONE. </p>
+           <p>OPEN. </p>
+        </resolution>
+</issue> 
+</item>
+<item>    
+<issue id="fttimesselection" status="open">
+	<head>FTTimesSelection</head> 
+        <p>How do I count occurrences, where the query
+        is NOT a single term?.  How many occurrences of "!dog" are
+        there in "very very big"?  Zero or very many?</p>
+        <resolution>
+           <p>NONE. </p>
+           <p>OPEN. </p>
+        </resolution>
+</issue>
+</item>
+<item> 
+<issue id="regexp-escape" status="open">
+	<head>RegExp Escape</head> 
+        <p>Need to
+    define some escaping mechanism for regexp characters, and for (||,
+    ...).</p>
+        <resolution>
+           <p>NONE. </p>
+           <p>OPEN. </p>
+        </resolution>
+</issue> 
+</item>
+<item>
+<issue id="ftscopeselection" status="open">
+	<head>FTScopeSelection</head> 
+        <p>Is there a need for both FTScopeSelection and FTDistance ? For
+    example, how is the 'same sentence' or 'same paragraph' really
+    different than a FTDistance of 'with sentence exactly 1' or 'with
+    paragraph exactly 1'?.</p>
+        <resolution>
+           <p>NONE. </p>
+           <p>OPEN. </p>
+        </resolution>
+</issue>
+</item>
+<item> 
+<issue id="weighting" status="open">
+	<head>Weighting</head> <p>Michael R.: What syntactic form
+        should scoring take? How do we describe the constraints on the
+        types of expressions that are allowed? Should scoring be
+        expressed using a second-order function, a stand-alone
+        operator, or as a clause in a FLWOR expression? Consider
+        moving weighting to ftContains, something like the
+        following: TreatExpr ("ftcontains"
+        FTSelection ("weight" Expr)? )? </p><p>Options in presentation
+        of full-text language proposal and some discussion at XQuery
+        January meeting, Tampa at:
+        http://www.w3.org/XML/Group/2004/01/xquery-minutes (Cntl-F on
+        Report of Full-Text Task Force)</p>
+        <resolution>
+           <p>NONE. </p>
+           <p>OPEN. </p>
+        </resolution>
+</issue>
+</item>
+<item>     
+<issue id="weight-values" status="open">
+	<head>Weight Values</head> 
+        <p>Valid values for weights must be defined.</p>
+        <resolution>
+           <p>NONE. </p>
+           <p>OPEN.</p>
+        </resolution>
+</issue>
+</item>
+<item>      
+<issue id="ftscopeselection-on-structure" status="open">
+	<head>FTScopeSelection on structure</head> 
+       <p>Scoping based on structure (e.g. same node and different
+        node) should be considered. Support for queries where distance
+        is measured in terms of "number of intervening elements" where
+        elements can be any markup including chapter, paragraph and
+        sentence. Consider sentence/paragraph/node distance.</p>
+        <resolution>
+           <p>NONE. </p>
+           <p>OPEN. </p>
+        </resolution>
+</issue> 
+</item>
+<item>     
+<issue id="languagematchoption" status="open">
+	<head>LanguageMatchOption</head> <p>What is the default
+           language?  SA: Dana F.: does the language have to be a
+           literal or an Expr thyat returns xs:string?  Is there an
+           implementation-defined list of valid languages ?</p>
+        <resolution>
+           <p>NONE.</p>
+           <p>OPEN.</p>
+        </resolution>
+</issue>
+</item>
+<item>           
+<issue id="casematchoption-specialcharmatchoption" status="open">
+	<head>CaseMatchOption and SpecialCharMatchOption</head>
+           <p>Paul C. pointed out whether "lowercase", "uppercase",
+           "case sensitive" and "case insensitive" should be defined
+           in the context of Unicode. J. Doerre provided this link to
+           the Unicode standard is: http://www.unicode.org. The
+           current version is 4.0.0. Case folding is described in
+           Chapter 3.13.  Please note that the case folding
+           operations, like toUppercase(X), only depend on the
+           characters to be folded, not on additional information,
+           like language.
+</p>
+        <resolution>
+           <p>NONE.</p>
+           <p>OPEN.</p></resolution>
+</issue> 
+</item>
+<item>          
+<issue id="diacriticsmatchoption" status="open">
+	<head>DiacriticsMatchOption</head> <p>Paul C.: We need to
+           define what a diacritic is. Steve B. pointed out whether
+           "with diacritics" and "without diacritics" are needed or
+           not.</p> 
+        <resolution>
+           <p>NONE.</p>
+           <p>OPEN.</p>
+        </resolution>
+</issue>
+</item>
+<item>
+<issue id="tokenizers" status="open">
+	<head>Tokenizers</head> <p>Darin/Paul C.: What is the most
+           general behavior for tokenizers?</p><p>Michael Kay: Can we
+           define a set of rules that apply regardless of which
+           tokenizer we are using in the same manner as the rues we
+           defined for scoring?  For example, we could impose
+           constraints on words, sentences and paragraphs.</p>
+        <resolution>
+           <p>NONE.</p>
+           <p>OPEN.</p>
+        </resolution>
+</issue>
+</item>
+<item>
+<issue id="specialcharmatchoption" status="open">
+	<head>SpecialCharMatchOption</head> <p>We need to say more
+        about special characters, what kind of special characters do
+        we want to consider, what is their impact on the ability to
+        use a given index, their impact on tokenization.</p> 
+        <resolution>
+           <p>NONE.</p>
+           <p>OPEN.</p>
+        </resolution>
+</issue>
+</item>
+<item>
+<issue id="matchoption-syntax" status="open">
+	<head>MatchOption Syntax</head> <p>Paul C.: It maybe that we
+        should reconsider the syntax and allow to apply modifiers to
+        individual words.</p>  
+        <resolution>
+           <p>NONE.</p>
+           <p>OPEN.</p>
+        </resolution>
+</issue>
+</item>
+<item>
+<issue id="stopwordsmatchoption" status="open">
+	<head>StopWordsMatchOption</head> <p>We need to say more about
+        stopwords, what kind of stopwords do we want to consider, what
+        is their impact on the ability to use a given index, their
+        impact on tokenization. Should we allow to specify the URI of
+        a StopWords list? Paul C.: What would a single search with a
+        stopword return?</p>
+        <resolution>
+           <p>NONE.</p>
+           <p>OPEN.</p>
+        </resolution>
+</issue>
+</item>
+
+<item>
+<issue id="matchoptionstokenization" status="open">
+	<head>MatchOption and Tokenization</head> <p> Does the
+language document clearly state the impact of match options on
+tokenization? Consider regex * when does it get applied? What effect
+does it have on word breaks? Example: expr ftcontains "brown .ox" with
+regex, expr ftcontains "brown .*ox" with regex.
+</p>
+</issue>
+</item>
+
+<item>
+<issue id="ignoresyntax" status="open">
+	<head>IGNORE Syntax</head> <p> Do we need special syntax for
+IGNORE in case of level by level search?
+</p>
+</issue>
+</item>
+
+<item>
+<issue id="scoping" status="open">
+	<head>Scoping</head> <p> Do we need same sentence, same paragraph
+search? * in semantics, not in requirements.
+</p>
+</issue>
+</item>
+
+<item>
+<issue id="precedencexqueryfulltext" status="open">
+	<head>Precendence of XQuery and full-text</head> <p> We need
+	to distinguish between XQuery expressions embedded in
+	full-text expressions and FTSelections themselves. S. Buxton
+	suggests that we use different kinds of parentheses to
+	distinguish between these two expressions. See his message in
+	http://lists.w3.org/Archives/Member/member-query-fttf/2004Apr/0042.html
+	and subsequent messages.  A simple example is to distinguish
+	between ("cat") as an XQuery expression that builds an XQuery
+	sequence and ("cat") as an FTSelection.  </p> <p> In the
+	current draft of the document, we are using lookahead </p> <p>
+	Other possibilities include the use of "{}" to switch from
+	fyll-text to XQuery when XQuery expressions are embedded in
+	full-text expressions. This is similar to element construction
+	in XQuery and has been pointed out by Mary H in her email at
+	http://lists.w3.org/Archives/Member/member-query-fttf/2004May/0163.html</p>
+
+</issue>
+</item>
+
+<item>
+<issue id="ftdistancewith" status="open">
+<head> Optional Keyword "with" in FTDistance</head>
+<p>In 3.1.9 FTDistance: Do we need "with" in
+FTDistance?</p>
+<p>Raised by Pat Case by email April 28, 2004</p>
+<resolution>
+<p>None.</p>
+</resolution>
+</issue>
+</item>
+
+<item>
+<issue id="ftwindowwithin" status="open">
+<head> Optional Keyword "within" in FTWindow</head>
+<p>In 3.1.20 FTWindow: Do we need "within" in
+FTWindow?</p>
+<p>Raised by Pat Case by email April 28, 2004</p>
+<resolution>
+<p>None.</p>
+</resolution>
+</issue>
+</item>
+
+<item>
+<issue id="ftspecialcharoption-issue" status="open">
+<head> FTSpecialCharOption Specify Which</head>
+<p>In 3.2.3 FTSpecialCharOption: Should we have to or be able to
+specify which special characters are to be matched or not? Should the
+following syntax be allowed "without special characters "-" or "with
+special characters "-"?</p>
+<p>Raised by Pat Case by email April 28, 2004</p>
+<resolution>
+<p>None.</p>
+</resolution>
+</issue>
+</item>
+
+<item>
+<issue id="ftnegationunarynot" status="open">
+<head> FTNegation Includes Unary Not</head>
+<p>In 3.1.5 FTNegation: If we are supporting the unary not which is
+shown in the production, please add text and examples to show that both
+the "unary not" and the "and not" are supported.</p>
+<p>Raised by Pat Case by email April 28, 2004</p>
+<resolution>
+<p>None.</p>
+</resolution>
+</issue>
+</item>
+
+<item>
+<issue id="ftorderunordered" status="open">
+<head> FTOrder Unordered Option</head>
+<p>In 3.1.7 FTOrder: [30] FTOrder  ::=   FTSelection  "ordered" should
+we have an explicit "unordered" for the default?</p>
+<p>Raised by Pat Case by email April 28, 2004</p>
+<resolution>
+<p>None.</p>
+</resolution>
+</issue>
+</item>
+
+<item>
+<issue id="ftignoreoptionnaming" status="open">
+<head> FTIgnoreOption Naming</head>
+<p>Would FTFilterOption be a better name than FTIgnoreOption?</p>
+<p>Raised by Pat Case by email April 28, 2004</p>
+<resolution>
+<p>None.</p>
+</resolution>
+</issue>
+</item>
+
+<item><issue id="ftrangespecsyntax" status="open">
+<head> FTRangeSpec Syntax for 1 to 4</head>
+<p>We should consider aligning the syntax for the FTRangeSpec with an
+upper and lower boundary in 3.1.9 FTDistance (from 1 to 4) with the
+syntax for using range expressions to construct sequences in XQuery and
+XPath (1 to 4), See the XQuery/XPath language document Section 3.3.1
+Constructing Sequences.</p>
+<p>Raised by Pat Case by email April 28, 2004</p>
+<resolution>
+<p>None.</p>
+</resolution>
+</issue>
+</item>
+ 
+<item>
+<issue id="booleannaming" status="open">
+<head> Boolean (&amp;&amp; || !) Naming</head>
+<p>Is it not possible and maybe preferable to use ftand ftor ftnot
+instead of  &amp;&amp; || ! following the lead of ftcontains?</p>
+<p>Raised by Pat Case by email April 28, 2004</p>
+<resolution>
+<p>None.</p>
+</resolution>
+</issue>
+</item>
+ 
+<item>
+<issue id="exactelementcontent" status="open">
+<head> Exact Element Content</head>
+<p>We have a use case for an exact element content query which finds
+the exact words or phrases being queried, no more and no less in an
+element and allows variations on case, diacritics, and special
+characters. Should this functionality be in XQuery full-text? If so,
+should we use the keywords "exact content"?</p>
+<p>Raised by Pat Case by email April 28, 2004</p>
+<resolution>
+<p>None.</p>
+</resolution>
+</issue>
+</item>
+ 
+<item>
+<issue id="startswith" status="open">
+<head> Starts With</head>
+<p>We have a use case for a starts with query which finds the words or
+phrases being queried as the first content of an element. Should this
+functionality be in XQuery full-text? If so, should we use the keywords
+"starts with"? </p>
+<p>Raised by Pat Case by email April 28, 2004</p>
+<resolution>
+<p>None.</p>
+</resolution>
+</issue>
+</item>
+
+<item>
+<issue id="mild-not-naming" status="open">
+<head> What should we call the mild not</head>
+<p>The name "mild not" or "mild negation" is not really helpful in
+understanding what we want it to denote. We should try hard to find a
+better name for this construct. Since it is used to exclude certain
+matches, why not call it "FTMatchExclude" or just "FTExclude"? Keeping
+"mild not" as the name makes it recognizable as a form of "not". If it
+remains as "mild not" and the ! continues as the syntax for "not",
+consider using mild! as the syntax for "mild not".</p>
+<p>Raised by Jochen by email April 21, 2004; Additional comments by Pat
+Case May 4, 2004</p>
+<resolution>
+<p>None.</p>
+</resolution>
+</issue>
+</item>
+
+<item>
+<issue id="multi-word-phrases-thesauri-lookup" status="open">
+        <head>Thesauri lookup for multi-word phrases</head>
+       <p>It should be decided whether thesauri lookups can be performed
+              only on single words or whether it is possible to apply it on
+              multi-word phrases. For example, should we allow the 
+thesaurus to
+              replace "bells and whistles" with "frills"?  </p>
+        <p>In the latter case, should thesauri lookup be applied only to 
+the
+               FTWord "bells andwhistles", or should it applied also on
+               ("bells" "and" "whistles") phrase? Another question is if
+               the thesauri expansion can be applied on phrase and on a word
+               in the phrase, which one takes precedence. </p>
+        <resolution>
+        </resolution>
+</issue> 
+</item>   
+
+
+<item>
+<issue id="exactly" status="open">
+       <head>Exactly in FTRangeSpec</head>
+      <p>Should "exactly" be optional? Should we allow both "word
+distance 6" and "word distance exactly 6"? Raised at Redmond May 2004 by
+Steve Buxton and Pat Case.</p>
+       <resolution>None.</resolution>
+</issue>
+</item>    
+
+<item>  
+<issue id="ftcontains-semantics" status="open">
+       <head>FTContains Semantics</head> <p>FTContains operates on
+      a sequence of nodes. Strings cannot be searched. We need
+      <p>Raised at Redmond May 2004 by Steve Buxton. See also:
+      http://lists.w3.org/Archives/Member/member-query-fttf/2004May/0085.html</p></p>
+      <resolution>None.</resolution> </issue>
+</item>
+
+<item>
+<issue id="matchoptions-defaults" status="open">
+       <head>MatchOptions Default</head> <p>We need to specify
+      defaults for MatchOptions. We should align this default with
+      the static content for XQuery/XPath and add to the XQuery prolog
+      corresponding declarations to set query-wide defaults.</p>
+      <resolution>None.</resolution>
+</issue>
+</item>
+
+<item>
+<issue id="ftnegation-semantics" status="closed">
+       <head>FTNegation Semantics</head> <p>We need to specify the
+      semantics of FTNegation. <p>Raised by Jochen Doerre. See
+      http://lists.w3.org/Archives/Member/member-query-fttf/2004May/0082.html.</p></p>
+      <resolution>we decided to use &lt;allMatches/&gt; to denote
+      false. See answer to
+      http://lists.w3.org/Archives/Member/member-query-fttf/2004May/0082.html.</resolution>
+</issue>
+</item>
+
+<item>
+<issue id="zero-length-phrase" status="open">
+      <head>Zero-length phrase</head>
+      <p>If Expr in FTWords  results in the empty sequence or the
+tokenization results
+      in a zero-length phrase, the result is? Always a match, never a
+match?
+      Depending on the keyword?</p>
+        <resolution>
+           <p>NONE. </p>
+           <p>OPEN.</p>
+        </resolution>
+</issue>
+</item>
+
+<item>
+<issue id="desired-fttimes-semantics">
+	<head>Desired semantics of FTTimes</head>
+	<p> Consider the document</p>
+	<p> cat cat </p>
+	<p> and the query </p>
+	<p> ("cat" &amp;&amp; "cat") occurrences exactly 4</p>
+	<p> Currently, it returns true. Is this the desired semantics for FTTimes? If yes, how do we explain it in the language document?</p>
+	<resolution>
+		<p>NONE.</p>
+		<p>OPEN.</p>
+	</resolution>
+</issue>
+</item>
+
+<item>
+<issue id="doublenegation-semantics">
+	<head>Proper semantics of double negation</head>
+	<p>Currently, (! ! Q) does not produce the same AllMatches as
+	  (Q). There seem to be two reasons for that. First, there are 
+	   duplicate StringIncludes, StringExcludes, and Matches. Second, 
+	   there are Matches that are subsumed by other Matches (i.e. 
+	   the former are a logical consequence of the latter). How
+	   do we handle these situations? It seems reasonable to expect 
+	   that !!Q produces the same result as Q.</p>
+	<resolution>
+		<p>NONE.</p>
+		<p>OPEN.</p>
+	</resolution>
+</issue>
+</item>
+
+</olist>
+
+</div1>

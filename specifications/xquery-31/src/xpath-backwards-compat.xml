@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<div2 role="xpath" id="id-backwards-compatibility">
+    <head>Incompatibilities relative to XPath 1.0</head>
+    
+    <p>This appendix provides a summary of the areas of incompatibility between <phrase diff="chg" at="bug28782">XPath 3.1</phrase> and
+            <bibref ref="xpath"/>. In each of these cases, an  <phrase diff="chg" at="bug28782">XPath 3.1</phrase> processor is compatible with an XPath 2.0 processor <phrase diff="chg" at="bug28782">or an XPath 3.0 processor</phrase>.</p>
+
+    <p>Three separate cases are considered:</p>
+
+    <olist>
+        <item>
+            <p>Incompatibilities that exist when source documents have no schema, and when running
+                with XPath 1.0 compatibility mode set to true. This specification has been designed
+                to reduce the number of incompatibilities in this situation to an absolute minimum,
+                but some differences remain and are listed individually.</p>
+        </item>
+
+        <item>
+            <p>Incompatibilities that arise when XPath 1.0 compatibility mode is set to false. In
+                this case, the number of expressions where compatibility is lost is rather
+                greater.</p>
+        </item>
+
+        <item>
+            <p>Incompatibilities that arise when the source document is processed using a schema
+                (whether or not XPath 1.0 compatibility mode is set to true). Processing the
+                document with a schema changes the way that the values of nodes are interpreted, and
+                this can cause an XPath expression to return different results.</p>
+        </item>
+    </olist>
+
+    <div3 id="id-incompat-in-true-mode">
+        <head>Incompatibilities when Compatibility Mode is true</head>
+
+        <p>The list below contains all known areas, within the scope of this specification, where an
+            <phrase diff="chg" at="bug28782">XPath 3.1</phrase> processor running with compatibility mode set to true will produce different
+            results from an XPath 1.0 processor evaluating the same expression, assuming that the
+            expression was valid in XPath 1.0, and that the nodes in the source document have no
+            type annotations other than <code>xs:untyped</code> and
+            <code>xs:untypedAtomic</code>.</p>
+
+        <p>Incompatibilities in the behavior of individual functions are not listed here, but are
+            included in an appendix of <bibref ref="xpath-functions-31"/>.</p>
+
+        <p>Since both XPath 1.0 and <phrase diff="chg" at="bug28782">XPath 3.1</phrase> leave some aspects of the specification
+            implementation-defined, there may be incompatibilities in the behavior of a particular
+            implementation that are outside the scope of this specification. Equally, some aspects
+            of the behavior of XPath are defined by the host language.</p>
+
+
+        <olist>
+            <item>
+                <p>Consecutive comparison operators such as <code>A &lt; B &lt; C</code> were
+                    supported in XPath 1.0, but are not permitted by the <phrase diff="chg" at="bug28782">XPath 3.1</phrase> grammar. In most
+                    cases such comparisons in XPath 1.0 did not have the intuitive meaning, so it is
+                    unlikely that they have been widely used in practice. If such a construct is
+                    found, an <phrase diff="chg" at="bug28782">XPath 3.1</phrase> processor will report a syntax error, and the construct can
+                    be rewritten as <code role="parse-test">(A &lt; B) &lt; C</code></p>
+            </item>
+
+            <item>
+                <p>When converting strings to numbers (either explicitly when using the
+                        <code>number</code> function, or implicitly say on a function call), certain
+                    strings that converted to the special value <code>NaN</code> under XPath 1.0
+                    will convert to values other than <code>NaN</code> under <phrase diff="chg" at="bug28782">XPath 3.1</phrase>. These
+                    include any number written with a leading <code>+</code> sign, any number in
+                    exponential floating point notation (for example <code>1.0e+9</code>), and the
+                    strings <code>INF</code> and <code>-INF</code>.</p>
+
+                <p>Furthermore, the strings <code>Infinity</code> and <code>-Infinity</code>, which
+                    were accepted by XPath 1.0 as representations of the floating-point values
+                    positive and negative infinity, are no longer recognized. They are converted to
+                        <code>NaN</code> when running under <phrase diff="chg" at="bug28782">XPath 3.1</phrase> with compatibility mode set to
+                    true, and cause a dynamic error when compatibility mode is set to false.</p>
+            </item>
+
+            <item>
+                <p><phrase diff="chg" at="bug28782">XPath 3.1</phrase> does not allow a token starting with a letter to follow immediately
+                    after a numeric literal, without intervening whitespace. For example,
+                        <code>10div 3</code> was permitted in XPath 1.0, but in <phrase diff="chg" at="bug28782">XPath 3.1</phrase> must be
+                    written as <code>10 div 3</code>.</p>
+            </item>
+
+            <item>
+                <p>The namespace axis is deprecated as of XPath 2.0. Implementations may support the
+                    namespace axis for backward compatibility with XPath 1.0, but they are not
+                    required to do so. (XSLT 2.0 requires that if XPath backwards compatibility mode
+                    is supported, then the namespace axis must also be supported; but other host
+                    languages may define the conformance rules differently.)</p>
+            </item>
+
+
+            <item>
+                <p>In XPath 1.0, the expression <code>-x|y</code> parsed as <code>-(x|y)</code>, and
+                    returned the negation of the numeric value of the first node in the union of
+                        <code>x</code> and <code>y</code>. In <phrase diff="chg" at="bug28782">XPath 3.1</phrase>, this expression parses as
+                        <code>(-x)|y</code>. When XPath 1.0 Compatibility Mode is true, this will
+                    always cause a type error.</p>
+            </item>
+
+            <item>
+                <p>The rules for converting numbers to strings have changed. These may affect the
+                    way numbers are displayed in the output of a stylesheet. For numbers whose
+                    absolute value is in the range <code>1E-6</code> to <code>1E+6</code>, the
+                    result should be the same, but outside this range, scientific format is used for
+                    non-integral <code>xs:float</code> and <code>xs:double</code> values.</p>
+            </item>
+
+            <item>
+                <p>If one operand in a general comparison is a single atomic value of type
+                        <code>xs:boolean</code>, the other operand is converted to
+                        <code>xs:boolean</code> when XPath 1.0 compatibility mode is set to true. In
+                    XPath 1.0, if neither operand of a comparison operation using the &lt;, &lt;=,
+                    &gt; or &gt;= operator was a node set, both operands were converted to numbers.
+                    The result of the expression <code>true() &gt; number('0.5')</code> is therefore
+                    true in XPath 1.0, but is false in <phrase diff="chg" at="bug28782">XPath 3.1</phrase> even when compatibility mode is set
+                    to true.</p>
+            </item>
+
+
+            <item>
+                <p>In <phrase diff="chg" at="bug28782">XPath 3.1</phrase>, a type error is raised if the PITarget specified in a SequenceType
+                    of form <code>processing-instruction(PITarget)</code> is not a valid NCName. In
+                    XPath 1.0, this condition was not treated as an error.</p>
+            </item>
+        </olist>
+
+
+
+    </div3>
+
+    <div3 id="id-incompat-in-false-mode">
+        <head>Incompatibilities when Compatibility Mode is false</head>
+
+        <p>Even when the setting of the XPath 1.0 compatibility mode is false, many XPath
+            expressions will still produce the same results under <phrase diff="chg" at="bug28782">XPath 3.1</phrase> as under XPath 1.0. The
+            exceptions are described in this section.</p>
+
+        <p>In all cases it is assumed that the expression in question was valid under XPath 1.0,
+            that XPath 1.0 compatibility mode is false, and that all elements and attributes are
+            annotated with the types <code>xs:untyped</code> and <code>xs:untypedAtomic</code>
+            respectively.</p>
+
+        <p>In the description below, the terms <emph>node-set</emph> and <emph>number</emph> are
+            used with their XPath 1.0 meanings, that is, to describe expressions which according to
+            the rules of XPath 1.0 would have generated a node-set or a number respectively.</p>
+
+        <olist>
+
+            <item>
+                <p>When a node-set containing more than one node is supplied as an argument to a
+                    function or operator that expects a single node or value, the XPath 1.0 rule was
+                    that all nodes after the first were discarded. Under <phrase diff="chg" at="bug28782">XPath 3.1</phrase>, a type error
+                    occurs if there is more than one node. The XPath 1.0 behavior can always be
+                    restored by using the predicate <code>[1]</code> to explicitly select the first
+                    node in the node-set.</p>
+            </item>
+
+            <item>
+                <p>In XPath 1.0, the <code>&lt;</code> and <code>&gt;</code> operators, when applied
+                    to two strings, attempted to convert both the strings to numbers and then made a
+                    numeric comparison between the results. In <phrase diff="chg" at="bug28782">XPath 3.1</phrase>, these operators perform a
+                    string comparison using the default collating sequence. (If either value is
+                    numeric, however, the results are compatible with XPath 1.0)</p>
+            </item>
+
+            <item>
+                <p>When an empty node-set is supplied as an argument to a function or operator that
+                    expects a number, the value is no longer converted implicitly to NaN. The XPath
+                    1.0 behavior can always be restored by using the <code>number</code> function to
+                    perform an explicit conversion.</p>
+            </item>
+
+            <item>
+                <p>More generally, the supplied arguments to a function or operator are no longer
+                    implicitly converted to the required type, except in the case where the supplied
+                    argument is of type <code>xs:untypedAtomic</code> (which will commonly be the
+                    case when a node in a schemaless document is supplied as the argument). For
+                    example, the function call <code role="parse-test">substring-before(10 div 3,
+                        ".")</code> raises a type error under <phrase diff="chg" at="bug28782">XPath 3.1</phrase>, because the arguments to
+                    the <code>substring-before</code> function must be strings rather than numbers.
+                    The XPath 1.0 behavior can be restored by performing an explicit conversion to
+                    the required type using a constructor function or cast.</p>
+            </item>
+
+            <item>
+                <p>The rules for comparing a node-set to a boolean have changed. In XPath 1.0, an
+                    expression such as <code role="parse-test">$node-set = true()</code> was
+                    evaluated by converting the node-set to a boolean and then performing a boolean
+                    comparison: so this expression would return <code>true</code> if
+                        <code>$node-set</code> was non-empty. In <phrase diff="chg" at="bug28782">XPath 3.1</phrase>, this expression is
+                    handled in the same way as other comparisons between a sequence and a singleton:
+                    it is <code>true</code> if <code>$node-set</code> contains at least one node
+                    whose value, after atomization and conversion to a boolean using the casting
+                    rules, is <code>true</code>.</p>
+
+                <p>This means that if <code>$node-set</code> is empty, the result under <phrase diff="chg" at="bug28782">XPath 3.1</phrase>
+                    will be <code>false</code> regardless of the value of the boolean operand, and
+                    regardless of which operator is used. If <code>$node-set</code> is non-empty,
+                    then in most cases the comparison with a boolean is likely to fail, giving a
+                    dynamic error. But if a node has the value "0", "1", "true", or "false",
+                    evaluation of the expression may succeed.</p>
+            </item>
+
+            <item>
+                <p>Comparisons of a number to a boolean, a number to a string, or a string to a
+                    boolean are not allowed in <phrase diff="chg" at="bug28782">XPath 3.1</phrase>: they result in a type error. In XPath 1.0
+                    such comparisons were allowed, and were handled by converting one of the
+                    operands to the type of the other. So for example in XPath 1.0 <code
+                        role="parse-test">4 = true()</code> was true; <code role="parse-test">4 =
+                        "+4"</code> was false (because the string <code>+4</code> converts to
+                        <code>NaN</code>), and <code>false = "false"</code> was false (because the
+                    string <code>"false"</code> converts to the boolean <code>true</code>). In XPath
+                    3.0 all these comparisons are type errors.</p>
+            </item>
+
+
+            <item>
+                <p>Additional numeric types have been introduced, with the effect that arithmetic
+                    may now be done as an integer, decimal, or single- or double-precision floating
+                    point calculation where previously it was always performed as double-precision
+                    floating point. The result of the <code>div</code> operator when dividing two
+                    integers is now a value of type decimal rather than double. The expression <code
+                        role="parse-test">10 div 0</code> raises an error rather than returning
+                    positive infinity.</p>
+            </item>
+
+            <item>
+                <p>The rules for converting strings to numbers have changed. The implicit conversion
+                    that occurs when passing an <code>xs:untypedAtomic</code> value as an argument
+                    to a function that expects a number no longer converts unrecognized strings to
+                    the value <code>NaN</code>; instead, it reports a dynamic error. This is in
+                    addition to the differences that apply when backwards compatibility mode is set
+                    to true.</p>
+            </item>
+
+            <item>
+                <p>Many operations in <phrase diff="chg" at="bug28782">XPath 3.1</phrase> produce an empty sequence as their result when one
+                    of the arguments or operands is an empty sequence. Where the operation expects a
+                    string, an empty sequence is usually considered equivalent to a zero-length
+                    string, which is compatible with the XPath 1.0 behavior. Where the operation
+                    expects a number, however, the result is not the same. For example, if
+                        <code>@width</code> returns an empty sequence, then in XPath 1.0 the result
+                    of <code role="parse-test">@width+1</code> was <code>NaN</code>, while with
+                    <phrase diff="chg" at="bug28782">XPath 3.1</phrase> it is <code>()</code>. This has the effect that a filter expression
+                    such as <code role="parse-test">item[@width+1 != 2]</code> will select items
+                    having no <code>width</code> attribute under XPath 1.0, and will not select them
+                    under <phrase diff="chg" at="bug28782">XPath 3.1</phrase>.</p>
+            </item>
+
+            <item>
+                <p>The typed value of a comment node, processing instruction node, or namespace node
+                    under <phrase diff="chg" at="bug28782">XPath 3.1</phrase> is of type <code>xs:string</code>, not
+                        <code>xs:untypedAtomic</code>. This means that no implicit conversions are
+                    applied if the value is used in a context where a number is expected. If a
+                    processing-instruction node is used as an operand of an arithmetic operator, for
+                    example, XPath 1.0 would attempt to convert the string value of the node to a
+                    number (and deliver <code>NaN</code> if unsuccessful), while <phrase diff="chg" at="bug28782">XPath 3.1</phrase> will
+                    report a type error.</p>
+            </item>
+
+            <item>
+                <p>In XPath 1.0, it was defined that with an expression of the form <code>A and
+                        B</code>, B would not be evaluated if A was false. Similarly in the case of
+                        <code>A or B</code>, B would not be evaluated if A was true. This is no
+                    longer guaranteed with <phrase diff="chg" at="bug28782">XPath 3.1</phrase>: the implementation is free to evaluate the two
+                    operands in either order or in parallel. This change has been made to give more
+                    scope for optimization in situations where XPath expressions are evaluated
+                    against large data collections supported by indexes. Implementations may choose
+                    to retain backwards compatibility in this area, but they are not obliged to do
+                    so.</p>
+            </item>
+
+            <item>
+                <p>In XPath 1.0, the expression <code>-x|y</code> parsed as <code>-(x|y)</code>, and
+                    returned the negation of the numeric value of the first node in the union of
+                        <code>x</code> and <code>y</code>. In <phrase diff="chg" at="bug28782">XPath 3.1</phrase>, this expression parses as
+                        <code>(-x)|y</code>. When XPath 1.0 Compatibility Mode is false, this will
+                    cause a type error, except in the situation where <code>x</code> evaluates to an
+                    empty sequence. In that situation, <phrase diff="chg" at="bug28782">XPath 3.1</phrase> will return the value of
+                        <code>y</code>, whereas XPath 1.0 returned the negation of the numeric value
+                    of <code>y</code>.</p>
+            </item>
+
+        </olist>
+
+
+
+    </div3>
+
+    <div3 id="id-incompat-when-using-schema">
+        <head>Incompatibilities when using a Schema</head>
+
+        <p>An XPath expression applied to a document that has been processed against a schema will
+            not always give the same results as the same expression applied to the same document in
+            the absence of a schema. Since schema processing had no effect on the result of an XPath
+            1.0 expression, this may give rise to further incompatibilities. This section gives a
+            few examples of the differences that can arise.</p>
+
+        <p>Suppose that the context node is an element node derived from the following markup:
+                <code>&lt;background color="red green blue"/&gt;</code>. In XPath 1.0, the predicate
+                <code>[@color="blue"]</code> would return <code>false</code>. In <phrase diff="chg" at="bug28782">XPath 3.1</phrase>, if the
+                <code>color</code> attribute is defined in a schema to be of type
+                <code>xs:NMTOKENS</code>, the same predicate will return <code>true</code>.</p>
+
+        <p>Similarly, consider the expression <code role="parse-test">@birth &lt; @death</code>
+            applied to the element <code>&lt;person birth="1901-06-06"
+                death="1991-05-09"/&gt;</code>. With XPath 1.0, this expression would return false,
+            because both attributes are converted to numbers, which returns <code>NaN</code> in each
+            case. With <phrase diff="chg" at="bug28782">XPath 3.1</phrase>, in the presence of a schema that annotates these attributes as
+            dates, the expression returns <code>true</code>.</p>
+
+        <p>Once schema validation is applied, elements and attributes cannot be used as operands and
+            arguments of expressions that expect a different data type. For example, it is no longer
+            possible to apply the <code>substring</code> function to a date to extract the year
+            component, or to a number to extract the integer part. Similarly, if an attribute is
+            annotated as a boolean then it is not possible to compare it with the strings
+                <code>"true"</code> or <code>"false"</code>. All such operations lead to type
+            errors. The remedy when such errors occur is to introduce an explicit conversion, or to
+            do the computation in a different way. For example, <code role="parse-test"
+                >substring-after(@temperature, "-")</code> might be rewritten as <code
+                role="parse-test">abs(@temperature)</code>.</p>
+
+        <p>In the case of an <phrase diff="chg" at="bug28782">XPath 3.1</phrase> implementation that provides the static typing feature, many
+            further type errors will be reported in respect of expressions that worked under XPath
+            1.0. For example, an expression such as <code role="parse-test">round(../@price)</code>
+            might lead to a static type error because the processor cannot infer statically that
+                <code role="parse-test">../@price</code> is guaranteed to be numeric.</p>
+
+        <p>Schema validation will in many cases perform whitespace normalization on the contents of
+            elements (depending on their type). This will change the result of operations such as
+            the <code>string-length</code> function.</p>
+
+        <p>Schema validation augments the data model by adding default values for omitted attributes
+            and empty elements.</p>
+
+    </div3>
+
+</div2>

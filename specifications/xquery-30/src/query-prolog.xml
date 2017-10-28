@@ -1,0 +1,1968 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<div1 role="xquery" id="id-query-prolog">
+  <head role="xquery">Modules and Prologs</head>
+  <scrap>
+	 <head></head> <prodrecap id="Module" ref="Module"/>
+
+	 <prodrecap id="MainModule" ref="MainModule"/><prodrecap id="LibraryModule" ref="LibraryModule"/><prodrecap id="Prolog" ref="Prolog"/>
+  <prodrecap id="Setter" ref="Setter"/><prodrecap id="Import" ref="Import"/><prodrecap id="Separator" ref="Separator"/><prodrecap id="QueryBody" ref="QueryBody"/></scrap><p>A query can be assembled from one or more fragments called <term>modules</term>. <termdef term="module" id="dt-module">A <term>module</term> is a fragment of XQuery code that conforms to the <nt def="Module">Module</nt> grammar and can independently undergo the <termref def="dt-static-analysis">static analysis phase</termref> described in <specref ref="id-expression-processing"/>. Each module is either a <termref def="dt-main-module">main module</termref> or a <termref def="dt-library-module">library module</termref>.</termdef></p><p> <termdef id="dt-main-module" term="main module">A <term>main module</term> consists of a
+<termref def="dt-prolog">Prolog</termref> followed by a <termref def="dt-queryBody">Query Body</termref>.</termdef> A query has exactly one main module. 
+In a main module, the <termref def="dt-queryBody">Query Body</termref> can be evaluated. <phrase diff="del">, and
+its value is the result of the query.</phrase><phrase diff="add">It is evaluated with respect to the static and dynamic contexts of the main module in which it is found, and its value is the result of the query.</phrase></p><p><termdef id="dt-library-module" term="library module">A module that does not contain a <termref def="dt-queryBody">Query Body</termref> is called a <term>library module</term>. A library module consists of a <termref def="dt-module-declaration">module declaration</termref> followed by  a <termref def="dt-prolog">Prolog</termref>.</termdef> A library module cannot be evaluated directly; instead, it provides function and variable declarations that can be imported into other modules.</p><p>The XQuery syntax does not allow a <termref def="dt-module">module</termref> to contain both a <termref def="dt-module-declaration">module declaration</termref> and a <termref def="dt-queryBody">Query Body</termref>.</p><p><termdef id="dt-prolog" term="Prolog">A <term>Prolog</term> is a series of declarations and imports that define the processing environment for the <termref def="dt-module">module</termref> that contains the Prolog.</termdef> Each declaration or import is followed by a semicolon. A Prolog is organized into two parts. </p><p>The first part of the Prolog consists of setters, imports, namespace declarations, and default namespace declarations. <termdef term="setter" id="dt-setter"><term>Setters</term> are declarations that set the value of some property that affects query processing, such as construction mode, ordering mode, or default collation.</termdef> Namespace declarations and default namespace declarations affect the interpretation of  <termref def="dt-qname">lexical QNames</termref> within the query.  Imports are used to  import definitions from schemas and modules.
+<termdef term="target namespace" id="dt-target-namespace">
+<phrase diff="del">Each imported schema or module is identified by its <term>target namespace</term>, which is the namespace of the objects (such as elements or functions) that are defined by the schema or module.</phrase>
+<phrase diff="add">The <term>target namespace</term> of a module is the namespace of the objects (such as elements or functions) that it defines.</phrase>
+</termdef></p>
+<p>The second part of the Prolog consists of declarations of variables, functions, and options. These declarations appear at the end of the Prolog because they may be affected by declarations and imports in the first part of the Prolog.</p><p><termdef id="dt-queryBody" term="query body">The <term>Query Body</term>, if present, consists of an expression that defines the result of the query.</termdef> Evaluation of expressions is described in <specref ref="id-expressions"/>. A module can be evaluated only if it has a Query Body.</p>
+
+
+  <div2 id="id-version-declaration">
+    <head>Version Declaration</head>
+
+    <scrap>
+      <head></head> <prodrecap id="VersionDecl" ref="VersionDecl"/>
+    </scrap>
+
+    <p diff="chg">
+      <termdef term="version declaration" id="dt-version-declaration"> A <term>version declaration</term> can identify 
+      the applicable XQuery syntax and semantics for a <termref def="dt-module">module</termref>,
+      as well as its encoding.</termdef> 
+
+      The version number "1.0" indicates the intent that the module be processed by an <termref def="dt-xquery-10-processor">XQuery 1.0 processor</termref>; 
+      the version number "3.0" indicates the intent that the module be processed by an <termref def="dt-xquery-30-processor">XQuery 3.0 processor</termref>. 
+      
+      If the version declaration is not present or the version is not included in the declaration, 
+      an XQuery 3.0 processor assumes a version of "3.0". 
+
+      If an XQuery 3.0 processor processes a module labeled with a version of "1.0", it must do one of the following:
+
+      <ulist>
+	<item><p>Process the module using the specification of the XQuery version identified in the version declaration.</p></item>
+	<item><p>Process the module using the specification of XQuery 3.0.</p>
+	<note><p>An implementation may issue a warning in this case.</p></note></item>
+	<item><p>Raise a static error <errorref code="0031" class="ST"/></p></item>
+      </ulist>
+
+      A processor may raise an error  <errorref code="0034" class="ST"/> if the modules of a query do not have the same version number.
+      <note><p>In general, this should be done only if a processor is not able to evaluate such a query.</p></note>
+    </p>
+
+
+<p><termdef term="encoding declaration" id="dt-encoding-declaration">If present, a version declaration may optionally include an <term>encoding declaration</term>. The value of the string literal following the keyword <code>encoding</code> is an encoding
+name, and must conform to the definition of <code>EncName</code> specified in <bibref ref="XML"/><errorref code="0087" class="ST"/>. The purpose of an encoding declaration is to allow the writer of a query to provide a string that indicates how the query is encoded, such as "<code>UTF-8</code>", "<code>UTF-16</code>", or "<code>US-ASCII</code>".</termdef> Since the encoding of a query may change as the query moves from one environment to another, there can be no guarantee that the encoding declaration is correct.</p><p>The handling of an encoding declaration is <termref def="dt-implementation-dependent">implementation-dependent</termref>. If an implementation has <emph>a priori</emph> knowledge of the encoding of a query, it may use this knowledge  and disregard the encoding declaration. The semantics of a query are not affected by the presence or absence of an encoding declaration.</p><p>If a version declaration is present, no <nt def="Comment">Comment</nt> may occur before the end of the version declaration. If such a <nt def="Comment">Comment</nt> is present, the result is <termref def="dt-implementation-dependent">implementation-dependent</termref><phrase diff="add">; an implementation may raise an implementation-dependent static error, or ignore the comment</phrase>.<note><p>The effect of a Comment before the end of a version declaration is implementation-dependent because it may suppress query processing by interfering with detection of the encoding declaration.</p></note></p>
+
+  <p>The following examples illustrate version declarations:</p>
+
+  <eg role="frag-prolog-parse-test">xquery version "1.0";</eg>
+  <eg role="frag-prolog-parse-test">xquery version "3.0" encoding "utf-8";</eg>
+</div2>
+
+<div2 id="id-module-declaration">
+  <head>Module Declaration</head>
+  <scrap>
+    <head>
+    </head>
+    <prodrecap id="ModuleDecl" ref="ModuleDecl"/>
+  </scrap>
+  <p>
+    <termdef id="dt-module-declaration" term="module declaration">A
+    <term>module declaration</term> serves to identify a <termref
+    def="dt-module">module</termref> as a <termref
+    def="dt-library-module">library module</termref>. A module
+    declaration begins with the keyword <code>module</code> and
+    contains a namespace prefix and a <nt
+    def="URILiteral">URILiteral</nt>.</termdef> The URILiteral must be
+    of nonzero length <errorref class="ST" code="0088"/>. The
+    URILiteral identifies the <termref
+    def="dt-target-namespace">target namespace</termref> of the
+    library module, which is the namespace for all variables and
+    functions exported by the library module. The name of every
+    variable and function declared in a library module must have a
+    namespace URI that is the same as the target namespace of the
+    module; otherwise a <termref def="dt-static-error">static
+    error</termref> is raised <errorref class="ST" code="0048"/>.
+
+    <phrase diff="add">The (prefix,URI) pair is added to the set of <termref def="dt-static-namespaces">statically known
+    namespaces</termref>.</phrase>
+  </p>
+  <p>The namespace prefix specified in a module declaration must not
+  be <code>xml</code> or <code>xmlns</code> <errorref class="ST"
+  code="0070"/>, and must not be the same as any namespace prefix
+  bound in the same module by a <termref def="dt-schema-import">schema
+  import</termref>, by a <termref
+  def="dt-namespace-declaration">namespace declaration</termref>, or
+  by a <termref def="dt-module-import">module import</termref> with a
+  different target namespace <errorref class="ST" code="0033"/>.</p>
+  <p>Any <termref def="dt-module">module</termref> may import one or
+  more library modules by means of a <termref
+  def="dt-module-import">module import</termref> that specifies the
+  target namespace of the library modules to be imported. When a
+  module imports one or more library modules, the variables and
+  functions declared in the imported modules are added to the <termref
+  def="dt-static-context">static context</termref> and (where
+  applicable) to the <termref def="dt-dynamic-context">dynamic
+  context</termref> of the importing module.</p>
+  <p>The following is an example of a module declaration:</p>
+  <eg role="frag-prolog-parse-test" diff="del">module namespace math = "http://example.org/math-functions";</eg>
+  <eg role="frag-prolog-parse-test" diff="add">module namespace gis = "http://example.org/gis-functions";</eg>
+
+</div2>
+
+<div2 id="id-boundary-space-decls">
+  <head>Boundary-space Declaration</head>
+  <scrap>
+    <head>
+    </head>
+    <prodrecap id="BoundarySpaceDecl" ref="BoundarySpaceDecl"/>
+  </scrap>
+  <p>
+  <termdef id="dt-boundary-space-decl" term="boundary-space declaration">A <term>boundary-space declaration</term> sets the <termref def="dt-boundary-space-policy">boundary-space policy</termref> in the <termref def="dt-static-context">static context</termref>, overriding any implementation-defined default. Boundary-space policy controls whether <termref def="dt-boundary-whitespace">boundary whitespace</termref> is preserved by element constructors during processing of the query.</termdef> If boundary-space policy is <code>preserve</code>, boundary whitespace is preserved. If boundary-space policy is <code>strip</code>, boundary whitespace is stripped (deleted). A further discussion of whitespace in constructed elements can be found in <specref ref="id-whitespace"/>.</p>
+  <p>The following example illustrates a boundary-space declaration:</p>
+  <eg role="frag-prolog-parse-test">declare boundary-space preserve;</eg>
+  <p>If a Prolog contains more than one boundary-space declaration, a <termref def="dt-static-error">static error</termref> is raised <errorref class="ST" code="0068"/>.</p>
+</div2>
+<div2 id="id-default-collation-declaration">
+  <head>Default Collation Declaration</head>
+  <scrap>
+    <head>
+    </head>
+
+    <prodrecap id="DefaultCollationDecl" ref="DefaultCollationDecl"/>
+  </scrap>
+  <p>
+    <termdef term="default collation declaration"
+    id="dt-default-collation-decl">A <term>default collation
+    declaration</term> sets the value of the <termref
+    def="dt-def-collation">default collation</termref> in the <termref
+    def="dt-static-context">static context</termref>, overriding any
+    implementation-defined default.</termdef> The default collation is
+    the collation that is used by functions and operators that require
+    a collation if no other collation is specified. For example, the
+    <code>gt</code> operator on strings is defined by a call to the
+    <code>fn:compare</code> function, which takes an optional
+    collation parameter. Since the <code>gt</code> operator does not
+    specify a collation, the <code>fn:compare</code> function
+    implements <code>gt</code> by using the default collation.</p>
+  <p>If neither the implementation nor the Prolog
+  specifies a default collation, the Unicode codepoint collation
+  (<code>http://www.w3.org/2005/xpath-functions/collation/codepoint</code>)
+  is used. </p>
+  <p>The following example illustrates a default collation
+  declaration:</p>
+  <eg role="frag-prolog-parse-test">declare default collation
+  "http://example.org/languages/Icelandic";</eg>
+  <p>If a default collation declaration specifies a collation by a
+  relative URI, that relative URI is  <termref def="dt-resolve-relative-uri">resolved to an absolute URI</termref>
+  using the <phrase diff="del">base URI in the static
+  context.</phrase><phrase diff="add"><termref
+  def="dt-static-base-uri">Static Base URI</termref>.</phrase> If a
+  Prolog contains more than one default collation declaration, or the value
+  specified by a default collation declaration (after resolution of a
+  relative URI, if necessary) is not present in <termref
+  def="dt-static-collations">statically known collations</termref>, a
+  <termref def="dt-static-error">static error</termref> is raised
+  <errorref class="ST" code="0038"/>.</p>
+</div2>
+<div2 id="id-base-uri-decl">
+         <head>Base URI Declaration</head>
+         <scrap>
+		<head>
+</head>
+<prodrecap id="BaseURIDecl" ref="BaseURIDecl"/>
+         </scrap>
+
+         <p>
+	   <termdef id="dt-base-uri-decl" term="base URI declaration">A <term>base URI declaration</term> specifies the
+
+	   <phrase diff="del"><termref def="dt-base-uri">base URI</termref> property of the <termref def="dt-static-context">static context</termref>. The  <termref def="dt-base-uri">base URI</termref> property is used when resolving relative URIs within a  <termref def="dt-module">module</termref>.</phrase>
+
+	   <phrase diff="add"><termref def="dt-static-base-uri">Static Base URI</termref> property. The <termref def="dt-static-base-uri">Static Base URI</termref> property is used when resolving relative URI references.</phrase></termdef> 
+           <phrase diff="del">For example, the <code>fn:doc</code>
+         function  <termref def="dt-resolve-relative-uri">resolves a relative URI</termref> using the base URI of the calling module.</phrase>
+           <phrase diff="add">For example, the <termref def="dt-static-base-uri">Static Base URI</termref> property is used when resolving relative references for 
+             <termref def="dt-module-import">module import</termref> and for the <code>fn:doc</code> function.</phrase></p>
+  
+  <note diff="add"><p>As discussed in the definition of <termref def="dt-static-base-uri">Static Base URI</termref>, if there is no base URI 
+    declaration, or if the value of the declaration is a relative URI 
+    reference, then the value of the Static Base URI may depend on the 
+    location of the query, and it is permissible for this to vary between 
+    the static analysis phase and the dynamic evaluation phase.</p></note>
+
+<p>The following is an example of a base URI declaration:</p>
+<eg role="frag-prolog-parse-test">declare base-uri "http://example.org";</eg>
+<p>If a Prolog contains more than one base URI declaration, a <termref def="dt-static-error">static error</termref> is raised <errorref class="ST" code="0032"/>.</p>
+<p>In the terminology of <bibref ref="RFC3986"/> Section 5.1,
+the URILiteral of the base URI declaration is considered to be a "base URI
+embedded in content". If no base URI declaration is present, <phrase diff="del">the <termref def="dt-base-uri">base URI</termref> in the <termref def="dt-static-context">static context</termref></phrase><phrase diff="add"> <termref def="dt-static-base-uri">Static Base URI</termref> property</phrase> is established according to the principles outlined
+in <bibref ref="RFC3986"/> Section 5.1&mdash;that is, it defaults first to the base URI of
+the encapsulating entity, then to the URI used to retrieve the entity, and
+finally to an implementation-defined default. If the URILiteral in the base URI
+declaration is a relative URI, then it is made absolute by resolving it with
+respect to this same hierarchy. For example, if the URILiteral in the base URI declaration is <code>../data/</code>,
+and the query is contained in a file whose URI is
+<code>file:///C:/temp/queries/query.xq</code>, then the <phrase diff="del"><termref def="dt-base-uri">base URI</termref> in the <termref def="dt-static-context">static context</termref></phrase><phrase diff="add"><termref def="dt-static-base-uri">Static Base URI</termref> property</phrase> is <code>file:///C:/temp/data/</code>.</p>
+
+<p diff="chg" at="XQ.E11">It is not intrinsically an error if this process fails to establish an absolute base URI; however, the <phrase diff="del"><termref def="dt-base-uri">base URI</termref> in the <termref def="dt-static-context">static context</termref></phrase><phrase diff="add"><termref def="dt-static-base-uri">Static Base URI</termref> property</phrase> is then <phrase diff="del">undefined</phrase> <xtermref diff="add" spec="DM30" ref="dt-absent" />
+<errorref class="ST" code="0001"/>.  When the <phrase diff="del">base URI in the static context</phrase><phrase diff="add"><termref def="dt-static-base-uri">Static Base URI</termref> property</phrase> is <phrase diff="del">undefined</phrase> <xtermref diff="add" spec="DM30" ref="dt-absent" />, any attempt to use its value to  <termref def="dt-resolve-relative-uri">resolve a relative URI reference</termref> will result in an error <errorref class="ST" code="0001"/>. <phrase diff="del">When the base URI of a constructed node is taken from the base URI in the static context and the latter is <phrase diff="del">undefined</phrase>, then the base-uri property of the constructed node is empty.</phrase></p>
+</div2>
+
+<div2 id="id-construction-declaration">
+<head>Construction Declaration</head>
+<scrap>
+		<head>
+</head>
+
+		<prodrecap id="ConstructionDecl" ref="ConstructionDecl"/>
+	 </scrap>
+<p>
+<termdef term="construction declaration" id="dt-construction-decl">A <term>construction declaration</term> sets the <termref def="dt-construction-mode">construction
+	 mode</termref> in the <termref def="dt-static-context">static
+	 context</termref>, overriding any implementation-defined default.</termdef> The
+			 construction mode governs the behavior of element and document node constructors. If construction mode is <code>preserve</code>, the type of a constructed element node is <code>xs:anyType</code>, and all attribute and element nodes copied during node construction    retain their original types. If construction mode is <code>strip</code>, the type of a constructed element node is <code>xs:untyped</code>; all element nodes copied during node construction receive the type <code>xs:untyped</code>, and all attribute nodes copied during node construction receive the type <code>xs:untypedAtomic</code>.</p>
+<p>The following example illustrates a construction declaration:</p>
+<eg role="frag-prolog-parse-test">declare construction strip;</eg>
+<p>If a Prolog specifies more than one construction declaration,  a <termref def="dt-static-error">static error</termref> is raised <errorref class="ST" code="0067"/>.</p>
+</div2>
+<div2 id="id-default-ordering-decl">
+<head>Ordering Mode Declaration</head>
+<scrap>
+		<head>
+</head>
+
+		<prodrecap id="OrderingModeDecl" ref="OrderingModeDecl"/>
+	 </scrap>
+<p>
+<termdef id="dt-ordering-mode-decl" term="ordering mode declaration">An <term>ordering mode declaration</term> sets the <termref def="dt-ordering-mode">ordering mode</termref> in the <termref def="dt-static-context">static context</termref>, overriding any implementation-defined default.</termdef>  This ordering mode applies to all expressions in a <termref def="dt-module">module</termref> (including both the <termref def="dt-prolog">Prolog</termref> and the <termref def="dt-queryBody">Query Body</termref>, if any), unless overridden by an <code>ordered</code> or <code>unordered</code> expression.</p>
+<p diff="del">
+<termref def="dt-ordering-mode">Ordering mode</termref> affects the behavior of <termref def="dt-path-expression">path expressions</termref> that include a "<code>/</code>" or "<code>//</code>" operator or an <termref def="dt-axis-step">axis step</termref>; <code>union</code>, <code>intersect</code>, and <code>except</code> expressions; and FLWOR expressions that have no <code>order by</code> clause. If ordering mode is <code>ordered</code>, node sequences returned by path,  <code>union</code>, <code>intersect</code>, and <code>except</code> expressions are in <termref def="dt-document-order">document order</termref>; otherwise the order of these return sequences is <termref def="dt-implementation-dependent">implementation-dependent</termref>. The effect of ordering mode on FLWOR expressions is described in <specref ref="id-flwor-expressions"/>.</p>
+<p>The following example illustrates an ordering mode declaration:</p>
+<eg role="frag-prolog-parse-test">declare ordering unordered;</eg>
+<p>If a Prolog contains more than one ordering mode declaration, a <termref def="dt-static-error">static error</termref> is raised <errorref class="ST" code="0065"/>.</p>
+</div2>
+<div2 id="id-empty-order-decl">
+<head>Empty Order Declaration</head>
+<scrap>
+		<head>
+</head>
+
+		<prodrecap id="EmptyOrderDecl" ref="EmptyOrderDecl"/>
+	 </scrap>
+<p>
+<termdef term="empty order declaration" id="dt-empty-order-decl">An <term>empty order declaration</term> sets the <termref def="dt-default-empty-order">default order for empty sequences</termref> in the <termref def="dt-static-context">static context,</termref> overriding any implementation-defined default. This declaration controls the processing of empty sequences and <code>NaN</code> values as ordering keys in an <code>order by</code> clause in a FLWOR expression.</termdef> An individual <code>order by</code> clause may override the default order for empty sequences by specifying <code>empty greatest</code> or <code>empty least</code>.</p>
+<p>The following example illustrates an empty order declaration:</p>
+<eg role="frag-prolog-parse-test">declare default order empty least;</eg>
+<p>If a Prolog contains more than one empty order declaration, a <termref def="dt-static-error">static error</termref> is raised <errorref class="ST" code="0069"/>.</p>
+<note>
+<p>It is important to distinguish an <termref def="dt-empty-order-decl">empty order declaration</termref> from an <termref def="dt-ordering-mode-decl">ordering mode declaration</termref>. An <termref def="dt-empty-order-decl">empty order declaration</termref> applies only when an <code>order by</code> clause is present, and specifies how empty sequences are treated by the <code>order by</code> clause (unless overridden). An <termref def="dt-ordering-mode-decl">ordering mode declaration</termref>, on the other hand, applies only in the absence of an <code>order by</code> clause.</p>
+</note>
+</div2>
+
+
+<div2 id="id-copy-namespaces-decl">
+<head>Copy-Namespaces Declaration</head>
+<scrap>
+<head>
+</head>
+<prodrecap id="CopyNamespacesDecl" ref="CopyNamespacesDecl"/>
+<prodrecap id="PreserveMode" ref="PreserveMode"/>
+<prodrecap id="InheritMode" ref="InheritMode"/>
+</scrap>
+
+<p>
+<termdef id="dt-copy-namespaces-decl" term="copy-namespaces
+declaration">A <term>copy-namespaces declaration</term> sets the value
+of <termref def="dt-copy-namespaces-mode">copy-namespaces
+mode</termref> in the <termref def="dt-static-context">static
+context</termref>, overriding any implementation-defined
+default. Copy-namespaces mode controls the namespace bindings that are
+assigned when an existing element node is copied by an element
+constructor or document constructor.</termdef> Handling of namespace
+bindings by element constructors is described in <specref
+ref="id-element-constructor"/>.</p>
+
+<p>The following example illustrates a copy-namespaces
+declaration:</p>
+
+<eg role="frag-prolog-parse-test">declare copy-namespaces preserve, no-inherit;</eg>
+
+<p>If a Prolog contains more than one copy-namespaces declaration, a
+<termref def="dt-static-error">static error</termref> is raised
+<errorref class="ST" code="0055"/>.</p>
+</div2>
+
+
+<div2 id="id-decimal-format-decl">
+<head>Decimal Format Declaration</head>
+<scrap>
+<head>
+</head>
+<prodrecap id="DecimalFormatDecl" ref="DecimalFormatDecl"/>
+<prodrecap id="DFPropertyName" ref="DFPropertyName"/>
+</scrap>
+
+<p>
+<termdef id="dt-decimal-format-decl" term="decimal-format
+declaration">A <term>decimal format declaration</term> adds a decimal format to the
+<termref def="dt-static-decimal-formats">statically known decimal
+formats</termref>, which define the properties used to format numbers
+using the <code>fn:format-number()</code> function</termdef>, as
+described in <bibref ref="xpath-functions-30"/>. The mapping between
+these properties and the equivalent <code>fn:format-number()</code>
+properties is discussed in <termref
+def="dt-static-decimal-formats">statically known decimal
+formats</termref>, which also specifies the defaults for each value.
+If a format declares no properties,
+default values are used for all properties.</p>
+
+<p>It is a  <termref def="dt-static-error">static error</termref> for a query prolog to contain two decimal
+format declarations with the same name, or to contain two default decimal format declarations
+<errorref class="ST" code="0111"/>.
+
+It is a  <termref def="dt-static-error">static error</termref> for a decimal format declaration to define the same property more than once
+<errorref class="ST" code="0114"/>.
+
+It is a  <termref def="dt-static-error">static error</termref> for a decimal format declaration to specify a value that is
+not valid for a given property, as described in <termref
+def="dt-static-decimal-formats">statically known decimal
+formats</termref>
+<errorref class="ST" code="0097"/>.
+
+It is a  <termref def="dt-static-error">static error</termref> if, for any named or unnamed decimal format, the
+properties representing characters used in a picture string do not
+have distinct values
+<errorref
+class="ST" code="0098"/>.
+
+The following properties represent characters used in a picture string:
+<termref def="id-static-decimal-separator">decimal-separator-sign</termref>,
+<termref def="id-static-decimal-format-grouping-separator">grouping-separator</termref>,
+<termref def="id-static-decimal-format-percent-sign">percent-sign</termref>,
+<termref def="id-static-decimal-format-per-mille-sign">per-mille-sign</termref>,
+<termref def="id-static-decimal-format-zero-digit">zero-digit</termref>,
+<termref def="id-static-decimal-format-digit-sign">digit-sign</termref>, and
+<termref def="id-static-decimal-format-pattern-separator-sign">pattern-separator-sign</termref>
+.</p>
+
+
+<example diff="add">
+
+<p>The following query formats numbers using two different decimal format declarations:</p>
+
+<eg role="parse-test">declare decimal-format local:de decimal-separator = "," grouping-separator = ".";
+declare decimal-format local:en decimal-separator = "." grouping-separator = ",";
+
+let $numbers := (1234.567, 789, 1234567.765)
+for $i in $numbers
+return (
+  format-number($i, "#.###,##", "local:de"),
+  format-number($i, "#,###.##", "local:en")
+)</eg>
+<p>The output of this query is:</p>
+<eg>1.234,57 1,234.57 789 789 1.234.567,76 1,234,567.76</eg>
+</example>
+
+</div2>
+
+<div2 id="id-schema-import">
+<head>Schema Import</head>
+<scrap>
+		<head>
+</head>
+
+		<prodrecap id="SchemaImport" ref="SchemaImport"/>
+	 <prodrecap id="SchemaPrefix" ref="SchemaPrefix"/>
+</scrap>
+
+
+<p>
+<termdef id="dt-schema-import" term="schema import">A <term>schema
+import</term> imports the element declarations, attribute declarations, and type definitions
+from a schema into the <termref def="dt-issd">in-scope schema
+definitions</termref>.
+<phrase diff="chg" at="XQ.E29">For each <phrase diff="add">named</phrase> user-defined <phrase diff="add">simple type</phrase><termref diff="del" def="dt-generalized-atomic-type">generalized atomic type</termref> in the schema, schema import also adds a corresponding
+<termref def="dt-constructor-function">constructor function</termref>.</phrase>
+
+</termdef>
+
+The schema to be imported is identified by its <termref def="dt-target-namespace">target namespace</termref>. The schema import may bind a namespace prefix to the target namespace of the imported schema, <phrase diff="add">adding the (prefix, URI) pair to the <termref def="dt-static-namespaces">statically known namespaces</termref>,</phrase> or it may declare that target namespace to be the <termref def="dt-def-elemtype-ns">default element/type namespace</termref>. The schema import may also provide optional hints for locating the schema.</p>
+<p>The namespace prefix specified in a schema import must not be <code>xml</code> or <code>xmlns</code>
+<errorref class="ST" code="0070"/>, and must not be the same as any namespace prefix bound in the same module by another schema import, a <termref def="dt-module-import">module import</termref>, a <termref def="dt-namespace-declaration">namespace declaration</termref>, or a <termref def="dt-module-import">module declaration</termref>
+<errorref class="ST" code="0033"/>.
+</p>
+
+
+
+<p> The first <nt def="URILiteral">URILiteral</nt> in a schema import specifies the target namespace of the schema to be imported. The URILiterals that follow the <code>at</code> keyword are optional location hints, and can be interpreted or disregarded in an implementation-dependent way. Multiple location hints might be used to indicate more than one possible place to look for the schema or multiple physical resources to be assembled to form the schema.</p>
+<p>A schema import that specifies a zero-length string as target namespace is considered to import a schema that has no target namespace. Such a schema import must not bind a namespace prefix <errorref class="ST" code="0057"/>, but it may set the default element/type namespace to a zero-length string (representing "no namespace"), thus enabling the definitions in the imported namespace to be referenced. If the default element/type namespace is not set to "no namespace", there is no way to reference the definitions in an imported schema that has no target namespace.</p>
+<p>It is a <termref def="dt-static-error">static error</termref>
+<errorref class="ST" code="0058"/> if more than one schema import in the same <termref def="dt-prolog">Prolog</termref> specifies the same target namespace. It is a <termref def="dt-static-error">static error</termref>
+<errorref class="ST" code="0059"/> if the implementation is not able to process a schema import by finding a valid schema with the specified target namespace. It is a <termref def="dt-static-error">static error</termref>
+<errorref class="ST" code="0035"/> if multiple imported schemas, or multiple physical resources within one schema, contain definitions for the same name in the same symbol space (for example, two definitions for the same element name, even if the definitions are consistent).  However, it is not an error to import the schema with target namespace <code>http://www.w3.org/2001/XMLSchema </code>(predeclared prefix <code>xs</code>), even though the built-in types defined in this schema are implicitly included in the <termref def="dt-is-types">in-scope schema types.</termref>
+</p>
+
+
+
+<p>
+It is a  <termref def="dt-static-error">static error</termref>
+<errorref code="0012" class="ST"/> if the set of
+definitions contained in all schemas imported by a Prolog do not satisfy the
+conditions for schema validity specified in Sections 3 and 5 of
+<bibref ref="XMLSchema10"/> or <bibref ref="XMLSchema11"/> Part 1--i.e., each definition must
+be valid, complete, and unique.</p>
+<p>The following example imports a schema,
+specifying both its target namespace and its location, and binding the
+prefix <code>soap</code> to the target namespace:</p>
+
+	 <eg role="frag-prolog-parse-test">import schema namespace soap="http://www.w3.org/2003/05/soap-envelope"
+at "http://www.w3.org/2003/05/soap-envelope/";</eg>
+<p>The
+            following example imports a schema by specifying only its
+            target namespace, and makes it the default element/type
+            namespace:</p>
+<eg role="frag-prolog-parse-test">import schema default element namespace "http://example.org/abc";</eg>
+<p>The following example imports a schema that has no target namespace, providing a location hint, and sets the default element/type namespace to "no namespace" so that the definitions in the imported schema can be referenced:</p>
+<eg role="frag-prolog-parse-test">import schema default element namespace ""
+at "http://example.org/xyz.xsd";</eg>
+<p>The following example imports a schema that has no target namespace and sets the default element/type namespace to "no namespace". Since no location hint is provided, it is up to the implementation to find the schema to be imported.</p>
+<eg role="frag-prolog-parse-test">import schema default element namespace "";</eg>
+</div2>
+<div2 id="id-module-import">
+  <head>Module Import</head>
+  <scrap>
+    <head>
+    </head>
+
+    <prodrecap id="ModuleImport" ref="ModuleImport"/>
+  </scrap>
+  <p>
+    <termdef term="module import" id="dt-module-import">A <term>module import</term> imports the <phrase diff="chg">public variable declarations and public function
+    declarations</phrase>  from one or more
+  <termref def="dt-library-module">library modules</termref> into the <termref def="dt-known-func-signatures"><phrase diff="add">statically known</phrase> function signatures</termref> and  <termref def="dt-in-scope-variables">in-scope variables</termref> of the importing <termref def="dt-module">module</termref>.</termdef> Each module import names a  <termref def="dt-target-namespace">target namespace</termref> and imports an <termref def="dt-implementation-defined">implementation-defined</termref> set of modules that share this target namespace. The module import may bind a namespace prefix to the target namespace, <phrase diff="add">adding the (prefix, URI) pair to the <termref def="dt-static-namespaces">statically known namespaces</termref>,</phrase> and it may provide optional hints for locating the modules to be imported.</p>
+
+  <p diff="add">If a module <code>A</code> imports module <code>B</code>,
+  the static context of module <code>A</code> will contain
+  the <termref def="dt-issd">in-scope schema definitions</termref>  
+  and <termref def="dt-known-func-signatures">statically known function signatures</termref>
+  of module <code>B</code>,
+  and the dynamic context of module <code>A</code> will contain the 
+  <termref def="dt-variable-values">variable values</termref> and
+  <termref def="dt-named-functions">named functions</termref>  of module <code>B</code>,
+  with the exception of non-public functions and variables, and of the
+  functions and variables not declared directly in <code>B</code>.</p>
+
+  <p>The following example illustrates a module import:</p>
+
+  <eg role="frag-prolog-parse-test">import module namespace gis="http://example.org/gis-functions";</eg>
+
+  <p diff="add" at="BZ10863">If a query imports the same module via multiple paths, only one instance of the module is imported. Because only one instance of a module is imported, there is only one instance of each <phrase diff="del">global</phrase> variable declared in a module<phrase diff="add">'s prolog</phrase>.</p>
+
+  <p diff="chg" at="XQ.E8">A module may import its own target namespace (this is interpreted as importing an <termref def="dt-implementation-defined">implementation-defined</termref> set of other modules that share its target namespace.)</p>
+
+  <p>The namespace prefix specified in a module import must not be <code>xml</code> or <code>xmlns</code>
+  <errorref class="ST" code="0070"/>, and must not be the same as any namespace prefix bound in the same module by another module import, a <termref def="dt-schema-import">schema import</termref>,  a <termref def="dt-namespace-declaration">namespace declaration</termref>, or a <termref def="dt-module-declaration">module declaration</termref> with a different target namespace <errorref class="ST" code="0033"/>.</p>
+  <p>The first <nt def="URILiteral">URILiteral</nt> in a module import must be of nonzero length <errorref class="ST" code="0088"/>, and specifies the target namespace of the modules to be imported. The URILiterals that follow the <code>at</code> keyword are optional location hints, and can be interpreted or disregarded in an <termref def="dt-implementation-defined">implementation-defined</termref> way.</p>
+  <p>It is a <termref def="dt-static-error">static error</termref>
+  <errorref class="ST" code="0047"/>
+  if more than one module import in a <termref def="dt-prolog">Prolog</termref> specifies the same target namespace. It is a <termref def="dt-static-error">static error</termref>
+  <errorref class="ST" code="0059"/> if the implementation is not able to process a module import by finding a valid module definition with the specified target namespace. It is a <termref def="dt-static-error">static error</termref> if
+<phrase diff="del">the <termref def="dt-expanded-qname">expanded QName</termref> of a variable declared in an imported module is equal (as defined by the <code>eq</code> operator) to the <termref def="dt-expanded-qname">expanded QName</termref> of a variable declared in the importing module or in another imported module (even if the declarations are consistent)</phrase>
+<phrase diff="add">two or more variables declared or imported by a <termref def="dt-module">module</termref> have equal <termref def="dt-expanded-qname">expanded QNames</termref> (as defined by the <code>eq</code> operator)</phrase> 
+<errorref class="ST" code="0049"/>.</p>
+  <p>Each <termref def="dt-module">module</termref> has its own <termref def="dt-static-context">static context</termref>. A <termref def="dt-module-import">module import</termref> imports only
+  functions and variable declarations; it does not import other objects from the imported modules, such as
+  <termref def="dt-issd">in-scope schema definitions</termref> or <termref def="dt-static-namespaces">statically known namespaces</termref>. Module imports are not
+  transitive&mdash;that is, importing a module provides access only to function and
+  variable declarations contained directly in the imported module. For
+  example, if module A imports module B, and module B imports module C,
+  module A does not have access to the functions and variables declared in module C. </p>
+
+
+  <!--	  <change diff="chg" at="XQ.E6"> -->
+  <p  diff="del" at="BZ12173">
+    It is a <termref def="dt-static-error">static error</termref>
+    <errorref class="ST" code="0036"/> to import a module if the
+    <termref def="dt-issd">in-scope schema definitions</termref>
+    of the importing module do not include all of the following:
+  </p>
+  <olist  diff="del" at="BZ12173">
+    <item>
+      <p>An <termref def="dt-is-types">in-scope schema type</termref>
+      for each type name that appears:
+      </p>
+      <olist>
+	<item>
+	  <p>in the type of a variable that is declared in the imported module
+	  and referenced in the importing module, OR
+	  </p>
+	</item>
+	<item>
+	  <p>in a parameter-type or result-type of a function that is declared
+	  in the imported module and referenced in the importing module.
+	  </p>
+	</item>
+      </olist>
+    </item>
+
+    <item>
+      <p>An <termref def="dt-is-elems">in-scope element declaration</termref>
+      for each element-name <code>EN</code> such that:
+      </p>
+      <olist>
+	<item>
+	  <p>
+	    <code>schema-element(EN)</code> appears in the declared
+	    type of a variable
+	    in the imported module, and that variable is referenced
+	    in the importing module, OR
+	  </p>
+	</item>
+	<item>
+	  <p>
+	    <code>schema-element(EN)</code> appears in a parameter-type or
+	    result-type of a function declared in the imported module, and
+	    that function is referenced in the importing module.
+	  </p>
+	</item>
+      </olist>
+    </item>
+
+
+    <item>
+      <p>An <termref def="dt-is-attrs">in-scope attribute declaration</termref>
+      for each attribute-name <code>AN</code> such that:
+      </p>
+      <olist>
+	<item>
+	  <p>
+	    <code>schema-attribute(AN)</code> appears in the declared
+	    type of a variable
+	    in the imported module, and that variable is referenced
+	    in the importing module, OR
+	  </p>
+	</item>
+	<item>
+	  <p>
+	    <code>schema-attribute(AN)</code> appears in a parameter-type
+	    or result-type
+	    of a function declared in the imported module, and that function
+	    is referenced in the importing module.
+	  </p>
+	</item>
+      </olist>
+    </item>
+  </olist>
+  <!--	</change> -->
+
+  <p  diff="del" at="BZ12173">To illustrate the above rules, suppose that a certain schema
+  defines a type named <code>triangle</code>. Suppose that a library
+  module imports the schema, binds its target namespace to the prefix
+  <code>geometry</code>, and declares a function with the following
+  <xtermref spec="DM30" ref="dt-signature">function signature</xtermref>:
+  <code>math:area($t as geometry:triangle) as xs:double</code>. If a
+  query wishes to use this function, it must import <emph>both</emph>
+  the library module and the schema on which it is based. Importing the
+  library module alone would not provide access to the definition of the
+  type <code>geometry:triangle</code> used in the signature of the
+  <code>area</code> function.</p>
+
+
+  <example diff="add" at="BZ12173">
+    <head>Schema Information and Module Import</head>
+
+  <p>A module import does not import schema definitions from the imported
+  module. In the following query, the type geometry:triangle is not
+  defined, even if it is known in the imported module, so the variable
+  declaration raises an error <errorref class="ST" code="0051"/>:</p>
+
+  <eg role="parse-test">(: Error - geometry:triangle is not defined :)
+import module namespace geo = "http://example.org/geo-functions";
+declare variable $t as geometry:triangle := geo:make-triangle();
+
+$t</eg>
+
+  <p>Without the type declaration for the variable, the variable
+  declaration succeeds:</p>
+
+  <eg  role="parse-test">import module namespace geo = "http://example.org/geo-functions";
+declare variable $t := geo:make-triangle();
+
+$t</eg>
+
+  <p>Importing the schema that defines the type of the variable, the
+  variable declaration succeeds:</p>
+
+   <eg  role="parse-test">import schema namespace geometry = "http://example.org/geo-schema-declarations";
+import module namespace geo = "http://example.org/geo-functions";
+declare variable $t as geometry:triangle := geo:make-triangle();
+
+$t</eg>
+  </example>
+
+  <div3 id="id-module-handling-module-uris">
+    <head><phrase diff="del">Module URIs</phrase><phrase diff="add">The Target Namespace of a Module</phrase></head>
+
+    <p><phrase diff="del">Module URIs</phrase><phrase diff="add">The target namespace of a module</phrase> should be treated in the same way as other namespace URIs.</p>
+
+    <p>To maximize interoperability, query authors should use a string
+    that is a valid absolute IRI.</p>
+
+    <p>Implementions must accept any string of Unicode characters. <phrase diff="del">Module</phrase><phrase diff="add">target namespace</phrase>
+    URIs are compared using the Unicode codepoint collation rather than
+    any concept of semantic equivalence.</p>
+
+    <p>Implementations may provide mechanisms allowing the <phrase diff="del">module</phrase><phrase diff="add">target namespace</phrase> URI to be used as
+    input to a process that delivers the module as a resource, for example a
+    catalog, module repository, or URI resolver. For interoperability, such
+    mechanisms should not prevent the user from choosing an arbitrary URI for
+    naming a module.</p>
+
+    <p>Similarly, implementations may perform syntactic transformations on
+    the <phrase diff="del">module</phrase><phrase diff="add">target namespace</phrase> URI to obtain the names of related resources, for example
+    to implement a convention relating the name or location of compiled
+    code to the <phrase diff="del">module</phrase><phrase diff="add">target namespace</phrase> URI; but again, such mechanisms should not prevent
+    the user from choosing an arbitrary <phrase diff="del">module</phrase><phrase diff="add">target namespace</phrase> URI.</p>
+
+    <p>As with other namespace URIs, it is common practice to use  <phrase diff="del">module</phrase><phrase diff="add">target namespace</phrase>
+    URIs whose scheme is "http" and whose authority part uses a DNS domain
+    name under the control of the user.</p>
+
+    <p>The specifications allow, and some users might consider it good
+    practice, for the <phrase diff="del">module</phrase><phrase diff="add">target namespace</phrase> URI of a function library to be the same as
+    the namespace URI of the XML vocabulary manipulated by the functions
+  in that library.</p> </div3>
+
+  <div3 id="id-module-handling-multiple-same">
+    <head>Multiple Modules with the same <phrase diff="del">Module
+    URIs</phrase><phrase diff="add">Target Namespace</phrase></head>
+
+    <p>Several different modules with the same <phrase
+    diff="del">Module URI</phrase><phrase diff="add">target
+    namespace</phrase> can be used in the same query. The names of
+    public <phrase diff="del">global</phrase> variables and public
+    functions must be unique within the <phrase diff="add"><termref
+    def="dt-module-context">module contexts</termref> of a</phrase>
+    query<phrase diff="del">as a whole</phrase>: that is, if two
+    modules with the same <phrase diff="del">module</phrase><phrase diff="add">target namespace</phrase> URI are used in the same query, the
+    names of <phrase diff="del">their</phrase><phrase
+    diff="add">the</phrase> public variables and functions <phrase
+    diff="add">in their module contexts</phrase> must not overlap.</p>
+
+    <p>If one module contains an "import module" declaration <phrase
+    diff="del">for the <phrase diff="del">module</phrase><phrase diff="add">target namespace</phrase> URI</phrase><phrase diff="add">with the
+    target namespace</phrase> <code>M</code>, then all public <phrase
+    diff="del">global</phrase> variables and public functions <phrase
+    diff="del">declared in</phrase><phrase diff="add">in the contexts
+    of</phrase> modules whose <phrase diff="del">module
+    URI</phrase><phrase diff="add">target namespace</phrase> is
+    <code>M</code> must be accessible in the importing module,
+    regardless whether the participation of the imported module was
+    directly due to this "import module" declaration.</p>
+
+    <p diff="del">There must be only one instance of a global variable
+    with any given name.  For example, if a global variable V is
+    initialized using an element constructor, then there must be only
+    one instance of this element, even if the module in which V is
+    declared is imported by several other modules.</p>
+
+    <p diff="del">In an environment where a group of modules can be compiled as a
+    unit, an implementation may consider a module used in the compiled
+    unit distinct from another instance of the same module imported from
+    elsewhere in the query.</p>
+
+  </div3>
+
+
+  <div3 id="id-module-handling-location-uris">
+    <head>Location URIs</head>
+
+    <p>The term "location URIs" refers to the URIs in the "at" clause of
+    an "import module" declaration.</p>
+
+    <p>Products should (by default or at user option) take account of all the
+    location URIs in an "import module" declaration, treating each location URI
+    as a reference to a module with the specified <phrase diff="del">module</phrase><phrase diff="add">target namespace</phrase> URI. Location URIs
+    should be made absolute with respect to the static base URI of the
+    module containing the "import module" declaration where they appear. The
+    mapping from location URIs to module source code or compiled code MAY be
+    done in any way convenient to the implementation. If possible given the
+    product's
+    architecture, security requirements, etc, the product should allow this
+    to fetch the source code of the module to use the standard web mechanisms
+    for dereferencing URIs in
+    standard schemes such as the "http" URI scheme.</p>
+
+    <p>When the same absolutized location URI is used more than once,
+    either in the same "import module" declaration or in different "import
+    module" declarations within the same query, a single copy of the
+    resource containing the module is loaded. When different absolutized
+    location URIs are used, each results in a single module being loaded,
+    unless the implementation is able to determine that the different URIs
+    are references to the same resource.
+
+    No error due to duplicate variable or functions names should arise
+    from the same module being imported more than once, so long as the
+    absolute location URI is the same in each case.</p>
+
+    <p>Implementations must report a static error if a location URI cannot
+    be resolved after all available recovery strategies have been
+    exhausted.</p>
+
+  </div3>
+  <div3 id="id-module-handling-cycles"><head>Cycles</head>
+
+  <p><phrase diff="add">Implementations must resolve cycles in the
+  import graph,</phrase><phrase diff="del">It is not an error to have a
+  cycle in the import graph,</phrase> either at the level of <phrase diff="del">module</phrase><phrase diff="add">target namespace</phrase> URIs or at
+  the level of location URIs, <phrase diff="add">and ensure
+  that each module is imported only once</phrase>.<phrase
+  diff="del">The only rules concerning cycles are the rules for
+  functions and variables declared in different modules.</phrase></p>
+  </div3>
+
+</div2>
+<div2 id="id-namespace-declaration">
+
+	 <head>Namespace Declaration</head>
+	 <scrap>
+		<head>
+</head>
+<prodrecap id="NamespaceDecl" ref="NamespaceDecl"/>
+
+
+	 </scrap>
+
+	 <p>
+<termdef id="dt-namespace-declaration" term="namespace declaration">A <term>namespace declaration</term> declares a namespace prefix and
+	 associates it with a namespace URI, adding the (prefix, URI) pair to the set of
+	 <termref def="dt-static-namespaces">statically known namespaces</termref>.</termdef> The namespace declaration is in scope throughout the query
+	 in which it is declared, unless it is overridden by a <termref def="dt-namespace-decl-attr">namespace declaration attribute</termref> in a <termref def="dt-direct-elem-const">direct element constructor</termref>.</p>
+<p>If the URILiteral part of a namespace declaration is a zero-length
+string, any existing namespace binding for the given prefix is removed
+from the <termref def="dt-static-namespaces">statically known namespaces</termref>. This feature provides a way to
+remove predeclared namespace prefixes such as <code>local</code>.</p>
+<p>The following query illustrates a namespace declaration:</p>
+	 <eg role="parse-test">
+<![CDATA[declare namespace foo = "http://example.org";
+<foo:bar> Lentils </foo:bar>]]>
+</eg>
+	 <p>In the query result, the newly created node is in the namespace
+	 associated with the namespace URI <code>http://example.org</code>.</p>
+
+
+
+
+	   <p diff="chg" at="XQ.E19">The namespace prefix specified in a namespace declaration must not be
+             <code>xml</code> or <code>xmlns</code>
+<errorref class="ST" code="0070"/>.
+             The namespace URI specified in a namespace declaration must not be
+             <code>http://www.w3.org/XML/1998/namespace</code> or
+             <code>http://www.w3.org/2000/xmlns/</code>
+             <errorref class="ST" code="0070"/>.
+             The namespace prefix specified in a namespace declaration must not be
+             the same as any namespace prefix bound in the same module by a
+             <termref def="dt-module-import">module import</termref>,
+             <termref def="dt-schema-import">schema import</termref>,
+             <termref def="dt-module-import">module declaration</termref>,
+             or another namespace declaration <errorref class="ST" code="0033"/>.
+          </p>
+
+<p>It is a <termref def="dt-static-error">static error</termref>
+<errorref class="ST" code="0081"/> if an expression contains a  <termref def="dt-qname">lexical QName</termref> with a namespace prefix that is not in the <termref def="dt-static-namespaces">statically known namespaces</termref>.</p>
+
+	 <p>XQuery has several predeclared namespace prefixes that are present in the <termref def="dt-static-namespaces">statically known namespaces</termref> before each query is processed. These prefixes may be used without an explicit declaration. They may be overridden by <termref def="dt-namespace-declaration">namespace declarations</termref> in a <termref def="dt-prolog">Prolog</termref> or by <termref def="dt-namespace-decl-attr">namespace declaration attributes</termref>  on constructed elements (however,  the prefix <code>xml</code> must not be redeclared, and no other prefix may be bound to the namespace URI associated with the prefix <code>xml</code>
+<errorref class="ST" code="0070"/>). The predeclared namespace prefixes are as follows:</p>
+<ulist>
+<item>
+<p>
+<code>xml = http://www.w3.org/XML/1998/namespace</code>
+</p>
+</item>
+<item>
+<p>
+<code>xs = http://www.w3.org/2001/XMLSchema</code>
+</p>
+</item>
+<item>
+<p>
+<code>xsi = http://www.w3.org/2001/XMLSchema-instance</code>
+</p>
+</item>
+<item>
+<p>
+<code>fn = http://www.w3.org/2005/xpath-functions</code>
+</p>
+</item>
+<item>
+<p>
+<code>local = http://www.w3.org/2005/xquery-local-functions</code> (see <specref ref="FunctionDeclns"/>.)</p>
+</item>
+</ulist>
+
+<p>Additional predeclared namespace prefixes may be added to the <termref def="dt-static-namespaces">statically known namespaces</termref> by an implementation.</p>
+
+	 <p>When element or attribute names are compared, they are considered identical if
+	 the local parts and namespace URIs match on a codepoint basis. Namespace prefixes need not be identical for two names to match, as illustrated by the following example:</p>
+	 <eg role="parse-test">
+<![CDATA[declare namespace xx = "http://example.org";
+
+let $i := <foo:bar xmlns:foo = "http://example.org">
+              <foo:bing> Lentils </foo:bing>
+          </foo:bar>
+return $i/xx:bing]]>
+</eg>
+	 <p>Although the namespace prefixes <code>xx</code> and <code>foo</code> differ, both are bound to the namespace URI <code>http://example.org</code>. Since <code>xx:bing</code> and <code>foo:bing</code> have the same local name and the same namespace URI, they match. The
+	 output of the above query is as follows.</p>
+	 <eg role="parse-test">
+<![CDATA[<foo:bing xmlns:foo = "http://example.org"> Lentils </foo:bing>]]>
+</eg>
+</div2>
+<div2 id="id-default-namespace">
+<head>Default Namespace Declaration</head>
+<scrap>
+		<head>
+</head>
+		<prodrecap id="DefaultNamespaceDecl" ref="DefaultNamespaceDecl"/>
+
+	 </scrap>
+<p>
+
+<term>Default namespace declarations</term> can be used in a <termref
+def="dt-prolog">Prolog</termref> to facilitate the use of unprefixed
+QNames.</p>
+             
+<p diff="add">The namespace URI specified in a default namespace declaration must
+not be <code>http://www.w3.org/XML/1998/namespace</code> or
+<code>http://www.w3.org/2000/xmlns/</code> <errorref class="ST"
+code="0070"/>.</p>
+
+<p>The following kinds of default namespace declarations are supported:</p>
+<ulist>
+<item>
+<p>A <term>default element/type namespace declaration</term> declares a namespace URI that is associated with unprefixed names of elements and types. This declaration is recorded as the <termref def="dt-def-elemtype-ns">default element/type namespace</termref> in the <termref def="dt-static-context">static
+		context</termref>. A <termref def="dt-prolog">Prolog</termref> may contain at most one default element/type namespace declaration <errorref class="ST" code="0066"/>. If the <nt def="URILiteral">URILiteral</nt> in a default element/type namespace declaration is a zero-length string, the <termref def="dt-def-elemtype-ns">default element/type namespace</termref> is undeclared (set to <xtermref spec="DM30" ref="dt-absent" />), and unprefixed names of elements and types are considered to be in no
+	 namespace. The following example illustrates the declaration
+	 of a default namespace for elements and types:</p>
+<eg role="frag-prolog-parse-test">declare default element namespace "http://example.org/names";</eg>
+<p>A default element/type namespace declaration may be overridden by a <termref def="dt-namespace-decl-attr">namespace declaration attribute</termref> in a <termref def="dt-direct-elem-const">direct element constructor</termref>.</p>
+<p>If no default
+	 element/type namespace declaration is present, unprefixed element and type names are in no namespace (however, an implementation may define a different default  as specified in <specref ref="id-xq-static-context-components"/>.)</p>
+</item>
+<item>
+<p>A <term>default function namespace declaration</term> declares a namespace URI that is associated with unprefixed function names in <phrase diff="add">static</phrase> function calls and function declarations. This declaration is recorded as the <termref def="dt-def-fn-ns">default function namespace</termref> in the <termref def="dt-static-context">static
+		context</termref>. A <termref def="dt-prolog">Prolog</termref> may contain at most one default function namespace declaration <errorref class="ST" code="0066"/>. If the StringLiteral in a default function
+namespace declaration is a zero-length string, the default function
+namespace is undeclared (set to <xtermref spec="DM30" ref="dt-absent" />). In that case, any functions that are associated
+with a namespace can be called only by using an explicit namespace prefix.</p>
+<p>If no default
+	 function namespace declaration is present, the default function namespace is the namespace of XPath/XQuery functions,
+	 <code>http://www.w3.org/2005/xpath-functions</code> (however, an implementation may define a different default  as specified in <specref ref="id-xq-static-context-components"/>.)</p>
+<p>The
+	 following example illustrates the declaration of a default
+	 function namespace:</p>
+<eg diff="del" role="frag-prolog-parse-test">declare default function namespace
+      "http://example.org/math-functions";</eg>
+<eg diff="add" role="frag-prolog-parse-test">declare default function namespace "http://www.w3.org/2005/xpath-functions/math";</eg>
+<p>The effect of declaring
+	 a default function namespace is that all functions in the
+	 default function namespace, including implicitly-declared
+	 <termref def="dt-constructor-function">constructor functions</termref>, can be invoked without
+specifying a namespace prefix.  When a <phrase diff="add">static</phrase> function call uses a
+	 function name with no prefix, the local name of the function
+	 must match a function (including
+	 implicitly-declared <termref def="dt-constructor-function">constructor functions</termref>) in the default
+	 function namespace <errorref class="ST" code="0017"/>.</p>
+<note>
+<p>Only <termref def="dt-constructor-function">constructor functions</termref> can be in no namespace.</p>
+</note>
+</item>
+</ulist>
+<p> Unprefixed attribute names and variable names are in no namespace.</p>
+</div2>
+
+<div2 id="id-annotations">
+<head>Annotations</head>
+
+<scrap>
+<head>
+</head>
+<prodrecap id="AnnotatedDecl" ref="AnnotatedDecl"/>
+<prodrecap ref="InlineFunctionExpr"/>
+<prodrecap id="Annotation" ref="Annotation"/>
+</scrap>
+
+<p>XQuery uses annotations to declare properties associated with
+functions <phrase diff="add">(inline or declared in the prolog)</phrase> and variables. For instance, a function may be declared
+<code>%public</code><phrase diff="del">,</phrase><phrase diff="add"> or </phrase><code>%private</code><phrase diff="del">,<code>%deterministic</code> or <code>%nondeterministic</code></phrase>. The semantics associated with these properties are described in <specref ref="FunctionDeclns"/>.</p>
+<p>Annotations are <code>(QName, value)</code> pairs. If the EQName of
+the annotation is a <termref def="dt-qname">lexical QName</termref>,
+the prefix of the QName is resolved using the statically known
+namespaces; if no prefix is present, <phrase diff="del">the name is in the <termref
+def="dt-def-fn-ns">default function namespace</termref>.
+The XQuery family of languages define annotations in the <code>fn</code>
+namespace.</phrase><phrase diff="add">the name is in the <code>http://www.w3.org/2012/xquery</code> namespace.</phrase>
+<phrase diff="del">Assuming this the default element namespace is
+<code>fn</code>, the annotations <code>%private</code> and
+<code>%fn:private</code> both have the same annotation name.</phrase></p>
+
+
+  <p><phrase role="xquery">
+    Implementations may define further annotations, whose behaviour is implementation-defined.
+    For instance, if the <code>eg</code>
+    prefix is bound to a namespace associated with a particular
+    implementation, it could define an annotation like
+    <code>eg:sequential</code>.
+
+    Implementations must not define annotations in the following reserved namespaces;
+    it</phrase><phrase role="xpath">It</phrase> is an error for users to create annotations in the following reserved namespaces <errorref class="ST" code="0045"/>:
+  </p>
+
+  <ulist>
+    <item><p>http://www.w3.org/XML/1998/namespace</p></item>
+    <item><p>http://www.w3.org/2001/XMLSchema</p></item>
+    <item><p>http://www.w3.org/2001/XMLSchema-instance</p></item>
+    <item><p>http://www.w3.org/2005/xpath-functions</p></item>
+    <item><p>http://www.w3.org/2005/xpath-functions/math</p></item>
+    <item diff="add"><p>http://www.w3.org/2012/xquery</p></item>
+  </ulist>
+
+
+<p>
+An annotation can provide values
+explicitly using a parenthesized list of
+<termref def="id-literals">literals</termref>. For instance, the
+annotation <code>%java:method("java.lang.Math.sin")</code> sets the
+value of the <code>java:method</code> annotation to the string value
+<code>java.lang.Math.sin</code>.</p>
+
+</div2>
+
+
+<div2 id="id-variable-declarations">
+<head>Variable Declaration</head>
+
+<scrap>
+<head>
+</head>
+<prodrecap ref="AnnotatedDecl"/>
+<prodrecap ref="Annotation"/>
+<prodrecap id="VarDecl" ref="VarDecl"/>
+<prodrecap ref="VarName"/>
+<prodrecap ref="TypeDeclaration"/>
+<prodrecap id="VarValue" ref="VarValue"/>
+<prodrecap id="VarDefaultValue" ref="VarDefaultValue"/>
+</scrap>
+
+
+
+<p>A <term>variable declaration</term> adds the <termref
+def="dt-static-type">static type</termref> of a variable to the
+<termref def="dt-in-scope-variables">in-scope variables</termref>, and
+may also add a value for the variable to the <termref
+def="dt-variable-values">variable values</termref>. </p>
+
+<note>
+  <p>A <term>variable declaration</term> always refers to a
+  declaration of a variable in a Prolog. The binding of a variable to
+  a value in a query expression, such as a FLWOR expression, is known
+  as a <term>variable binding</term>, and does not make the variable visible to an
+  importing module.</p>
+</note>
+
+  <p>During static analysis, a variable declaration causes a pair
+  <code>(expanded QName N, type T)</code> to be added to the <termref
+  def="dt-in-scope-variables">in-scope variables</termref>.
+
+  The expanded QName N is the <code>VarName</code>. If N is equal (as
+  defined by the eq operator) to the expanded QName of another
+  variable in in-scope variables, a  <termref def="dt-static-error">static error</termref> is raised <errorref
+  class="ST" code="0049"/>.</p>
+
+
+
+  <p>All variable names declared in a library module must (when
+  expanded) be in the target namespace of the library module <errorref
+  class="ST" code="0048"/>.
+
+  A variable declaration may use annotations to specify that
+  the variable is <code>%private</code> or <code>%public</code> (which
+  is the default).
+
+  <termdef id="dt-private-variable" term="private
+  variable">A <term>private variable</term> is a variable with a
+  <code>%private</code> annotation.  A private variable is hidden from
+  <termref def="dt-module-import">module import</termref>, which can
+  not import it into the <termref def="dt-in-scope-variables">in-scope
+  variables</termref> of another module.</termdef>
+
+  <termdef id="dt-public-variable" term="public variable" diff="chg">A
+  <term>public variable</term> is a variable without a
+  <code>%private</code> annotation.  A public variable is accessible to
+  <termref def="dt-module-import">module import</termref>, which can
+  import it into the <termref def="dt-in-scope-variables">in-scope
+  variables</termref> of another module.
+
+  <phrase diff="add">Using <code>%public</code> and <code>%private</code> annotations in a main module is not an error, but it does not affect module imports, since a main module cannot be imported.</phrase>
+
+  It is a <termref def="dt-static-error">static error</termref>
+  <errorref class="ST" code="0116"/> 
+  <phrase diff="del">if a variable declaration's annotations contain more than one annotation named <code>%private</code> or <code>%public</code>.</phrase>
+  <phrase diff="add">if a variable declaration contains both a <code>%private</code> and a <code>%public</code> annotation, more than one <code>%private</code> annotation, or more than one <code>%public</code> annotation.</phrase></termdef></p>
+
+
+  <p>Variable names that have no namespace prefix are in no namespace.
+  Variable declarations that have no namespace prefix may appear only
+  in a main module.</p>
+
+
+<p>Here are some examples of variable declarations:</p>
+
+<ulist>
+  <item>
+<p>The following declaration specifies both the type and
+the value of a variable. This declaration causes the type
+<code>xs:integer</code> to be associated with variable <code>$x</code>
+in the <termref def="dt-static-context">static context</termref>, and
+the value <code>7</code> to be associated with variable
+<code>$x</code> in the <termref def="dt-dynamic-context">dynamic
+context</termref>.</p>
+
+<eg role="frag-prolog-parse-test">declare variable $x as xs:integer := 7;</eg>
+
+</item>
+<item>
+<p>The following
+declaration specifies a value but not a type. The <termref
+def="dt-static-type">static type</termref> of the variable is inferred
+from the static type of its value. In this case, the variable
+<code>$x</code> has a static type of <code>xs:decimal</code>, inferred
+from its value which is 7.5.</p>
+
+<eg role="frag-prolog-parse-test">declare variable $x := 7.5;</eg>
+
+</item>
+<item>
+<p>The following declaration specifies a type
+but not a value. The keyword <code>external</code> indicates that the
+value of the variable will be provided by the external environment. At
+evaluation time, if the variable <code>$x</code> in the <termref
+def="dt-dynamic-context">dynamic context</termref> does not have a
+value of type <code>xs:integer</code>, a  <termref def="dt-type-error">type error</termref> is raised.</p>
+<eg role="frag-prolog-parse-test">declare variable $x as xs:integer external;</eg>
+</item>
+<item>
+<p>The following declaration specifies
+neither a type nor a value. It simply declares that the query depends
+on the existence of a variable named <code>$x</code>, whose type and
+value will be provided by the external environment. During query
+analysis, the type of <code>$x</code> is considered to be
+<code>item()*</code>. During query evaluation, the <termref
+def="dt-dynamic-context">dynamic context</termref> must include a type
+and a value for <code>$x</code>, and its value must be compatible with
+its type.</p>
+<eg role="frag-prolog-parse-test">declare variable $x external;</eg>
+</item>
+<item>
+<p>The following declaration, which might
+appear in a library module, declares a variable whose name includes a
+namespace prefix:</p>
+<eg diff="del" role="frag-prolog-parse-test">declare variable $math:pi as xs:double := 3.14159E0;</eg>
+<eg diff="add" role="frag-prolog-parse-test">declare variable $sasl:username as xs:string := "jonathan@example.com";</eg>
+</item>
+
+<item>
+<p>This is an example of an external variable declaration that provides a <code>VarDefaultValue</code>:</p>
+<eg role="frag-prolog-parse-test">declare variable $x as xs:integer external := 47;</eg>
+</item>
+</ulist>
+
+  <p>The syntax for variable declarations allows annotations, but XQuery 3.0 does not define annotations that apply to variable declarations. An implementation can provide annotations it needs. For instance, an implemenation that supports volatile external variables might allow them to be declared using an annotation:</p>
+
+    <eg role="frag-prolog-parse-test">declare %eg:volatile variable $time as xs:time external;</eg>
+
+  <p>The type of the declared variable is as follows:</p>
+
+  <ulist>
+    <item>
+<p>If <code>TypeDeclaration</code> is present, then the <code>SequenceType</code> in the
+  <code>TypeDeclaration</code>; otherwise</p>
+</item>
+
+  <item>
+<p>If the Static Typing Feature is in effect and <code>VarValue</code>
+  is present, then the static type inferred from static analysis of
+  the expression <code>VarValue</code>;</p>
+
+  <note>
+<p>Type inference might not be computable until after the
+  check for circular dependencies, described below, is
+  complete.</p>
+</note>
+</item>
+
+  <item>
+<p> Otherwise, <code>item()*</code>.</p>
+</item>
+</ulist>
+
+<p>
+<termdef term="initializing expression"
+id="dt-initializing-expression">If a variable declaration includes an
+expression (<code>VarValue</code> or <code>VarDefaultValue</code>),
+the expression is called an <term>initializing expression.</term> The
+static context for an initializing expression includes all functions,
+variables, and namespaces that are declared or imported anywhere in
+the Prolog, other than the variable being declared.</termdef>
+</p>
+
+
+  <p>In a module's dynamic context, a variable value (or the context
+  item) may  <termref def="dt-depends-on">depend on</termref> another variable value (or the
+  context item). <termdef id="dt-depends-on" term="depends on">A
+  variable value (or the context item) <term>depends on</term> another variable
+  value (or the context item) if, during the evaluation of the
+  initializing expression of the former, the latter is accessed
+  through the module context.</termdef></p>
+
+  <p>In the following example, the value of variable <code>$a</code> <termref def="dt-depends-on">depends on</termref> the
+  value of variable <code>$b</code> because the evaluation of $a's initializing
+  expression accesses the value of $b during the evaluation of
+  <code>local:f()</code>.</p>
+
+<eg role="frag-prolog-parse-test">
+declare variable $a := local:f();
+declare variable $b := 1;
+declare function local:f() { $b };
+</eg>
+   
+  <p>A directed graph can be built with all variable values and the
+  context item as nodes, and with the <termref
+  def="dt-depends-on">depend on</termref> relation as edges. This
+  graph must not contain cycles, as it makes the population of the
+  dynamic context impossible. If it is discovered, during static
+  analysis or during dynamic evaluation, that such a cycle exists,
+  error  <errorref class="DY" code="0054"/> must be raised.</p>
+
+
+<!-- ================================================= -->
+
+<p diff="del">
+<termdef term="depends on a variable" id="dt-depends-on-variable">
+An expression <code>E</code>
+<term>depends on a variable</term>
+<code>V</code> if any of the following is true:
+<table>
+<tbody>
+<tr>
+<td>
+<ulist>
+<item>
+<p>
+<code>E</code> is a variable reference bound to variable <code>V</code>
+</p>
+</item>
+<item>
+<p>
+<code>E</code>
+<termref def="dt-depends-on-variable">depends on a variable</termref> whose initializer depends on <code>V</code>
+</p>
+</item>
+
+<item>
+<p>
+<code>E</code>
+<termref def="dt-depends-on-context-item">depends on the context item</termref>
+and the initializer of the context item <termref def="dt-depends-on-variable">depends on</termref>
+<code>V</code>
+</p>
+</item>
+
+<item>
+<p>
+<code>E</code>
+<termref def="dt-depends-on-function">depends on a function</termref> whose body <termref def="dt-depends-on-variable">depends on</termref>
+<code>V</code>
+</p>
+</item>
+
+<item>
+<p>
+<code>E</code> contains (directly or indirectly) an expression that <termref def="dt-depends-on-variable">depends on</termref>
+<code>V</code>
+</p>
+</item>
+</ulist>
+</td>
+</tr>
+</tbody>
+</table>
+</termdef>
+</p>
+
+<p diff="del">If the initializer of a variable <code>V</code>
+<termref def="dt-depends-on-variable">depends on</termref>
+<code>V</code>, a <termref def="dt-static-error">static error</termref> is raised <errorref
+class="ST" code="0054"/>.</p>
+
+<p>During query evaluation, each variable declaration causes a pair
+<code>(expanded QName N, value V)</code> to be added to
+the <termref def="dt-variable-values">variable
+values</termref>. The expanded QName N is
+the <code>VarName</code>. The value V is as follows:</p>
+
+<ulist>
+  <item>
+<p>If <code>VarValue</code> is specified, then V is the result of
+  evaluating <code>VarValue</code> as described below.</p>
+</item>
+
+  <item>
+<p> If <code>external</code> is specified, then:</p>
+
+  <ulist>
+    <item>
+<p> if a value is provided for the variable by the
+   external environment, then V is that value.  The means by which
+   typed values of external variables are provided by the external
+   environment is implementation-defined.</p>
+</item>
+
+   <item>
+<p> if no value is provided for the variable by the
+   external environment, and <code>VarDefaultValue</code> is
+   specified, then V is the result of evaluating
+   <code>VarDefaultValue</code> as described below.</p>
+</item>
+
+   <item>
+<p>If no value is provided for the variable by the
+   external environment, and <code>VarDefaultValue</code> is not
+   specified, then a  <termref def="dt-dynamic-error">dynamic error</termref> is raised <errorref class="DY"
+   code="0002"/>.
+    </p>
+    <p>It is implementation-dependent whether this error is raised if
+    the evaluation of the query does not reference the value of the
+    variable.</p>
+</item>
+</ulist>
+
+<ulist diff="del">
+<item>
+<p> The <termref def="dt-variable-values">variable values</termref> contain the values of all variables present in the static context. </p>
+<note>
+<p>A cyclic dependency between variables is a static
+error, so it is always possible to evaluate all the variables that V depends
+on before evaluating V.</p>
+</note>
+</item>
+
+<item>
+<p>
+<phrase diff="del">The function implementations contains the implementation of each function</phrase>
+<phrase diff="add">
+The <termref def="dt-named-functions">named functions</termref>
+component contains a function for each
+<termref def="dt-known-func-signatures">statically known function signature</termref>
+</phrase>
+present in the static context</p>
+</item>
+
+<item>
+<p>All other properties of the dynamic context, including the context item,
+position, and size, are the same as for the evaluation of the <code>QueryBody</code> of
+the main module.</p>
+</item>
+</ulist>
+</item>
+</ulist>
+
+<p>In all cases the value V must match the type T according to the rules
+for SequenceType matching; otherwise a  <termref def="dt-type-error">type error</termref> is raised <errorref
+class="TY" code="0004"/>.</p>
+
+<p>If <code>VarValue</code> or <code>VarDefaultValue</code> is
+evaluated, <phrase diff="del">the dynamic context for the evaluation
+is as follows:</phrase><phrase diff="add">the static and dynamic
+contexts for the evaluation are the current module's static and
+dynamic context.</phrase></p>
+
+
+</div2>
+
+<div2 id="id-context-item-declarations">
+<head>Context Item Declaration</head>
+
+<scrap>
+<head>
+</head>
+<prodrecap ref="ContextItemDecl"/>
+</scrap>
+
+<!-- ================================================================== -->
+
+<p>A context item declaration allows a query to specify
+the <termref def="dt-static-type">static type</termref>, value, or
+default value for the  <termref def="dt-initial-context-item">initial context item</termref>.</p>
+
+<p><phrase diff="add">Only the main module can set the value of the  <termref def="dt-initial-context-item">initial context item</termref>.</phrase> 
+In a library module, a context item declaration <phrase diff="add">must be external, 
+and</phrase> specifies only the static type.  
+Specifying a <nt def="VarValue">VarValue</nt> or <nt def="VarDefaultValue">VarDefaultValue</nt> for a context item
+declaration in a library module is a static error <errorref class="ST" code="0113"/>.</p>
+
+<p>In every module that does not contain a context item declaration, the effect
+is as if the declaration</p>
+
+<eg>declare context item as item() external;</eg>
+
+<p>appeared in that module.</p>
+
+<p>During static analysis, the context item declaration has the effect
+of setting the context item static type <code>T</code> in the static context.  The
+context item static type is set to <code>ItemType</code> if specified,
+or to <code>item()</code> otherwise.</p>
+
+<p>If a module contains more than one context item declaration, a static
+error is raised <errorref class="ST" code="0099"/>.</p>
+
+<p>The static context for an initializing expression includes all
+functions, variables, and namespaces that are declared or imported
+anywhere in the Prolog.</p>
+
+<p diff="del">
+<termdef id="dt-depends-on-context-item" term="expression depends
+on"> An expression <code>E</code>
+<term>depends on
+the context item</term> if any of the following is true:
+
+<table>
+<tbody>
+<tr>
+<td>
+<ulist>
+<item>
+<p>
+<code>E</code> is "."</p>
+</item>
+<item>
+<p>
+<code>E</code> is "/", or any path expression beginning with "/" or "//"</p>
+</item>
+<item>
+<p>
+<code>E</code> is <code>position()</code> or <code>last()</code>
+</p>
+</item>
+<item>
+<p>
+<code>E</code> is an axis step (including an abbreviated axis step such as '..' or '@x')</p>
+</item>
+<item>
+<p>
+<code>E</code> is a call to a built-in function that takes the context item as an
+implicit argument</p>
+</item>
+<item>
+<p>
+<code>E</code> has a subexpression that depends on the context item, and <code>E</code> does not
+bind the context item for that subexpression</p>
+</item>
+<item>
+<p>
+<code>E</code>
+<termref def="dt-depends-on-variable">depends on</termref> a variable whose initializer <termref def="dt-depends-on-context-item">depends on</termref> the context item</p>
+</item>
+<item>
+<p>
+<code>E</code>
+<termref def="dt-depends-on-function">depends on</termref> a function whose body <termref def="dt-depends-on-context-item">depends on</termref> the context item</p>
+</item>
+</ulist>
+</td>
+</tr>
+</tbody>
+</table>
+</termdef>
+</p>
+
+<p diff="del">If the initializer of the context item <termref def="dt-depends-on-context-item">depends on</termref> the context item,
+a static error is raised  <errorref class="ST" code="0107"/>.</p>
+
+<p>During query evaluation, a <termref
+def="dt-singleton-focus">singleton focus</termref> is created in the
+dynamic context for the evaluation of the <code>QueryBody</code> in
+the main module, and for the initializing expression of every variable
+declaration in every module, selecting the context item for the
+singleton focus as follows:</p>
+
+<ulist>
+  <item>
+    <p>If <code>VarValue</code> is specified, then the result of evaluating <code>VarValue</code><phrase diff="del">as
+    described below</phrase>.</p>
+  </item>
+  <item>
+    <p>If <code>external</code> is specified, then:</p>
+    <ulist>
+      <item>
+	<p>if a value is provided for the context item by the external
+	environment, then that value.</p>
+	<p>The means by which an external
+	value is provided by the external environment is
+	implementation-defined.</p>
+      </item>
+
+      <item>
+	<p>if no value is provided for the context item by the
+	external environment, and <code>VarDefaultValue</code> is specified,
+
+	<phrase diff="add">then the result of evaluating
+	<code>VarDefaultValue</code> as described below.</phrase>
+
+	<phrase diff="del">the static and dynamic contexts for the
+	evaluation are the current module's static and dynamic
+	context.</phrase>
+	</p>
+      </item>
+
+      <item diff="del">
+	<p>if no value is provided for the context item by the
+	external environment, and <code>VarDefaultValue</code> is not
+	specified, then the context item is <phrase diff="del"
+	>undefined</phrase><xtermref diff="add" spec="DM30" ref="dt-absent" />, and a dynamic error is
+	raised <errorref class="DY" code="0002"/> if the context item is
+	referenced in the query.</p>
+      </item>
+    </ulist>
+  </item>
+</ulist>
+
+<p>In all cases where the context item has a value, that value must
+match the type <code>T</code> according to the rules for SequenceType
+matching; otherwise a type error is raised <errorref class="TY"
+code="0004"/>.  If more than one module contains a context item
+declaration, the context item must match the type declared in each
+one.</p>
+
+<p diff="del">If <code>VarValue</code> or <code>VarDefaultValue</code> is evaluated, the dynamic context for the
+evaluation is as follows:</p>
+<ulist diff="del">
+<item>
+<p>The variable values contains the values of all variables
+present in the static context</p>
+</item>
+<item>
+<p>The context item, position, and size are <phrase diff="del">undefined</phrase> <xtermref diff="add" spec="DM30" ref="dt-absent" />
+</p>
+</item>
+<item>
+<p>
+<phrase diff="del">Function implementations includes an implementation of each function</phrase>
+<phrase diff="add">
+The <termref def="dt-named-functions">named functions</termref>
+component includes a function for each
+<termref def="dt-known-func-signatures">statically known function signature</termref>
+</phrase>
+present in the static context of the expression</p>
+</item>
+<item>
+<p>All other properties of the dynamic context are the same as for the
+evaluation of the <code>QueryBody</code> of the main module.</p>
+</item>
+</ulist>
+
+<p diff="add">If <code>VarValue</code> or <code>VarDefaultValue</code>
+is evaluated, the static and dynamic contexts for the evaluation are
+the current module's static and dynamic context.</p>
+
+<p>Here are some examples of context item declarations.</p>
+
+<ulist>
+<item>
+<p>Declare the type of the context item:</p>
+<eg role="frag-prolog-parse-test">declare namespace env="http://www.w3.org/2003/05/soap-envelope";
+declare context item as element(env:Envelope) external;</eg>
+</item>
+<item>
+<p>Declare a default context item, which is a system log in a default
+location. If the system log is in a different location, it can be
+specified in the external environment:</p>
+<eg role="frag-prolog-parse-test">
+declare context item as element(sys:log) external := doc("/var/xlogs/sysevent.xml")/sys:log;
+</eg>
+</item>
+</ulist>
+</div2>
+
+
+<div2 id="FunctionDeclns">
+<head>Function Declaration</head>
+<p>In addition to the built-in functions described in <bibref ref="xpath-functions-30"/>, 
+XQuery allows users to declare functions of their own. 
+A function declaration specifies the name of the function, 
+the names and datatypes of the parameters, 
+and the datatype of the result. 
+All datatypes are specified using the syntax described in <specref ref="id-types"/>. 
+A function declaration causes the declared function to be added 
+to the <termref def="dt-known-func-signatures"><phrase diff="add">statically known</phrase> function signatures</termref> 
+<phrase diff="add">and the <termref def="dt-named-functions">named functions</termref></phrase> 
+of the <termref def="dt-module">module</termref> in which it appears.</p>
+
+<scrap>
+<head>
+</head>
+<prodrecap ref="AnnotatedDecl"/>
+<prodrecap ref="Annotation"/>
+<prodrecap id="FunctionDecl" ref="FunctionDecl"/>
+<prodrecap id="ParamList" ref="ParamList"/>
+<prodrecap id="Param" ref="Param"/>
+<prodrecap id="FunctionBody" ref="FunctionBody"/>
+<prodrecap ref="TypeDeclaration"/>
+</scrap>
+
+<p> A function declaration specifies whether a function is <termref def="dt-udf">user-defined</termref> or <termref def="dt-external-function">external</termref>.</p>
+
+<p>
+<termdef id="dt-udf" term="user-defined function">
+
+<term>User defined functions</term> are functions that contain a <term>function body</term>,
+which provides the implementation of the function as an XQuery expression.</termdef>
+
+The <termref def="dt-static-context">static context</termref> for a
+function body includes all functions, variables, and namespaces that are declared or imported
+anywhere in the <termref def="dt-prolog">Prolog</termref>, including
+the function being declared.
+<phrase diff="add">
+  Its <termref def="dt-in-scope-variables">in-scope variables</termref>
+  component also includes
+  the parameters of the function being declared.
+  However, its
+  <termref def="dt-context-item-static-type">context item static type</termref>
+  component is <phrase diff="del">undefined</phrase><xtermref spec="DM30" ref="dt-absent" diff="add" />.
+</phrase>
+</p>
+
+		<p>
+<termdef id="dt-external-function" term="external function">
+<term>External functions</term> are functions that are implemented outside the query environment.</termdef> For example, an XQuery implementation might provide a set of external functions in addition to the core function library described in <bibref ref="xpath-functions-30"/>. External functions are identified by the keyword <code>external</code>. The purpose of a function declaration for an external function is to declare the datatypes of the function parameters and result, for use in type checking of the query that contains or imports the function declaration.</p>
+
+<p diff="add"><phrase diff="chg">A function declaration may use the <code>%private</code> or <code>%public</code> annotations to specify that a function is public or private; if neither of these annotations is used, the function is public.</phrase> <termdef id="dt-private-function" term="private function">A <term>private function</term> is a function with a <code>%private</code> annotation.  A private function is hidden from <termref def="dt-module-import">module import</termref>, which can not import it into the <termref def="dt-known-func-signatures"><phrase diff="add">statically known</phrase> function signatures</termref> of another module. </termdef>
+<termdef id="dt-public-function" term="public function">A <term>public function</term> is a function <phrase diff="chg">without a <code>%private</code> annotation</phrase>.  A public function is accessible to <termref def="dt-module-import">module import</termref>, which can import it into the <termref def="dt-known-func-signatures"><phrase diff="add">statically known</phrase> function signatures</termref> of another module. </termdef>
+
+<phrase diff="add">Using <code>%public</code> and <code>%private</code> annotations in a main module is not an error, but it does not affect module imports, since a main module cannot be imported.</phrase>
+
+It is a <termref def="dt-static-error">static error</termref>
+<errorref class="ST" code="0106"/> <phrase diff="add">if a function declaration contains both a <code>%private</code> and a <code>%public</code> annotation, more than one <code>%private</code> annotation, or more than one <code>%public</code> annotation.</phrase><phrase diff="del">if a function's annotations contain more than one annotation named <code>%private</code> or <code>%public</code></phrase>
+</p>
+
+		<p diff="del">A function declaration may use the function annotations <code>%deterministic</code> and <code>%nondeterministic</code> to specify that a function is deterministic (which is the default) or nondeterministic. <termdef id="dt-deterministic-function" term="deterministic function">A <term>deterministic function</term> is a function that always evaluates to the same result if it is invoked multiple times with the same arguments during the evaluation of a query.</termdef>
+<termdef id="dt-nondeterministic-function" term="nondeterministic function">A <term>nondeterministic function</term> is a function that is not guaranteed to always return the same result when it is invoked multiple times with the same arguments during the evaluation of a query.</termdef>
+
+It is a <termref def="dt-static-error">static error</termref>
+<errorref class="ST" code="0106"/>
+if a function's annotations contain more than one annotation named <code>%deterministic</code> or <code>%nondeterministic</code>.
+
+An XQuery processor can use static analysis to determine
+whether a user-defined function is deterministic.</p>
+
+<note diff="del"><p>The XML Query Working Group is actively discussing the best semantics when the determinism of a function, as determined by static analysis, does not agree with determinism declared using the <code>%deterministic</code> or <code>%nondeterministic</code> annotations.</p></note>
+
+<p diff="del">When rewriting expressions into equivalent expressions, as described in
+<specref ref="id-errors-and-opt"/>, a conforming XQuery
+implementation must ensure that each run-time invocation of a
+nondeterministic function in the original expression results in exactly
+one run-time invocation of the function in the rewritten expression. For instance, suppose the <code>random()</code> function is declared to be nondeterministic:</p>
+
+<eg diff="del" role="frag-prolog-parse-test">
+declare %nondeterministic function my:random( ) as xs:integer external;
+</eg>
+
+<p diff="del">Given the above declaration, this expression:
+</p>
+
+<eg role="parse-test"  diff="del">let $r := my:random( )
+return
+   if ($r > 0 and $r &lt; 10) then "Yes" else "No"
+</eg>
+
+<p  diff="del">must not be rewritten as</p>
+
+<eg  diff="del" role="parse-test">if (my:random( ) > 0 and my:random( ) &lt; 10) then "Yes" else "No"</eg>
+
+<p  diff="del">Similarly, this expression:</p>
+
+<eg  diff="del" role="parse-test">for $i in 1 to 10
+return my:random( )</eg>
+
+<p  diff="del">must not be rewritten as</p>
+
+<eg  diff="del" role="parse-test">let $r := my:random( )
+return
+     for $i in 1 to 10
+     return $r</eg>
+
+		<p>An XQuery implementation may provide a facility whereby external functions can be implemented using a host programming language, but it is not required to do so. If such a facility is provided, the protocols by which parameters are passed to an external function, and the result of the function is returned to the invoking query, are <termref def="dt-implementation-defined">implementation-defined</termref>. An XQuery implementation may augment the type system of
+<bibref ref="xpath-datamodel-30"/> with additional types  that are designed to facilitate exchange of data with host programming
+languages, or it may provide mechanisms for the user to define such
+types. For example, a type might be provided that encapsulates an object returned by an
+external function, such as an SQL database connection. These additional types, if defined, are considered to be derived
+by restriction from <code>xs:anyAtomicType</code>.</p>
+
+<p>An implementation can define annotations, in its own namespace, to support functionality beyond the scope of this specification. For instance, an implementation that supports external Java functions might use an annotation to associate a Java function with an XQuery external function:</p>
+
+<eg diff="del" role="frag-prolog-parse-test">declare %java:method("java.lang.Math.sin") function math:sin($a) external;</eg>
+
+<eg diff="add" role="frag-prolog-parse-test">declare %java:method("java.lang.StrictMath.copySign") function smath:copySign($magnitude, $sign) external;</eg>
+
+<p>Every <phrase diff="del">user-defined</phrase><phrase diff="add">declared</phrase> function must be in a namespace; that is, every declared function name must (when expanded) have a non-null namespace URI <errorref class="ST" code="0060"/>. If the function name in a function declaration has no namespace prefix, it is considered to be in the <termref def="dt-def-fn-ns">default function namespace</termref>. Every function name declared in a <termref def="dt-library-module">library module</termref> must (when expanded) be in the <termref def="dt-target-namespace">target namespace</termref> of the library module <errorref class="ST" code="0048"/>.  It is a <termref def="dt-static-error">static error</termref>
+<errorref class="ST" code="0045"/> if the function name in a function declaration (when expanded) is in any of the following namespaces:</p>
+<ulist>
+  <item><p><code>http://www.w3.org/XML/1998/namespace</code></p></item>
+  <item><p><code>http://www.w3.org/2001/XMLSchema</code></p></item>
+  <item><p><code>http://www.w3.org/2001/XMLSchema-instance</code></p></item>
+  <item><p><code>http://www.w3.org/2005/xpath-functions</code></p></item>
+  <item><p><code>http://www.w3.org/2005/xpath-functions/math</code></p></item>
+  <item diff="add"><p><code>http://www.w3.org/2012/xquery</code></p></item>
+</ulist>
+
+<p>In order to allow main modules to declare functions for local use within the  module without defining a new namespace, XQuery predefines the namespace prefix <code>local</code> to the namespace <code>http://www.w3.org/2005/xquery-local-functions</code>. It is suggested (but not required) that this namespace be used for defining local functions.</p>
+
+<p>If a function parameter is declared using a name but no type, its default type is <code>item()*</code>. If the result type is omitted from a function declaration, its default result type is <code>item()*</code>.</p>
+<p>The parameters of a function declaration are considered to be variables whose scope is the function body.
+
+It is an <termref def="dt-static-error">static error</termref>
+<errorref class="ST" code="0039"/> for a function declaration to have more than one parameter with the same name.
+
+The type of a function parameter can be any type that can be expressed as a <termref def="dt-sequence-type">sequence type</termref>.</p>
+
+<p diff="add">
+A <code>FunctionDecl</code> defines a function
+with the following properties:
+</p>
+<ulist diff="add">
+  <item>
+    <p>
+      <term>name</term>:
+      The <code>EQName</code> of the <code>FunctionDecl</code>,
+      expanded (if necessary) using the
+      <termref def="dt-static-namespaces">statically known namespaces</termref>
+      and
+      <termref def="dt-def-fn-ns">default function namespace</termref>
+      of the module's static context.
+    </p>
+  </item>
+
+  <item>
+    <p>
+      <term>parameter names</term>:
+      The <code>EQName</code>s in the <code>ParamList</code>,
+      expanded (if necessary) using the
+      <termref def="dt-static-namespaces">statically known namespaces</termref>
+      of the module's static context.
+    </p>
+  </item>
+
+  <item>
+    <p>
+      <term>signature</term>:
+      A <code>FunctionTest</code> built from
+      the <code>SequenceType</code>s (explicit or implicit)
+      in the <code>FunctionDecl</code> and its <code>ParamList</code>,
+      and from any <code>Annotation</code>s
+      preceding the <code>FunctionDecl</code>.
+    </p>
+  </item>
+
+  <item>
+    <p>
+      <term>implementation</term>:
+      If the function is declared external,
+      this property is implementation-dependent.
+      Otherwise, this property is
+      the <code>FunctionDecl</code>'s <code>FunctionBody</code>.
+    </p>
+  </item>
+
+  <item>
+    <p>
+      <term>nonlocal variable bindings</term>:
+      <phrase diff="add">Empty.</phrase>
+      <phrase diff="del">If the function is external, this property is empty.
+      Otherwise, the <code>FunctionDecl</code> has a <code>FunctionBody</code>;
+      for each of the function's free variables
+      (i.e., variables referenced by the <code>FunctionBody</code>,
+      other than locals and parameters),
+      this property binds the variable's name (an expanded QName)
+      to the value <phrase diff="del">for that variable established by
+      processing the module's prolog</phrase><phrase diff="add">of the
+      variable in the module's dynamic context</phrase>.</phrase>
+    </p>
+  </item>
+
+</ulist>
+
+<p>The following example illustrates the declaration and use of a local function that
+accepts a sequence of <code>employee</code> elements, summarizes them by department, and returns a sequence of <code>dept</code> elements.</p>
+<ulist>
+<item>
+<p>Using a function, prepare a summary of employees that are located in
+Denver.</p>
+<eg role="parse-test">declare function local:summary($emps as element(employee)*)
+   as element(dept)*
+{
+   for $d in fn:distinct-values($emps/deptno)
+   let $e := $emps[deptno = $d]
+   return
+      &lt;dept&gt;
+         &lt;deptno&gt;{$d}&lt;/deptno&gt;
+         &lt;headcount&gt; {fn:count($e)} &lt;/headcount&gt;
+         &lt;payroll&gt; {fn:sum($e/salary)} &lt;/payroll&gt;
+      &lt;/dept&gt;
+};
+
+local:summary(fn:doc("acme_corp.xml")//employee[location = "Denver"])</eg>
+ </item>
+</ulist>
+
+<p>A function declaration may be recursive&mdash;that is, it may reference itself. Mutually recursive functions, whose bodies reference each other,
+are also allowed. The following example declares a recursive function that
+computes the maximum depth of a node hierarchy, and calls the function to
+find the maximum depth of a particular document. The
+function <code>local:depth</code> calls the built-in functions <code>empty</code> and <code>max</code>, which are in the default function namespace.</p>
+<ulist>
+<item>
+<p>Find the maximum depth of the document named <code>partlist.xml</code>.</p>
+<eg role="parse-test">declare function local:depth($e as node()) as xs:integer
+{
+   (: A node with no children has depth 1 :)
+   (: Otherwise, add 1 to max depth of children :)
+   if (fn:empty($e/*)) then 1
+   else fn:max(for $c in $e/* return local:depth($c)) + 1
+};
+
+local:depth(fn:doc("partlist.xml"))
+</eg>
+</item>
+</ulist>
+
+<!-- ============================================================ -->
+
+<p>
+<termdef id="dt-depends-on-function" term="depends on a function" diff="del"> An expression <code>E</code>
+<term>depends on
+a function</term> <code diff="add">F</code> if any of the following is true:
+
+<table>
+<tbody>
+<tr>
+<td>
+<ulist>
+<item>
+<p>
+<code>E</code> is
+  <phrase diff="del">
+    a call or
+    <termref def="dt-partial-function-application">partial application</termref>
+    of
+  </phrase>
+  <phrase diff="add">
+    a static function call
+    (possibly a
+    <termref def="dt-partial-function-application">partial function application</termref>)
+    that refers to
+  </phrase>
+  function <code>F</code>
+</p>
+</item>
+<item>
+<p>
+<code>E</code> is a <termref def="dt-named-function-ref"><phrase diff="del">literal function item</phrase><phrase diff="add">named function reference</phrase></termref> <phrase diff="del">representing</phrase><phrase diff="add">that references</phrase> <code>F</code>
+</p>
+</item>
+<item>
+<p>
+<code>E</code>
+<termref def="dt-depends-on-function">depends on a function</termref> whose body <termref def="dt-depends-on-function">depends on</termref>
+<code>F</code>.</p>
+</item>
+<item>
+<p>
+<code>E</code>
+<termref def="dt-depends-on-context-item">depends on the context item</termref> and the initializer of the context item <termref def="dt-depends-on-function">depends on</termref>
+<code>F</code>
+</p>
+</item>
+<item>
+<p>
+<code>E</code>
+<termref def="dt-depends-on-variable">depends on a variable</termref> whose initializer  <termref def="dt-depends-on-function">depends on</termref>
+<code>F</code>
+</p>
+</item>
+<item>
+<p>
+<code>E</code> contains (directly or indirectly) an expression that <termref def="dt-depends-on-function">depends on</termref>
+<code>F</code>
+</p>
+</item>
+</ulist>
+</td>
+</tr>
+</tbody>
+</table>
+</termdef>
+</p>
+
+<!-- ============================================================ -->
+
+</div2>
+<div2 id="id-option-declaration">
+<head>Option Declaration</head>
+<p>
+<termdef term="option declaration" id="dt-option-declaration">An <term>option declaration</term> declares an option that affects the behavior of
+a particular implementation. Each option consists of an identifying EQName and a StringLiteral.</termdef>
+</p>
+<scrap>
+<head>
+</head>
+<prodrecap id="OptionDecl" ref="OptionDecl"/>
+
+
+</scrap>
+<p>Typically, a particular option will be recognized by some implementations and
+not by others. The syntax is designed so that option declarations can be
+successfully parsed by all implementations.</p>
+<p>If the EQName of an option is a <termref def="dt-qname">lexical QName</termref> with a prefix, it must resolve to a namespace URI and local name, using the <termref def="dt-static-namespaces">statically known namespaces</termref>
+<errorref class="ST" code="0081"/>.</p>
+<note diff="del">
+<p>There is no default namespace for options.</p>
+</note>
+
+<p diff="add">If the EQName of an option does not have a prefix, the <termref def="dt-expanded-qname">expanded QName</termref> is in the <code>http://www.w3.org/2012/xquery</code> namespace<phrase diff="add">, which is reserved for option declarations defined by the XQuery family of specifications</phrase>. <phrase diff="del">In option declarations in this namespace, unprefixed QNames in the string literal are also in the <code>http://www.w3.org/2012/xquery</code> namespace. Thus, in the following example, the option name <code>require-feature</code> is in the  <code>http://www.w3.org/2012/xquery</code> namespace because it has no prefix, and is therefore defined in the default namespace for the names of option declarations. The name "schema-aware" is in the same namespace because it has no prefix and the option name is in the  <code>http://www.w3.org/2012/xquery</code> namespace.</phrase><phrase diff="add">XQuery does not currently define declaration options in this namespace.</phrase></p>
+
+<eg diff="del">declare option require-feature "schema-aware"</eg>
+
+
+<p>Each implementation recognizes <phrase diff="add">the <code>http://www.w3.org/2012/xquery</code> namespace URI and and all options defined in this namespace in this specification. In addition, each implementation recognizes</phrase>  an <termref def="dt-implementation-defined">implementation-defined</termref> set of namespace URIs <phrase diff="del">used in </phrase><phrase diff="add"> and an implementation-defined set of option names defined in those namespaces</phrase>. 
+If the namespace part of an option declaration's name is not recognized, the option
+declaration is ignored.</p>
+<p>Otherwise, the effect of the option declaration, including its error behavior, is <termref def="dt-implementation-defined">implementation-defined</termref>.
+For example, if the local part of the QName is
+not recognized, or if the StringLiteral does not conform to the rules
+defined by the implementation for the particular option declaration, the implementation may choose
+whether to raise an error, ignore the option declaration, or take some
+other action.</p>
+<p>Implementations may impose rules on where particular option declarations may
+appear relative to variable declarations and function declarations, and the
+interpretation of an option declaration may depend on its position.</p>
+<p>An option declaration must not be used to change the syntax accepted by the
+processor, or to suppress the detection of  <termref def="dt-static-error">static errors</termref>. However, it may be
+used without restriction to modify the semantics of the query. The scope of
+the option declaration is <termref def="dt-implementation-defined">implementation-defined</termref>&mdash;for example, an option
+declaration might apply to the whole query, to the current module, or to
+the immediately following function declaration.</p>
+<p>The following examples illustrate several possible uses for option declarations:</p>
+<ulist>
+<item>
+<p>This option declaration might be used to specify how comments in source documents returned by
+the <code>fn:doc()</code> function should be handled:</p>
+<eg role="frag-prolog-parse-test">declare option exq:strip-comments "true";
+</eg>
+</item>
+<item>
+<p>This option declaration might be used to associate a namespace used in function names with a Java class:
+</p>
+<eg role="frag-prolog-parse-test">declare namespace smath = "http://example.org/MathLibrary";
+declare option exq:java-class "smath = java.lang.StrictMath";
+</eg>
+</item>
+</ulist>
+</div2>
+
+<!-- This feature is no longer in XQuery 3.0 -->
+<div2 diff="del" role="xquery" id="id-require-prohibit-feature">
+  <head>require-feature and prohibit-feature</head>
+
+   <p>The <code>require-feature</code> or <code>prohibit-feature</code> options, 
+   which are defined in the <code>http://www.w3.org/2012/xquery</code> namespace, 
+   are used to require or prohibit features in a module.</p>
+
+   <p><termdef id="dt-named-feature" term="named feature">A <term>named feature</term> is a feature that is associated with a name.</termdef> 
+   The name of a <termref def="dt-named-feature">named feature</termref> is represented as a lexical QName <errorref class="ST" code="0122"/>,
+   and any prefixes used in this QName must be defined in the statically known namespaces <errorref class="ST" code="0081"/>. 
+   QNames without prefixes are in the  <code>http://www.w3.org/2012/xquery</code> namespace.</p>
+
+   <p>A <code>require-feature</code> option declaration provides a whitespace-delimited list of <termref def="dt-named-feature">named features</termref> 
+   that must be enabled for the module in which the option declaration occurs; 
+   if any declaration requires a feature that the implementation does not support, 
+   a static error <errorref class="ST" code="0120"/> is raised.  
+   A <code>prohibit-feature</code> option declaration provides a whitespace-delimited list of <termref def="dt-named-feature">named features</termref> 
+   that must not be enabled in the module in which the option declaration occurs; 
+   if any of these QNames corresponds to a feature that the implementation supports, 
+   it must disable that feature, acting <phrase diff="add">(where possible)</phrase> as though the feature were not implemented,
+   or raise a static error <errorref class="ST" code="0131"/>.</p>
+
+   <p>The features required or prohibited in one module of a query are independent of any features required or prohibited in other modules of the same query.</p>
+
+  <p>It is a <termref def="dt-static-error">static error</termref>  <errorref class="ST" code="0127"/> if a given feature is both required and prohibited, 
+  directly or indirectly, 
+  in a module.</p>
+
+  <note><p>This error can occur either because a feature is required or prohibited directly, 
+  or indirectly as a result of requiring or prohibiting another feature.</p></note>
+
+<p diff="add">In XQuery 3.0, the following feature names may be used in <code>require-feature</code> or <code>prohibit-feature</code> option declarations; they are all defined in the <code>http://www.w3.org/2012/xquery</code> namespace.</p>
+
+<ulist diff="add">
+<item><p>The name <code>schema-aware</code> corresponds to the feature defined in <specref ref="id-schema-aware-feature"/>.</p></item>
+<item><p>The name <code>static-typing</code> corresponds to the feature defined in <specref ref="id-static-typing-feature"/>.</p></item>
+<item><p>The name <code>module</code> corresponds to the feature defined in <specref ref="id-module-feature"/>.  The <code>module</code> feature can only be required or prohibited in a main module, not in a library module  <errorref class="ST" code="0132"/>.</p></item>
+<item><p>The name <code>higher-order-function</code> corresponds to the feature defined in <specref ref="id-higher-order-function-feature"/>.</p></item>
+<item><p>The name <code>all-extensions</code> corresponds to all <termref def="dt-named-feature">named features</termref> not defined in the <code>http://www.w3.org/2012/xquery</code> namespace. When it appears in a <code>prohibit-feature</code> declaration, an implementation must disable all such features, and a static error is raised if such a feature is also required, directly or indirectly <errorref class="ST" code="0127"/>.  If <code>all-extensions</code> appears in a <code>require-feature</code> option declaration, a <termref def="dt-static-error">static error</termref> is raised <errorref class="ST" code="0126"/>.</p></item>
+<item><p>The name <code>all-optional-features</code> corresponds to the set of all <termref def="dt-named-feature">named features</termref> that correspond to features listed in  <specref ref="id-conform-optional-features"/>. If  <code>all-optional-features</code> appears in a  <code>require-feature</code> option declaration, all optional features that are not prohibited (implicitly or explicitly) must be enabled. If <code>all-optional-features</code> appears in a  <code>prohibit-feature</code> option declaration, all optional features that are not required (implicitly or explicitly) must be disabled.</p></item>
+</ulist>
+
+<note>
+<p><specref ref="id-serialization-feature"/> does not have a feature name, and cannot be required or prohibited in a module. It is nevertheless an optional feature.</p>
+</note>
+
+
+        <p diff="add">All implementations must recognize the feature names in the above list.</p>
+
+        <p diff="add">Implementations and XQuery-related specifications that extend XQuery should define a <termref def="dt-named-feature">named feature</termref> for each extension. Features that are not defined by the W3C XML Query Working Group must not be in the <code>http://www.w3.org/2012/xquery</code> namespace. If an implementation encounters a feature name that it does not recognize in a <code>require-feature</code> option, it must raise an error  <errorref class="ST" code="0123"/>.  If an implementation encounters a feature name that it does not recognize in a <code>prohibit-feature</code> option, that feature is ignored; it is a <termref def="dt-static-error">static error</termref>  <errorref class="ST" code="0128"/> if a  feature name that an implementation supports appears in a <code>prohibit-feature</code> option declaration and the implementation is unable to disable the feature. If an implementation adds feature names in a given namespace, an implementation must define the name <code>all-optional-features</code> in that namespace; for the namespace associated with the prefix <code>vend</code>, if <code>vend:all-optional-features</code> appears in a <code>require-feature</code> option declaration, all optional features in the namespace associated with the prefix <code>vend</code> that are not explicitly prohibited must be enabled. </p>
+
+	<p>Features can be organized in hierarchies. 
+
+	<termdef term="feature contains" id="dt-feature-contains">For two features <var>A</var> and <var>D</var> in the same namespace, if the local name of feature <var>A</var> contains the local name of feature <var>D</var> as a leading substring, using the Unicode codepoint collation (<code>http://www.w3.org/2005/xpath-functions/collation/codepoint</code>), then <term>feature</term> <var>A</var> <term>contains</term> feature <var>D</var>.</termdef>
+
+	For instance, a vendor might provide a feature called <code>gis:geography</code>, which contains subfeatures like <code>gis:geography-terrain</code>, <code>gis:geography-roads</code>, and  <code>gis:geography-soil</code>. If a feature is required, an implementation must enable both that feature and all features that contain it.</p>
+
+	<p>Within any given hierarchy, feature names that end with the string <code>"all-optional-features"</code> can be used to require or prohibit optional features. If <var>A</var> is the name of a feature, then <code>"</code><var>A</var><code>-all-optional-features"</code> refers to the set of all <termref def="dt-feature-contains">features contained in</termref> <var>A</var>.</p>
+
+	<example>
+	  <p>The following declarations require schema validation and schema import and higher order functions, but prohibit static typing. An implementation that does not support schema validation, schema import, or higher order functions must raise an error  <errorref class="ST" code="0120"/>. An implementation that supports static typing must disable static typing or raise an error <errorref class="ST" code="0131"/>.</p>
+	  <eg role="frag-prolog-parse-test">declare option require-feature "schema-aware higher-order-function";
+declare option prohibit-feature "static-typing";
+	  </eg>
+	</example>
+	<example>
+	  <p>The following declaration requires a vendor-defined extension named <code>random-result</code>. A query implementation that does not recognize this extension may simply ignore this declaration, since it does not implement the feature.</p>
+	  <eg role="frag-prolog-parse-test">declare namespace rand = "http://random.example.com/xquery";
+declare option require-feature "rand:random-result";
+	  </eg>
+	</example>
+	<example>
+	  <p>The following declaration prohibits all vendor extensions:</p>
+	  <eg role="frag-prolog-parse-test">declare option prohibit-feature "all-extensions";</eg>
+	</example>
+	<example>
+	  <p>The following declaration requires all optional features defined in the XQuery specification:</p>
+	   <eg role="frag-prolog-parse-test">declare option require-feature "all-optional-features";</eg>
+	</example>
+	<example>
+	  <p>The following declaration, based on the GIS example from the previous paragraph, requires <code>gis:geography-terrain</code>, thus implicitly requiring <code>gis:geography</code>, and prohibits all other optional features:</p>
+	  <eg role="frag-prolog-parse-test">declare namespace gis="http://geography.example.com/gis";
+declare option require-feature "gis:geography-terrain";
+declare option prohibit-feature "gis:all-optional-features";
+	  </eg>
+	</example>
+      </div2>
+</div1>

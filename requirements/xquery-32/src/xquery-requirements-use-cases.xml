@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE spec PUBLIC "-//W3C//DTD Specification V2.1//EN"
+               "http://www.w3.org/2002/xmlspec/dtd/2.2/xmlspec.dtd" [
+
+<!-- Things to update in these ENTITY definitions before publishing this document:
+* doc.stage must be "FPWD", "WD", "LCWD" "CR", "PR", "PER", "REC" "NOTE"
+* w3c-doctype must be "wd", "cr", "pr", "per", "rec", or "wgnote"
+* doc.w3c-doctype-full must be "First Public Working Draft", "Working Draft", "Last Call Working Draft",
+    "Candidate Recommendation", "Proposed Recommendation", "Proposed Edited Recommendation", "Recommendation",
+    or "Working Group Note"
+* date.day, date.DD, date.month, date.monthnum, and date.year must represent the date of publication of the document
+* doc.w3c-prevdesignation must properly represent the stage and shortname of the immediately preceding publication of the document
+* Various status section generation ENTITY definitions below must be properly updated
+-->
+
+<!ENTITY doc.version "3.2">
+<!ENTITY doc.version-code "32">
+<!ENTITY doc.stage "FPWD">
+<!ENTITY doc.w3c-doctype "wd">
+<!ENTITY doc.w3c-doctype-full "Working Draft">
+
+<!ENTITY date.day "99">
+<!ENTITY date.DD "jj">
+<!ENTITY date.month "SomeMonth">
+<!ENTITY date.monthnum "99">
+<!ENTITY date.year "2099">
+<!ENTITY doc.date "&date.year;&date.monthnum;&date.DD;">
+
+<!ENTITY w3c.tr "http://www.w3.org/TR">
+<!ENTITY doc.parent.shortname "xquery-&doc.version-code;">
+<!ENTITY doc.shortname "&doc.parent.shortname;-requirements">
+<!ENTITY doc.w3c-designation "&doc.stage;-&doc.shortname;">
+<!ENTITY doc.publoc "&w3c.tr;/&date.year;/&doc.w3c-designation;-&doc.date;/">
+<!ENTITY doc.latestloc "&w3c.tr;/&doc.shortname;/">
+<!ENTITY doc.parent.latestloc "&w3c.tr;/&doc.parent.shortname;/">
+<!ENTITY language "XQuery &doc.version;">
+
+<!-- The following ENTITY declarations are unique for Recommendation documents -->
+	<!ENTITY req.status "<emph>Status:</emph>">
+	<!ENTITY req.green "<graphic source='http://www.w3.org/Icons/green-ball.gif' alt='green status'/>">
+	<!ENTITY req.yellow "<graphic source='http://www.w3.org/Icons/yellow-ball.gif' alt='yellow status'/>">
+	<!ENTITY req.red "<graphic source='http://www.w3.org/Icons/red-ball.gif' alt='red status'/>">
+	<!ENTITY req.yes "&req.green; &req.status; this requirement has been met.">
+	<!ENTITY req.partial "&req.yellow; &req.status; this requirement has been partially met.">
+	<!ENTITY req.no "&req.red; &req.status; this requirement has not been met.">
+
+<!ENTITY % status-entities SYSTEM "../../../etc/status-entities.dtd">
+%status-entities;
+
+<!ENTITY doc.WD-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.LC-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.LC-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.CR-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.CR-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.PR-expected "TO BE SPECIFIED">
+<!ENTITY doc.PR-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.PR-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.REC-pubdate "TO BE SPECIFIED">
+
+<!ENTITY doc.pubdate "&doc.WD-pubdate;">
+<!ENTITY doc.comments-due "&doc.LC-comments-due;">
+
+<!ENTITY status-section-id "status">
+<!ENTITY spec-devby    "&devby.xquery;">
+<!ENTITY changelog-id  "">
+<!ENTITY changes-para  "&post.FPWD.changes;">
+<!ENTITY implementation-report-location "">
+<!ENTITY implementation-report-availability "">
+<!ENTITY implementation-report "&implementation-report-irrelevant;">
+<!ENTITY disclosure.one    "&disclosure.xquery;">
+<!ENTITY Bugzilla-key "XQuery32Req">
+<!ENTITY patent-policy-paragraph "&ppp-one;">
+<!ENTITY documents-and-relationships "&not-set-of-documents;">
+<!ENTITY advancement.statement "&advance.1WG.to-Note;">
+
+<!ENTITY doc-stability "&doc-stability-WD;">
+<!ENTITY PR-entrance-criteria ''>
+<!ENTITY features-at-risk-para "&no-features-at-risk;">
+<!ENTITY document-stage "&doc-stage-WD;">
+<!ENTITY customized-paragraph '<p>These Requirements identify extensions to the
+<loc href="http://www.w3.org/TR/xquery-31/">XQuery 3.1 Recommendation</loc>,
+published SOME TIME EARLIER, that have been requested by WG participants
+and by reviewers who do not participate in the W3C activities. 
+The XML Query WG has not yet fully reviewed these requirements.</p>'>
+
+<!ENTITY status-section SYSTEM "../../../etc/status-general.xml">
+
+]>
+<spec id="spec-top" w3c-doctype="&doc.w3c-doctype;">
+	<header id="spec-header">
+		<title>&language; Requirements and Use Cases</title>
+		<w3c-designation>&doc.w3c-designation;</w3c-designation>
+		<w3c-doctype>W3C &doc.w3c-doctype-full;</w3c-doctype>
+		<pubdate>
+			<day>&date.day;</day>
+			<month>&date.month;</month>
+			<year>&date.year;</year>
+		</pubdate>
+		<publoc>
+			<loc href="&doc.publoc;">&doc.publoc;</loc>
+		</publoc>
+		<latestloc>
+      <loc href="&doc.latestloc;">&doc.latestloc;</loc>
+		</latestloc>
+<!--
+		<prevlocs>
+		  <loc href="http://www.w3.org/TR/2014/NOTE-xquery-30-requirements-20140408/">http://www.w3.org/TR/2014/NOTE-xquery-30-requirements-20140408/</loc>
+		</prevlocs>
+-->
+		<authlist>
+		  <author>
+		    <name>Jonathan Robie</name>
+		    <affiliation>EMC Corporation</affiliation>
+		  </author>
+		</authlist>
+
+		&status-section;
+
+		<abstract>
+			<p>This document specifies goals and requirements for &language;. 
+			</p>
+		</abstract>
+		<langusage>
+			<language id="en">English</language>
+		</langusage>
+		<revisiondesc>
+			<p>2013-02-05: First internal Working Draft</p>
+      <p>2014-04-10: First Public Working Draft</p>
+		</revisiondesc>
+	</header>
+	<body>
+		<!--  ***** GOALS   ************************-->
+		<div1 id="goals">
+			<head>Goals</head>
+
+			<p>The primary goal of XML Query 3.2 is to
+			extend XML Query 3.1 with FILL IN THE BLANKS.</p>
+
+			<p>Other features that improve usability or
+			compatibility will be considered as time
+			permits.</p>
+
+			<p>Satisfying these goals may require changes to the set of seven documents
+      that have progressed to Recommendation together (Data Model 3.1, Functions and Operators 3.1,
+      Serialization 3.1, XPath 3.1, XQuery 3.1, XQueryX 3.1, and XSLT 3.0).</p>
+
+		</div1>
+
+
+		<!--*****REQUIREMENTS**************************************************-->
+		<div1 id="Requirements">
+			<head>Requirements</head>
+
+			<!-- TERMINOLOGY-->
+			<div2 id="terminology">
+				<head>Terminology</head>
+				<p>The following keywords are used
+				throughout the document to specify the
+				extent to which an item is a
+				requirement for the work of the XML
+				Query Working Group:</p>
+
+				<glist>
+
+					<gitem>
+						<label id="terminology-must">MUST</label>
+						<def>
+							<p>The item is an absolute requirement.</p>
+						</def>
+					</gitem>
+
+					<gitem>
+						<label id="terminology-must-not">MUST NOT</label>
+						<def>
+							<p>The item is an absolute prohibition.</p>
+						</def>
+					</gitem>
+
+					<gitem>
+						<label id="terminology-should">SHOULD</label>
+						<def>
+							<p>There may exist valid reasons not to treat this item as a requirement,
+              but the full implications should be understood and the case carefully weighed before discarding this item.</p>
+						</def>
+					</gitem>
+
+					<gitem>
+						<label id="terminology-should-not">SHOULD NOT</label>
+						<def>
+							<p>There may exist valid reasons when the
+                 particular behavior is acceptable or even useful, but the full
+                 implications should be understood and the case carefully weighed
+                 before implementing any behavior described with this label.</p>
+						</def>
+					</gitem>
+
+					<gitem>
+						<label id="terminology-may">MAY</label>
+						<def>
+							<p>An item deserves attention, but further study is needed to determine whether the item should be treated as a requirement.</p>
+						</def>
+					</gitem>
+
+				</glist>
+
+				<p>When the words  <loc href="#terminology-must">MUST</loc>, <loc href="#terminology-should">SHOULD</loc>, or <loc href="#terminology-may">MAY</loc>
+        are used in this technical sense [<loc href="http://www.ietf.org/rfc/rfc2119.txt">IETF RFC 2119</loc>], they occur as a hyperlink to these definitions. 
+        These words will also be used with their conventional English meaning, in which case there is no hyperlink. 
+        For instance, the phrase "the full implications should be understood" uses the word "should" in its conventional English sense,
+        and therefore occurs without the hyperlink.</p>
+
+
+				<p id="req-status">Each requirement also includes a status section,
+				indicating its current situation in the XQuery/XPath/XSLT family of specifications.
+				Three status levels are used:</p>
+
+				<glist>
+
+				  <gitem>
+				    <label>"Green" status</label>
+				    <def>
+				      <p>
+    			      <graphic source="http://www.w3.org/Icons/green-ball.gif" alt="green status"></graphic>
+                This indicates that the requirement, according to its
+                original formulation, has been completely met. Optional clarifying text
+                may follow.</p>
+            </def>
+          </gitem>
+          <gitem>
+            <label>"Yellow" status</label>
+            <def>
+              <p>
+                <graphic source="http://www.w3.org/Icons/yellow-ball.gif" alt="yellow status"></graphic>
+                This indicates that the requirement has been partially met
+                according to its original formulation. When this happens, explanatory text is
+                provided to better clarify the current scope of the
+                requirement.</p>
+            </def>
+          </gitem>
+
+          <gitem>
+            <label>"Red" status</label>
+            <def>
+              <p>
+                <graphic source="http://www.w3.org/Icons/red-ball.gif" alt="red status"></graphic>
+                This indicates that the requirement, according to its
+                original formulation, has not been met. If this is the case, explanatory text
+              is provided.</p>
+            </def>
+          </gitem>
+
+        </glist>
+
+      </div2>
+
+      <!-- GENERAL REQUIREMENTS-->
+      <div2 id="general-requirements">
+        <head>General Requirements</head>
+
+        <div3 id="backward-compatibility">
+          <head>Backward compatibility</head>
+
+          <glist>
+
+            <gitem>
+              <label/>
+              <def>
+                <p>XQuery 3.2 <loc href="#terminology-must">MUST</loc> be backward compatible with <bibref ref="xquery-31"/>. </p>
+                <p>Every valid XQuery 3.1 expression <loc href="#terminology-must">MUST</loc> be valid in XQuery 3.2 and
+                   it <loc href="#terminology-must">MUST</loc> evaluate to the same result.</p>
+
+                <p><graphic source="http://www.w3.org/Icons/green-ball.gif" alt="green status"></graphic>  
+                <emph>Status:</emph> this requirement has been met.</p>
+              </def>
+            </gitem>
+
+          </glist>
+
+        </div3>
+
+        <div3 id="extension-compatibility">
+          <head>Extension compatibility</head>
+
+          <glist>
+
+            <gitem>
+              <label/>
+              <def>
+                <p>XQuery 3.2 <loc href="#terminology-must">MUST</loc> be compatible with XQuery 3.1 extensions developed by the
+                <loc href="http://www.w3.org/XML/Query/">XML Query Working Group</loc>, including <bibref ref="xquery-update-31"/>
+                and <bibref ref="xpath-full-text-31"/>.</p>
+
+                <p><graphic source="http://www.w3.org/Icons/green-ball.gif" alt="green status"></graphic>  
+                <emph>Status:</emph> this requirement has been met.</p>
+              </def>
+            </gitem>
+
+          </glist>
+
+        </div3>
+
+      </div2>
+
+      <!--  REQUIREMENTS ***********************************-->
+      <div2 id="SOMECATEGORY">
+        <head>SOME CATEGORY</head>
+
+        <div3 id="SOMETOPIC">
+          <head>SOME TOPIC</head>
+
+          <glist>
+
+            <gitem>
+              <label/>
+                <def>
+                  <p>XQuery 3.2 <loc href="#terminology-must">MUST</loc> support SOMETHING OR OTHER.</p>
+
+                  <p><graphic source="http://www.w3.org/Icons/green-ball.gif" alt="green status"></graphic>  
+                     <emph>Status:</emph> this requirement has been met.</p>
+                </def>
+            </gitem>
+
+            <gitem>
+              <label/>
+                <def>
+                  <p>XQuery 3.2 <loc href="#terminology-must">MUST</loc> support SOMETHING OR OTHER.</p>
+
+                  <p><graphic source="http://www.w3.org/Icons/yellow-ball.gif" alt="yellow status"></graphic>  
+                     <emph>Status:</emph> this requirement has been partially met.</p>
+                </def>
+            </gitem>
+
+            <gitem>
+              <label/>
+                <def>
+                  <p>XQuery 3.2 <loc href="#terminology-must">MUST</loc> support SOMETHING OR OTHER.</p>
+
+                  <p><graphic source="http://www.w3.org/Icons/red-ball.gif" alt="red status"></graphic>  
+                     <emph>Status:</emph> this requirement has not been met.</p>
+                </def>
+            </gitem>
+
+          </glist>
+
+        </div3>
+
+      </div2>
+
+    </div1>
+
+
+    <div1 id="use-cases">
+      <head>Use Cases</head>
+
+      <p>The solutions provided for the following Use Cases use the XQuery
+      3.2 query language, and frequently create maps rather than XML. </p>
+
+      <div2 id="SOMEUSECASES">
+        <head>SOME USE CASES</head>
+
+        <p>These use cases ...</p>
+
+        <div3 id="SOMEUSECASE">
+          <head>SOME INDIVIDUAL USE CASE</head>
+
+            <p>DESCRIPTION OF USE CASE.</p>
+
+            <div4>
+              <head>Solution in XQuery 3.2</head>
+
+              <eg><![CDATA[
+]]></eg>
+            </div4>
+
+
+        </div3>
+
+      </div2>
+
+      <!--**************************************************-->
+    </div1>
+
+  </body>
+
+  <back>
+    <div1 id="references">
+      <head>References</head>
+
+      <blist>
+        <bibl id="RFC2119" key="RFC 2119">
+          S. Bradner. <emph>Key Words for use in RFCs to Indicate Requirement Levels.</emph> IETF
+          RFC 2119.  See <loc href="http://www.ietf.org/rfc/rfc2119.txt" xlink:type="simple"
+          xlink:show="replace" xlink:actuate="onRequest">http://www.ietf.org/rfc/rfc2119.txt</loc>.
+        </bibl>
+        <bibl key="XQuery 3.1" id="xquery-31"/>
+        <bibl key="XQuery 3.2" id="xquery-32"/>
+        <bibl key="XQuery and XPath Data Model 3.2" id="xpath-datamodel-32"/>
+        <bibl key="XPath 3.2" id="xpath-32"/>
+        <bibl key="XSLT 3.0" id="xslt-30"/>
+        <bibl key="XQuery Update Facility 3.1" id="xquery-update-31"/>
+        <bibl key="XQuery and XPath Full Text 3.1" id="xpath-full-text-31"/>
+      </blist>
+
+    </div1>
+
+  </back>
+
+</spec>

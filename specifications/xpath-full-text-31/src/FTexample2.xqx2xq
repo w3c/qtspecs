@@ -1,0 +1,24 @@
+declare function local:filter($nodes as node()*, $exclude as element()*) as node()
+{
+
+( for $node
+    in ($nodes except $exclude)
+ return (typeswitch($node) case $e as element() return  element {fn:node-name($e)}{($e/child::attribute(*),
+fn:filter(($e/child::node() except $exclude), $exclude))} default  return $node)
+)
+};
+
+( for $book
+    in fn:doc("http://bstore1.example.com/full-text.xml")/child::books/child::book
+ let $irrelevantParts:=
+( for $part
+    in $book/descendant-or-self::part
+ let  score $score:=$part contains text "usability test.*" using wildcards
+ weight 10.0  
+    
+ where ($score < 0.5)
+ return $part
+)
+ where (fn:count($irrelevantParts) < fn:count($book/descendant-or-self::part))
+ return local:filter($book, $irrelevantParts)
+)

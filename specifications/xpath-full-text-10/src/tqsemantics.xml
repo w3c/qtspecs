@@ -1,0 +1,4543 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<div1 id="tq-semantics">
+    <head>Semantics</head>
+    
+        <p>This section describes the formal semantics of &language;.
+        The figure below shows how &language; integrates with XQuery 1.0
+        and XPath 2.0.</p>
+		
+		<p>The following diagram represents the interaction of
+    &language; with the rest of XQuery 1.0 and XPath 2.0.
+		It illustrates how full-text expressions can be nested within XQuery 1.0
+		and XPath 2.0 expressions and vice versa. </p>
+    
+        <graphic source="images/XQueryFullTextInteraction.jpg" alt="XQuery and Full Text Interaction diagram"/>
+    
+		<ulist>
+       	<item><p>Step 1 represents the composability of XQuery 1.0
+        and XPath 2.0 expressions and the fact that such expressions
+        evaluate to a sequence of XDM items.  This process is outside the scope of this
+        document and will not be discussed further.  </p></item>
+		
+		<item><p>Step 2 shows how XQuery 1.0 and XPath 2.0 expressions
+          can be nested within full-text expressions. 
+          If an XQuery 1.0 and XPath 2.0 expression
+          is nested on the left-hand side of an
+          &FTContains; expression or within &FTWords;,
+          the sequence of XDM items that result from evaluation
+          of that XQuery 1.0 or XPath 2.0 expression
+          are converted to their tokenized form, as described
+          in <loc href="#TokenizationSec">Tokenization</loc>. 
+          If the XQuery 1.0 and XPath 2.0 expression is nested
+          within another type of &FTSelection;,
+          the items in its result sequence are
+          converted to atomic values, as discussed in 
+          <loc href="#ftselections">FTSelections</loc>.</p></item>
+		
+		<item><p>Step 3 represents the composability of &FTSelection;s. 
+        Each &FTSelection; operates on zero or more
+        &AllMatches; and returns an &AllMatches;. The process is
+        described in the <loc href="#FTSelectionEvalSec">Evaluation 
+        of FTSelections</loc> section. </p>	</item>
+		
+		<item><p>Step 4 shows how &language; and scoring
+        expressions can be nested into XQuery 1.0 and XPath 2.0 expressions.
+        The sections <specref ref="FTContainsSec"/> and <specref ref="ScoreSec"/>
+        describe how this is achieved.</p></item>
+		</ulist>
+		
+		<note><p>In the list above and throughout the rest of this section, bold 
+		typeface has been used to distinguish the concepts that are part of the
+		<loc href="#AllMatchesSec">AllMatches</loc> model.</p></note>
+
+<!-- Jim; 2007-08-11 - ACTION FTTF-147-09 - clarify that this section is descriptive only -->
+		<p>The functions and schemas defined in this section are
+		considered to be within the fts: namespace (as discussed in
+    section <specref ref="tq-ft-namespaces"/>). These functions and schemas
+		are used only for describing the semantics.  There is no
+    requirement that an implementation of this specification must
+    use the functions, schemas, or algorithms described in this
+    section of this specification.  The only requirement is that
+    implementations must achieve the same results that an implementation
+    that does use these functions, schemas, and algorithms would
+    achieve. </p>
+
+    <p>
+    Note that by using XQuery 1.0 and XPath 2.0
+    to specify the formal semantics,
+    we avoid the need to introduce new formalism.
+    We simply reuse the formal semantics of XQuery 1.0 and XPath 2.0.
+    </p>
+
+    <!-- **************************************************************
+         *                            Tokenization                       *
+         ************************************************************** -->
+    <div2 role="xquery" id="TokenizationSec">
+        <head>Tokenization</head>
+        
+        <p><termdef id="TokenizationDef"
+        term="Tokenization">Formally, <term>tokenization</term> is the process 
+        of converting
+        an XDM item to a collections of tokens, taking any
+        structural information of the item into account
+        to identify token, sentence, and paragraph boundaries. Each token is
+        assigned a starting and ending position.</termdef></p>
+
+        <p>Tokenization, including the definition of the term "token",
+        <termref def="should">SHOULD</termref> be &ref-implementation-defined;. 
+        Implementations <termref def="should">SHOULD</termref> expose
+        the rules and sample results of tokenization as much as possible
+        to enable users to predict and interprete the results of tokenization. 
+        Tokenization <termref def="must">MUST</termref> conform to these 
+        constraints:</p>
+
+        <olist>
+
+           <item>
+              <p>Each token <termref def="must">MUST</termref> consist of
+              one or more characters.</p>
+           </item>
+
+           <item>
+              <p>Tokenization of an item
+              <termref def="must">MUST</termref> include only tokens derived 
+              from the string value of that item.  
+              The string value is defined in <bibref ref="xpath-datamodel"/> in
+              <xspecref spec="DM" ref="StringValue"/>; for element 
+              nodes it does not include the contents of attributes, but for
+              attribute nodes it does.
+              </p>
+           </item>
+
+           <item>
+              <p>The tokenizer <termref def="should">SHOULD</termref>, when
+              tokenizing two equal items, identify the same tokens in each.
+              The cases where it does not are &ref-implementation-defined;.
+              </p>
+           </item>
+
+           <item>
+              <p>The starting and ending position of a token
+              <termref def="must">MUST</termref> be integers, and the
+              starting position <termref def="must">MUST</termref> be
+              less than or equal to the ending position.</p>
+           </item>
+
+           <item>
+              <p>In the tokenization of an item,
+              consider the range of token positions
+              from the smallest starting position to the largest ending position;
+              every token position in that range must be covered by some token in the tokenization.
+              That is, for every token position <code>P</code>,
+              there must exist some token <code>T</code> such that
+              <code>T's starting position &lt;= P &lt;= T's ending position</code>.
+              </p>
+           </item>
+
+           <item>
+              <p>The tokenizer <termref def="must">MUST</termref> preserve
+              the containment hierarchy (paragraphs contain sentences contain 
+              tokens) by adhering to the following constraints:</p>
+              <olist>
+                <item>
+                <p>
+                Each token is contained in at most one sentence and at most
+                one paragraph.
+		(In particular, this means that
+		no tokens of any sentence are contained in any other sentence,
+		and
+                no tokens of any paragraph are contained in any other paragraph.)
+                </p>
+                </item>
+                <item>
+                <p>
+                All tokens of a sentence are contained in at most
+                one paragraph.
+                </p>
+                </item>
+                <!-- "No interleaving" rules: -->
+                <item>
+                <p>
+                The range of token positions from the smallest starting position
+                to the largest ending position in a sentence does not overlap
+                with the token position range from any other sentence.
+                </p>
+                </item>
+                <item>
+                <p>
+                The range of token positions from the smallest starting position
+                to the largest ending position in a paragraph does not overlap
+                with the token position range from any other paragraph.
+                </p>
+                </item>
+              </olist>
+           </item>
+        </olist>
+
+        <p>Useful information for tokenizer implementors may be found
+        in <bibref ref="UAX29"/>.</p>        
+
+        <note><p>Usually, the starting and ending positions of a 
+        token are the same. 
+        For some languages, some tokenizers may identify
+        overlapping tokens.  For example, the German word
+        "Donaudampfschifffahrtskapitaensmuetze" might be
+        tokenized into the following tokens:
+        "Donaudampfschifffahrtskapitaensmuetze", "Donau",
+        "dampf", "schiff", "dampfschiff", "kapitaen", "muetze",
+        "kapitaensmuetze", "schifffahrt", "dampfschifffahrt", 
+        and perhaps others.
+        In the face of overlapping tokens, it is implementation-dependent what
+        positions a tokenizer assigns to each such token. For
+        example, a tokenizer might assign the same position value to each of
+        the tokens "Donaudampfschifffahrtskapitaensmuetze",
+        "Donau", "dampf", "schiff", "dampfshiff", etc.
+		In that case, the distance between each (overlapping) token
+        assigned the same position is -1. Tokenizers might retain additional
+        information about those overlapping tokens that allows the full-text
+        implementation to distinguish among them.
+        </p>
+        <p>Consider the sentence "Ich sehe den Dampfschifffahrtskapitän auf dem
+        Fluß." If an implementation tokenizes "Dampfschifffahrtskapitän"
+        as overlapping tokens at the same position, then the implementation
+        could still determine that the query
+        "'Schifffahrt Dampf' window 0 words ordered" fails to match the
+        sentence because phrase
+        matching is implementation-defined and may make use of additional
+        implementation-dependent token information.
+        </p>
+        <p>Even more complex situations can arise. Consider, for example,
+        the German sentence "Er stellte sie vor." A sophisticated tokenizer
+        might construct the token "vorstellen" covering positions 2 through 4,
+        which overlaps the token "sie" at position 3.  For the purposes of
+        distance calculations, tokens are considered in the order of their
+        starting positions, so the distance between "vorstellen" and
+        "sie" would be 3-4-1=-2. (See <code>fts:wordDistance</code>, below.)</p>
+        </note>
+
+        <div3 role="xquery" id="tq-ft-Tokenization-examples">
+           <head>Examples</head>
+
+<p>For example, the following example must return false, because the 'secret'
+only occurs within an attribute and a comment, neither of which contributes
+characters to the string value of the 'p' element node:
+</p>
+<eg role="xquery"><![CDATA[
+<p kind='secret'>Sensitive material <!-- secret --></p> contains text 'secret'
+]]>
+</eg>
+
+<p>The following document may lead to overlapping tokens to account for the
+ambiguity caused by the hyphen:
+</p>
+<eg><![CDATA[
+<p>I will re-
+sign tommorow.</p>
+]]>
+</eg>
+
+		<p>The following document fragment is the source document for examples in this section. 
+    A sample tokenization is used for the examples in this section. 
+    The results might be different for other tokenizations.</p>
+
+		<p>Unless stated otherwise, the results assume a case-insensitive match.</p>
+	        
+        <eg><![CDATA[
+<offers>
+    <offer id="1000" price="10000">
+        Ford Mustang 2000, 65K, excellent condition, runs 
+        great, AC, CC, power all
+    </offer>
+    <offer id="1001" price="8000">
+        Honda Accord 1999, 78K, A/C, cruise control, runs 
+        and looks great, excellent condition
+    </offer>
+    <offer id="1005" price="5500">
+        Ford Mustang, 1995, 150K highway mileage, no rust, 
+        excellent condition
+    </offer>
+</offers>
+        ]]></eg>
+        
+        <p>In this sample tokenization, tokens are delimited by punctuation and 
+		whitespace symbols. </p>
+
+		<ulist>
+		
+		<item><p>The token "Ford" is at relative position 1.</p>
+    </item>
+
+		<item><p>The token "Mustang" is at relative position 2.</p>
+    </item>
+
+		<item><p>The token "2000" is at relative position 3.</p>
+    </item>
+
+		<item><p>Relative position numbers are assigned sequentially through the 
+		end of the document.</p>
+    </item> 
+
+		</ulist>
+
+		<p>Hence in this example each token occupies exactly one position, and no overlapping of 
+                tokens occurs. The relative positions of tokens
+                are shown
+                below in parentheses.</p>
+        
+        <eg id="SampleTokenizedDoc"><![CDATA[
+<offers>
+    <offer id="1000" price="10000">
+        Ford(1) Mustang(2) 2000(3), 65K(4), excellent(5)
+        condition(6), runs(7) great(8), AC(9), CC(10), 
+        power(11) all(12)
+    </offer>
+    <offer id="1001" price="8000">
+        Honda(13) Accord(14) 1999(15), 78K(16), A(17)/C(18),
+        cruise(19) control(20), runs(21) and(22) looks(23)
+        great(24), excellent(25) condition(26)
+    </offer>
+    <offer id="1005" price="5500">
+        Ford(27) Mustang(28), 1995(29), 150K(30) highway(31)
+        mileage(32), little(33)  rust(34), excellent(35) 
+        condition(36)
+    </offer>
+</offers>
+        ]]></eg>
+        
+        <p>The relative positions of paragraphs are determined similarly. In
+		this sample tokenization, the paragraph delimiters are start tags and 
+        end tags.</p>
+		
+		<ulist>
+		
+		<item><p>The tokens in the first 'offer' element are assigned relative 
+		paragraph number 1.</p></item>
+		
+		<item><p>The tokens from the next 'offer' element are assigned relative  
+		paragraph number 2.</p></item>
+		
+		<item><p>Relative paragraph numbers are assigned sequentially through 
+		the end of the document.</p></item>
+		
+		</ulist>
+        
+        <p>The relative positions of sentences are determined similarly using 
+        sentence delimiters.</p>
+
+
+           <p>Implementations may provide for the means to ignore or side-step
+           certain structural elements when performing tokenization.  In the
+           following example, the implementation has decided to ignore the
+           markup for <code>&lt;bold&gt;</code> and prune out the entire
+           subtree headed by <code>&lt;deleted&gt;</code>.</p> 
+        <eg><![CDATA[
+<para><deleted>This sentence was deleted.</deleted>
+This <bold>entire paragraph</bold> is one sentence
+as far as the tokenizer is concerned.
+</para>
+]]></eg>
+        <p>Using the same notation as before, this sample tokenization is
+        shown below. All the tokens marked with a
+        token position also have the same sentence and paragraph relative
+        positions. Note that there are no tokens marked for the 
+        ignored subtree.
+        </p>
+        <eg><![CDATA[
+<para><deleted>This sentence was deleted.</deleted>
+This(1) <bold>entire(2) paragraph(3)</bold> is(4) one(5) sentence(6)
+as(7) far(8) as(9) the(10) tokenizer(11) is(12) concerned(13).
+</para>
+]]></eg>
+        </div3>
+
+        <div3 role="xquery" id="TokenizationRepresentationsSec">
+           <head>Representations of Tokenized Text and Matching</head>
+
+        <p><termdef id="QueryItemDef"
+        term="QueryItem">A <term>QueryItem</term> is a sequence of
+        &QueryTokenInfo;s representing the collection of tokens derived
+        from tokenizing one query string. </termdef></p>
+
+        <p><termdef id="QueryTokenInfoDef"
+        term="QueryTokenInfo">A <term>QueryTokenInfo</term> is the
+        identity of a token inside a query string. </termdef>
+        Each &QueryTokenInfo; is
+        associated with a <phrase diff="chg">position</phrase>
+        that captures the relative
+        position of the query string in the query.</p>
+        
+
+        <p><termdef id="TokenInfoDef" term="TokenInfo">A <term>TokenInfo</term> 
+        represents a contiguous collection of tokens from an XML document. 
+        </termdef>
+        Each &TokenInfo; is associated with:</p>
+        
+        <ulist>
+            <item>
+                <p><code>startPos</code>: the smallest starting position
+                of a token in the sequence</p>
+            </item>
+            <item>
+                <p><code>endPos</code>: the largest ending position
+                of any token of the sequence</p>
+            </item>
+            <item>
+                <p><code>startSent</code>: the relative position of the 
+                sentence containing the token with the smallest starting
+                position
+                or zero if the tokenizer does not report
+                sentences</p>
+            </item>
+            <item>
+                <p><code>endSent</code>: the relative position of the sentence 
+                containing the token with the largest ending position
+                or zero if the tokenizer does not report
+                sentences</p>
+            </item>
+            <item>
+                <p><code>startPara</code>: the relative position of the 
+                paragraph containing the token with the smallest starting
+                position or zero if the tokenizer does not report
+                paragraphs</p>
+            </item>
+            <item>
+                <p><code>endPara</code>: the relative position of the paragraph
+                containing the token with the largest ending position or
+                zero if the tokenizer does not report paragraphs</p>
+            </item>
+        </ulist>
+        
+        <p>The following matching function is the central
+        &ref-implementation-defined; primitive performing the full-text
+        retrieval.</p>
+
+<!-- file: fts.xqy -->        
+        <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:matchTokenInfos (
+      $searchContext as item(),
+      $matchOptions as element(fts:matchOptions),
+      $stopWords as xs:string*,
+      $queryTokens as element(fts:queryToken)* )
+   as element(fts:tokenInfo)*  external;
+            ]]></eg>
+
+        <p>The above function returns the &TokenInfo;s in items in
+        <code>$searchContext</code> that match the query string represented by
+        the sequence <code>$queryTokens</code>, when using the match
+        options in <code>$matchOptions</code> and stop words in
+        <code>$stopWords</code>. If <code>$queryTokens</code> is a
+        sequence of more than one query token, each returned
+        &TokenInfo; must represent a phrase matching that sequence. 
+        </p>
+
+      <note><p>While this matching function assumes a tokenized
+      representation of the query strings, it does not assume a tokenized
+      representation of the input items in <code>$searchContext</code>,
+      i.e. the texts being searched.
+      Hence, the tokenization of the search context is implicit in
+      this function and coupled to the retrieval of matches. 
+      Of course, this does not imply that tokenization of the
+      search context cannot be done a priori. 
+      The tokenization of each item in <code>$searchContext</code> does not
+      necessarily take into account the match options in
+      <code>$matchOptions</code> or the query tokens in
+      <code>$queryTokens</code>. 
+      This allows implementations to tokenize and index input data
+      without the knowledge of particular match options
+      used in full-text queries.</p></note> 
+         </div3>
+    </div2>
+
+    
+    <!-- ***********************************************
+         ***               AllMatches                ***
+         *********************************************** -->
+    <div2 role="xquery" id="FTSelectionEvalSec">
+        <head>Evaluation of FTSelections</head>
+        
+        <p>The XQuery 1.0 and XPath 2.0 Data Model is
+        inadequate to support fully composable &FTSelection;s. 
+        Full-text operations, such as &FTSelection;s, operate on linguistic
+        units, such as positions of tokens, and which are not captured
+        in the XQuery 1.0 and XPath 2.0 Data Model (XDM). </p>
+		
+		<p>XQuery and XPath Full Text adds relative token, sentence, and 
+		paragraph position numbers via &AllMatches;. &AllMatches; make 
+		&FTSelection;s fully composable.</p>
+        
+        <!-- **********************************************************************
+         *                            AllMatches                              *
+         ********************************************************************** -->
+        <div3 role="xquery" id="AllMatchesSec">
+            <head>AllMatches</head>
+
+            <div4 role="xquery" id="tq-ft-formalmodel">
+                <head>Formal Model</head>
+                
+                <p><termdef id="AllMatchesDef"
+                term="AllMatches">An <term>AllMatches</term>
+                describes the possible results of an &FTSelection;.</termdef>
+                The UML Static Class diagram of &AllMatches; is shown
+                on the diagram given below.</p>
+            
+                <graphic source="images/AllMatchesClassDiagram.png" 
+                         alt="AllMatches class diagram"/>
+                
+                <p>The &AllMatches; object contains zero or more &Match;es. </p>
+                
+				<p><termdef id="MatchDef" term="Match">Each  
+                <term>Match</term> describes one result to the &FTSelection;.</termdef> 
+				The result is described in terms of zero or more &StringInclude;s and zero
+                or more &StringExclude;s.</p>
+				
+                <p><termdef id="StringMatchDef" term="StringMatch">A
+				<term>StringMatch</term> is a
+				possible match of a sequence of query
+				tokens with a corresponding sequence
+				of tokens in a document. A StringMatch may be a &StringInclude;
+				or &StringExclude;.</termdef> The <term>queryPos</term> 
+				attribute specifies the position of the query token in the 
+				query. This attribute is needed for &FTOrder;s. The matched
+				document token sequence is described in the &TokenInfo; 
+                associated with
+				the &StringMatch;.</p>
+				
+				
+				<p><termdef id="StringIncludeDef" term="StringInclude">A <term>StringInclude</term>
+				is a &StringMatch; that describes a &TokenInfo; that must be
+				contained in the document.</termdef></p>
+				
+				
+				<p><termdef id="StringExcludeDef" term="StringExclude">A <term>StringExclude</term>
+				is a &StringMatch; that describes a &TokenInfo; that must not be
+				contained in the document.</termdef></p>
+                
+                <p>Intuitively, &AllMatches; specifies the &TokenInfo;s that a
+                search context item contains and does not contain to satisfy an &FTSelection;.</p>
+                
+                <p>The &AllMatches; structure resembles the Disjunctive Normal
+                Form (DNF) in propositional and first-order logic. The
+                &AllMatches; is a disjunction of &Match;es. Each &Match; is a
+                conjunction of &StringInclude;s, and &StringExclude;s. </p>
+                
+            </div4>
+
+            <div4 role="xquery" id="tq-ft-AllMatches-examples">
+                <head>Examples</head>
+
+                <p>Since in most of the examples below the tokens span only a single 
+                position, we characterize the &TokenInfo; instance by simply giving this position, 
+                written as "Pos:X". This should be read as the value for both, the 
+                <code>startPos</code> and the <code>endPos</code>
+                attribute. Furthermore, for expository reasons, we
+                include in each &StringMatch; example an attribute
+                "query string", set to the original
+                query string, in order to facilitate the association
+                from which query string that match came from.</p>
+                <p>The simplest example of an &FTSelection; is an &FTWords; such 
+				as  <code>"Mustang"</code>. The
+                &AllMatches; corresponding to this &FTWords; is given below. </p>
+                
+                <graphic source="images/SampleAllMatches1.jpg" 
+                         alt="Sample AllMatches"/>
+                
+                <p>As shown, the &AllMatches; consists of two &Match;es. Each
+                &Match; represents one possible result of the &FTWords;
+                <code>"Mustang"</code>. The result represented by the first
+                &Match;, represented as a &StringInclude;, contains the token
+                "Mustang" at position 2. The result described by the second &Match;
+                contains the token "Mustang" at position 28. </p>
+                
+                <p>A more complex example of an &FTSelection; is an &FTWords; 
+				such as <code>"Ford Mustang"</code>. The &AllMatches; for this 
+				&FTWords; is given below.</p>
+                
+                <graphic source="images/SampleAllMatches2.jpg" 
+                         alt="Sample AllMatches"/>
+                
+                <p>There are two possible results for this &FTWords;, and
+                these are represented by the two &Match;es. Each of the
+                &Match;es requires two tokens to be matched. The first &Match; is 
+				obtained by matching "Ford" at position 1 and matching "Mustang" at position 2.
+                Similarly, the second &Match; is obtained by
+                matching "Ford" at position 27 and "Mustang" at position 28.</p>
+                
+                <p>An even more complex example of an &FTSelection; is an 
+				&FTSelection; such as <code>"Mustang"
+                ftand ftnot "rust"</code> that searches for 
+                "Mustang" but not "rust". The &AllMatches; for this
+                &FTSelection; is given below.</p>
+                
+                <graphic source="images/SampleAllMatches3.jpg" 
+                         alt="Sample AllMatches"/>
+
+                <p>This example introduces &StringExclude;. &StringExclude; 
+				corresponds to negation in DNF (Disjunctive Normal Form). It specifies that the 
+                result described by the corresponding &Match; must not match the token at 
+                the specified position. In this example, the first &Match; specifies 
+                that "Mustang" is matched at position 2, and that the token "rust" 
+                at position 34 is not matched.</p>
+                
+            </div4>
+            
+        
+        <!-- **********************************************************************
+             *                            XML Representation                      *
+             ********************************************************************** -->
+             <div4 id="tq-ft-XML-representation">
+                <head>XML representation</head>
+            
+                <p> &AllMatches; has a well-defined hierarchical
+                structure. Therefore, the &AllMatches; can be easily
+                modeled in XML. 
+                This XML representation and those which follow formally describe the
+                semantics of &FTSelection;s. For example, 
+                the XML representation of &AllMatches; formally
+                specifies how an &FTSelection; operates on zero or more
+                &AllMatches; to produce a resulting &AllMatches;. </p>
+                
+                <p>The XML schema for representing &AllMatches; is
+                given below.</p>
+
+<!-- file: AllMatches.xsd -->
+                <eg role="semfunc-file-allmatches-xsd"><![CDATA[
+<xs:schema 
+     xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+     xmlns:fts="http://www.w3.org/2007/xpath-full-text"
+     targetNamespace="http://www.w3.org/2007/xpath-full-text"
+     elementFormDefault="qualified" 
+     attributeFormDefault="unqualified">
+
+  <xs:complexType name="allMatches">
+    <xs:sequence>
+      <xs:element ref="fts:match" 
+                  minOccurs="0" 
+                  maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="stokenNum" type="xs:integer" use="required" />
+  </xs:complexType>
+
+  <xs:element name="allMatches" type="fts:allMatches"/>
+
+  <xs:complexType name="match">
+    <xs:sequence>
+      <xs:element ref="fts:stringInclude" 
+                  minOccurs="0" 
+                  maxOccurs="unbounded"/>
+      <xs:element ref="fts:stringExclude" 
+                  minOccurs="0" 
+                  maxOccurs="unbounded"/>
+   </xs:sequence>
+  </xs:complexType>
+  
+  <xs:element name="stringInclude" 
+              type="fts:stringMatch" />
+
+  <xs:element name="stringExclude" 
+              type="fts:stringMatch" />
+
+  <xs:element name="match" type="fts:match"/>
+
+  <xs:complexType name="stringMatch">
+    <xs:sequence>
+      <xs:element ref="fts:tokenInfo"/>
+    </xs:sequence>
+    <xs:attribute name="queryPos" 
+                  type="xs:integer" 
+                  use="required"/>
+    <xs:attribute name="isContiguous" 
+                  type="xs:boolean" 
+                  use="required"/>  
+  </xs:complexType>
+
+  <xs:complexType name="tokenInfo">
+    <xs:attribute name="startPos" 
+                  type="xs:integer" 
+                  use="required"/>
+    <xs:attribute name="endPos" 
+                  type="xs:integer" 
+                  use="required"/>
+    <xs:attribute name="startSent" 
+                  type="xs:integer" 
+                  use="required"/>
+    <xs:attribute name="endSent" 
+                  type="xs:integer" 
+                  use="required"/>
+    <xs:attribute name="startPara" 
+                  type="xs:integer" 
+                  use="required"/>
+    <xs:attribute name="endPara" 
+                  type="xs:integer" 
+                  use="required"/>
+  </xs:complexType>
+
+  <xs:element name="tokenInfo" type="fts:tokenInfo"/>
+
+  <xs:complexType name="queryItem">
+    <xs:sequence>
+      <xs:element ref="fts:queryToken" 
+                  minOccurs="0" 
+                  maxOccurs="unbounded"/>
+   </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="queryTokenInfo">
+    <xs:attribute name="word" 
+                  type="xs:string" 
+                  use="required"/>
+    <xs:attribute name="queryPos" 
+                  type="xs:integer" 
+                  use="required"/>
+  </xs:complexType>
+
+  <xs:element name="queryToken" type="fts:queryTokenInfo"/>
+</xs:schema>
+                ]]></eg>
+		
+	<p>The <code>stokenNum</code> attribute in 
+	&AllMatches; is related to the representation of the semantics as XQuery functions. 
+	Therefore, it is not considered part of the &AllMatches; model.
+	The <code>stokenNum</code> attribute stores
+	the number of query tokens used when evaluating the &AllMatches;. This 
+	value is used to compute the correct value for the <code>queryPos</code>
+	attribute in new &StringMatch;es. </p> 
+		
+            </div4>
+  
+        </div3>
+
+        
+        
+    <!-- *************************************************************
+         ***                       FTSelections                    ***
+         ************************************************************* -->
+        <div3 role="xquery" id="FTSelectionsXMLSec">
+            <head>XML Representation</head>
+            
+        <p>&FTSelection;s are fully composable and may be nested arbitrarily under
+        other &FTSelection;s. Each &FTSelection; may be associated with
+        match options (such as stemming and stop words) and score weights.
+        Since score weights are solely interpreted by the formal semantics
+        scoring function, they do not influence the semantics of
+        &FTSelection;s. Therefore, score weights are not considered in
+        the formal semantics.</p>
+
+            <p>
+            The XML structures defined by the following schema
+            represent &FTSelection;s
+            within the semantic functions of section <specref ref="tq-semantics"/>.
+            This representation is used for definitional purposes only
+            and should not be confused with
+            the XML representation for queries in Appendix <specref ref="id-xqft-xqueryx"/>.
+	    Every &FTSelection;
+	    is represented as an XML element. Every nested &FTSelection; is
+	    represented as a nested descendant element. 
+	    For binary &FTSelection;s, e.g., &FTAnd;, the nested &FTSelection;s
+	    are represented in <code>&lt;left&gt;</code> and <code>&lt;right&gt;
+	    </code> descendant elements. For unary &FTSelection;s, a 
+	    <code>&lt;selection&gt;</code> descendant element is used. Additional
+	    characteristics of &FTSelection;s, e.g., the distance unit for
+	    &FTDistance;, are stored in attributes. </p>
+
+<!-- file: FTSelection.xsd -->            
+            <eg role="semfunc-file-ftselection-xsd"><![CDATA[
+<xs:schema
+     xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+     xmlns:fts="http://www.w3.org/2007/xpath-full-text"
+     targetNamespace="http://www.w3.org/2007/xpath-full-text"
+     elementFormDefault="qualified" 
+     attributeFormDefault="unqualified">
+           
+  <xs:include schemaLocation="AllMatches.xsd" />
+  <xs:include schemaLocation="MatchOptions.xsd" />
+
+  <xs:complexType name="ftSelection">
+    <xs:sequence>
+      <xs:choice>
+        <xs:element name="ftWords" type="fts:ftWords"/>
+        <xs:element name="ftAnd" type="fts:ftAnd"/>
+        <xs:element name="ftOr" type="fts:ftOr"/>
+        <xs:element name="ftUnaryNot" type="fts:ftUnaryNot"/>
+        <xs:element name="ftMildNot" type="fts:ftMildNot"/>
+        <xs:element name="ftOrder" type="fts:ftOrder"/>
+        <xs:element name="ftScope" type="fts:ftScope"/>
+        <xs:element name="ftContent" type="fts:ftContent"/>
+        <xs:element name="ftDistance" type="fts:ftDistance"/>
+        <xs:element name="ftWindow" type="fts:ftWindow"/>
+        <xs:element name="ftTimes" type="fts:ftTimes"/>
+      </xs:choice>
+      <xs:element ref="fts:matchOptions" 
+                  minOccurs="0"/>
+      <xs:element name="weight" 
+                  type="xs:double" 
+                  minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="selection" type="fts:ftSelection"/>
+
+  <xs:complexType name="ftWords">
+    <xs:sequence>
+      <xs:element ref="fts:queryItem" 
+                  minOccurs="0" 
+                  maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="type" 
+                  type="fts:ftWordsType" 
+                  use="required"/>
+  </xs:complexType>
+
+  <xs:element name="queryItem" type="fts:queryItem"/>
+  
+  <xs:complexType name="ftAnd">
+    <xs:sequence>
+      <xs:element name="left" type="fts:ftSelection"/>
+      <xs:element name="right" type="fts:ftSelection"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="ftOr">
+    <xs:sequence>
+      <xs:element name="left" type="fts:ftSelection"/>
+      <xs:element name="right" type="fts:ftSelection"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="ftUnaryNot">
+    <xs:sequence>
+      <xs:element name="selection" type="fts:ftSelection"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="ftMildNot">
+    <xs:sequence>
+      <xs:element name="left" type="fts:ftSelection"/>
+      <xs:element name="right" type="fts:ftSelection"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="ftOrder">
+    <xs:sequence>
+      <xs:element name="selection" type="fts:ftSelection"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="ftScope">
+    <xs:sequence>
+      <xs:element name="selection" type="fts:ftSelection"/>
+    </xs:sequence>
+    <xs:attribute name="type" 
+                  type="fts:scopeType" 
+                  use="required"/>
+    <xs:attribute name="scope" 
+                  type="fts:scopeSelector" 
+                  use="required"/>
+  </xs:complexType>
+  
+  <xs:complexType name="ftContent">
+    <xs:sequence>
+      <xs:element name="selection" type="fts:ftSelection"/>
+    </xs:sequence>
+    <xs:attribute name="type" 
+                  type="fts:contentMatchType" 
+                  use="required"/>
+  </xs:complexType>
+  
+  <xs:complexType name="ftDistance">
+    <xs:sequence>
+      <xs:element name="range" type="fts:ftRangeSpec"/>
+      <xs:element name="selection" type="fts:ftSelection"/>
+    </xs:sequence>
+    <xs:attribute name="type" 
+                  type="fts:distanceType" 
+                  use="required"/>
+  </xs:complexType>
+  
+  <xs:complexType name="ftWindow">
+    <xs:sequence>
+      <xs:element name="selection" type="fts:ftSelection"/>
+    </xs:sequence>
+    <xs:attribute name="size" 
+                  type="xs:integer" 
+                  use="required"/>
+    <xs:attribute name="type" 
+                  type="fts:distanceType" 
+                  use="required"/>
+  </xs:complexType>
+  
+  <xs:complexType name="ftTimes">
+    <xs:sequence>
+      <xs:element name="range" type="fts:ftRangeSpec"/>
+      <xs:element name="selection" type="fts:ftWords"/>
+    </xs:sequence>
+  </xs:complexType>
+    
+  <xs:simpleType name="ftWordsType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="any"/>
+      <xs:enumeration value="all"/>
+      <xs:enumeration value="phrase"/>
+      <xs:enumeration value="any word"/>
+      <xs:enumeration value="all word"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="scopeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="same"/>
+      <xs:enumeration value="different"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="scopeSelector">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="paragraph"/>
+      <xs:enumeration value="sentence"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="distanceType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="paragraph"/>
+      <xs:enumeration value="sentence"/>
+      <xs:enumeration value="word"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="contentMatchType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="at start"/>
+      <xs:enumeration value="at end"/>
+      <xs:enumeration value="entire content"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
+            ]]></eg>
+        
+        </div3>
+
+
+        
+        <!-- **********************************************************************
+             *                       The evaluate function                        *
+             ********************************************************************** -->
+        <div3 role="xquery" id="tq-ft-evaluate-function">
+            <head>The <function>evaluate</function> function</head>
+            
+            <p>The semantics for the evaluation of
+            &FTSelection;s is defined using the <function>fts:evaluate</function> 
+			function. The function takes three
+            parameters: (1) an &FTSelection;, 2) a search
+            context item, and 3) the default set of match options
+            that apply to the evaluation of the &FTSelection;.</p>
+			<p>The <function>fts:evaluate</function> function returns the
+            &AllMatches; that is the result of evaluating the
+            &FTSelection;. When <function>fts:evaluate</function> is applied to some
+            &FTSelection; X, it calls the function
+            <function>fts:ApplyX</function> to build the resulting &AllMatches;.
+            If X is applied on nested &FTSelection;s, the 
+            <function>fts:evaluate</function> function is recursively called on these nested
+            &FTSelection;s and the returned &AllMatches; are used in the evaluation of
+            <function>fts:ApplyX</function>.
+            </p>
+            
+            <p>The semantics for the <function>fts:evaluate</function> function 
+            is given below.</p>
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:evaluate (
+      $ftSelection as element(*, fts:ftSelection), 
+      $searchContext as item(),
+      $matchOptions as element(fts:matchOptions),
+      $queryTokenNum as xs:integer )
+   as element(fts:allMatches)
+{
+   if (fn:count($ftSelection/fts:matchOptions) > 0) then 
+      (: First we deal with all match options that the    :)
+      (: FTSelection might bear: we add the match options :)
+      (: to the current match options structure, and      :)
+      (: pass the new structure to the recursive call.    :)
+      let $newFTSelection := 
+         <fts:selection>{$ftSelection/*
+                           [fn:not(self::fts:matchOptions)]}</fts:selection>
+      return fts:evaluate($newFTSelection, 
+                          $searchContext, 
+                          fts:replaceMatchOptions($matchOptions, 
+                                              $ftSelection/fts:matchOptions),
+                          $queryTokenNum)
+   else if (fn:count($ftSelection/fts:weight) > 0) then
+      (: Weight has no bearing on semantics -- just :)
+      (: call "evaluate" on nested FTSelection     :)
+      let $newFTSelection := $ftSelection/*[fn:not(self::fts:weight)]
+      return fts:evaluate($newFTSelection, 
+                          $searchContext, 
+                          $matchOptions,
+                          $queryTokenNum)
+   else
+      typeswitch ($ftSelection/*[1]) 
+         case $nftSelection as element(fts:ftWords) return
+            (: Apply the FTWords in the search context :)
+            fts:ApplyFTWords($searchContext,
+                             $matchOptions,
+                             $nftSelection/@type,
+                             $nftSelection/fts:queryItem,
+                             $queryTokenNum + 1)
+         case $nftSelection as element(fts:ftAnd) return
+            let $left := fts:evaluate($nftSelection/fts:left,
+                                     $searchContext,
+                                     $matchOptions,
+                                     $queryTokenNum)
+            let $newQueryTokenNum := $left/@stokenNum
+            let $right := fts:evaluate($nftSelection/fts:right,
+                                      $searchContext,
+                                      $matchOptions,
+                                      $newQueryTokenNum)
+            return fts:ApplyFTAnd($left, $right)
+         case $nftSelection as element(fts:ftOr) return
+            let $left := fts:evaluate($nftSelection/fts:left,
+                                     $searchContext,
+                                     $matchOptions,
+                                     $queryTokenNum)
+            let $newQueryTokenNum := $left/@stokenNum
+            let $right := fts:evaluate($nftSelection/fts:right,
+                                      $searchContext,
+                                      $matchOptions,
+                                      $newQueryTokenNum)
+            return fts:ApplyFTOr($left, $right)
+         case $nftSelection as element(fts:ftUnaryNot) return
+            let $nested := fts:evaluate($nftSelection/fts:selection,
+                                        $searchContext,
+                                        $matchOptions,
+                                        $queryTokenNum)
+            return fts:ApplyFTUnaryNot($nested)
+         case $nftSelection as element(fts:ftMildNot) return
+            let $left := fts:evaluate($nftSelection/fts:left,
+                                     $searchContext,
+                                     $matchOptions,
+                                     $queryTokenNum)
+            let $newQueryTokenNum := $left/@stokenNum
+            let $right := fts:evaluate($nftSelection/fts:right,
+                                      $searchContext,
+                                      $matchOptions,
+                                      $newQueryTokenNum)
+            return fts:ApplyFTMildNot($left, $right)
+         case $nftSelection as element(fts:ftOrder) return
+            let $nested := fts:evaluate($nftSelection/fts:selection,
+                                        $searchContext,
+                                        $matchOptions,
+                                        $queryTokenNum)
+            return fts:ApplyFTOrder($nested)
+         case $nftSelection as element(fts:ftScope) return
+            let $nested := fts:evaluate($nftSelection/fts:selection,
+                                        $searchContext,
+                                        $matchOptions,
+                                        $queryTokenNum)
+            return fts:ApplyFTScope($nftSelection/@type, 
+                                    $nftSelection/@scope,
+                                    $nested)
+         case $nftSelection as element(fts:ftContent) return
+            let $nested := fts:evaluate($nftSelection/fts:selection,
+                                        $searchContext,
+                                        $matchOptions,
+                                        $queryTokenNum)
+            return fts:ApplyFTContent($searchContext,
+                                      $nftSelection/@type, 
+                                      $nested)
+         case $nftSelection as element(fts:ftDistance) return
+            let $nested := fts:evaluate($nftSelection/fts:selection,
+                                        $searchContext,
+                                        $matchOptions,
+                                        $queryTokenNum)
+            return fts:ApplyFTDistance($nftSelection/@type,
+                                       $nftSelection/fts:range,
+                                       $nested)
+         case $nftSelection as element(fts:ftWindow) return
+            let $nested := fts:evaluate($nftSelection/fts:selection,
+                                        $searchContext,
+                                        $matchOptions,
+                                        $queryTokenNum)
+            return fts:ApplyFTWindow($nftSelection/@type,
+                                     $nftSelection/@size,
+                                     $nested)
+         case $nftSelection as element(fts:ftTimes) return
+            let $nested := fts:evaluate($nftSelection/fts:selection,
+                                        $searchContext,
+                                        $matchOptions,
+                                        $queryTokenNum)
+            return fts:ApplyFTTimes($nftSelection/fts:range,
+                                    $nested)
+         default return <fts:allMatches stokenNum="0" />
+};
+            ]]></eg>
+            
+            <p>For
+            concreteness, assume that the &FTSelection; was
+            invoked inside an <code>contains text</code> expression such
+            as <code>searchContext contains text ftSelection</code>. In order to 
+	    determine the
+            &AllMatches; result of <code>ftSelection</code>, the
+            <function>fts:evaluate</function> function is invoked as
+            follows: <code>fts:evaluate($ftSelection,
+            $searchContext, $matchOptions, 0)</code>, where
+            <code>$ftSelection</code> is the XML representation of the
+            <code>ftSelection</code> and
+            <code>$searchContext</code> is bound to the result of
+            the evaluation of the XQuery expression
+            <code>searchContext</code>. </p>
+            
+            <p>Initially, the
+            <code>$queryTokensNum</code> is 0, i.e., no
+            query tokens have been processed.</p>
+            
+            <p>The variable <code>$matchOptions</code> is bound to the 
+            list of match options as defined in the static context (see
+            Appendix <specref ref="id-xqft-static-context-components"/>).
+			Match options embedded in
+            <code>$ftSelection</code> modify the match options collection as
+            evaluation proceeds. </p>
+			
+            <p>Given the invocation of: <code>fts:evaluate($ftSelection,
+            $searchContext, $matchOptions)</code>, evaluation proceeds as
+            follows. First, <code>$ftSelection</code> is checked to see whether
+	    1) it contains a match option,
+	    2) it contains a weight specification,
+	    3) it is an &FTWords;, or
+	    4) none of the above hold.
+            </p>
+            
+			<olist>
+			
+			<item>
+            <p>If <code>$ftSelection</code> contains one or more match options,
+            these are combined with the inherited match options
+            via a call to <function>fts:replaceMatchOptions</function>
+            (see <specref ref="FTMatchOptionsSec"/>).
+            The <function>evaluate</function> function is then invoked on the
+            nested &FTSelection; with the new set of match options,
+            and the result of that call is returned.
+            </p></item>
+            
+            <item><p>If <code>$ftSelection</code> contains a weight
+            specification, then the specification is ignored because it
+            does not alter the semantics. The <function>evaluate</function>
+            function is recursively called on the nested &FTSelection; and the
+            resulting &AllMatches; is returned. </p></item>
+            
+            <item><p>If <code>$ftSelection</code> is an &FTWords;, then 
+			it does
+            not have any nested &FTSelection;s. Consequently, this is the base
+            of the recursive call, and the &AllMatches; result of the &FTWords;
+            is computed and returned. The &AllMatches; is computed by invoking
+            the <function>ApplyFTWords</function> function with the current
+            search context and other necessary information. </p></item>
+            
+            <item><p>If <code>$ftSelection</code> contains neither a match
+            option nor a weight specification and is not an &FTWords;, the
+            &FTSelection; performs a full-text operation, such as
+            <code>ftand</code>, <code>ftor</code>, <code>window</code>.
+            These operations are fully-compositional and may be
+            invoked on nested &FTSelection;s. Consequently, evaluation proceeds
+            as follows. </p>
+				<ulist>
+				<item><p>First, the <function>evaluate</function> function is
+            recursively invoked on each nested &FTSelection;.
+				The result of
+            evaluating each nested &FTSelection; is an &AllMatches;. </p></item>
+			<item><p>The &AllMatches; are transformed into the resulting 
+			&AllMatches; by applying the full-text operation corresponding to 
+			<code>FTSelection1</code> which is
+            generically named <function>applyX</function> for some type of
+            &FTSelection; X in the code.  </p></item>
+				</ulist>
+				<p>For example, let
+            <code>FTSelection1</code> be <code>FTSelection2 ftand
+            FTSelection3 </code>. Here <code>FTSelection2</code> and
+            <code>FTSelection3</code> may themselves be arbitrarily nested
+            &FTSelection;s. Thus, <function> evaluate</function> is invoked on
+            <code>FTSelection2</code> and <code> FTSelection3</code>, and the
+            resulting &AllMatches; are transformed to the final &AllMatches;
+            using the <function> ApplyFTAnd</function> function corresponding to
+            <code>ftand </code>.</p>
+			</item>
+            </olist>
+            
+            <p>The semantics of the <function>ApplyX</function> function for
+            each &FTSelection; kind X is given below.</p>
+        </div3>
+        
+        
+        <!-- **********************************************************************
+             *                            FTWords                       *
+             ********************************************************************** -->
+        <div3 role="xquery" id="tq-ft-fs-FTWords">
+            <head>FTWords</head>
+            
+            <p>An &FTWords; that consists of a single
+            query string consisting of a sequence of token to be
+            matched as a phrase is evaluated by 
+            the <function>applyQueryTokensAsPhrase</function> function. Its parameters 
+            are 1) the search context, 2) the list of match options, 3) the query
+            string to be matched as a sequence of <code>fts:queryToken</code>
+            items, and 4) the position where the latter query string occurs in the
+            query. 
+            </p>
+            
+<!-- file: fts-simple.xqy -->            
+            <eg role="semfunc-file-ftssimple-xquery"><![CDATA[
+(: simplified version not dealing with special match options :)
+declare function fts:applyQueryTokensAsPhrase (
+      $searchContext as item(),
+      $matchOptions as element(fts:matchOptions),
+      $queryTokens as element(fts:queryToken)*,
+      $queryPos as xs:integer )
+   as element(fts:allMatches)
+{
+   <fts:allMatches stokenNum="{$queryPos}"> 
+   {
+      for $tokenInfo in
+         fts:matchTokenInfos( 
+            $searchContext,
+            $matchOptions,
+            (),
+            $queryTokens )
+      return  
+         <fts:match>  
+            <fts:stringInclude queryPos="{$queryPos}" isContiguous="true"> 
+            {$tokenInfo}
+            </fts:stringInclude> 
+         </fts:match>
+   } 
+   </fts:allMatches>
+};
+]]></eg>
+
+            
+            <p>If after the application of all the match options, the sequence 
+			of query tokens returned for an &FTWords; is empty, an empty
+            &AllMatches; is returned. </p>
+
+            <p>The &AllMatches; corresponding to an
+            &FTWords; is a set of &Match;es. Each of the &Match;es
+            is associated with a starting and an ending position indicating where the corresponding
+            query tokens were found. For example, the &AllMatches;
+            result for the &FTWords; "Mustang" is given
+            below. To simplify the presentation in the figures we write
+            <code>Pos: N</code>, if the attributes
+            <code>startPos</code> and <code>endPos</code> are the same
+            with <code>N</code> being that position.</p>
+            
+            <graphic source="images/FTWordEx.jpg" alt="FTWords example"/>
+        
+			<p>There are five variations of &FTWords; depending on how the 
+			tokens and phrases in the nested XQuery 1.0 and XPath 2.0 
+			expression are matched. </p>
+			
+			<ulist>
+			<item><p>When <code>any word</code> is specified, at 
+			least one token in the tokenization of the nested expression must be 
+			matched. </p></item>
+			<item><p>When <code>all word</code> is specified, all 
+			tokens in the tokenization of the nested expression must be 
+			matched.</p></item>
+			<item><p>When <code>phrase</code> is specified, all 
+			tokens in the tokenization of the nested expression must be 
+			matched as a phrase.</p></item>
+			<item><p>When <code>any</code> is specified, at least one 
+			string atomic value in the nested expression must be 
+			matched as a phrase.</p></item>
+			<item><p>When <code>all</code> is specified, all 
+			string atomic values in the nested expression must be 
+			matched as a phrase.</p></item>
+			</ulist>
+           
+            <p>The semantics for &FTWords; when <code>any word</code> is specified 
+			is given below. Since &FTWords;
+            does not have nested &FTSelection;s, the
+            <function>ApplyFTWords</function> function does not take 
+            &AllMatches; parameters corresponding to nested
+            &FTSelection; results.</p>
+
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:MakeDisjunction (
+      $curRes as element(fts:allMatches),
+      $rest as element(fts:allMatches)* ) 
+   as element(fts:allMatches) 
+{
+   if (fn:count($rest) = 0)
+   then $curRes
+   else 
+      let $firstAllMatches := $rest[1]
+      let $restAllMatches := fn:subsequence($rest, 2)
+      let $newCurRes := fts:ApplyFTOr($curRes, 
+                                      $firstAllMatches)
+      return fts:MakeDisjunction($newCurRes, 
+                                 $restAllMatches)
+};
+
+declare function fts:ApplyFTWordsAnyWord (
+      $searchContext as item(), 
+      $matchOptions as element(fts:matchOptions), 
+      $queryItems as element(fts:queryItem)*,
+      $queryPos as xs:integer ) 
+   as element(fts:allMatches) 
+{
+   (: Tokenization of query string has already occurred. :)
+   (: Get sequence of QueryTokens over all query items. :)
+   let $queryTokens := $queryItems/fts:queryToken
+   return
+      if (fn:count($queryTokens) eq 0) 
+      then <fts:allMatches stokenNum="0" />
+      else
+         let $allAllMatches := 
+            for $queryToken at $pos in $queryTokens
+            return fts:applyQueryTokensAsPhrase($searchContext,
+                                                 $matchOptions,
+                                                 $queryToken,
+                                                 $queryPos + $pos - 1)
+         let $firstAllMatches := $allAllMatches[1]
+         let $restAllMatches := fn:subsequence($allAllMatches, 2)
+         return fts:MakeDisjunction($firstAllMatches, $restAllMatches)
+};
+]]></eg>
+
+            <p>The tokenized query strings are passed to
+            ApplyFTWordsAnyWord as a sequence of
+            <code>fts:queryItem</code>, each containing the tokens of
+            a single query string. A single flattened sequence of all
+            tokens (of type <code>fts:queryToken</code>) over all
+            query items is constructed. For each of these,
+            the result of &FTWords; is computed using
+            <function>applyQueryTokensAsPhrase</function>. Finally, the
+            disjunction of all resulting &AllMatches; is computed.</p>
+            
+            <p>The semantics for &FTWords; when <code>all word</code>
+            is specified is similar to the above, however composes a
+            conjunction. It is given below.</p>
+
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:MakeConjunction ( 
+      $curRes as element(fts:allMatches),
+      $rest as element(fts:allMatches)* ) 
+   as element(fts:allMatches)
+{
+   if (fn:count($rest) = 0)
+   then $curRes
+   else 
+      let $firstAllMatches := $rest[1]
+      let $restAllMatches := fn:subsequence($rest, 2)
+      let $newCurRes := fts:ApplyFTAnd($curRes, 
+                                       $firstAllMatches)
+      return fts:MakeConjunction($newCurRes, 
+                                 $restAllMatches)
+};
+
+declare function fts:ApplyFTWordsAllWord (
+      $searchContext as item(), 
+      $matchOptions as element(fts:matchOptions), 
+      $queryItems as element(fts:queryItem)*,
+      $queryPos as xs:integer ) 
+   as element(fts:allMatches) 
+{
+   (: Tokenization of query strings has already occurred. :)
+   (: Get sequence of QueryTokens over all query items :)
+   let $queryTokens := $queryItems/fts:queryToken
+   return
+      if (fn:count($queryTokens) eq 0) 
+      then <fts:allMatches stokenNum="0" />
+      else
+         let $allAllMatches := 
+            for $queryToken at $pos in $queryTokens
+            return fts:applyQueryTokensAsPhrase($searchContext,
+                                                 $matchOptions,
+                                                 $queryToken,
+                                                 $queryPos + $pos - 1)
+            let $firstAllMatches := $allAllMatches[1]
+            let $restAllMatches := fn:subsequence($allAllMatches, 2)
+            return fts:MakeConjunction($firstAllMatches, $restAllMatches)
+};
+]]></eg>
+
+            <p>The semantics for &FTWords; if <code>phrase</code> is specified 
+			is given below.</p>
+
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTWordsPhrase (
+      $searchContext as item(), 
+      $matchOptions as element(fts:matchOptions), 
+      $queryItems as element(fts:queryItem)*,
+      $queryPos as xs:integer ) 
+   as element(fts:allMatches) 
+{
+   (: Get sequence of QueryTokenInfos over all query items :)
+   let $queryTokens := $queryItems/fts:queryToken
+   return
+      if (fn:count($queryTokens) eq 0) 
+      then <fts:allMatches stokenNum="0" />
+      else
+         fts:applyQueryTokensAsPhrase($searchContext,
+                                       $matchOptions,
+                                       $queryTokens,
+                                       $queryPos)
+};
+]]></eg>
+            
+            <p>The <function>ApplyFTWordsPhrase</function> function
+            also flattens the sequence of query items to a sequence of
+            query tokens, but then calls
+            <function>applyQueryTokensAsPhrase</function> on that
+            entire sequence, instead of calling it on each query token
+            individually. Hence, the sequence of all query tokens is
+            matched as a single phrase and the computed &TokenInfo;s
+            are returned.</p>
+
+            <p>The semantics for &FTWords; when <code>any</code> is specified is 
+			given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTWordsAny (
+      $searchContext as item(), 
+      $matchOptions as element(fts:matchOptions), 
+      $queryItems as element(fts:queryItem)*,
+      $queryPos as xs:integer ) 
+   as element(fts:allMatches) 
+{
+   if (fn:count($queryItems) eq 0) 
+   then <fts:allMatches stokenNum="0" />
+   else 
+      let $firstQueryItem := $queryItems[1]
+      let $restQueryItem := fn:subsequence($queryItems, 2)
+      let $firstAllMatches := 
+         fts:ApplyFTWordsPhrase($searchContext,
+                                $matchOptions,
+                                $firstQueryItem,
+                                $queryPos)
+      let $newQueryPos := 
+         if ($firstAllMatches//@queryPos) 
+         then fn:max($firstAllMatches//@queryPos) + 1
+         else $queryPos
+      let $restAllMatches :=
+         fts:ApplyFTWordsAny($searchContext,
+                             $matchOptions,
+                             $restQueryItem,
+                             $newQueryPos)
+      return fts:ApplyFTOr($firstAllMatches, $restAllMatches)
+};
+]]></eg>
+
+            <p>The &FTWords; with <code>any</code>
+            specified forms the disjunction of the &AllMatches; that
+            are the result of the matching of each query item as a phrase.</p>
+            
+            <p>The semantics for &FTWords; when <code>all </code> is specified 
+			is given below.</p>
+			
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTWordsAll (
+      $searchContext as item(), 
+      $matchOptions as element(fts:matchOptions), 
+      $queryItems as element(fts:queryItem)*,
+      $queryPos as xs:integer ) 
+   as element(fts:allMatches) 
+{
+   if (fn:count($queryItems) = 0) 
+   then <fts:allMatches stokenNum="0" />
+   else 
+      let $firstQueryItem := $queryItems[1]
+      let $restQueryItem := fn:subsequence($queryItems, 2)
+      let $firstAllMatches := 
+         fts:ApplyFTWordsPhrase($searchContext,
+                                $matchOptions,
+                                $firstQueryItem,
+                                $queryPos)
+      return
+         if ($restQueryItem) then
+            let $newQueryPos := 
+               if ($firstAllMatches//@queryPos) 
+               then fn:max($firstAllMatches//@queryPos) + 1
+               else $queryPos
+            let $restAllMatches :=
+               fts:ApplyFTWordsAll($searchContext,
+                                   $matchOptions,
+                                   $restQueryItem,
+                                   $newQueryPos)
+            return 
+               fts:ApplyFTAnd($firstAllMatches, $restAllMatches)
+         else $firstAllMatches
+};
+]]></eg>
+
+            <p>The difference between <code>all</code> and 
+            <code>any</code> is the use of conjunction instead of
+            disjunction.</p>
+            
+            <p>The <function>ApplyFTWords</function> function combines
+            all of these functions.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTWords ( 
+      $searchContext as item(),
+      $matchOptions as element(fts:matchOptions),
+      $type as fts:ftWordsType,
+      $queryItems as element(fts:queryItem)*, 
+      $queryPos as xs:integer )
+   as element(fts:allMatches) 
+{
+   if ($type eq "any word")
+   then fts:ApplyFTWordsAnyWord($searchContext,
+                                $matchOptions,
+                                $queryItems,
+                                $queryPos)
+   else if ($type eq "all word")
+   then fts:ApplyFTWordsAllWord($searchContext,
+                                $matchOptions,
+                                $queryItems,
+                                $queryPos)
+   else if ($type eq "phrase")
+   then fts:ApplyFTWordsPhrase($searchContext,
+                               $matchOptions,
+                               $queryItems,
+                               $queryPos)
+   else if ($type eq "any")
+   then fts:ApplyFTWordsAny($searchContext,
+                            $matchOptions,
+                            $queryItems,
+                            $queryPos)
+   else fts:ApplyFTWordsAll($searchContext,
+                            $matchOptions,
+                            $queryItems,
+                            $queryPos)
+};
+                ]]></eg>
+        </div3>
+        
+        
+        
+    <!-- *************************************************************
+         ***                  Match Options Semantics              ***
+         ************************************************************* -->
+    <div3 role="xquery" id="FTMatchOptionsSec">
+        <head>Match Options Semantics</head>
+        <div4 role="xquery" id="tq-ft-matchopt-types">
+            <head>Types</head>
+            <p>XQuery 1.0 functions are used to 
+            define the semantics of &FTMatchOption;s. These functions 
+            operate on an XML representation of the &FTMatchOption;s. 
+            The representation closely follows the 
+            <loc href="#ftmatchoptions">syntax</loc>. Each &FTMatchOption; is 
+	    represented by an XML element. Additional characteristics of the match 
+	    option are represented as attributes.
+	    The schema is given below.</p>
+
+<!-- file: MatchOptions.xsd -->            
+            <eg><![CDATA[
+<xs:schema 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    xmlns:fts="http://www.w3.org/2007/xpath-full-text"
+    targetNamespace="http://www.w3.org/2007/xpath-full-text"
+    elementFormDefault="qualified" 
+    attributeFormDefault="unqualified">
+
+  <xs:complexType name="ftMatchOptions">
+    <xs:sequence>
+       <xs:element ref="fts:thesaurus" minOccurs="0" maxOccurs="1"/>
+       <xs:element ref="fts:stopwords" minOccurs="0" maxOccurs="1"/>
+       <xs:element ref="fts:case" minOccurs="0" maxOccurs="1"/>
+       <xs:element ref="fts:diacritics" minOccurs="0" maxOccurs="1"/>
+       <xs:element ref="fts:stem" minOccurs="0" maxOccurs="1"/>
+       <xs:element ref="fts:wildcard" minOccurs="0" maxOccurs="1"/>
+       <xs:element ref="fts:language" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="matchOptions" type="fts:ftMatchOptions"/>
+
+  <xs:element name="case" type="fts:ftCaseOption" />
+  <xs:element name="diacritics" type="fts:ftDiacriticsOption" />
+  <xs:element name="thesaurus" type="fts:ftThesaurusOption" />
+  <xs:element name="stem" type="fts:ftStemOption" />
+  <xs:element name="wildcard" type="fts:ftWildCardOption" />
+  <xs:element name="language" type="fts:ftLanguageOption" />
+  <xs:element name="stopwords" type="fts:ftStopWordOption" /> 
+
+ <xs:complexType name="ftCaseOption">
+   <xs:sequence>
+     <xs:element name="value">
+       <xs:simpleType>
+         <xs:restriction base="xs:string">
+           <xs:enumeration value="case insensitive"/>
+           <xs:enumeration value="case sensitive"/>
+           <xs:enumeration value="lowercase"/>
+           <xs:enumeration value="uppercase"/>
+         </xs:restriction>
+       </xs:simpleType>
+     </xs:element>
+   </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ftDiacriticsOption">
+    <xs:sequence>
+      <xs:element name="value">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="diacritics insensitive"/>
+            <xs:enumeration value="diacritics sensitive"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+       
+  <xs:complexType name="ftThesaurusOption">
+    <xs:sequence>
+      <xs:element name="thesaurusName" type="xs:string" 
+                  minOccurs="0" maxOccurs="1"/>
+      <xs:element name="relationship" type="xs:string" 
+                  minOccurs="0" maxOccurs="1"/>
+      <xs:element name="range" type="fts:ftRangeSpec" 
+                  minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="thesaurusIndicator">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="using"/>
+          <xs:enumeration value="no"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:complexType>
+ 
+  <xs:complexType name="ftRangeSpec">
+    <xs:attribute name="type" 
+                  type="fts:rangeSpecType" 
+                  use="required"/>
+    <xs:attribute name="m" 
+                  type="xs:integer"/>
+    <xs:attribute name="n" 
+                  type="xs:integer" 
+                  use="required"/>
+  </xs:complexType>
+  
+  <xs:simpleType name="rangeSpecType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="exactly"/>
+      <xs:enumeration value="at least"/>
+      <xs:enumeration value="at most"/>
+      <xs:enumeration value="from to"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:complexType name="ftStemOption">
+    <xs:sequence>
+      <xs:element name="value">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="stemming"/>
+            <xs:enumeration value="no stemming"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+ 
+  <xs:complexType name="ftWildCardOption">
+    <xs:sequence>
+      <xs:element name="value">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="wildcards"/>
+            <xs:enumeration value="no wildcards"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+ 
+  <xs:complexType name="ftLanguageOption">
+    <xs:sequence>
+      <xs:element name="value" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ftStopWordOption">
+    <xs:sequence>
+      <xs:choice>
+        <xs:element name="default-stopwords">
+            <xs:complexType />
+        </xs:element>
+        <xs:element name="stopword" type="xs:string" />
+        <xs:element name="uri" type="xs:anyURI" />
+      </xs:choice>
+      <xs:element name="oper" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:choice>
+            <xs:element name="stopword" type="xs:string" />
+            <xs:element name="uri" type="xs:anyURI" />
+          </xs:choice>
+          <xs:attribute name="type">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="union"/>
+                <xs:enumeration value="except"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+ 
+</xs:schema>            
+]]></eg>
+
+        </div4>
+
+        <div4 role="xquery" id="tq-ft-matchopt-highlevel">
+            <head>High-Level Semantics</head>
+            
+            <p>The previous section described FTSelections without
+            giving any details about how &FTMatchOption;s need to be
+            interpreted. All processing of &FTMatchOption;s was
+            delegated to the function
+            <function>matchTokenInfos</function>, which is
+            &ref-implementation-defined;. In this section, further details
+            on the semantics of &FTMatchOption;s are given.</p> 
+            
+            <p>The extension is achieved by modifying an existing 
+            function and adding functions that are specific to the
+            &FTMatchOption;s.</p>
+            
+			<p><emph>Modifications in the semantics of existing functions</emph></p>
+			
+            <p>The semantics of most of the
+            &FTSelection;s remains unmodified. The modifications are
+            to the method for matching a sequence of query tokens. </p>
+
+
+<!-- file: fts.xqy -->            
+    <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:applyQueryTokensAsPhrase (
+      $searchContext as item(),
+      $matchOptions as element(fts:matchOptions),
+      $queryTokens as element(fts:queryToken)*,
+      $queryPos as xs:integer )
+   as element(fts:allMatches)
+{
+   let $thesaurusOption := $matchOptions/fts:thesaurus[1]
+   return 
+      if ($thesaurusOption and 
+          $thesaurusOption/@thesaurusIndicator eq "using") then
+         let $noThesaurusOptions := 
+            <fts:matchOptions>{
+               $matchOptions/*[fn:not(self::fts:thesaurus)]
+            }</fts:matchOptions>
+         let $lookupRes := fts:applyThesaurusOption($thesaurusOption,
+	                                            $noThesaurusOptions,
+                                                    $queryTokens)            
+         return fts:ApplyFTWordsAny($searchContext,
+                                    $noThesaurusOptions,
+                                    $lookupRes,
+                                    $queryPos)
+      else
+         (: from here on we have a single sequence of query tokens :)
+         (: which is to be matched a phrase; no alternatives anymore :)
+         <fts:allMatches stokenNum="{$queryPos}"> 
+         {
+            for $pos in
+               fts:matchTokenInfos( 
+                  $searchContext,
+                  $matchOptions,
+                  fts:applyStopWordOption($matchOptions/fts:stopwords),
+                  $queryTokens )
+            return  
+               <fts:match>  
+                  <fts:stringInclude queryPos="{$queryPos}" isContiguous="true"> 
+                  {$pos}
+                  </fts:stringInclude> 
+               </fts:match>
+         } 
+         </fts:allMatches> 
+};
+]]></eg>
+
+	<p>Two &FTMatchOption;s need to be
+    processed differently than the rest of the &FTMatchOption;s as
+    shown in the function above. </p>
+	
+<ulist>
+
+    <item><p>Unlike all other &FTMatchOption;s the semantics
+    of the &FTThesaurusOption; cannot be formulated as an operation on
+    individual query tokens, because a thesaurus lookup may return
+    alternative query items for a whole phrase, i.e., a sequence of
+    query tokens. Since
+    the result of a thesaurus lookup is a sequence of alternatives, 
+    there must be a higher level of processing. The above call to
+    <function>applyThesaurusOption</function> returns for the given
+    sequence of query tokens (representing a phrase) all thesaurus
+    expansions for the selected thesaurus, relationship and level
+    range as a sequence of query items. The 
+    alternative expansions are evaluated as a disjunction using
+    the <code>fts:ApplyFTWordsAny</code>.
+    The matching of the alternatives is performed with
+    &FTThesaurusOption; turned off to avoid double expansions,
+    i.e., expansion of an already expanded token.</p></item>
+    
+    <item><p>For the semantics of the &FTStopWordOption; the list of
+    stop words needs to be computed as demanded by the special syntax
+    for stop word lists involving the operators "union" and
+    "except". </p></item> 
+	
+	</ulist>
+	<p><emph>Semantics of new &FTMatchOption;s functions </emph></p>
+	
+    <p>The expansion of &FTSelection;s also includes adding additional functions
+    that are specific to the &FTMatchOption;s. </p>
+    
+    <p>The <function>evaluate</function> function above handles match options
+    occurring in the query structure by using a call to the function
+    <function>replaceMatchOptions</function> which is defined below. The latter
+    function replaces match options from the list given by the first argument
+    with match options of the same group in the list given by the second
+    argument, if any. If an option is present in the second list but not in
+    the first list, the option is included to the resulting list too.
+    Intuitively, the <function>replaceMatchOptions</function> computes the
+    effective match options for a given &FTSelection;. The function uses
+    the options specified specifically for the current &FTSelection; (
+    <code>$ftSelection/fts:matchOptions</code> to override any options
+    of the same group declared up the query tree (<code>$matchOptions</code>).
+    </p>
+
+<!-- file: fts.xqy -->            
+    <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:replaceMatchOptions (
+      $matchOptions as element(fts:matchOptions),
+      $newMatchOptions as element(fts:matchOptions) )
+   as element(fts:matchOptions)
+{
+   <fts:matchOptions>
+   {
+      (if ($newMatchOptions/fts:thesaurus) then $newMatchOptions/fts:thesaurus
+       else $matchOptions/fts:thesaurus),
+      (if ($newMatchOptions/fts:stopwords) then $newMatchOptions/fts:stopwords
+       else $matchOptions/fts:stopwords),
+      (if ($newMatchOptions/fts:case) then $newMatchOptions/fts:case
+       else $matchOptions/fts:case),
+      (if ($newMatchOptions/fts:diacritics) then $newMatchOptions/fts:diacritics
+       else $matchOptions/fts:diacritics),
+      (if ($newMatchOptions/fts:stem) then $newMatchOptions/fts:stem
+       else $matchOptions/fts:stem),
+      (if ($newMatchOptions/fts:wildcard) then $newMatchOptions/fts:wildcard
+       else $matchOptions/fts:wildcard),
+      (if ($newMatchOptions/fts:language) then $newMatchOptions/fts:language
+       else $matchOptions/fts:language)
+   }
+   </fts:matchOptions>
+};
+
+]]></eg>
+
+	
+    <p>This function determines how match
+    options of the same group overwrite each other, so that only one
+    option of the same group remains.</p>
+
+    <p>The details of the semantics of the remaining &FTMatchOption;s
+    are determined by the &ref-implementation-defined; function
+    <function>matchTokenInfos</function>.</p>
+	
+    
+        </div4>
+        
+        
+        <div4 role="xquery" id="options-sem-functions">
+            <head>Formal Semantics Functions</head>
+            
+            <p>&FTMatchOption; functions which are necessary to support match
+            option processing are given below.</p>
+			
+<!-- file: fts.xqy -->            
+    <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:resolveStopWordsUri ( $uri as xs:string? ) 
+   as xs:string* external;
+
+declare function fts:lookupThesaurus (
+      $tokens as element(fts:queryToken)*,
+      $thesaurusName as xs:string?, 
+      $relationship as xs:string?,
+      $range as element(fts:range)?,
+      $noThesaurusOptions as element(fts:matchOptions) ) 
+   as element(fts:queryItem)* external;
+]]></eg>
+
+            <p>The function <function>resolveStopWordsUri</function>
+            is used to resolve any URI to a sequence of strings to be
+            used as stop words.</p>
+
+            <p>The function <function>lookupThesaurus</function> finds
+            all expansions related to  <code>$tokens</code>
+            in the thesaurus <code>$thesaurusName</code>
+            <phrase diff="del">for the language <code>$thesaurusLanguage</code></phrase>
+            using the relationship 
+            <code>$relationship</code> within the optional number of levels
+            <code>$range</code>. If <code>$tokens</code> consists of 
+            more than one query token, it is regarded as a
+            phrase.
+	    <phrase diff="add">The current match options other than the thesaurus option
+	    are also passed to the function,
+	    via <code>$noThesaurusOptions</code>,
+	    allowing the implementation to apply any of those match options
+	    (whichever it deems relevant)
+	    to the input or output of the actual thesaurus lookup.</phrase>
+            </p>
+            
+           <p>The thesaurus function returns a sequence of expansion
+           alternatives. Each alternative is regarded as a new search
+           phrase and is represented as a query item.
+           Alternatives are treated as though they are connected with
+           a disjunction (&FTOr;). </p>
+          
+        </div4>
+        
+        <div4 role="xquery" id="tq-ft-matchopt-FTCaseOption">
+            <head>FTCaseOption</head>
+			
+        <p>&FTMatchOption;s of type &FTCaseOption; are passed in the
+        <code>$matchOptions</code> parameter to
+        <function>matchTokenInfos</function>. If the &FTCaseOption; is
+        "lowercase" the returned &TokenInfo;s must span
+        only tokens that are all lowercase.  If the
+        &FTCaseOption; is
+        "uppercase" the returned &TokenInfo;s must span
+        only tokens that are all uppercase.  If the
+        &FTCaseOption; is "case insensitive" the
+        function must return all &TokenInfo;s matching the query
+        tokens when disregarding character case. If the
+        &FTCaseOption; is "case sensitive" the
+        function must return all &TokenInfo;s that also accord with
+        the query tokens in character case.</p>
+			
+        </div4>
+        
+        <div4 role="xquery" id="tq-ft-matchopt-FTDiacriticsOption">
+            <head>FTDiacriticsOption</head>
+			
+        <p>&FTMatchOption;s of type &FTDiacriticsOption; are passed in the
+        <code>$matchOptions</code> parameter to
+        <function>matchTokenInfos</function>. If the
+        &FTDiacriticsOption; is "diacritics insensitive" the function must 
+        return all &TokenInfo;s matching 
+        the query tokens when disregarding diacritical marks. If the
+        &FTDiacriticsOption; is "diacritics sensitive" the function must 
+        return all &TokenInfo;s that
+        also accord with the query tokens in diacritical marks.</p>
+        
+        </div4>        
+        
+        <div4 role="xquery" id="tq-ft-matchopt-FTStemOption">
+            <head>FTStemOption</head>
+			
+        <p>&FTMatchOption;s of type &FTStemOption; are passed in the
+        <code>$matchOptions</code> parameter to
+        <function>matchTokenInfos</function>. It is
+        &ref-implementation-defined; what the effect of the option 
+		"stemming" is on matching tokens, however, it is expected that
+        this option allows to match linguistic variants of the query
+        tokens. If the &FTStemOption; is "no stemming" the
+        returned &TokenInfo;s must span exact matches (i.e. not
+        including linguistic variations) of the query tokens.</p>
+        
+        </div4>
+
+        <div4 role="xquery" id="tq-ft-matchopt-FTThesaurusOption">
+            <head>FTThesaurusOption</head>
+			
+			<p>The semantics for the &FTThesaurusOption;
+			is given below.</p>
+            
+<!-- file: fts.xqy -->            
+    <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:applyThesaurusOption (
+      $matchOption as element(fts:thesaurus),
+      $noThesaurusOptions as element(fts:matchOptions),
+      $queryTokens as element(fts:queryToken)* )
+   as element(fts:queryItem)*
+{
+   if ($matchOption/@thesaurusIndicator = "using") then
+      fts:lookupThesaurus( $queryTokens,
+                           $matchOption/fts:thesaurusName,
+                           $matchOption/fts:relationship,
+                           $matchOption/fts:range,
+			   $noThesaurusOptions )
+   else if ($matchOption/@thesaurusIndicator = "no") then
+      <fts:queryItem>
+      {$queryTokens}
+      </fts:queryItem>
+   else ()
+};
+]]></eg>
+
+        </div4>
+
+        <div4 role="xquery" id="tq-ft-matchopt-FTStopWordOption">
+            <head>FTStopWordOption</head>
+			
+			<p>Stop words interact with &FTDistance; and
+			&FTWindow;. The semantics for the &FTStopWordOption;
+			is given below.</p>
+            
+<!-- file: fts.xqy -->            
+    <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:applyStopWordOption (
+      $stopWordOption as element(fts:stopwords)? )
+   as xs:string*
+{
+   if ($stopWordOption) then
+      let $swords := 
+         typeswitch ($stopWordOption/*[1])
+            case $e as element(fts:stopword) 
+               return $e/text()
+            case $e as element(fts:uri) 
+               return fts:resolveStopWordsUri($e/text())
+            case element(fts:default-stopwords)
+               return fts:resolveStopWordsUri(())
+            default return ()
+      return fts:calcStopWords( $swords, $stopWordOption/fts:oper )
+   else ()
+};
+declare function fts:calcStopWords ( 
+      $stopWords as xs:string*,
+      $opers as element(fts:oper)* )
+   as xs:string*
+{
+   if ( fn:empty($opers) ) then $stopWords
+   else
+      let $swords := 
+         typeswitch ($opers[1]/*[1])
+            case $e as element(fts:stopword) 
+               return $e/text()
+            case $e as element(fts:uri) 
+               return fts:resolveStopWordsUri($e/text())
+            default return ()
+      return
+         if ($opers[1]/@type eq "union") then
+            fts:calcStopWords( ($stopWords, $swords), 
+                               $opers[fn:position() gt 2] )
+         else (: "except" :)
+            fts:calcStopWords( $stopWords[fn:not(.)=$swords],
+                               $opers[fn:position() gt 2] )
+};
+            ]]></eg>
+            <p diff="chg">
+            Given the applicable setting of the Stop Word Option,
+            the function <code>fts:applyStopWordOption</code>
+            calls <code>fts:calcStopWords</code>
+            to compute the set of stop words,
+            and returns that set as an instance of <code>xs:string*</code>.
+            This then is passed to <code>fts:matchTokenInfos</code>,
+            which uses it to affect the matching of tokens.
+            The <code>fts:calcStopWords</code> function uses
+            the function <code>fts:resolveStopWordsUri</code> to resolve any URI
+            to a sequence of strings.
+            </p>
+        </div4>
+
+        <div4 role="xquery" id="tq-ft-matchopt-FTLanguageOption">
+            <head>FTLanguageOption</head>
+			
+		<p>The &FTLanguageOption; is not associated with a semantics function. It 
+                is just a parameter to other semantics functions.</p>
+        
+        </div4>
+
+        <div4 role="xquery" id="tq-ft-matchopt-FTWildCardOption">
+            <head>FTWildCardOption</head>
+			
+        <p>&FTMatchOption;s of type &FTWildCardOption; are passed in the
+        <code>$matchOptions</code> parameter to
+        <function>matchTokenInfos</function>. If the
+        &FTWildCardOption; is "wildcards" the function must
+        return all &TokenInfo;s in the search context that span tokens,
+        such that those tokens are wildcard
+        expansions of the corresponding query token. The wildcard
+        expansions are described in <loc
+        href="#ftwildcardoption">Section 3.2.7 FTWildCardOption</loc>. If the
+        &FTWildCardOption; is "no wildcards" all query tokens
+        must be matched literally.</p>
+        </div4>
+        
+       </div3>
+    <!-- *************************************************************
+         ***                  Operators Semantics                  ***
+         ************************************************************* -->
+    <div3 role="xquery" id="FTOperatorsSemanticsSec">
+       <head>Full-Text Operators Semantics</head>
+        <div4 role="xquery" id="tq-ft-fs-FTOr">
+            <!-- **********************************************************************
+             *                            FTOr                          *
+             ********************************************************************** -->
+            <head>FTOr</head>
+            <p>The parameters of the <function>ApplyFTOr</function> 
+            function are the two &AllMatches; parameters 
+            corresponding to the results of the two nested 
+            &FTSelection;s. 
+            The semantics is given 
+			below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTOr (
+      $allMatches1 as element(fts:allMatches),
+      $allMatches2 as element(fts:allMatches) ) 
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{fn:max(($allMatches1/@stokenNum, 
+                                       $allMatches2/@stokenNum))}">
+   {$allMatches1/fts:match,$allMatches2/fts:match}
+   </fts:allMatches>
+};
+            ]]></eg>
+            
+            <p>The <function>ApplyFTOr</function> function creates a new &AllMatches; 
+			in which 
+            &Match;es are the union of those found 
+            in the input &AllMatches;. 
+			Each &Match; represents one possible result of the corresponding 
+            &FTSelection;. Thus, a &Match; from either 
+            of the &AllMatches; is a result. </p>
+			
+            <p>For example, consider the &FTSelection;
+            <code>"Mustang" ftor "Honda"</code>. The 
+			&AllMatches; corresponding to 
+            "Mustang" and "Honda" are given below.</p>
+            
+            <graphic source="images/FTOrEx1.jpg" 
+                     alt="FTOr input AllMatches 1"/><p>
+            <graphic source="images/FTOrEx2.jpg" 
+                     alt="FTOr input AllMatches 2"/></p>
+            
+            <p>The &AllMatches; produced by <function>
+            ApplyFTOr</function> is given below.</p>
+            
+            <graphic source="images/FTOrEx3.jpg" alt="FTOr result AllMatches"/>
+        </div4>
+        
+        
+        
+        <div4 role="xquery" id="tq-ft-fs-FTAnd">
+            <!-- **********************************************************************
+             *                            FTAnd                         *
+             ********************************************************************** -->
+            <head>FTAnd</head>
+            <p>The parameters of the <function>ApplyFTAnd</function> 
+            function are the two &AllMatches;  
+            corresponding to the results of the two nested 
+            &FTSelection;s.
+            The semantics is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTAnd (
+      $allMatches1 as element(fts:allMatches),
+      $allMatches2 as element(fts:allMatches) ) 
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{fn:max(($allMatches1/@stokenNum, 
+                                       $allMatches2/@stokenNum))}" >
+   {
+      for $sm1 in $allMatches1/fts:match
+      for $sm2 in $allMatches2/fts:match
+      return <fts:match>
+             {$sm1/*, $sm2/*}
+             </fts:match>
+   }
+   </fts:allMatches>
+};
+            ]]></eg>
+            
+            <p>The result of the conjunction is a new 
+            &AllMatches; that contains the "Cartesian 
+            product" of the matches of the participating 
+            &FTSelection;s. Every resulting &Match; 
+            is formed by the combination of the &StringInclude; components 
+            and &StringExclude; from the 
+            &AllMatches; of the nested &FTSelection; 
+            . Thus every match contains the positions 
+            to satisfy a &Match; from both original 
+            &FTSelection;s and excludes the positions that 
+            violate the same &Match;es. </p>
+            <p>For example, consider the &FTSelection;
+            <code>"Mustang" ftand "rust"</code>. The 
+			source &AllMatches; are give below.</p>
+            
+            <graphic source="images/FTAndEx1.jpg" 
+                     alt="FTAnd input AllMatches 1"/><p>
+            <graphic source="images/FTAndEx2.jpg" 
+                     alt="FTAnd input AllMatches 2"/></p>
+            
+            <p>The &AllMatches; produced by <function>ApplyFTAnd</function> is
+			given below.</p>
+            
+            <graphic source="images/FTAndEx3.jpg" 
+                     alt="FTAnd result AllMatches"/>
+        </div4>
+        
+        
+        
+        <div4 role="xquery" id="tq-ft-fs-FTUnaryNot">
+        <!-- **************************************************
+             *                  FTUnaryNot                    *
+             ************************************************** --> 
+        <head>FTUnaryNot</head> 
+        
+        <p>The <function>ApplyFTUnaryNot</function>
+        function
+        has one &AllMatches; parameter corresponding to the
+        result of the nested &FTSelection; to be negated.
+        The 
+		semantics is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:InvertStringMatch ( $strm as element(*,fts:stringMatch) ) 
+   as element(*,fts:stringMatch)
+{
+   if ($strm instance of element(fts:stringExclude)) then
+      <fts:stringInclude queryPos="{$strm/@queryPos}" isContiguous="{$strm/@isContiguous}">
+      {$strm/fts:tokenInfo}
+      </fts:stringInclude>
+   else
+      <fts:stringExclude queryPos="{$strm/@queryPos}" isContiguous="{$strm/@isContiguous}">
+      {$strm/fts:tokenInfo}
+      </fts:stringExclude>
+};
+
+declare function fts:UnaryNotHelper ( $matches as element(fts:match)* )
+   as element(fts:match)*
+{
+   if (fn:empty($matches))
+   then <fts:match/>
+   else
+      for $sm in $matches[1]/*
+      for $rest in fts:UnaryNotHelper( fn:subsequence($matches, 2) )
+      return 
+         <fts:match>
+         {
+            fts:InvertStringMatch($sm),
+            $rest/*
+         }
+         </fts:match>
+};
+
+declare function fts:ApplyFTUnaryNot (
+      $allMatches as element(fts:allMatches) )
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{$allMatches/@stokenNum}">
+   {
+      fts:UnaryNotHelper($allMatches/fts:match)
+   }
+   </fts:allMatches>
+};
+            ]]></eg>
+            
+            <p>The generation of the resulting
+            &AllMatches; of an &FTUnaryNot; resembles the transformation
+            of a negation of prepositional formula in DNF back to DNF.
+            The negation of &AllMatches; requires
+            the inversion of all the &StringMatch;es
+            within the &AllMatches;.</p>
+            
+            <p>In the <function>InvertStringMatch</function> function  above, 
+			this inversion occurs as follows. </p>
+			<olist>
+			
+			<item><p>The function <function>fts:invertStringMatch</function>
+			inverts a <term>StringInclude </term> into a &StringExclude; and
+			vice versa. </p></item>
+			
+			<item><p>The function <function>fts:UnaryNotHelper</function> transforms
+			the source &Match;es into the resulting
+			&Match;es by forming the combinations of the
+			inversions of a &StringInclude; or &StringExclude;
+			component over the source &Match;es into new &Match;es.</p></item>
+			
+            </olist>
+			
+            <p>For example, consider the &FTSelection;
+            <code>ftnot ("Mustang" ftor "Honda")</code>. The 
+			source &AllMatches; is given below:</p>
+            
+            <graphic source="images/FTNegationEx1.jpg" 
+                     alt="FTUnaryNot input AllMatches"/>
+                     
+            <p>The &FTUnaryNot; transforms the &StringInclude;s to 
+			&StringExclude;s as illustrated below.</p>
+            
+            <graphic source="images/FTNegationEx2.jpg" 
+                     alt="FTUnaryNot result AllMatches"/>
+        </div4>
+        
+        
+        
+        <!-- **********************************************************************
+             *                            FTMildNot                          *
+             ********************************************************************** -->
+        <div4 role="xquery" id="tq-ft-fs-FTMildNot">
+            <head>FTMildNot</head>
+            
+            <p>The parameters of the <function>ApplyFTMildNot</function>
+            function are the two &AllMatches; parameters corresponding
+            to the results of the two nested &FTSelection;s.
+            The semantics is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:CoveredIncludePositions (
+       $match as element(fts:match) )
+    as xs:integer*
+{
+    for $strInclude in $match/fts:stringInclude
+    return $strInclude/fts:tokenInfo/@startPos
+           to $strInclude/fts:tokenInfo/@endPos
+};
+
+declare function fts:ApplyFTMildNot (
+       $allMatches1 as element(fts:allMatches),
+       $allMatches2 as element(fts:allMatches) )
+    as element(fts:allMatches)
+{
+    if (fn:count($allMatches1//fts:stringExclude) gt 0) then
+       fn:error(fn:QName('http://www.w3.org/2005/xqt-errors', 'FTDY0017'), 
+                "Invalid expression on the left-hand side of a not-in")
+    else if (fn:count($allMatches2//fts:stringExclude) gt 0) then
+       fn:error(fn:QName('http://www.w3.org/2005/xqt-errors', 'FTDY0017'), 
+                "Invalid expression on the right-hand side of a not-in")
+    else if (fn:count($allMatches2//fts:stringInclude) eq 0) then
+       $allMatches1
+    else
+       <fts:allMatches stokenNum="{$allMatches1/@stokenNum}">
+       {
+          $allMatches1/fts:match[
+             every $matches2 in $allMatches2/fts:match
+             satisfies
+                let $posSet1 := fts:CoveredIncludePositions(.)
+                let $posSet2 := fts:CoveredIncludePositions($matches2)
+                   return some $pos in $posSet1 satisfies fn:not($pos = $posSet2)
+          ]
+       }
+       </fts:allMatches>
+};
+            ]]></eg>
+            
+            <p>The resulting &AllMatches; contains &Match;es
+            of the first operand that do not mention in their
+            &StringInclude; components positions in a &StringInclude; component 
+			in the &AllMatches; of the second operand.</p> 
+            
+            <p>For example, consider the &FTSelection;
+            <code>("Ford" not in "Ford
+            Mustang")</code>. The
+            source &AllMatches; for the left-hand side argument is given below.</p>
+            
+            <graphic source="images/FTMildNegationEx1.jpg" 
+                     alt="FTMildNot input AllMatches 1"/>
+			<p>The
+            source &AllMatches; for the right-hand side argument is given below.</p>
+            <graphic source="images/FTMildNegationEx2.jpg" 
+                     alt="FTMildNot input AllMatches 2"/>
+                     
+            <p>The &FTMildNot; will transform these to an empty
+            &AllMatches; because both position 1 and position 27 from
+            the first &AllMatches; contain only &TokenInfo;s from
+            &StringInclude; components of the second
+            &AllMatches;.</p>
+            
+        </div4>
+        
+        
+        
+        <!-- **********************************************************************
+             *                                FTOrder                             *
+             ********************************************************************** -->
+        <div4 role="xquery" id="tq-ft-fs-FTOrder">
+            <head>FTOrder</head>
+            
+            <p>The <function>ApplyFTOrder</function>
+            function
+            has one &AllMatches; parameter corresponding to
+            the result of the nested &FTSelection;s.
+            The semantics is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTOrder (
+      $allMatches as element(fts:allMatches) )
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{$allMatches/@stokenNum}">
+   {
+      for $match in $allMatches/fts:match
+      where every $stringInclude1 in $match/fts:stringInclude,
+                  $stringInclude2 in $match/fts:stringInclude
+            satisfies (($stringInclude1/fts:tokenInfo/@startPos <= 
+                        $stringInclude2/fts:tokenInfo/@startPos)
+                       and
+                       ($stringInclude1/@queryPos <= 
+                        $stringInclude2/@queryPos))
+                      or
+                       (($stringInclude1/fts:tokenInfo/@startPos>= 
+                         $stringInclude2/fts:tokenInfo/@startPos)
+                        and
+                        ($stringInclude1/@queryPos >= 
+                         $stringInclude2/@queryPos))
+      return 
+         <fts:match>
+         {
+            $match/fts:stringInclude,
+            for $stringExcl in $match/fts:stringExclude
+            where every $stringIncl in $match/fts:stringInclude
+                  satisfies (($stringExcl/fts:tokenInfo/@startPos <= 
+                              $stringIncl/fts:tokenInfo/@startPos)
+                             and
+                              ($stringExcl/@queryPos <= 
+                               $stringIncl/@queryPos))
+                            or
+                             (($stringExcl/fts:tokenInfo/@startPos >= 
+                               $stringIncl/fts:tokenInfo/@startPos)
+                              and
+                              ($stringExcl/@queryPos >= 
+                               $stringIncl/@queryPos))
+            return $stringExcl
+         }
+         </fts:match>
+   }         
+   </fts:allMatches>
+};
+            ]]></eg>
+            
+            <p>The resulting &AllMatches; contains the &Match;es for which the starting positions 
+			in the &StringInclude; elements are in the order of the
+            query positions of their query strings.  
+			&StringExclude;s that preserve the order (with respect to their starting positions) are also retained.</p>
+            
+            <p>For example, consider the &FTSelection;
+            <code>("great" ftand "condition")
+            ordered</code>. The source &AllMatches; is given below.</p>
+            
+            <graphic source="images/FTOrderEx1.jpg" 
+                     alt="FTOrder input AllMatches"/>
+            <graphic source="images/FTOrderEx2.jpg" 
+                     alt="FTOrder input AllMatches"/>
+            <graphic source="images/FTOrderEx3.jpg" 
+                     alt="FTOrder input AllMatches"/>
+                     
+            <p>The &AllMatches; for &FTOrder; are given below.</p>
+            
+            <graphic source="images/FTOrderEx4.jpg" 
+                     alt="FTOrder result AllMatches"/>
+            <graphic source="images/FTOrderEx5.jpg" 
+                     alt="FTOrder result AllMatches"/>
+        </div4>
+        
+        
+        
+        <!-- **********************************************************************
+             *                            FTScope                        *
+             ********************************************************************** -->
+        <div4 role="xquery" id="tq-ft-fs-FTScope">
+            <head>FTScope</head>
+            
+            <p>The parameters of the <function>ApplyFTScope</function>
+            function are 
+            1) the type of the scope (same or different), 2) the
+            linguistic unit (sentence or paragraph), and 2) one
+            &AllMatches; parameter corresponding to the result of the
+            nested &FTSelection;s.
+            The function
+            definitions depend on the type of the scope (paragraph,
+            sentence) and the scope predicate (same, different).</p>
+            
+            <p>The semantics of <code>same sentence</code> is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTScopeSameSentence (
+      $allMatches as element(fts:allMatches) ) 
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{$allMatches/@stokenNum}">
+   {
+      for $match in $allMatches/fts:match
+      where every $stringInclude1 in $match/fts:stringInclude,
+                  $stringInclude2 in $match/fts:stringInclude 
+            satisfies $stringInclude1/fts:tokenInfo/@startSent = 
+                      $stringInclude2/fts:tokenInfo/@startSent
+                  and $stringInclude1/fts:tokenInfo/@startSent = 
+                      $stringInclude1/fts:tokenInfo/@endSent
+                  and $stringInclude2/fts:tokenInfo/@startSent = 
+                      $stringInclude2/fts:tokenInfo/@endSent
+                  and $stringInclude1/fts:tokenInfo/@startSent > 0
+                  and $stringInclude2/fts:tokenInfo/@startSent > 0
+      return 
+        <fts:match>
+        {
+           $match/fts:stringInclude,
+           for $stringExcl in $match/fts:stringExclude
+           where
+              $stringExcl/fts:tokenInfo/@startSent = 0
+              or
+              ($stringExcl/fts:tokenInfo/@startSent = 
+               $stringExcl/fts:tokenInfo/@endSent
+               and 
+                  (every $stringIncl in $match/fts:stringInclude
+                   satisfies $stringIncl/fts:tokenInfo/@startSent = 
+                             $stringExcl/fts:tokenInfo/@startSent) )
+           return $stringExcl
+        }
+        </fts:match>
+   }
+   </fts:allMatches>
+};
+]]></eg>
+
+             <p>An &AllMatches; returned by the scope <code>same sentence</code> 
+             contains those &Match;es whose &StringInclude;s span only a single 
+             sentence and all span the same sentence. In these &Match;es only 
+             those &StringExclude;s are retained that also only span a single 
+             sentence, which is, in case there are &StringInclude;s in that &Match;, 
+             the same as the one spanned by the &StringInclude;s.</p> 
+
+           <p>The semantics of <code>different sentence
+            </code> is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTScopeDifferentSentence (
+      $allMatches as element(fts:allMatches) ) 
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{$allMatches/@stokenNum}">
+   {
+      for $match in $allMatches/fts:match
+      where
+         count($match/fts:stringInclude) > 1
+         and
+         (
+            every $stringInclude1 in $match/fts:stringInclude,
+                  $stringInclude2 in $match/fts:stringInclude  
+            satisfies
+               $stringInclude1 is $stringInclude2
+               or
+               (
+                     ( $stringInclude1/fts:tokenInfo/@startSent !=  
+                       $stringInclude2/fts:tokenInfo/@startSent 
+                    or $stringInclude1/fts:tokenInfo/@startSent !=  
+                       $stringInclude1/fts:tokenInfo/@endSent 
+                    or $stringInclude2/fts:tokenInfo/@startSent !=  
+                       $stringInclude2/fts:tokenInfo/@endSent ) 
+                   and $stringInclude1/fts:tokenInfo/@startSent > 0 
+                   and $stringInclude2/fts:tokenInfo/@endSent > 0
+               )
+         )
+      return 
+         <fts:match>
+         {
+            $match/fts:stringInclude,
+            for $stringExcl in $match/fts:stringExclude
+            where every $stringIncl in $match/fts:stringInclude
+                  satisfies ($stringIncl/fts:tokenInfo/@startSent !=  
+                             $stringExcl/fts:tokenInfo/@startSent 
+                          or $stringIncl/fts:tokenInfo/@startSent !=  
+                             $stringIncl/fts:tokenInfo/@endSent 
+                          or $stringExcl/fts:tokenInfo/@startSent !=  
+                             $stringExcl/fts:tokenInfo/@endSent ) 
+                         and $stringIncl/fts:tokenInfo/@startSent > 0 
+                         and $stringExcl/fts:tokenInfo/@endSent > 0
+            return $stringExcl
+         }
+         </fts:match>
+   }
+   </fts:allMatches>
+};
+]]></eg>
+            
+            <p diff="chg">An &AllMatches; returned by the scope <code>different sentence</code> 
+            contains those &Match;es that have
+            at least two StringIncludes,
+            no two of which begin and end all in the same sentence.
+            In these &Match;es only those &StringExclude;s are retained that do not 
+            conflict with any of the &StringInclude;s.</p> 
+
+            <p>The semantics of <code>same paragraph</code> is analogous to <code>same
+            sentence</code> and is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTScopeSameParagraph (
+      $allMatches as element(fts:allMatches) ) 
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{$allMatches/@stokenNum}">
+   {
+      for $match in $allMatches/fts:match
+      where every $stringInclude1 in $match/fts:stringInclude,
+                  $stringInclude2 in $match/fts:stringInclude  
+            satisfies $stringInclude1/fts:tokenInfo/@startPara = 
+                      $stringInclude2/fts:tokenInfo/@startPara
+                  and $stringInclude1/fts:tokenInfo/@startPara = 
+                      $stringInclude1/fts:tokenInfo/@endPara
+                  and $stringInclude2/fts:tokenInfo/@startPara = 
+                      $stringInclude2/fts:tokenInfo/@endPara
+                  and $stringInclude1/fts:tokenInfo/@startPara > 0
+                  and $stringInclude2/fts:tokenInfo/@endPara > 0
+      return 
+         <fts:match>
+         {
+            $match/fts:stringInclude,
+            for $stringExcl in $match/fts:stringExclude
+            where 
+               $stringExcl/fts:tokenInfo/@startPara = 0
+               or
+               ($stringExcl/fts:tokenInfo/@startPara = 
+                $stringExcl/fts:tokenInfo/@endPara
+                and
+                   (every $stringIncl in $match/fts:stringInclude
+                    satisfies $stringIncl/fts:tokenInfo/@startPara = 
+                              $stringExcl/fts:tokenInfo/@startPara) )
+            return $stringExcl
+         }
+         </fts:match>
+   }
+   </fts:allMatches>
+};
+]]></eg>
+            
+            <p>The semantics of <code>different paragraph</code> is analogous to 
+            <code>different sentence</code> and is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTScopeDifferentParagraph (
+      $allMatches as element(fts:allMatches) ) 
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{$allMatches/@stokenNum}">
+   {
+      for $match in $allMatches/fts:match
+      where
+         count($match/fts:stringInclude) > 1
+         and
+         (
+            every $stringInclude1 in $match/fts:stringInclude,
+                  $stringInclude2 in $match/fts:stringInclude  
+            satisfies
+               $stringInclude1 is $stringInclude2
+               or
+               (
+                     ( $stringInclude1/fts:tokenInfo/@startPara !=  
+                       $stringInclude2/fts:tokenInfo/@startPara 
+                    or $stringInclude1/fts:tokenInfo/@startPara !=  
+                       $stringInclude1/fts:tokenInfo/@endPara 
+                    or $stringInclude2/fts:tokenInfo/@startPara !=  
+                       $stringInclude2/fts:tokenInfo/@endPara ) 
+                   and $stringInclude1/fts:tokenInfo/@startPara > 0 
+                   and $stringInclude2/fts:tokenInfo/@endPara > 0
+               )
+         )
+      return 
+         <fts:match>
+         {
+            $match/fts:stringInclude,
+            for $stringExcl in $match/fts:stringExclude
+            where every $stringIncl in $match/fts:stringInclude
+                  satisfies ($stringIncl/fts:tokenInfo/@startPara !=  
+                             $stringExcl/fts:tokenInfo/@startPara 
+                          or $stringIncl/fts:tokenInfo/@startPara !=  
+                             $stringIncl/fts:tokenInfo/@endPara 
+                          or $stringExcl/fts:tokenInfo/@startPara !=  
+                             $stringExcl/fts:tokenInfo/@endPara ) 
+                         and $stringIncl/fts:tokenInfo/@startPara > 0 
+                         and $stringExcl/fts:tokenInfo/@endPara > 0
+            return $stringExcl
+         }
+         </fts:match>
+   }
+   </fts:allMatches>
+};
+]]></eg>
+            
+            <p>The semantics for the general case is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTScope (
+      $type as fts:scopeType,
+      $selector as fts:scopeSelector, 
+      $allMatches as element(fts:allMatches) ) 
+   as element(fts:allMatches) 
+{
+   if ($type eq "same" and $selector eq "sentence")
+   then fts:ApplyFTScopeSameSentence($allMatches)
+   else if ($type eq "different" and $selector eq "sentence")
+      then fts:ApplyFTScopeDifferentSentence($allMatches)
+   else if ($type eq "same" and $selector eq "paragraph")
+      then fts:ApplyFTScopeSameParagraph($allMatches)
+   else fts:ApplyFTScopeDifferentParagraph($allMatches)
+};
+]]></eg>
+            
+            <p>For example, consider the &FTSelection;
+            <code>("Mustang" ftand "Honda") same 
+            paragraph</code>. The source &AllMatches; is given below.</p>
+            
+            <graphic source="images/FTScopeEx.jpg" 
+                     alt="FTScope input AllMatches"/>
+                     
+            <p>The &FTScope; returns an empty &AllMatches; because neither 
+			&Match; contains &TokenInfo;s from a single sentence.</p>
+            
+        </div4>
+        
+        
+        
+        <!-- ***************************************************************
+             *                            FTContent                        *
+             *************************************************************** -->
+        <div4 role="xquery" id="tq-ft-fs-FTContent">
+            <head>FTContent</head>
+            
+            <p>The parameters of the <function>ApplyFTContent</function>
+            function are 1) the search context,
+            2) the type of the content
+	    match
+	    (<code>at start</code>, <code>at end</code>, or <code>entire content</code>),
+            and 3) one
+            &AllMatches; parameter corresponding to the result of the
+            nested &FTSelection;s.</p>
+
+            <p>The evaluation of <function>ApplyFTContent</function>
+            depends on the type of the content match:</p>
+
+            <ulist>
+
+                <item><p>
+                <code>entire content</code>
+                retains those &Match;es such that
+                for every token position in the search context,
+                some &StringInclude; in the &Match; covers that token position.
+                </p></item>
+
+                <item><p>
+                <code>at start</code>
+                retains those &Match;es that contain a &StringInclude;
+                that covers the lowest token position in the search context.
+                </p></item>
+
+                <item><p>
+                <code>at end</code>
+                retains those &Match;es that contain a &StringInclude;
+                that covers the highest token position in the search context.
+                </p></item>
+
+            </ulist>
+
+            <p>The semantics is given below.</p>
+
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTContent (
+      $searchContext as item(),
+      $type as fts:contentMatchType,
+      $allMatches as element(fts:allMatches) ) 
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{$allMatches/@stokenNum}">
+   {
+      $allMatches/fts:match[
+         let $start_pos := fts:getLowestTokenPosition($searchContext),
+             $end_pos   := fts:getHighestTokenPosition($searchContext),
+             $match     := .
+         return
+            if ($type eq "entire content") then
+               every $pos in $start_pos to $end_pos
+               satisfies
+                  some $si in $match/fts:stringInclude[data(@isContiguous)]
+                  satisfies
+                     fts:TokenInfoCoversTokenPosition($si/fts:tokenInfo, $pos)
+            else
+               let $pos :=
+                  if ($type eq "at start") then
+                     $start_pos
+                  else (: $type eq "at end" :)
+                     $end_pos
+               return
+                  some $ti in $match/fts:stringInclude/fts:tokenInfo
+                  satisfies
+                     fts:TokenInfoCoversTokenPosition($ti, $pos)
+      ]
+   }
+   </fts:allMatches>
+};
+]]></eg>
+
+            <p>
+            <function>ApplyFTContent</function> depends on the helper function
+            <function>fts:TokenInfoCoversTokenPosition</function>,
+            which ascertains whether the given <code>$tokenInfo</code>
+            covers a particular <code>$tokenPosition</code>.
+            </p>
+
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:TokenInfoCoversTokenPosition(
+      $tokenInfo as element(fts:tokenInfo),
+      $tokenPosition as xs:integer )
+   as xs:boolean
+{
+   ($tokenPosition >= $tokenInfo/@startPos)
+   and
+   ($tokenPosition <= $tokenInfo/@endPos)
+};
+]]></eg>
+            <p>
+            <function>ApplyFTContent</function> also depends on two functions
+            whose definitions are &ref-implementation-dependent;:
+            <function>getLowestTokenPosition</function>
+            and
+            <function>getHighestTokenPosition</function>
+            return (respectively)
+            the first and last token positions
+            of the item <code>$searchContext</code>.
+            </p>
+
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:getLowestTokenPosition(
+      $searchContext as item() )
+   as xs:integer
+   external;
+
+declare function fts:getHighestTokenPosition(
+      $searchContext as item() )
+   as xs:integer
+   external;
+]]></eg>
+
+            <p>
+            Note that the way <code>@isContiguous</code>
+            is calculated in <function>joinIncludes</function>
+            and used in <function>ApplyFTContent</function>
+            can lead to counter-intuitive results.
+            For example, consider the following query:
+            </p>
+
+            <eg role="xquery"><![CDATA[
+"one two three four"
+contains text
+   ("one" ftand "three" window 3 words)
+   ftand
+   ("two" ftand "four" window 3 words)
+   entire content
+]]></eg>
+
+            <p>
+            Even though the four query tokens <emph>do</emph> cover
+            all of the search context's token positions,
+            the query yields false,
+            because the &Match;
+            that <function>ApplyFTContent</function> receives as input
+            has two &StringInclude;s, each of which is non-contiguous.
+            </p>
+
+        </div4>
+        
+        
+        <!-- **********************************************************************
+             *                            FTWindow                       *
+             ********************************************************************** -->
+        <div4 role="xquery" id="tq-ft-fs-FTWindow">
+            <head>FTWindow</head>
+
+		  <p>Before we define the semantics functions of the &FTWindow; and &FTDistance; 
+		  	 operations, we introduce the auxiliary function <code>joinIncludes</code> that will
+		  	 be used in their definitions. <code>joinIncludes</code> takes a sequence of 
+		  	 &StringInclude;s of a &Match; and transforms it into either the empty sequence, in 
+		  	 case the input sequence was empty, or otherwise a single &StringInclude;
+		  	 representing the span from the first position of the match to the last. For the 
+		  	 purpose of being able to evaluate an "entire content" operator further up in the 
+		  	 tree, we pre-evaluate whether all possible positions between first and last are 
+			 covered in the input &StringInclude;s and store that boolean in the 
+			 attribute "isContiguous".</p>
+
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:joinIncludes(
+      $strIncls as element(fts:stringInclude)* )
+   as element(fts:stringInclude)?
+{
+   if (fn:empty($strIncls))
+   then 
+      $strIncls
+   else
+      let $posSet := fts:CoveredIncludePositions(<fts:match>$strIncls</fts:match>),
+         $minPos := fn:min($strIncls/fts:tokenInfo/@startPos),
+         $maxPos := fn:max($strIncls/fts:tokenInfo/@endPos),
+         $isContiguous := 
+            ( every $pos in $minPos to $maxPos
+              satisfies ($pos = $posSet) )
+            and
+            ( every $strIncl in $strIncls
+              satisfies $strIncl/@isContiguous )
+      return
+         <fts:stringInclude 
+            queryPos="{$strIncls[1]/@queryPos}"
+            isContiguous="{$isContiguous}">
+            <fts:tokenInfo
+               startPos ="{$minPos}"
+               endPos   ="{$maxPos}"
+               startSent="{fn:min($strIncls/fts:tokenInfo/@startSent)}"
+               endSent  ="{fn:max($strIncls/fts:tokenInfo/@endSent)}"
+               startPara="{fn:min($strIncls/fts:tokenInfo/@startPara)}"
+               endPara  ="{fn:max($strIncls/fts:tokenInfo/@endPara)}"/>
+         </fts:stringInclude>
+};
+]]></eg>
+
+            <p>The parameters of the
+            <function>ApplyFTWindow</function> function are
+            1) the unit of
+            type <code>fts:distanceType</code>, 2) a size, and 3) one
+            &AllMatches; parameter 
+            corresponding to the result of the nested &FTSelection;s.
+            For each unit 
+			type a function is defined as follows.</p>
+            
+            <p>The semantics of <code>window N words </code> is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTWordWindow (
+      $allMatches as element(fts:allMatches),
+      $n as xs:integer ) 
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{$allMatches/@stokenNum}">
+   {
+      for $match in $allMatches/fts:match
+      let $minpos := fn:min($match/fts:stringInclude/fts:tokenInfo/@startPos),
+          $maxpos := fn:max($match/fts:stringInclude/fts:tokenInfo/@endPos)
+      for $windowStartPos in ($maxpos - $n + 1 to $minpos)
+      let $windowEndPos := $windowStartPos + $n - 1
+      return 
+         <fts:match>
+         {
+            fts:joinIncludes($match/fts:stringInclude),
+            for $stringExclude in $match/fts:stringExclude
+            where $stringExclude/fts:tokenInfo/@startPos >=
+                  $windowStartPos
+              and $stringExclude/fts:tokenInfo/@endPos <=
+                  $windowEndPos
+            return $stringExclude
+         }
+         </fts:match>
+   }
+   </fts:allMatches>
+};
+]]></eg>
+            
+            <p>The semantics of <code>window N sentences</code> is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTSentenceWindow (
+      $allMatches as element(fts:allMatches),
+      $n as xs:integer ) 
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{$allMatches/@stokenNum}">
+   {
+      for $match in $allMatches/fts:match
+      let $minpos := fn:min($match/fts:stringInclude/fts:tokenInfo/@startSent),
+          $maxpos := fn:max($match/fts:stringInclude/fts:tokenInfo/@endSent)
+      for $windowStartPos in ($maxpos - $n + 1 to $minpos)
+      let $windowEndPos := $windowStartPos + $n - 1
+      return 
+         <fts:match>
+         {
+            fts:joinIncludes($match/fts:stringInclude),
+            for $stringExclude in $match/fts:stringExclude
+            where $stringExclude/fts:tokenInfo/@startSent >=
+                  $windowStartPos
+              and $stringExclude/fts:tokenInfo/@endSent <=
+                  $windowEndPos
+            return $stringExclude
+         }
+         </fts:match>
+   }
+   </fts:allMatches>
+};
+]]></eg>
+            
+            <p>The semantics of <code>window N paragraphs </code> is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTParagraphWindow (
+      $allMatches as element(fts:allMatches),
+      $n as xs:integer ) 
+   as element(fts:allMatches)
+{
+   <fts:allMatches stokenNum="{$allMatches/@stokenNum}">
+   {
+      for $match in $allMatches/fts:match
+      let $minpos := fn:min($match/fts:stringInclude/fts:tokenInfo/@startPara),
+          $maxpos := fn:max($match/fts:stringInclude/fts:tokenInfo/@endPara)
+      for $windowStartPos in ($maxpos - $n + 1 to $minpos)
+      let $windowEndPos := $windowStartPos + $n - 1
+      return 
+         <fts:match>
+         {
+            fts:joinIncludes($match/fts:stringInclude),
+            for $stringExclude in $match/fts:stringExclude
+            where $stringExclude/fts:tokenInfo/@startPara >=
+                  $windowStartPos
+              and $stringExclude/fts:tokenInfo/@endPara <=
+                  $windowEndPos
+            return $stringExclude
+         }
+         </fts:match>
+   }
+   </fts:allMatches>
+};
+]]></eg>
+            
+            <p>The resulting &AllMatches; contains 
+            &Match;es of the operand that satisfy the condition that
+            there exists a sequence of the specified number of
+            consecutive (token, sentence, or paragraph) positions, such
+            that all &StringInclude;s are within that window, and the
+            &StringExclude;s retained are also within that window. For each 
+            &Match; that satisfies the window condition the 
+            &StringInclude;s are joined into a single &StringInclude;. This 
+            enables further window or distance operations to be applied to the
+            result in a way that that result is taken as a single entity.</p>
+            
+            <p>The semantics for the general function  is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTWindow (
+      $type as fts:distanceType,
+      $size as xs:integer,
+      $allMatches as element(fts:allMatches) ) 
+   as element(fts:allMatches) 
+{
+   if ($type eq "word") then
+      fts:ApplyFTWordWindow($allMatches, $size)
+   else if ($type eq "sentence") then 
+      fts:ApplyFTSentenceWindow($allMatches, $size)
+   else
+      fts:ApplyFTParagraphWindow($allMatches, $size)
+};
+]]></eg>
+            
+            <p>For example, consider the &FTWindow; selection
+            <code>("Ford Mustang" ftand
+            "excellent") window 10 words</code>.
+            The &Match;es of the source &AllMatches; for
+            <code>("Ford Mustang" ftand
+            "excellent")</code> are given below.</p>
+            
+            <graphic source="images/FTWindowEx1.jpg" 
+                     alt="FTWindow AllMatches"/><p>
+            <graphic source="images/FTWindowEx2.jpg" 
+                     alt="FTWindow AllMatches"/></p>
+            <graphic source="images/FTWindowEx3.jpg" 
+                     alt="FTWindow AllMatches"/><p>
+            <graphic source="images/FTWindowEx4.jpg" 
+                     alt="FTWindow AllMatches"/></p>
+            <graphic source="images/FTWindowEx5.jpg" 
+                     alt="FTWindow AllMatches"/><p>
+            <graphic source="images/FTWindowEx6.jpg" 
+                     alt="FTWindow AllMatches"/></p>
+                     
+            <p>The result for the &FTWindow; selection 
+            consists of only the first, the fifth, and the sixth
+            &Match;es because their respective window sizes are 5, 4,
+            and 9.</p>
+            
+        </div4>
+        
+        
+        
+        <!-- **********************************************************************
+             *                            FTDistance                     *
+             ********************************************************************** -->
+        <div4 role="xquery" id="tq-ft-fs-FTDistance">
+            <head>FTDistance</head>
+            
+            <p>The parameters of the
+            <function>ApplyFTDistance</function> function are
+            1) one
+            &AllMatches; parameter corresponding to the result of the
+            nested &FTSelection;s, 2) the unit of the distance (tokens,
+            sentences, paragraphs), and 3) the range specified.
+            The resulting &AllMatches; contains &Match;es of the operand
+            that satisfy the condition
+            that the distance for every pair of consecutive &StringInclude;s
+            is within the specified interval,
+            where the distance is measured (in tokens, sentences, or paragraphs)
+            from the end of the preceding &StringInclude;
+            to the start of the next.
+            <!--
+            <termdef id="ConsecutivePosDef" term="ConsecutivePos">
+            <term>Consecutive Positions</term> in a &Match;
+            are two positions from the same &Match;
+            with no intervening &StringInclude;s.
+            </termdef>
+            -->
+            </p>
+
+            <p>
+            An invocation of
+            the <function>ApplyFTDistance</function> function
+            will call one of twelve helper functions,
+            each of which handles a particular unit of distance
+            and type of range.
+            </p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTDistance (
+      $type as fts:distanceType,
+      $range as element(fts:range),
+      $allMatches as element(fts:allMatches) ) 
+   as element(fts:allMatches) 
+{
+   if ($type eq "word") then
+      if ($range/@type eq "exactly") then
+         fts:ApplyFTWordDistanceExactly($allMatches, $range/@n)
+      else if ($range/@type eq "at least") then 
+         fts:ApplyFTWordDistanceAtLeast($allMatches, $range/@n)
+      else if ($range/@type eq "at most") then
+         fts:ApplyFTWordDistanceAtMost( $allMatches, $range/@n)
+      else
+         fts:ApplyFTWordDistanceFromTo( $allMatches, $range/@m, $range/@n)
+   else if ($type eq "sentence") then
+      if ($range/@type eq "exactly") then
+         fts:ApplyFTSentenceDistanceExactly($allMatches, $range/@n)
+      else if ($range/@type eq "at least") then
+         fts:ApplyFTSentenceDistanceAtLeast($allMatches, $range/@n)
+      else if ($range/@type eq "at most") then
+         fts:ApplyFTSentenceDistanceAtMost( $allMatches, $range/@n)
+      else
+         fts:ApplyFTSentenceDistanceFromTo( $allMatches, $range/@m, $range/@n)
+   else
+      if ($range/@type eq "exactly") then
+         fts:ApplyFTParagraphDistanceExactly($allMatches, $range/@n)
+      else if ($range/@type eq "at least") then
+         fts:ApplyFTParagraphDistanceAtLeast($allMatches, $range/@n)
+      else if ($range/@type eq "at most") then
+         fts:ApplyFTParagraphDistanceAtMost( $allMatches, $range/@n)
+      else
+         fts:ApplyFTParagraphDistanceFromTo( $allMatches, $range/@m, $range/@n)
+};
+]]></eg>
+
+            <p><emph>Word Distance</emph></p>
+            
+            <p>The semantics of case <code>word distance exactly N</code> 
+			is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTWordDistanceExactly(
+      $allMatches as element(fts:allMatches),
+      $n as xs:integer ) 
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{$allMatches/@stokenNum}">
+   {
+      for $match in $allMatches/fts:match
+      let $sorted := for $si in $match/fts:stringInclude          
+                     order by $si/fts:tokenInfo/@startPos ascending,
+                              $si/fts:tokenInfo/@endPos ascending
+                     return $si
+      where 
+         if (fn:count($sorted) le 1) then fn:true() else
+            every $idx in 1 to fn:count($sorted) - 1
+            satisfies fts:wordDistance(
+                         $sorted[$idx]/fts:tokenInfo,
+                         $sorted[$idx+1]/fts:tokenInfo
+                      ) = $n 
+      return 
+         <fts:match>
+         {
+            fts:joinIncludes($match/fts:stringInclude),
+            for $stringExcl in $match/fts:stringExclude
+            where some $stringIncl in $match/fts:stringInclude
+                  satisfies fts:wordDistance(
+                                $stringIncl/fts:tokenInfo,
+                                $stringExcl/fts:tokenInfo
+                            ) = $n
+            return $stringExcl
+         }
+         </fts:match>
+   }
+   </fts:allMatches>
+};
+]]></eg>
+            
+            <p>The semantics of <code>word distance at least N</code> is given 
+			below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTWordDistanceAtLeast (
+      $allMatches as element(fts:allMatches),
+      $n as xs:integer ) 
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{$allMatches/@stokenNum}">
+   {
+      for $match in $allMatches/fts:match
+      let $sorted := for $si in $match/fts:stringInclude          
+                     order by $si/fts:tokenInfo/@startPos ascending,
+                              $si/fts:tokenInfo/@endPos ascending
+                     return $si
+      where 
+         if (fn:count($sorted) le 1) then fn:true() else
+            every $index in (1 to fn:count($sorted) - 1)
+            satisfies fts:wordDistance(
+                         $sorted[$index]/fts:tokenInfo,
+                         $sorted[$index+1]/fts:tokenInfo
+                      ) >= $n 
+      return 
+         <fts:match>
+         {
+            fts:joinIncludes($match/fts:stringInclude),
+            for $stringExcl in $match/fts:stringExclude
+            where some $stringIncl in $match/fts:stringInclude
+                  satisfies fts:wordDistance(
+                                $stringIncl/fts:tokenInfo,
+                                $stringExcl/fts:tokenInfo
+                            ) >= $n
+            return $stringExcl
+         }
+         </fts:match>
+   }           
+   </fts:allMatches>
+};
+]]></eg>
+            
+            <p>The semantics of <code>word distance at most N</code> is given 
+			below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTWordDistanceAtMost (
+      $allMatches as element(fts:allMatches),
+      $n as xs:integer ) 
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{$allMatches/@stokenNum}">
+   {
+      for $match in $allMatches/fts:match
+      let $sorted := for $si in $match/fts:stringInclude          
+                     order by $si/fts:tokenInfo/@startPos ascending,
+                              $si/fts:tokenInfo/@endPos ascending
+                     return $si
+      where
+         if (fn:count($sorted) le 1) then fn:true() else
+            every $index in (1 to fn:count($sorted) - 1)
+            satisfies fts:wordDistance(
+                          $sorted[$index]/fts:tokenInfo,
+                          $sorted[$index+1]/fts:tokenInfo
+                      ) <= $n 
+      return 
+        <fts:match>
+        {
+           fts:joinIncludes($match/fts:stringInclude),
+           for $stringExcl in $match/fts:stringExclude
+           where some $stringIncl in $match/fts:stringInclude
+                 satisfies fts:wordDistance(
+                               $stringIncl/fts:tokenInfo,
+                               $stringExcl/fts:tokenInfo
+                           ) <= $n
+           return $stringExcl
+        }
+        </fts:match>
+   }
+   </fts:allMatches>
+};
+]]></eg>
+            
+            <p>The semantics of <code>word distance from M to N</code> is given 
+			below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTWordDistanceFromTo (
+      $allMatches as element(fts:allMatches),
+      $m as xs:integer,
+      $n as xs:integer ) 
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{$allMatches/@stokenNum}">
+   {
+      for $match in $allMatches/fts:match
+      let $sorted := for $si in $match/fts:stringInclude          
+                     order by $si/fts:tokenInfo/@startPos ascending,
+                              $si/fts:tokenInfo/@endPos ascending
+                     return $si
+      where 
+         if (fn:count($sorted) le 1) then fn:true() else
+            every $index in (1 to fn:count($sorted) - 1)
+            satisfies fts:wordDistance(
+                          $sorted[$index]/fts:tokenInfo,
+                          $sorted[$index+1]/fts:tokenInfo
+                      ) >= $m 
+                      and
+                      fts:wordDistance(
+                          $sorted[$index]/fts:tokenInfo,
+                          $sorted[$index+1]/fts:tokenInfo
+                      ) <= $n 
+      return 
+         <fts:match>
+         {
+            fts:joinIncludes($match/fts:stringInclude),
+            for $stringExcl in $match/fts:stringExclude
+            where some $stringIncl in $match/fts:stringInclude
+                  satisfies fts:wordDistance(
+                                $stringIncl/fts:tokenInfo,
+                                $stringExcl/fts:tokenInfo
+                            ) >= $m
+                            and
+                            fts:wordDistance(
+                                $stringIncl/fts:tokenInfo,
+                                $stringExcl/fts:tokenInfo
+                            ) <= $n
+            return $stringExcl
+         }
+         </fts:match>
+   }
+   </fts:allMatches>
+};
+]]></eg>
+
+            <p>The preceding four helper functions all rely on
+            <function>fts:wordDistance</function>,
+            which returns the number of token positions
+            that occur between two &TokenInfo;s.
+            For example,
+            two tokens with consecutive positions have a distance of 0 tokens,
+            and two overlapping tokens have a distance of -1 tokens.</p>
+
+<!-- file: fts.xqy -->
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:wordDistance (
+      $tokenInfo1 as element(fts:tokenInfo),
+      $tokenInfo2 as element(fts:tokenInfo) )
+   as xs:integer
+{
+   (: Ensure tokens are in order :)
+   let $sorted :=
+      for $ti in ($tokenInfo1, $tokenInfo2)
+      order by $ti/@startPos ascending, $ti/@endPos ascending
+      return $ti
+   return
+      (: -1 because we count starting at 0 :)
+      $sorted[2]/@startPos - $sorted[1]/@endPos - 1
+};
+            ]]></eg>
+
+            <p><emph>Sentence Distance</emph></p>
+            
+            <p>The semantics of <code>sentence distance exactly N</code> 
+			is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTSentenceDistanceExactly (
+      $allMatches as element(fts:allMatches),
+      $n as xs:integer ) 
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{$allMatches/@stokenNum}">
+   {
+      for $match in $allMatches/fts:match
+      let $sorted := for $si in $match/fts:stringInclude          
+                     order by $si/fts:tokenInfo/@startSent ascending,
+                              $si/fts:tokenInfo/@endSent ascending
+                     return $si
+      where 
+         if (fn:count($sorted) le 1) then fn:true() else
+            every $index in (1 to fn:count($sorted) - 1)
+            satisfies fts:sentenceDistance(
+                          $sorted[$index]/fts:tokenInfo,
+                          $sorted[$index+1]/fts:tokenInfo
+                      ) = $n 
+      return 
+         <fts:match>
+         {
+            fts:joinIncludes($match/fts:stringInclude),
+            for $stringExcl in $match/fts:stringExclude
+            where some $stringIncl in $match/fts:stringInclude
+                  satisfies fts:sentenceDistance(
+                                $stringIncl/fts:tokenInfo,
+                                $stringExcl/fts:tokenInfo
+                            ) = $n
+            return $stringExcl
+         }
+         </fts:match>
+   }           
+   </fts:allMatches>
+};
+]]></eg>
+            
+            <p>The semantics of <code>sentence distance at least N</code> 
+			is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTSentenceDistanceAtLeast (
+      $allMatches as element(fts:allMatches),
+      $n as xs:integer ) 
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{$allMatches/@stokenNum}">
+   {
+      for $match in $allMatches/fts:match
+      let $sorted := for $si in $match/fts:stringInclude          
+                    order by $si/fts:tokenInfo/@startSent ascending,
+                             $si/fts:tokenInfo/@endSent ascending
+                    return $si
+      where 
+         if (fn:count($sorted) le 1) then fn:true() else
+            every $index in (1 to fn:count($sorted) - 1)
+            satisfies fts:sentenceDistance(
+                          $sorted[$index]/fts:tokenInfo,
+                          $sorted[$index+1]/fts:tokenInfo
+                      ) >= $n 
+      return 
+         <fts:match>
+         {
+            fts:joinIncludes($match/fts:stringInclude),
+            for $stringExcl in $match/fts:stringExclude
+            where some $stringIncl in $match/fts:stringInclude
+                  satisfies fts:sentenceDistance(
+                                $stringIncl/fts:tokenInfo,
+                                $stringExcl/fts:tokenInfo
+                            ) >= $n
+            return $stringExcl
+         }
+         </fts:match>
+   }           
+   </fts:allMatches>
+};
+]]></eg>
+            
+            <p>The semantics of <code>sentence distance at most N</code> 
+            is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTSentenceDistanceAtMost (
+      $allMatches as element(fts:allMatches),
+      $n as xs:integer ) 
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{$allMatches/@stokenNum}">
+   {
+      for $match in $allMatches/fts:match
+      let $sorted := for $si in $match/fts:stringInclude          
+                     order by $si/fts:tokenInfo/@startSent ascending,
+                              $si/fts:tokenInfo/@endSent ascending
+                     return $si
+      where 
+         if (fn:count($sorted) le 1) then fn:true() else
+            every $index in (1 to fn:count($sorted) - 1)
+            satisfies fts:sentenceDistance(
+                          $sorted[$index]/fts:tokenInfo,
+                          $sorted[$index+1]/fts:tokenInfo
+                      ) <= $n 
+      return 
+         <fts:match>
+         {
+            fts:joinIncludes($match/fts:stringInclude),
+            for $stringExcl in $match/fts:stringExclude
+            where some $stringIncl in $match/fts:stringInclude
+                  satisfies fts:sentenceDistance(
+                                $stringIncl/fts:tokenInfo,
+                                $stringExcl/fts:tokenInfo
+                            ) <= $n
+            return $stringExcl
+         }
+         </fts:match>
+   }           
+   </fts:allMatches>
+};
+]]></eg>
+            
+            <p>The semantics of  <code>sentence distance from M to N</code> 
+            is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTSentenceDistanceFromTo (
+      $allMatches as element(fts:allMatches),
+      $m as xs:integer,
+      $n as xs:integer ) 
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{$allMatches/@stokenNum}">
+   {
+      for $match in $allMatches/fts:match
+      let $sorted := for $si in $match/fts:stringInclude          
+                     order by $si/fts:tokenInfo/@startSent ascending,
+                              $si/fts:tokenInfo/@endSent ascending
+                     return $si
+      where 
+         if (fn:count($sorted) le 1) then fn:true() else
+            every $index in (1 to fn:count($sorted) - 1)
+            satisfies fts:sentenceDistance(
+                          $sorted[$index]/fts:tokenInfo,
+                          $sorted[$index+1]/fts:tokenInfo
+                      ) >= $m 
+                      and
+                      fts:sentenceDistance(
+                          $sorted[$index]/fts:tokenInfo,
+                          $sorted[$index+1]/fts:tokenInfo
+                      ) <= $n 
+      return 
+         <fts:match>
+         {
+            fts:joinIncludes($match/fts:stringInclude),
+            for $stringExcl in $match/fts:stringExclude
+            where some $stringIncl in $match/fts:stringInclude
+                  satisfies fts:sentenceDistance(
+                                $stringIncl/fts:tokenInfo,
+                                $stringExcl/fts:tokenInfo
+                            ) >= $m
+                            and
+                            fts:sentenceDistance(
+                                $stringIncl/fts:tokenInfo,
+                                $stringExcl/fts:tokenInfo
+                            ) <= $n
+            return $stringExcl
+         }
+         </fts:match>
+   }
+   </fts:allMatches>
+};
+]]></eg>
+
+            <p>The preceding four helper functions all rely on
+            <function>fts:sentenceDistance</function>,
+            which returns the number of sentences between two &TokenInfo;s.
+            </p>
+
+<!-- file: fts.xqy -->
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:sentenceDistance (
+      $tokenInfo1 as element(fts:tokenInfo),
+      $tokenInfo2 as element(fts:tokenInfo) )
+   as xs:integer
+{
+   (: Ensure tokens are in order :)
+   let $sorted :=
+      for $ti in ($tokenInfo1, $tokenInfo2)
+      order by $ti/@startPos ascending, $ti/@endPos ascending
+      return $ti
+   return
+      (: -1 because we count starting at 0 :)
+      $sorted[2]/@startSent - $sorted[1]/@endSent - 1
+};
+            ]]></eg>
+
+            <p><emph>Paragraph Distance</emph></p>
+            
+            <p>The semantics of <code>paragraph distance exactly N</code> 
+			is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTParagraphDistanceExactly (
+      $allMatches as element(fts:allMatches),
+      $n as xs:integer ) 
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{$allMatches/@stokenNum}">
+   {
+      for $match in $allMatches/fts:match
+      let $sorted := for $si in $match/fts:stringInclude          
+                     order by $si/fts:tokenInfo/@startPara ascending,
+                              $si/fts:tokenInfo/@endPara ascending
+                     return $si
+      where 
+         if (fn:count($sorted) le 1) then fn:true() else
+            every $index in (1 to fn:count($sorted) - 1)
+            satisfies fts:paraDistance(
+                          $sorted[$index]/fts:tokenInfo,
+                          $sorted[$index+1]/fts:tokenInfo
+                      ) = $n 
+      return 
+         <fts:match>
+         {
+            fts:joinIncludes($match/fts:stringInclude),
+            for $stringExcl in $match/fts:stringExclude
+            where some $stringIncl in $match/fts:stringInclude
+                  satisfies fts:paraDistance(
+                                $stringIncl/fts:tokenInfo,
+                                $stringExcl/fts:tokenInfo
+                            ) = $n
+            return $stringExcl
+         }
+         </fts:match>
+   }           
+   </fts:allMatches>
+};
+]]></eg>
+            
+            <p>The semantics of <code>paragraph distance at least N</code> 
+		is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTParagraphDistanceAtLeast (
+      $allMatches as element(fts:allMatches),
+      $n as xs:integer ) 
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{$allMatches/@stokenNum}">
+   {
+      for $match in $allMatches/fts:match
+      let $sorted := for $si in $match/fts:stringInclude          
+                     order by $si/fts:tokenInfo/@startPara ascending,
+                              $si/fts:tokenInfo/@endPara ascending
+                     return $si
+      where 
+         if (fn:count($sorted) le 1) then fn:true() else
+            every $index in (1 to fn:count($sorted) - 1)
+            satisfies fts:paraDistance(
+                          $sorted[$index]/fts:tokenInfo,
+                          $sorted[$index+1]/fts:tokenInfo
+                      ) >= $n 
+      return 
+         <fts:match>
+         {
+            fts:joinIncludes($match/fts:stringInclude),
+            for $stringExcl in $match/fts:stringExclude
+            where some $stringIncl in $match/fts:stringInclude
+                  satisfies fts:paraDistance(
+                                $stringIncl/fts:tokenInfo,
+                                $stringExcl/fts:tokenInfo
+                            ) >= $n
+            return $stringExcl
+         }
+         </fts:match>
+   }           
+   </fts:allMatches>
+};
+]]></eg>
+            
+            <p>The semantics of <code>paragraph distance at most N</code>
+		is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTParagraphDistanceAtMost (
+      $allMatches as element(fts:allMatches),
+      $n as xs:integer ) 
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{$allMatches/@stokenNum}">
+   {
+      for $match in $allMatches/fts:match
+      let $sorted := for $si in $match/fts:stringInclude          
+                     order by $si/fts:tokenInfo/@startPara ascending,
+                              $si/fts:tokenInfo/@endPara ascending
+                     return $si
+      where 
+         if (fn:count($sorted) le 1) then fn:true() else
+            every $index in (1 to fn:count($sorted) - 1)
+            satisfies fts:paraDistance(
+                          $sorted[$index]/fts:tokenInfo,
+                          $sorted[$index+1]/fts:tokenInfo
+                      ) <= $n 
+      return 
+         <fts:match>
+         {
+            fts:joinIncludes($match/fts:stringInclude),
+            for $stringExcl in $match/fts:stringExclude
+            where some $stringIncl in $match/fts:stringInclude
+                  satisfies fts:paraDistance(
+                                $stringIncl/fts:tokenInfo,
+                                $stringExcl/fts:tokenInfo
+                            ) <= $n
+            return $stringExcl
+         }
+         </fts:match>
+   }           
+   </fts:allMatches>
+};
+]]></eg>
+            
+            <p>The semantics of <code>paragraph distance from M to N</code>
+		is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTParagraphDistanceFromTo (
+      $allMatches as element(fts:allMatches),
+      $m as xs:integer,
+      $n as xs:integer ) 
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{$allMatches/@stokenNum}">
+   {
+      for $match in $allMatches/fts:match
+      let $sorted := for $si in $match/fts:stringInclude          
+                     order by $si/fts:tokenInfo/@startPara ascending,
+                              $si/fts:tokenInfo/@endPara ascending
+                     return $si
+      where 
+         if (fn:count($sorted) le 1) then fn:true() else
+            every $index in (1 to fn:count($sorted) - 1)
+            satisfies fts:paraDistance(
+                          $sorted[$index]/fts:tokenInfo,
+                          $sorted[$index+1]/fts:tokenInfo
+                      ) >= $m 
+                      and
+                      fts:paraDistance(
+                          $sorted[$index]/fts:tokenInfo,
+                          $sorted[$index+1]/fts:tokenInfo
+                      ) <= $n 
+      return 
+         <fts:match>
+         {
+            fts:joinIncludes($match/fts:stringInclude),
+            for $stringExcl in $match/fts:stringExclude
+            where some $stringIncl in $match/fts:stringInclude
+                  satisfies fts:paraDistance(
+                                $stringIncl/fts:tokenInfo,
+                                $stringExcl/fts:tokenInfo
+                            ) >= $m
+                            and
+                            fts:paraDistance(
+                                $stringIncl/fts:tokenInfo,
+                                $stringExcl/fts:tokenInfo
+                            ) <= $n
+            return $stringExcl
+         }
+         </fts:match>
+   }
+   </fts:allMatches>
+};
+]]></eg>
+
+            <p>The preceding four helper functions all rely on
+            <function>fts:paraDistance</function>,
+            which returns the number of paragraphs between two &TokenInfo;s.
+            </p>
+
+<!-- file: fts.xqy -->
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:paraDistance (
+      $tokenInfo1 as element(fts:tokenInfo),
+      $tokenInfo2 as element(fts:tokenInfo) )
+   as xs:integer
+{
+   (: Ensure tokens are in order :)
+   let $sorted :=
+      for $ti in ($tokenInfo1, $tokenInfo2)
+      order by $ti/@startPos ascending, $ti/@endPos ascending
+      return $ti
+   return
+      (: -1 because we count starting at 0 :)
+      $sorted[2]/@startPara - $sorted[1]/@endPara - 1
+};
+            ]]></eg>
+            
+            
+            <p>For example, consider the &FTDistance; selection
+            <code>("Ford Mustang" ftand
+            "excellent") distance at most 3 words</code>.
+            The &Match;es of the source &AllMatches; for
+            <code>("Ford Mustang" ftand
+            "excellent")</code> are given below.</p>
+            
+            <graphic source="images/FTDistanceEx1.jpg" 
+                     alt="FTDistance input AllMatches"/><p>
+            <graphic source="images/FTDistanceEx2.jpg" 
+                     alt="FTDistance input AllMatches"/></p>
+            <graphic source="images/FTDistanceEx3.jpg" 
+                     alt="FTDistance input AllMatches"/><p>
+            <graphic source="images/FTDistanceEx4.jpg" 
+                     alt="FTDistance input AllMatches"/></p>
+            <graphic source="images/FTDistanceEx5.jpg" 
+                     alt="FTDistance input AllMatches"/><p>
+            <graphic source="images/FTDistanceEx6.jpg" 
+                     alt="FTDistance input AllMatches"/></p>
+
+            <p>The result for the &FTDistance; selection
+            consists of only the first &Match; (with positions 1, 2, and 5) and
+            the fifth &Match; (with positions 25, 27, and 28), because only
+            for these &Match;es the word distance between consecutive
+            &TokenInfo;s  is always less than or equal to 3.
+            For the first &Match;,
+	    the word distance between the two &TokenInfo;s
+	    is 2 (<code>startPos</code> 5 - <code>endPos</code> 2 - 1),
+            and for the fifth &Match;,
+	    it's 1 (<code>startPos</code> 27 - <code>endPos</code> 25 - 1).
+            </p> 
+            
+        </div4>
+        
+        
+        
+        <!-- *************************************************************
+             *                            FTTimes                        *
+             ************************************************************* -->
+        <div4 role="xquery" id="tq-ft-fs-FTTimes">
+            <head>FTTimes</head>
+            
+            <p>The parameters of the <function>ApplyFTTimes</function>
+            function are 1) an &FTRange; specification, and 2)
+            a parameter corresponding to the result of the nested
+            &FTWords;. </p>
+            
+            <p>The function definitions depend on the range
+            specification &FTRange; to limit the number of
+            occurrences. </p>
+			
+			<p>The general semantics is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:FormCombinations (
+      $sms as element(fts:match)*, 
+      $k as xs:integer ) 
+   as element(fts:match)*
+(:
+   Find all combinations of exactly $k elements from $sms, and
+   for each such combination, construct a match whose children are
+   copies of all the children of all the elements in the combination.
+   Return the sequence of all such matches.
+:)
+{
+   if ($k eq 0) then <fts:match/>
+   else if (fn:count($sms) lt $k) then ()
+   else if (fn:count($sms) eq $k) then <fts:match>{$sms/*}</fts:match>
+   else
+      let $first := $sms[1],
+          $rest  := fn:subsequence($sms, 2)
+      return (
+         (: all the combinations that don't involve $first :)
+         fts:FormCombinations($rest, $k),
+
+         (: and all the combinations that do involve $first :)
+         for $combination in fts:FormCombinations($rest, $k - 1)
+         return
+            <fts:match>
+            {
+               $first/*,
+               $combination/*
+            }
+            </fts:match>
+      )
+};
+
+declare function fts:FormCombinationsAtLeast (
+      $sms as element(fts:match)*,
+      $times as xs:integer)
+   as element(fts:match)*
+(:
+   Find all combinations of $times or more elements from $sms, and
+   for each such combination, construct a match whose children are
+   copies of all the children of all the elements in the combination.
+   Return the sequence of all such matches.
+:)
+{
+   for $k in $times to fn:count($sms)
+   return fts:FormCombinations($sms, $k)
+};
+
+declare function fts:FormRange (
+      $sms as element(fts:match)*, 
+      $l as xs:integer, 
+      $u as xs:integer, 
+      $stokenNum as xs:integer ) 
+   as element(fts:allMatches)
+{
+   if ($l > $u) then <fts:allMatches stokenNum="0" />
+   else 
+      let $am1 := <fts:allMatches stokenNum="{$stokenNum}">
+                     {fts:FormCombinationsAtLeast($sms, $l)}
+                  </fts:allMatches>
+      let $am2 := <fts:allMatches stokenNum="{$stokenNum}">
+                     {fts:FormCombinationsAtLeast($sms, $u+1)}
+                  </fts:allMatches>
+      return fts:ApplyFTAnd($am1,
+                            fts:ApplyFTUnaryNot($am2))
+};
+            ]]></eg>
+            
+            <p>The semantics of <code>occurs exactly N times</code> is given 
+			below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTTimesExactly (
+      $allMatches as element(fts:allMatches),
+      $n as xs:integer ) 
+   as element(fts:allMatches) 
+{
+   fts:FormRange($allMatches/fts:match, $n, $n, $allMatches/@stokenNum)      
+};
+]]></eg>
+            
+            <p>The semantics of <code>occurs at least N times</code> is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTTimesAtLeast (
+      $allMatches as element(fts:allMatches),
+      $n as xs:integer ) 
+   as element(fts:allMatches) 
+{
+   <fts:allMatches stokenNum="{$allMatches/@stokenNum}"> 
+   {fts:FormCombinationsAtLeast($allMatches/fts:match, $n)} 
+   </fts:allMatches>
+};
+]]></eg>
+            
+            <p>The semantics of <code>occurs at most N times</code> is given
+			below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTTimesAtMost (
+      $allMatches as element(fts:allMatches),
+      $n as xs:integer ) 
+   as element(fts:allMatches) 
+{
+   fts:FormRange($allMatches/fts:match, 0, $n, $allMatches/@stokenNum)
+};
+]]></eg>
+            
+            <p>The semantics of <code>occurs from M to N times</code> is given below.</p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTTimesFromTo (
+      $allMatches as element(fts:allMatches),
+      $m as xs:integer,
+      $n as xs:integer ) 
+   as element(fts:allMatches) 
+{
+   fts:FormRange($allMatches/fts:match, $m, $n, $allMatches/@stokenNum)  
+};
+]]></eg>
+            
+            <p>The way to ensure that
+            there are at least <term>N</term> different matches of an
+            &FTSelection; is to ensure that at least <term>N</term> of
+            its &Match;es occur simultaneously. This is similar to
+            forming their conjunction by combining <term>N</term> or more distinct
+            &Match;es into one simple match. Therefore, the &AllMatches;
+            for the selection condition specifying the range qualifier
+            <code>at least N </code> contains the possible
+            combinations of <term>N</term> or more simple matches of the
+            operand.
+            This operation
+            is performed in the function <function>
+            fts:FormCombinationsAtLeast</function>.</p>
+            
+			<p>The range [L, U] is represented by the condition 
+			<code>at least L and not at least U+1</code>. This transformation
+            is performed in the function
+            <function>fts:FormRange</function>.</p>
+            
+            <p>The semantics for the general case is given below. </p>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:ApplyFTTimes (
+      $range as element(fts:range),
+      $allMatches as element(fts:allMatches) ) 
+   as element(fts:allMatches) 
+{
+   if (fn:count($allMatches//fts:stringExclude) gt 0) then
+      fn:error(fn:QName('http://www.w3.org/2005/xqt-errors',
+                        'XPST0003'))
+   else if ($range/@type eq "exactly") then
+      fts:ApplyFTTimesExactly($allMatches, $range/@n)
+   else if ($range/@type eq "at least") then 
+      fts:ApplyFTTimesAtLeast($allMatches, $range/@n)
+   else if ($range/@type eq "at most") then
+      fts:ApplyFTTimesAtMost($allMatches, $range/@n)
+   else fts:ApplyFTTimesFromTo($allMatches, 
+                               $range/@m, 
+                               $range/@n)
+};
+]]></eg>
+		
+<p>The above function performs a sanity check to ensure that the nested 
+&AllMatches; is a result of the evaluation of &FTWords; as defined in
+the grammar rule for <nt def="FTPrimary">FTPrimary</nt> . 
+Otherwise, an error <xerrorref spec="XP" class="ST" code="0003" type="static"/>
+is raised. </p>            
+
+            <p>For example, consider the &FTTimes; selection
+            <code>"Mustang" occurs at least 2 times</code>. The source 
+			&AllMatches; of the &FTWords;
+            selection <code>"Mustang"</code> is given below.</p>
+            
+            <graphic source="images/FTTimesEx1.jpg" 
+                     alt="FTTimes input AllMatches"/>
+                     
+            <p>The result consists of the pairs of the &Match;es.</p>
+            
+            <graphic source="images/FTTimesEx2.jpg" 
+                     alt="FTTimes result AllMatches"/>
+                     
+        </div4>
+    </div3>    
+    
+    
+    </div2>
+    
+    
+    <!-- *************************************************************
+         ***                     FTContainsExpr                    ***
+         ************************************************************* -->
+    <div2 role="xquery" id="FTContainsSec">
+        <head>FTContainsExpr</head>
+        
+            <p>Consider an &FTContainsExpr; expression of the form
+            <code>SearchContext contains text FTSelection</code>,
+            where <code>SearchContext</code> is an XQuery 1.0
+            expression that returns a sequence of items.
+            The &FTContainsExpr; returns true if and only if
+            one of those items
+            satisfies the <code>FTSelection</code>.</p>
+	    
+	    <p>If the &FTContainsExpr; is of the form <code>SearchContext 
+	    contains text FTSelection without content IgnoreExpr</code> for
+	    some XQuery 1.0 expression <code>IgnoreExpr</code>, then
+	    any nodes returned by <code>IgnoreExpr</code>
+	    are (notionally) pruned from each search context item
+            before attempting to satisfy the <code>FTSelection</code>.</p>
+
+        <p>
+        More formally, evaluation of an &FTContainsExpr;
+        proceeds according to the following steps.
+        Where appropriate, the explanation includes references to
+        arcs labelled "FTn" in the processing model diagram (Figure 1)
+        in <specref ref="processing-model"/>.
+        </p>
+
+        <olist>
+            <!-- 1 -->
+            <item>
+            <p>
+            For each XQuery/XPath expression nested within the FTContainsExpr,
+            evaluate it with respect to
+            the same dynamic context as the FTContainsExpr (FT1).
+            Specifically:
+            </p>
+
+            <olist>
+                <!-- 1a -->
+                <item>
+                <p>
+                Evaluate the search context expression (<code>SearchContext</code>),
+                resulting in the sequence of search context items.
+                </p>
+                </item>
+
+                <!-- 1b -->
+                <item>
+                <p>
+                Evaluate the ignore option (<code>IgnoreExpr</code>) if any,
+                resulting in the set of ignored nodes.
+                </p>
+                </item>
+
+                <!-- 1c -->
+                <item>
+                <p>
+                At each FTWordsValue,
+                evaluate the literal/expression and convert the result to <code>xs:string*</code>.
+                </p>
+                </item>
+
+                <!-- 1d -->
+                <item>
+                <p>
+                At each weight specification,
+                evaluate the expression and convert the result to <code>xs:double</code>.
+                </p>
+                </item>
+
+                <!-- 1e -->
+                <item>
+                <p>
+                At each FTWindow and FTRange,
+                evaluate the AdditiveExpr(s) and convert each to <code>xs:integer</code>.
+                </p>
+                </item>
+            </olist>
+            </item>
+
+            <!-- 3 -->
+            <item>
+            <p>
+            Using the settings of the match option components
+            in the FTContainsExpr's static context,
+            construct an <code>element(fts:matchOptions)</code> structure.
+            </p>
+            </item>
+
+            <!-- 2 -->
+            <item>
+            <p>
+            Based on the parse-tree of the FTContainsExpr's FTSelection
+            and the results of steps 1c-1e,
+            construct an <code>element(*,fts:ftSelection)</code> structure.
+            We refer to this as the "operator tree" below.
+            In this process:
+            </p>
+            <olist>
+            <item><p>Construct the operator tree from the top down, propagating
+        FTMatchOptions down to FTWordsValues.</p></item>
+            <item>
+            <p>
+            Tokenize the query string(s) obtained at 1c. (FT2.1)
+            </p>
+            </item>
+            </olist>
+            </item>
+
+            <!-- 4 -->
+            <item>
+            <p>
+            Call the function <function>fts:FTContainsExpr</function> (see declaration below),
+            passing the following arguments to its parameters:
+            </p>
+
+            <ulist>
+                <item>
+                    <p>
+                    <code>$searchContextItems</code>:
+                    The sequence of items returned by <code>SearchContext</code>,
+                    calculated in step 1a.
+                    </p>
+                </item>
+
+                <item>
+                    <p>
+                    <code>$ignoreNodes</code>:
+                    The sequence of items returned by <code>IgnoreExpr</code> (in 1b),
+                    if that expression is present,
+                    or the empty sequence otherwise.
+                    </p>
+                </item>
+
+                <item>
+                    <p>
+                    <code>$ftSelection</code>:
+                    The XML node representation of <code>FTSelection</code>
+                    (constructed in step 2).
+                    </p>
+                </item>
+
+                <item>
+                    <p>
+                    <code>$defOptions</code>:
+                    The XML representation of the match options
+                    in the FTContainsExpr's static context
+                    (constructed in step 3).
+                    </p>
+                </item>
+            </ulist>
+
+            <p>
+            Within the function,
+            for each search context item:
+            </p>
+
+            <olist>
+                <!-- 4a -->
+                <item>
+                <p>
+                Delete the ignored nodes from the search
+                context item.
+                [<function>fts:FTContainsExpr</function> calls <function>fts:reconstruct</function>.]
+                </p>
+                </item>
+
+                <!-- 4b -->
+                <item>
+                <p>
+                Traverse the operator tree from the top down,
+                propagating FTMatchOptions down to FTWordsValues.
+                [<function>fts:evaluate</function> calls
+                itself and <function>fts:replaceMatchOptions</function>.]
+                </p>
+                </item>
+
+                <!-- 4c -->
+                <item>
+                <p>
+                At each FTWordsValue, using the prevailing FTMatchOptions:
+                </p>
+
+                <olist>
+                    <item>
+                    <p>
+                    Tokenize the search context obtained at 4a. (FT2.2)
+                    (Whether this pays any attention to FTMatchOptions is
+                    up to the implementation.)
+                    [This happens within <function>fts:matchTokenInfos</function>.]
+                    </p>
+                    </item>
+
+                    <item>
+                    <p>
+                    Match the search context tokens and the query tokens, 
+                    yielding an
+                    <code>element(fts:tokenInfo)*</code> structure.
+                    [This happens within <function>fts:matchTokenInfos</function>.]
+                    </p>
+                    </item>
+
+                    <item>
+                    <p>
+                    Convert that into an <code>element(fts:allMatches)</code>. (FT3)
+                    [This happens in <function>fts:applyQueryTokensAsPhrase</function>.]
+                    </p>
+                    </item>
+
+                </olist>
+                </item>
+
+                <!-- 4d -->
+                <item>
+                <p>
+                Traverse the operator tree from the bottom up.
+                At each point,
+                the &AllMatches; instances produced by subtrees are taken as input,
+                and a new &AllMatches; instance is obtained as output.
+                (FT4)
+                [This is most of the section 4 code.]
+                </p>
+                </item>
+
+                <!-- 4e -->
+                <item>
+                <p>
+                If the topmost &AllMatches; instance contains a &Match; with no &StringExclude;s,
+                then the search context item
+                satisfies the full-text condition given by the &FTSelection;,
+                and the call to <function>fts:FTContainsExpr</function> returns <code>true</code>.
+                [This is handled by the QuantifiedExpr in <function>fts:FTContainsExpr</function>.]
+                </p>
+                </item>
+            </olist>
+
+            <p>
+            [Note that the section 4 code doesn't implement 4b-4d as three sequential steps.
+            Instead, they are different aspects of a single traversal of the operator tree.]
+            </p>
+
+            <p>
+            If none of the topmost &AllMatches; provides a successful match,
+            then <function>fts:FTContainsExpr</function> returns <code>false</code>.
+            </p>
+            </item>
+
+            <!-- 4 -->
+            <item>
+            <p>
+            The boolean value returned by the call to <function>fts:FTContainsExpr</function>
+            is the value of the FTContainsExpr.
+            (FT5)
+            </p>
+            </item>
+
+        </olist>
+            
+<!-- file: fts.xqy -->            
+            <eg role="semfunc-file-fts-xquery"><![CDATA[
+declare function fts:FTContainsExpr (
+      $searchContextItems as item()*,
+      $ignoreNodes as node()*,
+      $ftSelection as element(*,fts:ftSelection),
+      $defOptions as element(fts:matchOptions) )
+   as xs:boolean 
+{ 
+   some $searchContext in $searchContextItems
+   satisfies 
+      let $newSearchContext := fts:reconstruct( $searchContext, $ignoreNodes )
+      return
+         if (fn:empty($newSearchContext)) then fn:false()
+         else
+            let $allMatches := fts:evaluate($ftSelection,
+                                            $newSearchContext,
+                                            $defOptions,
+                                            0)
+            return 
+               some $match in $allMatches/fts:match
+               satisfies 
+                  fn:count($match/fts:stringExclude) eq 0
+};
+
+declare function fts:reconstruct (
+      $n as item(),
+      $ignore as node()* )
+   as item()?
+{
+   typeswitch ($n)
+     case node() return
+        if (some $i in $ignore satisfies $n is $i) then ()
+        else if ($n instance of element()) then
+           let $nodeName := fn:node-name($n)
+           let $nodeContent := for $nn in $n/node()
+                               return fts:reconstruct($nn,$ignore)
+           return element {$nodeName} {$nodeContent}
+        else if ($n instance of document-node()) then
+           document {
+              for $nn in $n/node()
+              return fts:reconstruct($nn, $ignore)
+           }
+        else $n
+     default return $n
+};
+            ]]></eg>
+    
+    </div2>
+    
+
+
+    <!-- **********************************************************
+         ***                     Scoring                    ***
+         *********************************************************** -->
+        <div2 role="xquery" id="ScoreSec">
+            <head>Scoring</head>
+            
+            <p>This section addresses the semantics of 
+               scoring variables in XQuery 1.0 <code>for</code> and
+               <code>let</code> clauses and XPath 2.0 <code>for</code>
+               expressions.</p>
+			   
+			 <p>Scoring variables associate a numeric score with the result of the evaluation
+			 of XQuery 1.0 and XPath 2.0 expressions. This numeric score
+			 tries to estimate the value of a result item to the user
+			 information need expressed using the XQuery 1.0 and XPath 2.0 
+			 expression. The numeric score is computed using an
+             &ref-implementation-dependent; 
+			 <emph>scoring algorithm</emph>.</p>
+			 
+			 <p>There are numerous scoring algorithms used in practice. Most of
+			 the scoring algorithms take as inputs a query and a set of results
+			 to the query. In computing the score, these algorithms rely on the
+			 structure of the query to estimate the relevance of the results. 
+			 </p>
+			 
+			 <p>In the context of defining the semantics of XQuery and XPath 
+			 Full Text, passing the structure of the query poses a problem.
+			 The query may contain XQuery 1.0 and XPath 2.0 expressions and
+			 &language; expressions in particular. The 
+			 semantics of XQuery 1.0 and XPath 2.0 expressions is
+			 defined using (among other things) functions that take as
+			 arguments sequences of 
+			 items and return sequences of items. They are not aware of what
+			 expression produced a particular sequence, i.e., they are not
+			 aware of the expression structure.</p>
+			 
+			 <p>To define the semantics of scoring in &language; 
+			 using XQuery 1.0, expressions that produce
+			 the query result (or the functions that implement the expressions)
+			 must be passed as arguments. In other words, second-order functions
+			 are necessary. Currently XQuery 1.0 and XPath 2.0 do
+			 not provide such functions. </p>
+			 
+             
+            <p>Nevertheless, in the interest of the exposition, assume 
+               that such second-order functions are present. In particular, that 
+               there are two semantic second-order function
+               <code>fts:score</code> and <code>fts:scoreSequence</code>
+               that take one argument (an expression) and return the
+               score value of this expression, respectively a sequence
+               of score values, one for each item to which the expression
+               evaluates. The scores must satisfy <loc
+href="#section-score-variables">scoring properties</loc>.</p>
+            <p>A <code>for</code> clause containing a score variable
+<eg><![CDATA[
+for $result score $score in Expr
+...
+]]></eg>
+               is evaluated as
+               though it is replaced by the following  the set of clauses.
+               
+<eg><![CDATA[
+let $scoreSeq := fts:scoreSequence(Expr)
+for $result at $i in Expr
+let $score := $scoreSeq[$i]
+...
+]]></eg>
+               Here, <code>$scoreSeq</code> and <code>$i</code> are
+               new variables, not appearing elsewhere, and
+               <code>fts:scoreSequence</code> is the 
+               second-order function.
+            </p>
+            <p>Similarly, a <code>let</code> clause containing a score variable
+<eg><![CDATA[
+let score $score := Expr
+...
+]]></eg>
+               is evaluated as
+               though it is replaced by the following clause.
+<eg><![CDATA[
+let $score := fts:score(Expr)
+...
+]]></eg>	
+            </p>
+        </div2>
+
+    <!-- ***************************************************
+         ***                    Example                  ***
+         *************************************************** -->
+        <div2 role="xquery" id="tq-ft-FTContainsExpr-example">
+            <head>Example</head>
+            
+            <p>This section presents a more complex example for the evaluation of &FTContainsExpr;. This example uses the same 
+			sample document fragment and assigns it <code>$doc</code>. 
+            Consider the following &FTContainsExpr;.</p>
+            
+            <eg role="xpath"><![CDATA[
+    $doc contains text (
+        (
+            "Mustang"
+            ftand
+            ({("great", "excellent")} any word occurs at least 2 times)
+            window 11 words
+        )
+        ftand
+        ftnot "rust"
+    ) same paragraph
+]]></eg>
+                
+            <p>Begin by evaluating the &FTSelection; to &AllMatches;.</p>
+            
+            <eg><![CDATA[
+    (
+        (
+            "Mustang"
+            ftand
+            ({("great", "excellent")} any word occurs at least 2 times)
+            window 11 words
+        )
+        ftand
+        ftnot "rust"
+    ) same paragraph
+]]></eg>
+                
+            <p>Step 1: Evaluate the &FTWords;
+                <code>"Mustang"</code>.
+            </p>
+            <graphic source="images/CompleteExample01.jpg" alt="Example, step 1"/>
+            <p>Step 2: Evaluate the &FTWords;
+                <code>{"great", "excellent"} any word</code>.
+            </p>
+			<p>Step 2.1: Match the token "great"</p>
+            <graphic source="images/CompleteExample02.jpg" alt="Example, step 2"/>
+			<p>Step 2.2 Match the token "excellent"</p>
+            <graphic source="images/CompleteExample03.jpg" alt="Example, step 3"/>
+            <p>Step 2.3 - Combine the above &AllMatches; as if &FTOr; is used, i.e., by
+                forming  a union of the &Match;es.</p>
+            <graphic source="images/CompleteExample04.jpg" alt="Example, step 4"/>
+            <p>Step 3 - Apply the &FTTimes;
+                <code>{("great", "excellent")} any word occurs at least 2 times</code>
+				forming two pairs of &Match;es.</p>
+            <graphic source="images/CompleteExample05_1.jpg" alt="Example, step 5.1"/><p>
+            <graphic source="images/CompleteExample05_1_2.jpg" alt="Example, step 5.1"/></p>
+            <graphic source="images/CompleteExample05_2.jpg" alt="Example, step 5.2"/>
+            <p>Step 4 - Apply the &FTAnd;
+                <code>
+                "Mustang" 
+                ftand
+                ({("great", "excellent")} any word occurs at least 2 times)
+                </code> forming all possible pairs of &StringMatch;es.</p>
+            <graphic source="images/CompleteExample06_1.jpg" alt="Example, step 6.1"/><p>
+            <graphic source="images/CompleteExample06_1_2.jpg" alt="Example, step 6.1"/></p>
+            <graphic source="images/CompleteExample06_2.jpg" alt="Example, step 6.2"/><p>
+            <graphic source="images/CompleteExample06_2_2.jpg" alt="Example, step 6.2"/></p>
+            <graphic source="images/CompleteExample06_3.jpg" alt="Example, step 6.3"/><p>
+            <graphic source="images/CompleteExample06_3_2.jpg" alt="Example, step 6.3"/></p>
+            <graphic source="images/CompleteExample06_4.jpg" alt="Example, step 6.4"/><p>
+            <graphic source="images/CompleteExample06_4_2.jpg" alt="Example, step 6.4"/></p>
+            <graphic source="images/CompleteExample06_5.jpg" alt="Example, step 6.5"/><p>
+            <graphic source="images/CompleteExample06_5_2.jpg" alt="Example, step 6.5"/></p>
+            <p>Step 5 - Apply the &FTWindow;
+                <code>
+                (
+                    "Mustang" 
+                    ftand
+                    ({("great", "excellent")} any word occurs at least 2 times)
+                    window 11 words
+                )
+                </code>, filtering out &Match;es 
+                for which the window is not less than or equal to 11 tokens.</p>
+            <graphic source="images/CompleteExample07_1.jpg" alt="Example, step 7.1"/><p>
+            <graphic source="images/CompleteExample07_2.jpg" alt="Example, step 7.2"/></p>
+            <graphic source="images/CompleteExample07_2_2.jpg" alt="Example, step 7.2"/>
+            <p>Step 6 - Evaluate &FTWords;
+                <code>"rust"</code>.
+            </p>
+            <graphic source="images/CompleteExample08.jpg" alt="Example, step 8"/>
+            <p>Step 7 - Apply the &FTUnaryNot;
+                <code>ftnot "rust"</code>, 
+                transforming the <code>StringInclude</code> into a 
+				<code>StringExclude</code>.
+            </p>
+            <graphic source="images/CompleteExample09.jpg" alt="Example, step 9"/>
+            <p>Step 8 - Apply the &FTAnd;
+                <code>
+                (
+                    (
+                        "Mustang"
+                        ftand
+                        ({("great", "excellent")} any word occurs at least 2 times)
+                        window 11 words
+                    )
+                    ftand
+                    ftnot "rust"
+                )
+                </code>, forming all
+				possible combintations of three &StringMatch;es from the first
+				&AllMatches; and one &StringMatch; from the second &AllMatches;. </p>
+            <graphic source="images/CompleteExample10_1.jpg" alt="Example, step 10.1"/><p>
+            <graphic source="images/CompleteExample10_2.jpg" alt="Example, step 10.2"/></p>
+            <graphic source="images/CompleteExample10_3.jpg" alt="Example, step 10.3"/>
+            <p>Step 9: Apply the &FTScope;,  filtering out <term>
+                Match</term>es whose &TokenInfo;s are not within the same paragraph 
+				(assuming the <code>&lt;offer&gt;</code> elements determine
+				paragraph boundaries).</p>
+            <graphic source="images/CompleteExample11.jpg" alt="Example, step 11"/>
+            
+            <p>The resulting &AllMatches; contains a &Match; 
+            that does not contain a &StringExclude;. Therefore, the
+            sample &FTContainsExpr; returns <code>true</code>.</p>
+            
+        </div2>
+    
+</div1>

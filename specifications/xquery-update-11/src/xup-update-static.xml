@@ -1,0 +1,799 @@
+<?xml version="1.0" encoding="utf-8"?>
+<div1 id="id-update-static">
+<head>Static Typing Feature</head>
+
+<p>XQuery 1.0 includes an optional static typing feature. This section
+describes the static typing feature for the
+&language;. Implementations of this specification that support
+optional static typing must implement the following static typing
+rules, along with the XQuery 1.0 static typing rules defined in
+<bibref ref="XQueryFormalSemantics"/>.</p>
+
+<div2 id="id-update-overview"><head>Overview and notations</head>
+
+<p>The concepts and notations used in this specification are the same
+as those used to define the static typing feature for XQuery 1.0. For
+convenience, we recall here some of the main concepts and
+notations. We refer the reader to <bibref ref="XQueryFormalSemantics"/> for a more detailed introduction.</p>
+
+<p>The static typing feature for the &language; is defined based on a
+processing model similar to the one of XQuery 1.0. We first define the
+&language; <emph>Core</emph>, as a subset of the &language;. Then for
+each kind of updating expression, we give the normalization rules from
+the &language; into that Core, as well as the inference rules that
+compute the type for each Core expression.</p>
+
+    <smnotation>
+      <p id="jd_map_expr">Normalization rules map expressions in the
+      &language; into expressions in the &language; Core. They are
+      written as follows.</p>
+
+      	<mapping>
+      	  <xquery>
+      	    <expression>
+      	      <map>&gr_Expr;</map>&jd_map_expr;
+      	    </expression>
+      	  </xquery>
+      	  <core>
+      	    <expression>
+      	      <emph>CoreExpr</emph>
+      	    </expression>
+      	  </core>
+      	</mapping>
+    </smnotation>
+
+    <smnotation>
+      <p>The static semantics is specified through a
+      <term>judgment</term> which gives for each expression its
+      corresponding static type. The meaning of that judgment is
+      defined through <term>inference rules</term> as in <bibref ref="XQueryFormalSemantics"/>.</p>
+
+      <p id="jd_has_type">The judgment</p>
+
+      <display>
+      <clause>
+        <environment>&xq_stat_env;</environment>
+        <expression>&gr_Expr; &jd_has_type; &gr_Type;</expression>
+      </clause>
+      </display>
+
+      <p>holds when, in the static environment &xq_stat_env;, the
+      expression &gr_Expr; has type &gr_Type;.</p>
+    </smnotation>
+
+    <smnotation>
+      <p> The static environment is the same as the one defined in
+      <bibref ref="XQueryFormalSemantics"/>, extended with an entry
+      corresponding to the revalidation mode, as follows.</p>
+
+      <table summary="" role="figure" cellpadding="5">
+      <col width="10%"/><!-- empty column forces left indentation -->
+      <col width="15%"/>
+      <col width="65%" align="justify"/>
+      <col width="10%"/><!-- empty column forces right indentation -->
+      <tbody>
+      <tr><td/>
+          <td id="xq_revalidation_mode_env" valign="top">&xq_revalidation_mode_env;</td>
+          <td>
+            <table summary="">
+              <tbody>
+                <tr><td>The &xq_revalidation_mode_env; environment
+                component designates the <term>revalidation mode</term> in
+                the &language; static context.</td></tr>
+
+                <tr><td>The &xq_revalidation_mode_env; environment
+                component is one of <term>strict</term>,
+                <term>lax</term>, or <term>skip</term>.</td></tr>
+                </tbody>
+            </table>
+          </td>
+          <td/>
+      </tr>
+
+      </tbody>
+      </table>
+   </smnotation>
+</div2>
+
+<div2 id="id-static-typing-changes"><head>Change to Static Typing Rules of XQuery 1.0</head><p>XQuery 1.0 specifies that err:XPST0005 is raised if the Static Typing Feature is in effect and the static type assigned to an expression other than <code>( )</code> or <code>data(( ))</code> is <code>empty-sequence( )</code>. &language; modifies this rule so that it applies only to <termref def="dt-simple-expression">simple expressions</termref> (i.e., it does not apply to <termref def="dt-updating-expression">updating expressions</termref>.)</p></div2><div2 id="id-update-core"><head>Core Grammar</head><p>We extend the
+XQuery Core defined in <bibref ref="XQueryFormalSemantics"/> with five
+expressions needed to support the &language;: insert, delete, rename,
+replace, and transform.</p>
+
+<scrap> 
+<head/> 
+<prodrecap ref="ExprSingle" id="core-ExprSingle" orig="core"/> 
+<prodrecap ref="InsertExpr" id="core-InsertExpr" orig="core"/> 
+<prodrecap ref="InsertExprTargetChoice" id="core-InsertExprTargetChoice" orig="core"/> 
+<prodrecap ref="SourceExpr" id="core-SourceExpr" orig="core"/> 
+<prodrecap ref="TargetExpr" id="core-TargetExpr" orig="core"/> 
+<prodrecap ref="DeleteExpr" id="core-DeleteExpr" orig="core"/> 
+<prodrecap ref="ReplaceExpr" id="core-ReplaceExpr" orig="core"/> 
+<prodrecap ref="RenameExpr" id="core-RenameExpr" orig="core"/> 
+<prodrecap ref="NewNameExpr" id="core-NewNameExpr" orig="core"/> 
+<prodrecap ref="TransformExpr" id="core-TransformExpr" orig="core"/> 
+</scrap>
+
+<ulist>
+  <item><p id="prod-core-IfExpr">The core grammar production for <code>IfExpr</code> can be found in <bibref ref="XQueryFormalSemantics"/></p></item>
+  <item><p id="prod-core-OrExpr">The core grammar production for <code>OrExpr</code> can be found in <bibref ref="XQueryFormalSemantics"/></p></item>
+  <item><p id="prod-core-FLWORExpr">The core grammar production for <code>FLWORExpr</code> can be found in <bibref ref="XQueryFormalSemantics"/></p></item>
+  <item><p id="prod-core-QuantifiedExpr">The core grammar production for <code>QuantifiedExpr</code> can be found in <bibref ref="XQueryFormalSemantics"/></p></item>
+  <item><p id="prod-core-TypeswitchExpr">The core grammar production for <code>TypeswitchExpr</code> can be found in <bibref ref="XQueryFormalSemantics"/></p></item>
+  <item><p id="prod-core-VarName">The core grammar production for <code>VarName</code> can be found in <bibref ref="XQueryFormalSemantics"/></p></item>
+</ulist>
+</div2>
+
+
+<div2 id="id-update-norm-prolog">
+  <head>&language; Prolog</head>
+
+  <p>In addition to the normalization rules defined in <bibref ref="XQueryFormalSemantics"/> for the XQuery 1.0 prolog, the
+  following normalization rules apply to the revalidation mode
+  setter.</p>
+
+  <smnorm>
+    <p>Revalidation declarations are left unchanged through
+    normalization.</p>
+
+    <mapping>
+     <xquery>
+      <expression>
+       <map>&gr_RevalidationDecl;</map>&jd_map_prolog;
+      </expression>
+     </xquery>
+     <core>
+      <expression>
+        &gr_RevalidationDecl;
+      </expression>
+     </core>
+    </mapping>
+  </smnorm>
+
+  <smcontext>
+    <p>The revalidation declaration modifies the revalidation mode
+    in the static context.</p>
+
+    <infergr>
+	<infer>
+	  <prejudge>
+	      <clause>
+              <expression>
+                &xq_stat_env1; =
+                  <update>
+                    <environment>&xq_revalidation_mode_env;</environment>
+                    <expression>
+                    &gr_RevalidationMode;</expression>
+                  </update>
+              </expression>
+	      </clause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>declare revalidation &gr_RevalidationMode;
+              &jd_yields_context; &xq_stat_env1;</expression> 
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+    </infergr>
+  </smcontext>
+</div2>
+
+<div2 id="id-update-norm-expr">
+  <head>&language; Expressions</head>
+
+    <p>In addition to the normalization and static typing rules
+    defined in <bibref ref="XQueryFormalSemantics"/> for XQuery 1.0
+    expressions, the normalization and static typing rules described in
+    this specification apply to the expressions in the &language;. For
+    each expression except the transform expression, the final type is
+    the empty type which corresponds to the value being returned. In
+    each case, the static typing rules check that every sub-expression
+    is well-typed, and that the resulting value is consistent with the
+    constraints specific to each expression. For instance, the
+    expression used in a delete must return a sequence of nodes.</p>
+
+    <div3 id="id-update-typing-insert">
+     <head>Insert</head>
+
+    <smnorm>
+      <p>The following normalization rules apply to insert
+      expressions. Note that whether the expression is written using
+      the 'nodes' or 'node' modifier, the normalized expression always
+      uses the 'nodes' modifier.</p>
+
+      <mapping>
+       <xquery>
+      	<expression>
+         <map>insert (node|nodes) &gr_Expr1; &gr_InsertExprTargetChoice; &gr_Expr2;</map>&jd_map_expr;
+        </expression>
+       </xquery>
+       <core>
+        <expression>
+         insert nodes &fs_item_seq_to_node_seq;(<map>&gr_Expr1;</map>&jd_map_expr;)
+      	 &gr_InsertExprTargetChoice;
+         <map>&gr_Expr2;</map>&jd_map_expr;
+        </expression>
+       </core>
+      </mapping>
+
+      <p>Where &fs_item_seq_to_node_seq; is the special function used
+      for computing element content and is defined in <bibref ref="XQueryFormalSemantics"/>.</p>
+
+    </smnorm>
+
+    <smtype>
+      <p>The static typing rule for insert depends on whether it is an
+      insert <code>into</code>, or an insert <code>before</code> or
+      <code>after</code>.</p>
+
+      <p>In the case of an insert <code>into</code>, the inference
+      depends on whether the target node is an element or a document
+      node (in which case it does not allow attribute nodes to be
+      inserted). This is expressed by the two following rules.</p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                  <expression>&gr_Expr1; &jd_has_type; &gr_Type1;</expression>
+                </clause>
+              </multiclause>
+	      <multiclause>
+	        <clause><environment>&xq_stat_env;</environment>
+                <expression>&gr_Type1; &jd_subtype_of;
+                (attribute *)*, (element * | text | comment | processing-instruction *)*</expression>
+	        </clause>
+	      </multiclause>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                  <expression>&gr_Expr2; &jd_has_type; &gr_Type2;</expression>
+                </clause>
+              </multiclause>
+	      <multiclause>
+	        <clause><environment>&xq_stat_env;</environment>
+                <expression>&gr_Type2; &jd_subtype_of; (element *)?</expression>
+	        </clause>
+	      </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                        <expression>insert nodes &gr_Expr1; ((as (first | last))? into) &gr_Expr2; &jd_has_type; &xt_empty;</expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                  <expression>&gr_Expr1; &jd_has_type; &gr_Type1;</expression>
+                </clause>
+              </multiclause>
+	      <multiclause>
+	        <clause><environment>&xq_stat_env;</environment>
+                <expression>&gr_Type1; &jd_subtype_of;
+                (element * | text | comment | processing-instruction *)*</expression>
+	        </clause>
+	      </multiclause>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                  <expression>&gr_Expr2; &jd_has_type; &gr_Type2;</expression>
+                </clause>
+              </multiclause>
+	      <multiclause>
+	        <clause><environment>&xq_stat_env;</environment>
+                <expression>&gr_Type2; &jd_subtype_of; <map>document-node()?</map>&jd_map_sequencetype;</expression>
+	        </clause>
+	      </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                        <expression>insert nodes &gr_Expr1; ((as (first | last))?
+    	 into) &gr_Expr2; &jd_has_type; &xt_empty;</expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <p>In the case of an insert <code>before</code> or
+        <code>after</code>, the type of the target node must be either
+        an element, text, comment or processing-instruction node. This
+        is expressed by the following rule.</p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                  <expression>&gr_Expr1; &jd_has_type; &gr_Type1;</expression>
+                </clause>
+              </multiclause>
+	      <multiclause>
+	        <clause><environment>&xq_stat_env;</environment>
+                <expression>&gr_Type1; &jd_subtype_of;
+                (attribute *)*, (element * | text | comment | processing-instruction *)*</expression>
+	        </clause>
+	      </multiclause>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                  <expression>&gr_Expr2; &jd_has_type; &gr_Type2;</expression>
+                </clause>
+              </multiclause>
+	      <multiclause>
+	        <clause><environment>&xq_stat_env;</environment>
+                <expression>&gr_Type2; &jd_subtype_of; (element * | text | comment | processing-instruction *)?</expression>
+	        </clause>
+	      </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                        <expression>insert nodes &gr_Expr1; (after | before) &gr_Expr2; &jd_has_type; &xt_empty;</expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+      </smtype>
+
+    </div3>
+
+    <div3 id="id-update-typing-delete">
+     <head>Delete</head>
+
+     <smnorm>
+      <p>The following normalization rule applies to delete
+      expressions.  Note that whether the expression is written using
+      the 'nodes' or 'node' modifier, the normalized expression always
+      uses the 'nodes' modifier.</p>
+
+    <mapping>
+     <xquery>
+    	<expression>
+       <map>delete (node|nodes) &gr_Expr1;</map>&jd_map_expr;
+      </expression>
+     </xquery>
+     <core>
+      <expression>
+       delete nodes <map>&gr_Expr1;</map>&jd_map_expr;
+      </expression>
+     </core>
+    </mapping>
+     </smnorm>
+
+    <smtype>
+    <p>The static typing rule for delete is as follows.</p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                  <expression>&gr_Expr; &jd_has_type; &gr_Type;</expression>
+                </clause>
+              </multiclause>
+	      <multiclause>
+	        <clause><environment>&xq_stat_env;</environment>
+                <expression>&gr_Type; &jd_subtype_of; <map>node()*</map>&jd_map_sequencetype;</expression>
+	        </clause>
+	      </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                        <expression>delete (node|nodes) &gr_Expr; &jd_has_type; &xt_empty;</expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+    </smtype>
+
+    </div3>
+
+    <div3 id="id-update-typing-replace">
+     <head>Replace</head>
+
+    <smnorm>
+      <p>The following normalization rules applies to replace
+      expressions.</p>
+
+    <mapping>
+     <xquery>
+    	<expression>
+       <map>replace node &gr_Expr1; with &gr_Expr2;</map>&jd_map_expr;
+      </expression>
+     </xquery>
+     <core>
+      <expression>
+       replace node <map>&gr_Expr1;</map>&jd_map_expr; with &fs_item_seq_to_node_seq;(<map>&gr_Expr2;</map>&jd_map_expr;)
+      </expression>
+     </core>
+    </mapping>
+
+    <p>Normalization of replace value of expressions.</p>
+
+    <mapping>
+     <xquery>
+    	<expression>
+       <map>replace value of node &gr_Expr1; with &gr_Expr2;</map>&jd_map_expr;
+      </expression>
+     </xquery>
+     <core>
+      <expression>
+       replace value of node <map>&gr_Expr1;</map>&jd_map_expr; with
+      <map>text { &gr_Expr2; }</map>&jd_map_expr;
+      </expression>
+     </core>
+    </mapping>
+    </smnorm>
+
+    <smtype>
+    <p>If the <code>value of</code> modifier is not specified, a
+    replace expression replaces one node with a new sequence of zero
+    or more nodes.</p>
+
+    <p>An attribute node can be replaced only by zero or more
+    attribute nodes.</p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                  <expression>&gr_Expr1; &jd_has_type; &gr_Type1;</expression>
+                </clause>
+	      </multiclause>
+              <multiclause>
+	        <clause><environment>&xq_stat_env;</environment>
+                <expression>&gr_Type1; &jd_subtype_of; (attribute *)?</expression>
+	        </clause>
+	      </multiclause>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                  <expression>&gr_Expr2; &jd_has_type; &gr_Type2;</expression>
+                </clause>
+	      </multiclause>
+              <multiclause>
+	        <clause><environment>&xq_stat_env;</environment>
+                <expression>&gr_Type2; &jd_subtype_of; (attribute *)*</expression>
+	        </clause>
+	      </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                        <expression>replace node &gr_Expr1; with &gr_Expr2; &jd_has_type; &xt_empty;</expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+    <p>An element, text, comment, or processing instruction node can
+    be replaced only by zero or more element, text, comment, or
+    processing instruction nodes.</p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                  <expression>&gr_Expr1; &jd_has_type; &gr_Type1;</expression>
+                </clause>
+	      </multiclause>
+              <multiclause>
+	        <clause><environment>&xq_stat_env;</environment>
+                <expression>&gr_Type1; &jd_subtype_of; (element * | text | comment | processing-instruction *)?</expression>
+	        </clause>
+	      </multiclause>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                  <expression>&gr_Expr2; &jd_has_type; &gr_Type2;</expression>
+                </clause>
+	      </multiclause>
+              <multiclause>
+	        <clause><environment>&xq_stat_env;</environment>
+                <expression>&gr_Type2; &jd_subtype_of; (element * | text | comment | processing-instruction *)*</expression>
+	        </clause>
+	      </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                        <expression>replace node &gr_Expr1; with &gr_Expr2; &jd_has_type; &xt_empty;</expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+    	<p>If the <code>value of</code> modifier is specified, a
+    	replace expression replaces the content of a single node,
+    	which must not be a document node by either a single text node
+    	or empty.</p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                  <expression>&gr_Expr1; &jd_has_type; &gr_Type1;</expression>
+                </clause>
+	      </multiclause>
+              <multiclause>
+	        <clause><environment>&xq_stat_env;</environment>
+                <expression>&gr_Type1; &jd_subtype_of; (attribute *| element * | text | comment | processing-instruction *)?</expression>
+	        </clause>
+	      </multiclause>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                  <expression>&gr_Expr2; &jd_has_type; &gr_Type2;</expression>
+                </clause>
+	      </multiclause>
+              <multiclause>
+	        <clause><environment>&xq_stat_env;</environment>
+                <expression>&gr_Type2; &jd_subtype_of; text?</expression>
+	        </clause>
+	      </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                        <expression>replace value of node &gr_Expr1; with &gr_Expr2; &jd_has_type; &xt_empty;</expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+    </smtype>
+
+    </div3>
+
+    <div3 id="id-update-typing-rename">
+     <head>Rename</head>
+
+    <smnorm>
+      <p>The following normalization rule applies to rename
+      expressions.</p>
+
+    <mapping>
+     <xquery>
+    	<expression>
+       <map>rename node &gr_Expr1; as &gr_Expr2;</map>&jd_map_expr;
+      </expression>
+     </xquery>
+     <core>
+      <expression>
+       rename node <map>&gr_Expr1;</map>&jd_map_expr; as &fn_data;(<map>&gr_Expr2;</map>&jd_map_expr;)
+      </expression>
+     </core>
+    </mapping>
+    </smnorm>
+
+    <smtype>
+    	<p>The target of a rename expression must be either an
+    	element, attribute or processing-instruction, and its new name
+    	must be either of type &xs_QName;, &xs_string;, or
+    	&xs_untypedAtomic;.</p>
+   
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                  <expression>&gr_Expr1; &jd_has_type; &gr_Type1;</expression>
+                </clause>
+	      </multiclause>
+              <multiclause>
+	        <clause><environment>&xq_stat_env;</environment>
+                <expression>&gr_Type1; &jd_subtype_of; (attribute *| element * | processing-instruction *)?</expression>
+	        </clause>
+	      </multiclause>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                  <expression>&gr_Expr2; &jd_has_type; &gr_Type2;</expression>
+                </clause>
+	      </multiclause>
+              <multiclause>
+	        <clause><environment>&xq_stat_env;</environment>
+                <expression>&gr_Type2; &jd_subtype_of; (&xs_QName; | &xs_string; | &xs_untypedAtomic;)</expression>
+	        </clause>
+	      </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                        <expression>rename node &gr_Expr1; as &gr_Expr2; &jd_has_type; &xt_empty;</expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+    </smtype>
+
+    </div3>
+
+    <div3 id="id-update-typing-transform">
+     <head>Transform</head>
+
+    <smnorm>
+      <p>The following normalization rule applies to transform
+      expressions.</p>
+
+    <mapping>
+     <xquery>
+      <expression>
+       <map>
+        <table summary=""><tbody>
+         <tr><td>copy</td></tr>
+         <tr><td>&sp2;&gr_VarName1; := &gr_Expr1;</td></tr>
+         <tr><td>&sp2;&sp2;...</td></tr>
+         <tr><td>&sp2;&gr_VarNamen; := &gr_Exprn;</td></tr>
+         <tr><td>&sp2;modify &gr_Expr0; return &gr_Exprr;</td></tr>
+        </tbody></table>
+       </map>&jd_map_expr;
+      </expression>
+     </xquery>
+     <core>
+      <expression>
+        <table summary=""><tbody>
+         <tr><td>copy</td></tr>
+         <tr><td>&sp2;&gr_VarName1; := <phrase diff="del" at="Bug 5666 comment 1">&fs_item_seq_to_node_seq;(</phrase><map>&gr_Expr1;</map>&jd_map_expr;<phrase diff="del">)</phrase></td></tr>
+         <tr><td>&sp2;&sp2;...</td></tr>
+         <tr><td>&sp2;&gr_VarNamen; := <phrase diff="del" at="Bug 5666 comment 1">&fs_item_seq_to_node_seq;(</phrase><map>&gr_Exprn;</map>&jd_map_expr;<phrase diff="del">)</phrase></td></tr>
+         <tr><td>&sp2;modify <map>&gr_Expr0;</map>&jd_map_expr; return <map>&gr_Exprr;</map>&jd_map_expr;</td></tr>
+        </tbody></table>
+      </expression>
+     </core>
+    </mapping>
+    </smnorm>
+
+    <smtype>
+      <p>The transform expression is type checked using the following
+      inference rule.</p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+                  <expression>&gr_Expr1; &jd_has_type; &gr_Type1;</expression>
+                </clause>
+	      </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression> &gr_Type1; &jd_subtype_of; <map>node()</map>&jd_map_sequencetype;</expression>
+                </clause>
+              </multiclause>
+ 	      <multiclause>
+ 	        <clause>
+                <environment>&xq_stat_env;</environment>
+ 	        <expression>&gr_VarName1; &jd_var_qname_expands_to; &gr_Variable1;
+ 	        </expression>
+ 	        </clause>
+ 	      </multiclause>
+              <multiclause>
+                <clause>
+                  <expression>
+                    &xq_stat_env1; =
+                    <update>
+                      <environment>&xq_type_env;</environment>
+                      <expression>&gr_Variable1; &xt_bind; <phrase diff="del" at="Bug 6677 comment 4">&gr_Type1;</phrase><phrase diff="add" at="Bug 6677 comment 4"><map>node()</map>&jd_map_sequencetype;</phrase></expression>
+                    </update>
+                  </expression>
+                </clause>
+              </multiclause>
+<!--
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env1;</environment>
+                  <expression> &gr_Expr2; &jd_has_type; &gr_Type2; </expression>
+                </clause>
+              </multiclause>
+-->
+              <multiclause>
+	        <clause>
+                <expression>...</expression>
+	        </clause>
+	      </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_envnm1;</environment>
+                  <expression> &gr_Exprn; &jd_has_type; &gr_Typen; </expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_envnm1;</environment>
+                  <expression> &gr_Typen; &jd_subtype_of; <map>node()</map>&jd_map_sequencetype;</expression>
+                </clause>
+              </multiclause>
+ 	      <multiclause>
+ 	        <clause>
+                <environment>&xq_stat_env;</environment>
+ 	        <expression>&gr_VarNamen; &jd_var_qname_expands_to; &gr_Variablen;
+ 	        </expression>
+ 	        </clause>
+ 	      </multiclause>
+              <multiclause>
+                <clause>
+                  <expression>
+                    &xq_stat_envn; =
+                    <update>
+                      <environment>&xq_type_envnm1;</environment>
+                      <expression>&gr_Variablen; &xt_bind; <phrase diff="del" at="Bug 6677 comment 4">&gr_Typen;</phrase><phrase diff="add" at="Bug 6677 comment 4"><map>node()</map>&jd_map_sequencetype;</phrase></expression>
+                    </update>
+                  </expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_envn;</environment>
+                  <expression> &gr_Expr0; &jd_has_type; &gr_Type0; </expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_envn;</environment>
+                  <expression> &gr_Exprr; &jd_has_type; &gr_Typer; </expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env; </environment>
+       <expression>
+        <table summary=""><tbody>
+         <tr><td>copy</td></tr>
+         <tr><td>&sp2;&gr_VarName1; := &gr_Expr1;</td></tr>
+         <tr><td>&sp2;&sp2;...</td></tr>
+         <tr><td>&sp2;&gr_VarNamen; := &gr_Exprn;</td></tr>
+         <tr><td>&sp2;modify &gr_Expr0; return &gr_Exprr;</td></tr>
+         <tr><td>&jd_has_type; &gr_Typer;</td></tr>
+        </tbody></table>
+      </expression>
+               </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+    </smtype>
+
+    </div3>
+
+    <div3 id="id-update-typing-examples">
+     <head>Examples</head>
+
+    <smexamples>
+       <p>Here are a few example queries and their corresponding
+       static typing. In each case, if the query passes static typing,
+       its static type is the empty type.</p>
+
+<ulist><item><p><code>insert node &lt;x/&gt; into &lt;a/&gt;</code></p><p>Passes static typing</p></item><item><p><code>insert node 1 into &lt;a/&gt;</code></p><p>Passes static typing</p></item><item><p><code>insert node 1 into (&lt;a/&gt;,&lt;a/&gt;)</code></p><p>Fails static typing because the target expression does
+  not return a single node</p></item><item><p><code>insert node (element a {()}, attribute b {()}) into &lt;doc/&gt;</code></p><p>Fails static typing because the attribute node is not
+  at the head of the insertion list</p></item><item><p><code>insert node &lt;x/&gt; into //a</code></p><p>Fails static typing because the target expression may not
+  return a single node (assuming the schema allows <code>//a</code>
+  to return multiple <code>a</code> elements)</p></item><item><p><code>rename node &lt;a/&gt; as "b"</code></p><p>Passes static typing</p></item><item><p><code>rename node &lt;a/&gt; as 1</code></p><p>Fails static typing because the new name does not have
+  one of the permissible types</p></item></ulist>
+
+    </smexamples>
+
+    </div3>
+
+</div2>
+
+
+</div1>

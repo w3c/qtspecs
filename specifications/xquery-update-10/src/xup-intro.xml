@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<div1 id="introduction">
+  <head>Introduction</head>
+
+<p>
+This document defines the syntax and semantics of an extension 
+to <bibref ref="xquery"/> called the &language;.
+This language extension is designed to meet the
+requirements for updating instances of the  <bibref ref="xpath-datamodel"/>, as defined in
+<bibref ref="xquery-update-10-requirements"/>.</p>
+
+<p>
+The &language; provides facilities to perform any or all
+of the following operations on an
+<termref def="dt-xdm-instance">XDM instance</termref>:
+</p>
+
+<ulist>
+
+<item><p>Insertion of a node.</p></item>
+
+<item><p>Deletion of a node.</p></item>
+
+<item><p>Modification of a node by changing
+some of its properties while preserving its <termref def="dt-node-identity">node identity</termref>.</p></item>
+
+<item><p>Creation of a modified copy of a node with a new <termref def="dt-node-identity">node identity</termref>.</p></item>
+
+</ulist>
+
+<p>
+Additionally, this document defines an XML syntax for the &language;. 
+The most recent versions of the two XQueryX XML Schemas and the
+XQueryX XSLT stylesheet for the &language; are available at
+<loc href="http://www.w3.org/2007/xquery-update-10/xquery-update-10-xqueryx.xsd">http://www.w3.org/2007/xquery-update-10/xquery-update-10-xqueryx.xsd</loc>,
+<loc href="http://www.w3.org/2007/xquery-update-10/xquery-update-10-xqueryx-redef.xsd">http://www.w3.org/2007/xquery-update-10/xquery-update-10-xqueryx-redef.xsd</loc>,
+and <loc href="http://www.w3.org/2007/xquery-update-10/xquery-update-10-xqueryx.xsl">http://www.w3.org/2007/xquery-update-10/xquery-update-10-xqueryx.xsl</loc>,
+respectively. 
+</p>
+
+  
+<div2 id="id-terminology">
+<head>Terminology</head>
+<p>
+<termdef term="XQuery" id="dt-xquery">Within this document,
+the term <term>XQuery</term> refers to the language specified by <bibref ref="xquery"/>.</termdef>
+<termdef term="data model" id="dt-data-model">The term <term>data model</term> refers to
+the data model specified by <bibref ref="xpath-datamodel"/>.</termdef>
+<termdef term="XDM instance" id="dt-xdm-instance">The term <term>XDM instance</term>
+denotes an unconstrained sequence of zero or more nodes and/or atomic values
+as defined by the <termref def="dt-data-model">data model</termref>.</termdef>
+<termdef term="node identity" id="dt-node-identity">The term <term>node identity</term>
+denotes the unique identity that is a property of every node in an
+<termref def="dt-xdm-instance">XDM instance</termref>
+(see <xspecref spec="DM" ref="node-identity"></xspecref>.)</termdef>
+</p>
+<p>
+As described in <xspecref spec="DM" ref="qnames-and-notations"/>,
+names in XQuery are qualified names (QNames) that consist of an
+optional namespace prefix, a local name, and an optional namespace URI. 
+<termdef term="implied namespace binding" id="dt-implied-namespace-binding">The
+<term>implied namespace binding</term> of a QName is the association of its namespace prefix
+(or absence thereof) with its namespace URI (or absence thereof).</termdef>
+<termdef term="conflict" id="dt-conflict">Two namespace bindings are said to
+<term>conflict</term> if their namespace prefixes (or absence thereof) are
+the same but their namespace URI's (or absence thereof) are different.</termdef>
+Update operations that result in conflicting namespace bindings generally raise errors,
+as described in this document. 
+
+However, if the namespace prefix of an attribute is absent, it is in
+no namespace, and its implied namespace binding is not added to the namespace bindings of its parent element. Therefore, an update operation can create such an attribute in an element even though its implied namespace binding conflicts with a namespace binding in the "namespaces" property of the element.
+</p>
+<p>
+In this document, examples and material labeled as <quote>Note</quote> are provided for
+explanatory purposes and are not normative.
+</p>
+<p>
+Some of the examples in this document will be rejected by an implementation that supports the <specref ref="id-update-static"/>.
+</p>
+</div2>
+</div1>

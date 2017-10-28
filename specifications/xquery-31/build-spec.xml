@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding='utf-8'?>
+<project name="xpath-or-xquery-or-shared" default="build-spec" basedir=".">
+  <!-- build.xml for the XQuery and XPath language specifications -->
+
+  <property name="shortname" value="${generic-shortname}-${this-spec-version-code}"/>
+  <property name="spec.uri" value="${W3C.TR}/${shortname}/"/>
+  <property name="spec.html" value="${dist.dir}/${shortname}.html"/>
+  <property name="spec.diffs.html" value="${dist.dir}/${shortname}-diff.html"/>
+  <property name="spec.style" value="../../style/xsl-query-2016.xsl"/>
+  <property name="skiptidy" value="true"/>
+
+  <!-- 2008-09-03, Jim: The following property has no meaning at present,     -->
+  <!--   because we do not build errata in the qtspecs tree. Maybe later...   -->
+  <!--  <property name="errata.xml" value="${src.dir}/${generic-shortname}-errata.xml"/> -->
+
+  <dirname property="shared.grammar.dir" file="../grammar-30/*"/>
+
+  <!-- Import target, etc. definitions that work globally -->
+  <import file="${etc.dir}/build-impl.xml"/>
+
+  <!-- Recall that any targets defined herein override targets of the same name -->
+  <!--   that are defined in build-impl.xml.  If you cannot find a target of a  -->
+  <!--   given name in this file, look in build-impl.xml.                       -->
+
+  <!-- ======================================================================== -->
+
+  <!-- additional properties -->
+  <property name="grammar-file" value="${shared.grammar.dir}/xpath-grammar.xml"/>
+  <property name="strip-grammar-file" value="${shared.grammar.dir}/parser/strip.xsl"/>
+  <property name="assemble-spec-file" value="${local.style.dir}/assemble-xquery.xsl"/>
+  <property name="preprocess-spec-file" value="${local.style.dir}/preprocess-xquery.xsl"/>
+  <property name="extract-tokens-file" value="${shared.style.dir}/extract-tokens.xsl"/>
+  <property name="elim-dups-file" value="${shared.style.dir}/elim-dup-tokens.xsl"/>
+
+  <!-- ====================================================================== -->
+
+  <!-- The "help" template displays on the message medium the names of the    -->
+  <!--   various targets in this project and their purposes.                  -->
+  <target name="help">
+    <echo message="This file should never be invoked directly, but only from the build.xml ant project"/>
+    <echo message="This project to build ${shortname} includes a number of targets."/>
+    <echo message="  build-spec -- builds the spec, anchor doc, and namespace doc; positions images"/>
+    <echo message="  chk.spec -- determines whether the spec HTML must be created"/>
+    <echo message="  -style-spec -- transforms the document sources into near-pubrules-ready HTML"/>
+    <echo message="  -copy-xml -- creates final XML source file from assembled source file"/>
+    <echo message="  namespacedocs -- Causes namespace docs to be created"/>
+    <echo message="  chk.namespacedocs -- checks whether the namespace documents must be built"/>
+    <echo message="  stage -- stages the contents of the .../html/ directory for publication"/>
+    <echo message="  stage-nsdocs -- stages the namespace document contents of the .../html/ directory for publication"/>
+    <echo message="Please note that there is not currently a target that builds a diff document for this project."/>
+  </target>
+
+  <!-- ======================================================================== -->
+
+  <target name="build-spec"
+          depends="spec, copy-images, namespacedocs"
+          description="This is the default target. "/>
+
+  <!-- ======================================================================== -->
+
+  <!-- Overrides internal template -->
+  <target name="chk.spec" depends="init">
+    <echo message="Target chk.spec starting"/>
+    <condition property="spec.exists">
+      <uptodate targetfile="${spec.html}">
+        <srcfiles file="${base.dir}/build.xml"/>
+        <srcfiles file="${etc.dir}/build-constants.xml"/>
+        <srcfiles file="${etc.dir}/build-impl.xml"/>
+        <srcfiles file="${etc.dir}/status-entities.dtd"/>
+        <srcfiles file="${etc.dir}/status-general.xml"/>
+        <srcfiles file="${etc.dir}/xsl-query-bibl.xml"/>
+        <srcfiles file="${base.dir}/build-xpath.xml"/>
+        <srcfiles file="${base.dir}/build-xquery.xml"/>
+        <srcfiles file="${base.dir}/build-joint.xml"/>
+        <srcfiles file="${base.dir}/build-spec.xml"/>
+        <srcfiles dir="${src.dir}" includes="**/*.xml"/>
+        <srcfiles file="${grammar-file}"/>
+        <srcfiles file="${strip-grammar-file}"/>
+        <srcfiles file="${assemble-spec-file}"/>
+        <srcfiles file="${shared.style.dir}/assemble-spec.xsl"/>
+        <srcfiles file="${shared.style.dir}/shared.xsl"/>
+        <srcfiles file="${shared.style.dir}/xsl-query-2016.xsl"/>
+        <srcfiles file="${shared.style.dir}/xmlspec-override.xsl"/>
+        <srcfiles file="${shared.style.dir}/xmlspec-2016.xsl"/>
+        <srcfiles file="${extract-tokens-file}"/>
+        <srcfiles file="${elim-dups-file}"/>
+        <srcfiles file="${shared.style.dir}/html-fix.xsl"/>
+        <srcfiles file="${shared.style.dir}/identity.xsl"/>
+        <srcfiles file="${shared.schema.dir}/xsl-query.dtd"/>
+        <srcfiles file="${shared.schema.dir}/xmlspec.dtd"/>
+        <srcfiles file="${shared.schema.dir}/elements.dtd"/>
+        <srcfiles file="${shared.schema.dir}/tree-diagram.dtd"/>
+      </uptodate>
+    </condition>
+  </target>
+
+  <!-- ======================================================================== -->
+
+  <target name="-style-spec" depends="init, chk.spec, validate-spec"
+          if="build.spec" unless="spec.exists">
+    <echo message="Target -style-spec starting"/>
+    <echo>etc.dir = ${etc.dir}</echo>
+    <echo>${java.class.path}</echo>
+
+    <!-- Creation of the temp grammar files is needed for assembling the        -->
+    <!--   "complete" document, including grammar and extensions                -->
+    <echo/>
+    <echo message="Creating temp-${generic-shortname}-grammar.xml"/>
+    <xslt in="${grammar-file}" out="${build.dir}/temp-${generic-shortname}-grammar.xml"
+          style="${strip-grammar-file}" classpathref="saxon9.classpath" force="yes">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+      <param name="spec1" expression="${first-generic-shortname}"/>
+      <param name="spec2" expression="${second-generic-shortname}"/>
+    </xslt>
+
+    <echo/>
+    <echo message="Creating tokens.xml"/>
+    <xslt style="${extract-tokens-file}" in="${build.dir}/temp-${generic-shortname}-grammar.xml"
+          out="${build.dir}/tokens-with-dups.xml" classpathref="saxon9.classpath"
+          force="yes" extension=".xml"
+          destdir=".">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+      <param name="spec" expression="${generic-shortname}"/>
+      <param name="grammar-file"
+             expression="${build.dir}/temp-${generic-shortname}-grammar.xml"/>
+    </xslt>
+    <xslt style="${elim-dups-file}" in="${build.dir}/tokens-with-dups.xml"
+          out="${build.dir}/tokens.xml" classpathref="saxon9.classpath"
+          force="yes" extension=".xml"
+          destdir=".">
+    </xslt>
+
+    <!-- The preprocess step is to pull together the source files and omit all  -->
+    <!--   all material that doesn't belong to 'this' document.                 -->
+    <echo/>
+    <echo message="Creating ${generic-shortname}-preprocessed.xml"/>
+    <xslt in="${spec.xml}" out="${build.dir}/${generic-shortname}-preprocessed.xml"
+          style="${preprocess-spec-file}" force="yes"
+          classpathref="saxon9.classpath">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+      <param name="not-spec" expression="${not-this-generic-shortname}"/>
+    </xslt>
+
+    <!-- The assembly step is used to bring together all of the source files    -->
+    <!--   that are incorporated by using entity references, but also to        -->
+    <!--   transform grammar-related productions into XML elements that can be  -->
+    <!--   readily rendered into a form needed in the HTML document.            -->
+    <echo/>
+    <echo message="Creating ${generic-shortname}-assembled.xml"/>
+    <xslt in="${build.dir}/${generic-shortname}-preprocessed.xml"
+          out="${build.dir}/${generic-shortname}-assembled.xml"
+          style="${assemble-spec-file}" force="yes"
+          classpathref="saxon9.classpath">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+      <param name="grammar-file" expression="${build.dir}/temp-${generic-shortname}-grammar.xml"/>
+      <param name="tokens-file" expression="${build.dir}/tokens.xml"/>
+      <param name="not-spec" expression="${not-this-generic-shortname}"/>
+      <param name="spec" expression="${generic-shortname}${this-spec-version-code}"/>
+    </xslt>
+
+    <echo/>
+    <echo message="Validating ${generic-shortname}-assembled.xml"/>
+    <xmlvalidate file="${build.dir}/${generic-shortname}-assembled.xml"
+                 failonerror="yes" lenient="no" warn="yes"/>
+
+    <echo/>
+
+    <echo message="Transforming ${generic-shortname}-assembled.xml"/>
+    <xslt in="${build.dir}/${generic-shortname}-assembled.xml"
+          out="${build.dir}/${generic-shortname}-html.xml"
+          style="${spec.style}" force="yes"
+          classpathref="saxon9.classpath">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+      <param name="spec" expression="${generic-shortname}"/>
+      <param name="kwFull" expression="brief"/>
+      <param name="kwSort" expression="cluster"/>
+    </xslt>
+
+    <!-- 2009-11-25, Jim: Added param to pass DSTAMP and TSTAMP properties -->
+    <echo/>
+    <echo message="Fixing up ${generic-shortname}.html"/>
+    <xslt in="${build.dir}/${generic-shortname}-html.xml"
+          out="${build.dir}/${generic-shortname}-html-fix.xml"
+          style="${shared.style.dir}/html-fix.xsl"
+          classpathref="saxon9.classpath" force="yes">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+      <param name="currentDateTime" expression="${DSTAMP} ${TSTAMP}"/>
+    </xslt>
+
+    <antcall target="xml-to-html5">
+       <param name="xml-to-html5.input" value="${build.dir}/${generic-shortname}-html-fix.xml"/>
+       <param name="xml-to-html5.output" value="${spec.html}"/>
+    </antcall>
+
+    <echo/>
+    <echo message="Transforming ${generic-shortname}-assembled.xml with diffs"/>
+    <xslt in="${build.dir}/${generic-shortname}-assembled.xml"
+          out="${build.dir}/${generic-shortname}-diff-html.xml"
+          style="${spec.style}" force="yes"
+          classpathref="saxon9.classpath">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+      <param name="spec" expression="${generic-shortname}"/>
+      <param name="kwFull" expression="brief"/>
+      <param name="kwSort" expression="cluster"/>
+      <param name="show-markup" expression="1"/>
+    </xslt>
+
+    <!-- 2009-11-25, Jim: Added param to pass DSTAMP and TSTAMP properties -->
+    <echo/>
+    <echo message="Fixing up ${generic-shortname}-diff.html"/>
+    <xslt in="${build.dir}/${generic-shortname}-diff-html.xml"
+          out="${build.dir}/${generic-shortname}-diff-html-fix.xml"
+          style="${shared.style.dir}/html-fix.xsl"
+          classpathref="saxon9.classpath" force="yes">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+      <param name="currentDateTime" expression="${DSTAMP} ${TSTAMP}"/>
+    </xslt>
+
+    <antcall target="xml-to-html5">
+      <param name="xml-to-html5.input" value="${build.dir}/${generic-shortname}-diff-html-fix.xml"/>
+      <param name="xml-to-html5.output" value="${spec.diffs.html}"/>
+    </antcall>
+  </target>
+
+  <!-- ======================================================================== -->
+
+  <!-- Overrides internal template -->
+  <target name="-copy-xml" depends="init, chk.spec"
+          if="build.spec" unless="spec.exists">
+    <echo message="Copying XML for ${shortname}..." />
+
+    <xslt in="${build.dir}/${generic-shortname}-assembled.xml"
+          out="${dist.dir}/${shortname}.xml"
+          style="${shared.style.dir}/identity.xsl"
+          classpathref="saxon9.classpath" force="yes">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+    </xslt>
+  </target>
+
+  <!-- ======================================================================== -->
+
+  <!-- Overrides global template to check/build specific namespace documents  -->
+  <target name="namespacedocs"
+          depends="chk.namespacedocs,
+          ns-local, ns-xquery"/>
+
+  <!-- Overrides global template to check/build specific namespace documents  -->
+  <target name="chk.namespacedocs"
+          depends="chk.ns-local, chk.ns-xquery"/>
+
+  <!-- ======================================================================== -->
+
+  <target name="chk.ns-local" depends="init">
+    <uptodate property="ns-local.exists"
+              targetfile="${dist.dir}/ns-local.html">
+      <srcfiles file="${base.dir}/build.xml"/>
+      <srcfiles file="${etc.dir}/build-constants.xml"/>
+      <srcfiles file="${etc.dir}/build-impl.xml"/>
+      <srcfiles file="${etc.dir}/status-entities.dtd"/>
+      <srcfiles file="${etc.dir}/status-general.xml"/>
+      <srcfiles file="${etc.dir}/xsl-query-bibl.xml"/>
+      <srcfiles file="${src.dir}/ns-local.xml"/>
+      <srcfiles file="${shared.style.dir}/xsl-query-2016.xsl"/>
+      <srcfiles file="${shared.style.dir}/xmlspec-2016.xsl"/>
+      <srcfiles file="${shared.style.dir}/ns-blank.xsl"/>
+      <srcfiles file="${shared.schema.dir}/xsl-query.dtd"/>
+      <srcfiles file="${shared.schema.dir}/xmlspec.dtd"/>
+      <srcfiles file="${shared.schema.dir}/elements.dtd"/>
+      <srcfiles file="${shared.schema.dir}/tree-diagram.dtd"/>
+      <srcfiles file="${shared.schema.dir}/qtnamespaces.dtd"/>
+    </uptodate>
+  </target>
+
+  <target name="chk.ns-xquery" depends="init">
+    <uptodate property="ns-xquery.exists"
+              targetfile="${dist.dir}/ns-xquery.html">
+      <srcfiles file="${base.dir}/build.xml"/>
+      <srcfiles file="${etc.dir}/build-constants.xml"/>
+      <srcfiles file="${etc.dir}/build-impl.xml"/>
+      <srcfiles file="${etc.dir}/status-entities.dtd"/>
+      <srcfiles file="${etc.dir}/status-general.xml"/>
+      <srcfiles file="${etc.dir}/xsl-query-bibl.xml"/>
+      <srcfiles file="${src.dir}/ns-xquery.xml"/>
+      <srcfiles file="${shared.style.dir}/xsl-query-2016.xsl"/>
+      <srcfiles file="${shared.style.dir}/xmlspec-2016.xsl"/>
+      <srcfiles file="${shared.style.dir}/ns-blank.xsl"/>
+      <srcfiles file="${shared.schema.dir}/xsl-query.dtd"/>
+      <srcfiles file="${shared.schema.dir}/xmlspec.dtd"/>
+      <srcfiles file="${shared.schema.dir}/elements.dtd"/>
+      <srcfiles file="${shared.schema.dir}/tree-diagram.dtd"/>
+      <srcfiles file="${shared.schema.dir}/qtnamespaces.dtd"/>
+    </uptodate>
+  </target>
+
+  <!-- ======================================================================== -->
+
+  <target name="ns-local"
+          depends="init, chk.ns-local"
+          unless="ns-local.exists">
+    <echo message="Building namespace document for local namespace..." />
+    <!-- set some parameter and call common target to build doc -->
+    <antcall target="build-namespace-document">
+      <param name="nsdoc.file.name" value="ns-local"/>
+      <param name="nsdoc.doc.URI" value="http://www.w3.org/2005/xquery-local-functions"/>
+      <param name="nsdoc.stylesheet" value="${shared.style.dir}/ns-blank.xsl"/>
+    </antcall>
+  </target>
+
+  <target name="ns-xquery"
+          depends="init, chk.ns-xquery"
+          unless="ns-xquery.exists">
+    <echo message="Building namespace document for xquery namespace..." />
+    <!-- set some parameter and call common target to build doc -->
+    <antcall target="build-namespace-document">
+      <param name="nsdoc.file.name" value="ns-xquery"/>
+      <param name="nsdoc.doc.URI" value="http://www.w3.org/2012/xquery"/>
+      <param name="nsdoc.stylesheet" value="${shared.style.dir}/ns-blank.xsl"/>
+    </antcall>
+  </target>
+
+
+<!-- **************************************************************************************
+The following <target>s are all concerned with staging documents for publication. 
+     ************************************************************************************** -->
+
+<!-- **************************************************************************************
+     MAIN DOCUMENT STAGING
+     ************************************************************************************** -->
+
+<!-- **************************************************************************************
+THE FOLLOWING <target> MUST BE MANUALLY EDITED:
+  There must be one <copy> task for each of the files (NON-binary and BINARY) to be placed
+    into the staging directory. 
+  The <property name="nonbinary-files"> task must contain the exact list of the names of
+    the NON-binary files that have been placed into the staging directory.  The list is
+    permitted to use wildcards such as *.html. 
+  The <property name="binary-files"> task must contain the exact list of the names of
+    the BINARY files that have been placed into the staging directory.  The list is
+    permitted to use wildcards such as *.jpg. 
+  Please note that the value of each <property> list MUST NOT BE EMPTY!  If there are
+    NO NON-binary or NO BINARY files to include, there MUST be a filename for which
+    there is no actual file (e.g., x.x)!
+     ************************************************************************************** -->
+  <target name="stage-copy">
+    <copy file="${dist.dir}/${shortname}.html"
+          tofile="${staging.directory}/Overview.html"/>
+    <copy file="${dist.dir}/${shortname}-diff.html"
+          tofile="${staging.directory}/${shortname}-diff.html"/>
+    <copy file="${dist.dir}/${shortname}.xml"
+          tofile="${staging.directory}/${shortname}.xml"/>
+    <copy file="${dist.dir}/ProcMod-XPath.gif"
+          tofile="${staging.directory}/ProcMod-XPath.gif"/>
+    <copy file="${dist.dir}/ProcMod-XQuery.gif"
+          tofile="${staging.directory}/ProcMod-XQuery.gif"/>
+    <copy file="${dist.dir}/types.jpg"
+          tofile="${staging.directory}/types.jpg"/>
+
+    <antcall target="checkin.staged.stuff">
+      <param name="staging.directory"
+             value="${staging.directory}/"/>
+      <param name="staging.localdirname"
+             value="${staging.localdirname}/"/>
+      <param name="nonbinary-files" value="Overview.html
+                     ${shortname}-diff.html
+                     ${shortname}.xml"/>
+      <param name="binary-files" value="ProcMod-XPath.gif
+                     ProcMod-XQuery.gif
+                     types.jpg"/>
+    </antcall>
+  </target>
+
+  <!-- ====================================================================== -->
+
+<!-- **************************************************************************************
+     NAMESPACE DOCUMENT STAGING
+     ************************************************************************************** -->
+
+<!-- **************************************************************************************
+THE FOLLOWING <target> MUST BE MANUALLY EDITED:
+  There must be one <antcall> task for each namespace document being published.
+  There must also be one <target> for each namespace document being published.
+     ************************************************************************************** -->
+  <target name="stage-nsdocs"
+          description="Stage XQuery namespace documents for publication">
+<!-- ************************************************************************************** -->
+    <antcall target="stage-ns-local"/>
+    <antcall target="stage-ns-xquery"/>
+<!-- ************************************************************************************** -->
+  </target>
+
+  <!-- ====================================================================== -->
+
+  <target name="stage-ns-local"
+          description="Stage XQuery local namespace document for publication">
+    <antcall target="stage-a-nsdoc">
+<!-- The "nsname" parameter specifies the common name of the namespace, which (when prefixed
+     with "ns-" and suffixed with ".xml") identifies the filename of the namespace document -->
+      <param name="nsname"
+              value="local"/>
+<!-- The "namespace.fullname" parameter specifies the actual namespace name ("URI") of the
+     namespace.  However, in order to make staging the namespace documents easier, the leading
+     "http://www.w3.org" must be replaced by "WWW" -->
+      <param name="namespace.fullname"
+              value="WWW/2005/xquery-local-functions"/>
+    </antcall>
+  </target>
+
+  <!-- ====================================================================== -->
+
+  <target name="stage-ns-xquery"
+          description="Stage XQuery xquery namespace document for publication">
+    <antcall target="stage-a-nsdoc">
+<!-- The "nsname" parameter specifies the common name of the namespace, which (when prefixed
+     with "ns-" and suffixed with ".xml") identifies the filename of the namespace document -->
+      <param name="nsname"
+              value="xquery"/>
+<!-- The "namespace.fullname" parameter specifies the actual namespace name ("URI") of the
+     namespace.  However, in order to make staging the namespace documents easier, the leading
+     "http://www.w3.org" must be replaced by "WWW" -->
+      <param name="namespace.fullname"
+              value="WWW/2012/xquery"/>
+    </antcall>
+  </target>
+
+<!-- **************************************************************************************
+The preceding <target>s are all concerned with staging documents for publication. 
+     ************************************************************************************** -->
+
+</project>

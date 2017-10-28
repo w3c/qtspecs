@@ -1,0 +1,95 @@
+<!--* Entities for regular expressions for lexical spaces *-->
+
+<!--* Lots of different ways to write the sign. *-->
+<!--* Choose (\+|-) over others because the WG said so. *-->
+<!ENTITY SIGN '(\+|-)'>
+<!ENTITY SIGN '<phrase diff="del" dg="wgi-20080606">[+\-]</phrase
+><phrase diff="add" dg="wgi-20080606">(\+|-)</phrase>'>
+
+<!--* Choose [+\-] over (...) because it's more compact and idiomatic *-->
+<!--* Choose [+\-] over [-+] because we say 'plus or minus' not 'minus or plus' *-->
+<!ENTITY SIGN '[+\-]'>
+<!ENTITY SIGN '[-+]'>
+<!ENTITY SIGN '[\-+]'>
+<!ENTITY SIGN '(+|-)'>
+<!ENTITY SIGN '(+|\-)'>
+<!ENTITY SIGN '(-|+)'>
+
+<!--* oSIGN = optional sign *-->
+<!ENTITY oSIGN '&SIGN;?'>
+
+<!--* D = decimal digit, DIGITS = D+, D0..n = D* *-->
+<!ENTITY DIGITS '[0-9]+'>
+<!ENTITY D0..n '[0-9]*'>
+<!ENTITY DIGIT '[0-9]'>
+
+<!--* FRAC = fractional part with at least one digit.
+    * FRAC = fractional part with zero or more digits. *-->
+<!ENTITY FRAC   '\.&DIGITS;'>
+<!ENTITY FRAC0  '\.&D0..n;'>
+
+<!--* DEC = decimal number *-->
+<!--* INT = integer number *-->
+<!ENTITY DEC '(&DIGITS;(&FRAC0;)?|&FRAC;)'>
+<!ENTITY INT '&DIGITS;'>
+
+<!--* E = exponent signal, INFINITIES = INF, +INF, -INF, SPECIALS = special values, 
+    * oEXPT = optional exponent *-->
+<!ENTITY Ee '[Ee]'>
+<!ENTITY Ee '(e|E)'>
+<!ENTITY INFINITIES '&oSIGN;INF'>
+<!ENTITY SPECIALS '&INFINITIES;|NaN'>
+<!ENTITY oEXPT '(&Ee;&oSIGN;&INT;)?'>
+
+<!--* YY, MM, etc.:  duration fields. *-->
+<!ENTITY YY '&INT;Y'>
+<!ENTITY YY '(&INT;Y)'>
+<!ENTITY MM '(&INT;M)'>
+<!ENTITY DD '(&INT;D)'>
+<!ENTITY HH '(&INT;H)'>
+<!ENTITY SS '(&INT;(&FRAC;)?S)'>
+<!ENTITY SS '(&DEC;S)'>
+
+<!--* oHMS:  optional time (hour minute seconds) segment *-->
+<!ENTITY oHMS0 '(T(&HH;&MM;?&SS;?|&MM;?&SS;?|&SS;))?'>
+<!ENTITY oHMS '(T ( &HH;&MM;?&SS;?
+          | &MM;&SS;?
+          | &SS;
+          )
+       )?'>
+
+<!--* YYYY:  year part of date/time types *-->
+<!ENTITY YYYY '([1-9]&DIGIT;{3,}|0&DIGIT;{3})'>
+<!ENTITY YYYY '([1-9]&DIGIT;&DIGIT;&DIGITS;)|(0&DIGIT;&DIGIT;&DIGIT;)'>
+<!ENTITY YYYY '([1-9][0-9][0-9][0-9]+)|(0[0-9][0-9][0-9])'>
+
+
+<!--* MMMM:  month part of date/time types *-->
+<!ENTITY MMMM '(0[1-9]|1[0-2])'>
+<!ENTITY MMMM '(0[1-9])|(1[0-2])'>
+
+<!--* DDDD:  day-of-month part of date/time types *-->
+<!ENTITY DDDD '(0[1-9]|[12]&DIGIT;|3[01])'>
+<!ENTITY DDDD '(0[1-9])([12]&DIGIT;)|(3[01])'>
+<!ENTITY DDDD '([0-2]&DIGIT;)|(3[01])'>
+<!ENTITY DDDD '([0-2]&DIGIT;|3[01])'>
+
+<!--* oTZ:  optional timezone part of date/time types *-->
+<!ENTITY oTZ '(Z|&SIGN;((0&DIGIT;|1[0-3]):&MINS;|14:00))?'>
+<!ENTITY oTZ '(&SIGN;(0&DIGIT;)|(1[0-4]):&MINS;)?'>
+<!ENTITY oTZ '(&SIGN;(0&DIGIT;|1[0-4]):&MINS;)?'>
+
+<!--* Hours, minutes, and seconds part of date/time types *-->
+<!ENTITY HOURS '([01]&DIGIT;|2[0-3])'>
+<!ENTITY HOURS '([01]&DIGIT;)|(2[0-3])'>
+<!ENTITY MINS  '[0-5]&DIGIT;'>
+<!ENTITY SECS  '[0-5]&DIGIT;(&FRAC;)?'>
+<!ENTITY SECS  '([0-5]&DIGIT;)(&FRAC;)?'>
+<!ENTITY MIDNIGHT '(24:00:00(\.0+)?)'>
+
+<!--* TOD_ = normal time of day
+    * TOD  = normal time of day, or midnight. *-->
+<!ENTITY TOD_ '&HOURS;:&MINS;:&SECS;'>
+<!ENTITY TOD_ '((&HOURS;):(&MINS;):(&SECS;))'>
+
+<!ENTITY TOD '(&TOD_;|&MIDNIGHT;)'>

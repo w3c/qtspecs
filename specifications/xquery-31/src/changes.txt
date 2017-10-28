@@ -1,0 +1,515 @@
+-*-org-*-
+
+CHANGES.TXT for XQuery 3.1 and XPath 3.1
+
+
+* General Editorial
+
+** Status
+*** DONE Change feature list in front matter
+*** DONE Change overview in front matter
+
+** Maps and Arrays
+
+*** DONE SequenceType Subtype Judgement
+
+*** DONE MapType / ArrayTest
+
+** DONE Change Log - make relative to CR / Rec
+
+* Re: XML Query WG Face-To-Face Meeting #563 Final Minutes -- 2014-02-17 - 2014-02-19
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Feb/0115.html
+
+
+** DONE DECISION: Clarify the spec editorially to resolve bug 24199.
+
+   FunctionBody is present in 3.1.7 Inline Function Expressions for
+   both XPath 3.1 and XPath 3.0
+
+** DONE DECISION: Clarify the spec editorially to resolve bug 24221.
+
+** DONE DECISION: Arrays are functions, but not maps.
+
+** DONE DECISION: If you want a sparse array, use a map. Sparse arrays are not
+   directly supported as an array.
+
+** DONE DECISION: $a("blue") raises a type error as Arrays act as functions,
+   but the array function takes an integer and not a string
+   -> Jonathan believes we also decided $a(n) raises dynamic error if out of bounds
+
+** DONE DECISION: fn:boolean of Maps, Arrays and Functions is a Type Error.
+
+** DONE DECISION: fn:data($array) => sequence($array) ! fn:data(.)
+
+** DONE DECISION: We will use the symbols `=>` as a mechanism for postfix
+   operator use of functions, e.g. `$a => seq()`.
+
+** DONE illustrate functions from F&O together with language features
+   
+   In this draft, getting by with a NOTE pointing poeple to the other spec.
+
+** DONE DECISION: Constructors for Arrays have been decided.
+
+> [1, (), (<e3/>, 4)] => An array of 3 members, 1st is integer `1`, 2nd
+> is an empty sequence, and 3rd is a sequence.
+> Note: In square braces `[]`, a comma delimits array members.
+>
+> array { 1, (), (<e3/>, 4) } => An array of 3 members, 1st is an
+> integer, 2nd is element <e3/> and the 3rd is an integer `4`.
+> Note: In `array { }`, a comma is a sequence concatenation operator, as
+> in the rest of the language.
+
+
+** DONE DECISION: for FPWD of XQuery 3.1, use fn:serialize-json() as specified 
+   in the 2012 XSLT 3.0 Working Draft:
+   http://www.w3.org/TR/2012/WD-xslt-30-20120710/#func-parse-json
+
+   Note fn:parse-json() was also adopted in #564.
+
+   In this draft, getting by with a NOTE pointing poeple to the other spec.
+
+
+* MINUTES XML Query/XSL WG Joint Teleconference #564 Agenda 2014-03-11
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Mar/0020.html
+
+DECISION: Adopt MikeK's proposal 
+https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Feb/0114.html.
+
+DECISION: Allow "?" as a binary operator with a sequence of maps on
+the left and with an ncname or string literal operand expression or
+parenthesizedexpr on the right.  PostfixExpr ::= Primary Expr
+(Predicate | DynamicFunctionCall | MapLookup)
+
+* Action Items
+
+** DONE ACTION A-563-09 
+
+Jonathan produce a version of the 3.1 requirements and
+use cases with red light/green light to indicate the status of
+requirements.
+
+=> This part is easy
+=> Use cases will take time
+
+** DONE ACTION A-563-11 
+
+Jonathan to open a bug against XSLT 3.0 spec suggesting that map:new
+is renamed to map:merge
+
+** DONE ACTION 564-04 
+
+Jonathan to update XPath 3.1/XQuery 3.1 to incorporate 
+MikeK's proposal at 
+https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Feb/0114.html.
+
+** DONE ACTION 564-05: 
+
+Jonathan to incorporate "DECISION: Allow ? as a binary operator with a
+sequence fo maps on the left and with an ncname or string literal
+operand expression or parenthesizedexpr on the right" into XPath
+3.1/XQuery 3.1.
+
+MapLookup
+UnaryMapLookup
+
+** TODO More map examples
+
+** DONE exponent separator
+
+ACTION A-560-02: Jonathan to add the exponent separator character to 
+the dynamic context.
+
+Status: Pending; ETA 2014-03-21
+
+
+** DONE fn:put() conformance
+
+ACTION A-554-03: Jonathan to add fn:put() to the conformance section 
+of XQuery 3.1.
+
+Status: Pending; ETA 2014-04-01; see agenda item Q2.5.3
+
+
+** DONE Diff Markup
+
+"at"  - using diffs
+
+** TODO How often should we say this?
+
+    <note><p diff="add" at="2014-04-01">Atomization converts arrays to sequences (see <termref def="dt-atomization">Atomization</termref>).</p></note>
+
+Kill some of this.  Maybe all of it, and say this more centrally in the Atomization section, repeating in Arrays.
+
+
+** DONE Log
+
+** DONE binary value comparisons in operators table
+
+   Add these to the operators table:
+   https://www.w3.org/XML/Group/qtspecs/specifications/xpath-functions-31/html/Overview-diff.html#binary-value-comparisons
+
+
+* XML Query/XSL WG Joint Teleconference #565 Minutes 2014-03-18
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Mar/0053.html
+
+No decisions that affect this specification.
+
+
+* Minutes of XML Query / XSLT WG Joint Telcon #566 2014-04-01 (was Re: REVISED XML Query/XSL WG Joint 
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Apr/0005.html
+
+No decisions that affect this specification.
+
+* Minutes XML Query/XSL WG Joint Teleconference #567 Agenda 2014-04-08
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Apr/0034.html
+
+** DONE DECISION Binary types will be lexicographically ordered
+  See: 
+    https://www.w3.org/Bugs/Public/show_bug.cgi?id=22839
+    https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Jan/0072.html
+    ACTION A-567-03
+
+    ACTION A-567-03 Jonathan to update the operator mapping table based on the decision to order binary types.
+    See: https://www.w3.org/Bugs/Public/show_bug.cgi?id=22839
+    ETA 2014-04-08
+
+* Minutes XML Query/XSL WG Joint Teleconference #568 2014-04-22
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Apr/0067.html
+
+* Minutes XML Query/XSL WG Joint Teleconference #569 2014-04-29
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014May/0001.html
+
+No decisions that affect this specification.
+
+* Minutes of XML Query/XSL WG Joint Teleconference #570 2014-05-06
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014May/0017.html
+
+No decisions that affect this specification.
+
+* MINUTES XML Query/XSL WG Joint Teleconference #571 Agenda 2014-05-13
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014May/0036.html
+
+No decisions that affect this specification.
+
+* MINUTES XML Query/XSL WG Joint Teleconference #572 2014-05-20
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014May/0054.html
+
+No decisions that affect this specification.
+
+* XML Query/XSL WG Joint Teleconference #573 Minutes 2014-05-27
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014May/0063.html
+
+No decisions that affect this specification.
+
+* Minutes, XML Query/XSL WG Joint Teleconference #574 Agenda 2014-06-03
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Jun/0003.html
+
+No decisions that affect this specification.
+
+* Minutes: XML Query/XSL WG Joint Teleconference #575 2014-06-17
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Jun/0027.html
+
+No decisions that affect this specification.
+
+* XML Query/XSL WG Joint Teleconference #576 Minutes 2014-07-08
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Jul/0001.html
+
+** DONE DECISION: Adopt Jonathan's proposal for map and array accessor operators 
+   from https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Jun/0022.html
+
+* Minutes of Query/XSLT joint call 2014-07-15 (was: Re: DRAFT XML Query/XSL WG Joint Teleconference #577 Agenda 2014-07-15)
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Jul/0019.html
+
+No decisions that affect this specification.
+
+* Minutes: XML Query/XSL WG Joint Teleconference #578 2014-07-22
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Jul/0050.html
+
+No decisions that affect this specification.
+
+* Minutes, XML Query WG Face-To-Face Meeting #579 -- 2014-07-28 - 2014-07-30 - IBM Hursley, WInchester, UK
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Jul/0092.html
+
+** DONE DECISION: consensus to use array: as prefix for arrays
+
+** DONE DECISION: array:seq() not to be added
+
+** DONE DECISION: The proposal on xs:numeric is accepted ...
+   => any changes needed in language spec?
+
+** DONE DECISION: Adopted solution A.4 - Comment 3 from
+    https://www.w3.org/Bugs/Public/show_bug.cgi?id=25375
+
+* DONE MINUTES XML Query/XSL WG Joint Teleconference #580 Agenda 2014-09-09
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Sep/0034.html
+
+
+** DONE Constructing maps: XQDY0136 → XPTY0004
+   https://www.w3.org/Bugs/Public/show_bug.cgi?id=26558
+
+   SUBSTANTIVE
+
+* DONE MINUTES XML Query/XSL WG Joint Teleconference #581 Agenda 2014-09-16
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Sep/0049.html
+
+  No decisions that affect this specification.
+
+* DONE MINUTES XML Query/XSL WG Joint Teleconference #582 Agenda 2014-09-23
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Sep/0062.html
+
+** DONE ACTION A-582-01: 
+
+   Jonathan to address bug 21575 "Operator precedence table" as an
+   editorial issue.
+
+   https://www.w3.org/Bugs/Public/show_bug.cgi?id=21575
+
+   EDITORIAL
+
+
+** DONE ACTION A-582-02: 
+
+   Jonathan to address bug 26788 in XPath30: "XQuery-only errors in
+   XPath 3.0 specification, like XQST0134"
+
+   https://www.w3.org/Bugs/Public/show_bug.cgi?id=26788
+
+   EDITORIAL
+
+** DONE ACTION A-582-03: 
+
+   Jonathan to add the serialization option for duplicate keys in JSON
+   output, and the default error case, to the specs.
+
+** DONE ACTION A-582-05: 
+
+   Jonathan to apply the suggestion of Mike Kay in bug 26453: "Lowest
+   common supertype"
+
+   https://www.w3.org/Bugs/Public/show_bug.cgi?id=26453
+
+   => value comparisons, orderspecs
+
+** DONE ACTION A-582-07: 
+
+   Jonathan to make the change in the bug 26832, adopting the language
+   suggested by Mike - "Otherwise the result of the comparison is
+   either false or an error"
+
+   https://www.w3.org/Bugs/Public/show_bug.cgi?id=26832
+
+   EDITORIAL
+
+** DONE namespace example is invalid
+   https://www.w3.org/Bugs/Public/show_bug.cgi?id=26029
+
+   EDITORIAL
+
+* DONE XML Query/XSL WG Joint Teleconference #583 Minutes 2014-09-30
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Sep/0119.html
+
+  No changes that affect this specification
+
+* DONE Re: DRAFT XML Query/XSL WG Joint Teleconference #584 Agenda 2014-10-07
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Oct/0020.html
+
+  No changes that affect this specification
+
+* DONE DRAFT XML Query/XSL WG Joint Teleconference #585 Minutes 2014-10-14
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Oct/0048.html
+
+  No changes that affect this specification
+
+* DONE Minutes Meeting 586, F2F at Santa Clara October/November 2014
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Nov/0001.html
+
+
+** DONE 
+
+   DECISION: adopt Jonathan's 4 points on map and array constructors from
+   meeting A-585 agendum 2.1, to reference nodes and otherwise copy, as guidance
+   to the editors.
+   This resolves https://www.w3.org/Bugs/Public/shoW_bug.cgi?id=26958
+
+** DONE 
+
+   DECISION: https://www.w3.org/Bugs/Public/attachment.cgi?id=1527
+   XQuery 3.9.3.7 s/nodes which share/nodes that share/
+   Accept proposal from MSM from 3.9.3.7
+
+** DONE 
+
+   DECISION: https://www.w3.org/Bugs/Public/attachment.cgi?id=1527
+   Req and Use Cases 3.5.2 s/identity/their identity/ adopted
+
+** DONE 
+
+   DECISION: https://www.w3.org/Bugs/Public/attachment.cgi?id=1527
+   Optional changes - left to editors' discretion
+
+** DONE 
+
+   DECISION: Jonathan to fix bug 27094.
+   https://www.w3.org/Bugs/Public/show_bug.cgi?id=27094
+
+
+* DONE MINUTES XML Query/XSL WG Joint Teleconference #587 2014-11-11
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Nov/0018.html
+
+  No changes that affect this specification
+
+* DONE MINUTES XML Query/XSL WG Joint Teleconference #588 2014-11-18
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Nov/0027.html
+
+  No changes that affect this specification
+
+* DONE Minutes, QT joint call 589, 2014-11-2
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Nov/0031.html
+
+** DONE https://www.w3.org/Bugs/Public/show_bug.cgi?id=27382#c1
+
+** DONE https://www.w3.org/Bugs/Public/show_bug.cgi?id=27175#c4
+
+
+* DONE Minutes XML Query/XSL WG Joint Teleconference #590 2014-12-02
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Dec/0007.html
+
+** DONE https://www.w3.org/Bugs/Public/show_bug.cgi?id=27463
+
+* DONE MINUTES DRAFT XML Query/XSL WG Joint Teleconference #591 Agenda 2014-12-09
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Dec/0040.html
+
+** DONE Focus for evaluation of keyspecifier
+   https://www.w3.org/Bugs/Public/show_bug.cgi?id=27536
+
+** DONE [XP31] Sequence on lhs of arrow operator
+   https://www.w3.org/Bugs/Public/show_bug.cgi?id=27537#c2
+
+* DONE Open Action Items
+
+** TODO Carla Use Cases
+
+** DONE ACTION A-585-03: 
+
+   Jonathan to write a change proposal for XQuery 3.1 that clarifies
+   how we don't preclude updates.
+
+** TODO ACTION A-585-04: 
+
+   Jonathan to write a concrete proposal for XQuery Update 3.1 that
+   makes preservation of node identity implementation defined at the
+   persistence layer.
+
+* TODO cleanup and verify
+
+** Recent status changes
+   https://www.w3.org/Bugs/Public/buglist.cgi?bug_status=RESOLVED&bug_status=VERIFIED&bug_status=CLOSED&chfield=bug_status&chfieldfrom=2013-01-08&chfieldto=Now&component=XPath%203.0&component=XQuery%203.0&list_id=48302&order=changeddate%20DESC%2Cbug_status%2Cpriority%2Cassigned_to%2Cbug_id&product=XPath%20%2F%20XQuery%20%2F%20XSLT&query_based_on=Recent%20status%20changes&query_format=advanced
+
+** Open bugs
+   https://www.w3.org/Bugs/Public/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&email1=jonathan.robie%40gmail.com&emailassigned_to1=1&emailreporter1=1&emailtype1=exact&list_id=48300&order=component%2Cchangeddate%20DESC%2Cbug_status%2Cpriority%2Cassigned_to%2Cbug_id&query_based_on=&query_format=advanced
+
+** DONE Error code for atomizing functions
+   https://www.w3.org/Bugs/Public/show_bug.cgi?id=27610
+
+** DONE Unary Lookup: Specification Gaps
+   https://www.w3.org/Bugs/Public/show_bug.cgi?id=27455
+
+** DONE Undocumented incompatibility in XPath 3.0 
+   https://www.w3.org/Bugs/Public/show_bug.cgi?id=27141
+
+** TODO  [XP 3.0] Non-polymorphic operators
+   https://www.w3.org/Bugs/Public/show_bug.cgi?id=22456
+
+** TODO Productions that use <eg>
+
+  <eg>
+      [128] PrimaryExpr ::=  ...  | UnaryLookup
+      [177] UnaryLookup ::=  "?" KeySpecifier
+      [chg] KeySpecifier ::=   NCName | IntegerLiteral | ParenthesizedExpr | "*"
+  </eg>
+
+* PR push
+
+** DONE  ACTION A-596-02: 
+
+   Jonathan to incorporate the version resolution proposed 
+   in https://lists.w3.org/Archives/Member/w3c-xsl-query/2015Jan/0056.html 
+
+** DONE Action A-607-01:
+
+  Jonathan to review his outstanding action items and suggest a plan
+  next week.
+
+** DONE Action A-607-03:
+
+  Jonathan to implement resolution of Bug 28174 in
+  the XQuery / XPath specifications.
+
+  Partly done, see:
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2015May/0021.html
+  https://lists.w3.org/Archives/Member/w3c-query-editors/2015May/0000.html
+
+** TODO ACTION A-585-04:
+
+  Jonathan to write a concrete proposal for XQuery Update 3.1 that
+  makes preservation of node identity implementation defined at the
+  persistence layer.
+
+  See https://lists.w3.org/Archives/Member/w3c-xsl-query/2014Nov/0012.html
+
+  ==> Push to F2F
+
+** DONE ACTION A-596-02:
+
+  Jonathan to incorporate the version resolution proposed
+  in https://lists.w3.org/Archives/Member/w3c-xsl-query/2015Jan/0056.html
+
+
+** TODO ACTION A-598-05: Jonathan Robie to itemize the textual changes to the
+  specs as identified by the proposal
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2015Jan/0058.html
+  Areas to look at are the definitions of the static and dynamic contexts
+  as well as the function definition.  See agenda item J4.9.1.
+
+  ==> Push to later this week
+
+** DONE ACTION A-601-01:
+
+  Jonathan to fix bug # 28023 according to the decision:
+  1) add the RFC 2119 sentence to the conformance section of XPath. 2)
+  capitalize MUST NOT in the conformance section.
+
+** TODO ACTION A-601-03:
+
+  Jonathan to fix bugs # 28045 and # 28046 according to
+  the suggestion in the bug entry in comment #0, respectively.
+
+** TODO ACTION A-602-04:
+
+  Jonathan to address editorial bug 28241 - most names
+  are specified using the EQName production.
+
+** TODO ACTION A-603-02:
+
+  JRobie to implement a,b,c of
+  https://lists.w3.org/Archives/Member/w3c-xsl-query/2015Mar/0050.html in
+  XQuery.
+
+** TODO ACTION A-605-01:
+
+  Jonathan to implement change in Comment #1 of Bug 28081
+  (Named function references and the xs:numeric type).
+
+** DONE ACTION A-605-03:
+
+  Jonathan to make change in Comment #1 of Bug 28175
+  (J4.9.4 Bugzilla Bug 28175, [XP3.1] Statically known functions, and XSLT
+  3.0 packages).
+
+** DONE ACTION A-605-04:
+
+  Jonathan to make change suggested Comment #5 of Bug 22456 (J4.9.5
+  Bugzilla Bug 22456, [XP 3.0] Non-polymorphic operators (REOPENED)
+  https://www.w3.org/Bugs/Public/show_bug.cgi?id=22456)
+
+

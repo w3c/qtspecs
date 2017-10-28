@@ -1,0 +1,877 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<TITLE>BNF for xpath-grammar.jj</TITLE>
+</HEAD>
+<BODY>
+<H1 ALIGN=CENTER>BNF for xpath-grammar.jj</H1>
+<H2 ALIGN=CENTER>NON-TERMINALS</H2>
+<TABLE>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod1">XPath2</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod2">QueryList</A> &lt;EOF&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod2">QueryList</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod3">Module</A> ( &lt;QuerySeparator&gt; ( <A HREF="#prod3">Module</A> )? )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod3">Module</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod4">VersionDecl</A> )? ( <A HREF="#prod5">MainModule</A> | <A HREF="#prod6">LibraryModule</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod4">VersionDecl</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;XQueryVersion&gt;  ( &lt;StringLiteralForProlog&gt;  | &lt;URILiteral&gt;  ) ( &lt;XQueryEncoding&gt;  ( &lt;StringLiteralForProlog&gt;  | &lt;URILiteral&gt;  ) )? <A HREF="#prod7">Separator</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod5">MainModule</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">Prolog</A> <A HREF="#prod9">QueryBody</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod6">LibraryModule</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod10">ModuleDecl</A> <A HREF="#prod8">Prolog</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod10">ModuleDecl</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;ModuleNamespace&gt;  &lt;NCNameForProlog&gt;  &lt;AssignEquals&gt;  &lt;URILiteral&gt;  <A HREF="#prod7">Separator</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod8">Prolog</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( <A HREF="#prod11">Setter</A> | <A HREF="#prod12">Import</A> | <A HREF="#prod13">NamespaceDecl</A> | <A HREF="#prod14">DefaultNamespaceDecl</A> ) <A HREF="#prod7">Separator</A> )* ( ( <A HREF="#prod15">VarDecl</A> | <A HREF="#prod16">FunctionDecl</A> | <A HREF="#prod17">OptionDecl</A> | <A HREF="#prod18">FTOptionDecl</A> ) <A HREF="#prod7">Separator</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod11">Setter</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod19">BoundarySpaceDecl</A> | <A HREF="#prod20">DefaultCollationDecl</A> | <A HREF="#prod21">BaseURIDecl</A> | <A HREF="#prod22">ConstructionDecl</A> | <A HREF="#prod23">OrderingModeDecl</A> | <A HREF="#prod24">EmptyOrderDecl</A> | <A HREF="#prod25">CopyNamespacesDecl</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod12">Import</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod26">SchemaImport</A> | <A HREF="#prod27">ModuleImport</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod7">Separator</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;SemiColon&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod13">NamespaceDecl</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DeclareNamespace&gt;  &lt;NCNameForProlog&gt;  &lt;AssignEquals&gt;  &lt;URILiteral&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod19">BoundarySpaceDecl</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DeclareXMLSpace&gt;  ( &lt;Preserve&gt;  | &lt;Strip&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod14">DefaultNamespaceDecl</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;DeclareDefaultElement&gt;  | &lt;DeclareDefaultFunction&gt;  ) &lt;Namespace&gt;  &lt;URILiteral&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod17">OptionDecl</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DeclareOption&gt;  &lt;QNameForProlog&gt;  ( &lt;StringLiteralForProlog&gt;  | &lt;URILiteral&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod18">FTOptionDecl</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DeclareFTOption&gt;  <A HREF="#prod28">FTMatchOption</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod23">OrderingModeDecl</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DeclareOrdering&gt;  ( &lt;Ordered&gt;  | &lt;Unordered&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod24">EmptyOrderDecl</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DeclareDefaultOrder&gt;  ( &lt;EmptyGreatestForProlog&gt;  | &lt;EmptyLeastForProlog&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod25">CopyNamespacesDecl</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DeclareCopyNamespace&gt;  <A HREF="#prod29">PreserveMode</A> &lt;CommaForProlog&gt;  <A HREF="#prod30">InheritMode</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod29">PreserveMode</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;Preserve&gt;  | &lt;NoPreserve&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod30">InheritMode</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;Inherit&gt;  | &lt;NoInherit&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod20">DefaultCollationDecl</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DeclareCollation&gt;  &lt;URILiteral&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod21">BaseURIDecl</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DeclareBaseURI&gt;  &lt;URILiteral&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod26">SchemaImport</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;ImportSchemaToken&gt;  ( <A HREF="#prod31">SchemaPrefix</A> )? &lt;URILiteral&gt;  ( &lt;AtURILiteral&gt;  ( &lt;CommaForProlog&gt;  &lt;URILiteral&gt;  )* )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod31">SchemaPrefix</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;Namespace&gt;  &lt;NCNameForProlog&gt;  &lt;AssignEquals&gt;  ) | ( &lt;DefaultElement&gt;  &lt;Namespace&gt;  ) )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod27">ModuleImport</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;ImportModuleToken&gt;  ( &lt;Namespace&gt;  &lt;NCNameForProlog&gt;  &lt;AssignEquals&gt;  )? &lt;URILiteral&gt;  ( &lt;AtURILiteral&gt;  ( &lt;CommaForProlog&gt;  &lt;URILiteral&gt;  )* )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod15">VarDecl</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DefineVariable&gt;  &lt;VariableIndicatorForProlog&gt;  &lt;QNameForProlog&gt;  ( <A HREF="#prod32">TypeDeclaration</A> )? ( ( &lt;ColonEqualsForProlog&gt;  <A HREF="#prod33">ExprSingle</A> ) | &lt;External&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod22">ConstructionDecl</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DeclareConstruction&gt;  ( &lt;Strip&gt;  | &lt;Preserve&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod16">FunctionDecl</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;DefineFunction&gt;  ) &lt;QNameForProlog&gt;  &lt;LparForProlog&gt;  ( <A HREF="#prod34">ParamList</A> )? &lt;Rpar&gt; ( &lt;AsForProlog&gt;  <A HREF="#prod35">SequenceType</A> )? ( <A HREF="#prod36">EnclosedExpr</A> | &lt;External&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod34">ParamList</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod37">Param</A> ( ( &lt;Comma&gt; | &lt;CommaForProlog&gt;  ) <A HREF="#prod37">Param</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod37">Param</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;VariableIndicatorForProlog&gt;  &lt;QNameForProlog&gt;  ( <A HREF="#prod32">TypeDeclaration</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod36">EnclosedExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;Lbrace&gt;  | &lt;LbraceExprEnclosure&gt;  | &lt;LbraceExprEnclosureForProlog&gt;  ) <A HREF="#prod38">Expr</A> &lt;Rbrace&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod9">QueryBody</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod38">Expr</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod38">Expr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod33">ExprSingle</A> ( &lt;Comma&gt; <A HREF="#prod33">ExprSingle</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod33">ExprSingle</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod39">FLWORExpr</A> | <A HREF="#prod40">QuantifiedExpr</A> | <A HREF="#prod41">TypeswitchExpr</A> | <A HREF="#prod42">IfExpr</A> | <A HREF="#prod43">OrExpr</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod39">FLWORExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( <A HREF="#prod44">ForClause</A> | <A HREF="#prod45">LetClause</A> ) )+ ( <A HREF="#prod46">WhereClause</A> )? ( <A HREF="#prod47">OrderByClause</A> )? ( &lt;Return&gt; ) <A HREF="#prod33">ExprSingle</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod44">ForClause</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;ForVariable&gt; &lt;VarName&gt;  ( <A HREF="#prod32">TypeDeclaration</A> )? ( <A HREF="#prod48">PositionalVar</A> )? ( <A HREF="#prod49">FTScoreVar</A> )? &lt;In&gt;  <A HREF="#prod33">ExprSingle</A> ( &lt;Comma&gt; &lt;VariableIndicator&gt; &lt;VarName&gt;  ( <A HREF="#prod32">TypeDeclaration</A> )? ( <A HREF="#prod48">PositionalVar</A> )? ( <A HREF="#prod49">FTScoreVar</A> )? &lt;In&gt;  <A HREF="#prod33">ExprSingle</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod48">PositionalVar</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;AtWord&gt;  &lt;VariableIndicator&gt; &lt;VarName&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod49">FTScoreVar</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;FTScoreVariable&gt;  &lt;VarName&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod45">LetClause</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;LetVariable&gt;  &lt;VarName&gt;  ( <A HREF="#prod32">TypeDeclaration</A> )? ( <A HREF="#prod49">FTScoreVar</A> )? ) | ( &lt;FTLetScoreVariable&gt;  &lt;VarName&gt;  ) ) &lt;ColonEquals&gt;  <A HREF="#prod33">ExprSingle</A> ( &lt;Comma&gt; ( ( &lt;VariableIndicator&gt; &lt;VarName&gt;  ( <A HREF="#prod32">TypeDeclaration</A> )? ( <A HREF="#prod49">FTScoreVar</A> )? ) | <A HREF="#prod49">FTScoreVar</A> ) &lt;ColonEquals&gt;  <A HREF="#prod33">ExprSingle</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod46">WhereClause</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;Where&gt;  <A HREF="#prod33">ExprSingle</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod47">OrderByClause</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;OrderBy&gt;  | &lt;OrderByStable&gt;  ) <A HREF="#prod50">OrderSpecList</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod50">OrderSpecList</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod51">OrderSpec</A> ( &lt;Comma&gt; <A HREF="#prod51">OrderSpec</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod51">OrderSpec</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod33">ExprSingle</A> <A HREF="#prod52">OrderModifier</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod52">OrderModifier</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;Ascending&gt;  | &lt;Descending&gt;  ) )? ( ( &lt;EmptyGreatest&gt;  | &lt;EmptyLeast&gt;  ) )? ( &lt;Collation&gt;  &lt;URILiteralToOperator&gt;  )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod40">QuantifiedExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;Some&gt;  | &lt;Every&gt;  ) &lt;VarName&gt;  ( <A HREF="#prod32">TypeDeclaration</A> )? &lt;In&gt;  <A HREF="#prod33">ExprSingle</A> ( &lt;Comma&gt; &lt;VariableIndicator&gt; &lt;VarName&gt;  ( <A HREF="#prod32">TypeDeclaration</A> )? &lt;In&gt;  <A HREF="#prod33">ExprSingle</A> )* &lt;Satisfies&gt;  <A HREF="#prod33">ExprSingle</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod41">TypeswitchExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;TypeswitchLpar&gt; <A HREF="#prod38">Expr</A> &lt;Rpar&gt; ( <A HREF="#prod53">CaseClause</A> )+ &lt;Default&gt;  ( &lt;VariableIndicator&gt; &lt;VarName&gt;  )? ( &lt;Return&gt; ) <A HREF="#prod33">ExprSingle</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod53">CaseClause</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;Case&gt;  ( &lt;VariableIndicatorForCase&gt;  &lt;VarName&gt;  &lt;As&gt;  )? <A HREF="#prod35">SequenceType</A> ( &lt;Return&gt; ) <A HREF="#prod33">ExprSingle</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod42">IfExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IfLpar&gt; <A HREF="#prod38">Expr</A> &lt;Rpar&gt; &lt;Then&gt; <A HREF="#prod33">ExprSingle</A> &lt;Else&gt; <A HREF="#prod33">ExprSingle</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod54">OperatorExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod43">OrExpr</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod43">OrExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod55">AndExpr</A> ( &lt;Or&gt; <A HREF="#prod55">AndExpr</A>  )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod55">AndExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod56">ComparisonExpr</A> ( &lt;And&gt; <A HREF="#prod56">ComparisonExpr</A>  )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod56">ComparisonExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod57">FTContainsExpr</A> ( ( <A HREF="#prod58">ValueComp</A> | <A HREF="#prod59">GeneralComp</A> | <A HREF="#prod60">NodeComp</A> ) <A HREF="#prod57">FTContainsExpr</A>  )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod57">FTContainsExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod61">RangeExpr</A> ( &lt;FTContainsIndicator&gt;  <A HREF="#prod62">FTSelection</A> ( <A HREF="#prod63">FTIgnoreOption</A> )? )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod61">RangeExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod64">AdditiveExpr</A> ( &lt;To&gt; <A HREF="#prod64">AdditiveExpr</A>  )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod64">AdditiveExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod65">MultiplicativeExpr</A> ( ( &lt;Plus&gt; | &lt;Minus&gt; ) <A HREF="#prod65">MultiplicativeExpr</A>  )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod65">MultiplicativeExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod66">UnionExpr</A> ( ( &lt;Multiply&gt; | &lt;Div&gt; | &lt;Idiv&gt; | &lt;Mod&gt; ) <A HREF="#prod66">UnionExpr</A>  )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod66">UnionExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod67">IntersectExceptExpr</A> ( ( &lt;Union&gt; | &lt;Vbar&gt; ) <A HREF="#prod67">IntersectExceptExpr</A>  )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod67">IntersectExceptExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod68">InstanceofExpr</A> ( ( &lt;Intersect&gt; | &lt;Except&gt; ) <A HREF="#prod68">InstanceofExpr</A>  )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod68">InstanceofExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod69">TreatExpr</A> ( &lt;Instanceof&gt; <A HREF="#prod35">SequenceType</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod69">TreatExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod70">CastableExpr</A> ( &lt;TreatAs&gt; <A HREF="#prod35">SequenceType</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod70">CastableExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod71">CastExpr</A> ( &lt;Castable&gt; <A HREF="#prod72">SingleType</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod71">CastExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod73">UnaryExpr</A> ( &lt;CastAs&gt;  <A HREF="#prod72">SingleType</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod73">UnaryExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;UnaryMinus&gt;  | &lt;UnaryPlus&gt;  )* <A HREF="#prod74">ValueExpr</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod74">ValueExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod75">ValidateExpr</A> | <A HREF="#prod76">PathExpr</A> | <A HREF="#prod77">ExtensionExpr</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod59">GeneralComp</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;Equals&gt; | &lt;NotEquals&gt; | &lt;Lt&gt; | &lt;LtEquals&gt; | &lt;Gt&gt; | &lt;GtEquals&gt; )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod58">ValueComp</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;FortranEq&gt; | &lt;FortranNe&gt; | &lt;FortranLt&gt; | &lt;FortranLe&gt; | &lt;FortranGt&gt; | &lt;FortranGe&gt; )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod60">NodeComp</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;Is&gt; | &lt;LtLt&gt; | &lt;GtGt&gt; )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod75">ValidateExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;ValidateLbrace&gt;  | ( &lt;ValidateSchemaMode&gt;  &lt;LbraceExprEnclosure&gt;  ) ) <A HREF="#prod38">Expr</A> &lt;Rbrace&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod77">ExtensionExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod78">Pragma</A> )+ &lt;LbraceExprEnclosure&gt;  ( <A HREF="#prod38">Expr</A> )? &lt;Rbrace&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod78">Pragma</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;PragmaOpen&gt;  ( &lt;S&gt;  )? &lt;QNameForPragma&gt;  <A HREF="#prod79">PragmaContents</A> &lt;PragmaClose&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod79">PragmaContents</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;ExtensionContentChar&gt;  )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod76">PathExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;Root&gt;  ( <A HREF="#prod80">RelativePathExpr</A> )? ) | ( &lt;RootDescendants&gt;  <A HREF="#prod80">RelativePathExpr</A> ) | <A HREF="#prod80">RelativePathExpr</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod80">RelativePathExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod81">StepExpr</A> ( ( &lt;Slash&gt; | &lt;SlashSlash&gt;  ) <A HREF="#prod81">StepExpr</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod81">StepExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod82">AxisStep</A> | <A HREF="#prod83">FilterExpr</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod82">AxisStep</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod84">ForwardStep</A> | <A HREF="#prod85">ReverseStep</A> ) <A HREF="#prod86">PredicateList</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod84">ForwardStep</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( <A HREF="#prod87">ForwardAxis</A> <A HREF="#prod88">NodeTest</A> ) | <A HREF="#prod89">AbbrevForwardStep</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod87">ForwardAxis</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;AxisChild&gt;  | &lt;AxisDescendant&gt;  | &lt;AxisAttribute&gt;  | &lt;AxisSelf&gt;  | &lt;AxisDescendantOrSelf&gt;  | &lt;AxisFollowingSibling&gt;  | &lt;AxisFollowing&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod89">AbbrevForwardStep</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;At&gt;  )? <A HREF="#prod88">NodeTest</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod85">ReverseStep</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( <A HREF="#prod90">ReverseAxis</A> <A HREF="#prod88">NodeTest</A> ) | <A HREF="#prod91">AbbrevReverseStep</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod90">ReverseAxis</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;AxisParent&gt;  | &lt;AxisAncestor&gt;  | &lt;AxisPrecedingSibling&gt;  | &lt;AxisPreceding&gt;  | &lt;AxisAncestorOrSelf&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod91">AbbrevReverseStep</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DotDot&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod88">NodeTest</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod92">KindTest</A> | <A HREF="#prod93">NameTest</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod93">NameTest</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;QName&gt;  | <A HREF="#prod94">Wildcard</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod94">Wildcard</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;Star&gt;  | &lt;NCNameColonStar&gt;  | &lt;StarColonNCName&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod83">FilterExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod95">PrimaryExpr</A> <A HREF="#prod86">PredicateList</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod86">PredicateList</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod96">Predicate</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod96">Predicate</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;Lbrack&gt; <A HREF="#prod38">Expr</A> &lt;Rbrack&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod95">PrimaryExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod97">Literal</A> | <A HREF="#prod98">VarRef</A> | <A HREF="#prod99">ParenthesizedExpr</A> | <A HREF="#prod100">ContextItemExpr</A> | <A HREF="#prod101">FunctionCall</A> | <A HREF="#prod102">Constructor</A> | <A HREF="#prod103">OrderedExpr</A> | <A HREF="#prod104">UnorderedExpr</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod97">Literal</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod105">NumericLiteral</A> | &lt;StringLiteral&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod105">NumericLiteral</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;IntegerLiteral&gt;  | &lt;DecimalLiteral&gt;  | &lt;DoubleLiteral&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod98">VarRef</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;VariableIndicator&gt; &lt;VarName&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod99">ParenthesizedExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;Lpar&gt; ( <A HREF="#prod38">Expr</A> )? &lt;Rpar&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod100">ContextItemExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;Dot&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod103">OrderedExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;OrderedOpen&gt;  <A HREF="#prod38">Expr</A> &lt;Rbrace&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod104">UnorderedExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;UnorderedOpen&gt;  <A HREF="#prod38">Expr</A> &lt;Rbrace&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod101">FunctionCall</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;QNameLpar&gt;  ) ( <A HREF="#prod33">ExprSingle</A> ( &lt;Comma&gt; <A HREF="#prod33">ExprSingle</A> )* )? &lt;Rpar&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod102">Constructor</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod106">DirectConstructor</A> | <A HREF="#prod107">ComputedConstructor</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod106">DirectConstructor</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod108">DirElemConstructor</A> | <A HREF="#prod109">DirCommentConstructor</A> | <A HREF="#prod110">DirPIConstructor</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod108">DirElemConstructor</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;StartTagOpenRoot&gt;  | &lt;StartTagOpen&gt;  ) &lt;TagQName&gt;  <A HREF="#prod111">DirAttributeList</A> ( &lt;EmptyTagClose&gt;  | ( &lt;StartTagClose&gt;  ( <A HREF="#prod112">DirElemContent</A> )* &lt;EndTagOpen&gt;  &lt;TagQName&gt;  ( &lt;S&gt;  )? &lt;EndTagClose&gt;  ) )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod111">DirAttributeList</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;S&gt;  ( &lt;TagQName&gt;  ( &lt;S&gt;  )? &lt;ValueIndicator&gt;  ( &lt;S&gt;  )? <A HREF="#prod113">DirAttributeValue</A> )? )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod113">DirAttributeValue</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;OpenQuot&gt;  ( ( &lt;EscapeQuot&gt;  | <A HREF="#prod114">QuotAttrValueContent</A> ) )* &lt;CloseQuot&gt;  ) | ( &lt;OpenApos&gt;  ( ( &lt;EscapeApos&gt;  | <A HREF="#prod115">AposAttrValueContent</A> ) )* &lt;CloseApos&gt;  ) )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod114">QuotAttrValueContent</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;QuotAttrContentChar&gt;  | <A HREF="#prod116">CommonContent</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod115">AposAttrValueContent</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;AposAttrContentChar&gt;  | <A HREF="#prod116">CommonContent</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod112">DirElemContent</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod106">DirectConstructor</A> | &lt;ElementContentChar&gt;  | <A HREF="#prod117">CDataSection</A> | <A HREF="#prod116">CommonContent</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod116">CommonContent</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;PredefinedEntityRef&gt;  | &lt;CharRef&gt;  | &lt;LCurlyBraceEscape&gt;  | &lt;RCurlyBraceEscape&gt;  | <A HREF="#prod36">EnclosedExpr</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod109">DirCommentConstructor</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;XmlCommentStartForElementContent&gt;  | &lt;XmlCommentStart&gt;  ) <A HREF="#prod118">DirCommentContents</A> &lt;XmlCommentEnd&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod118">DirCommentContents</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;CommentContentChar&gt;  | &lt;CommentContentCharDash&gt;  ) )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod110">DirPIConstructor</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;ProcessingInstructionStartForElementContent&gt;  | &lt;ProcessingInstructionStart&gt;  ) &lt;PITarget&gt;  ( &lt;SForPI&gt;  <A HREF="#prod119">DirPIContents</A> )? &lt;ProcessingInstructionEnd&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod119">DirPIContents</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;PIContentChar&gt;  )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod117">CDataSection</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;CdataSectionStartForElementContent&gt;  | &lt;CdataSectionStart&gt;  ) <A HREF="#prod120">CDataSectionContents</A> &lt;CdataSectionEnd&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod120">CDataSectionContents</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;CDataSectionChar&gt;  )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod107">ComputedConstructor</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod121">CompDocConstructor</A> | <A HREF="#prod122">CompElemConstructor</A> | <A HREF="#prod123">CompAttrConstructor</A> | <A HREF="#prod124">CompTextConstructor</A> | <A HREF="#prod125">CompCommentConstructor</A> | <A HREF="#prod126">CompPIConstructor</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod121">CompDocConstructor</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DocumentLbrace&gt;  <A HREF="#prod38">Expr</A> &lt;Rbrace&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod122">CompElemConstructor</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;ElementQNameLbrace&gt;  | ( &lt;ElementLbrace&gt;  <A HREF="#prod38">Expr</A> &lt;Rbrace&gt;  &lt;LbraceExprEnclosure&gt;  ) ) ( <A HREF="#prod127">ContentExpr</A> )? &lt;Rbrace&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod127">ContentExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod38">Expr</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod123">CompAttrConstructor</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;AttributeQNameLbrace&gt;  | ( &lt;AttributeLbrace&gt;  <A HREF="#prod38">Expr</A> &lt;Rbrace&gt;  &lt;LbraceExprEnclosure&gt;  ) ) ( <A HREF="#prod38">Expr</A> )? &lt;Rbrace&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod124">CompTextConstructor</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;TextLbrace&gt;  <A HREF="#prod38">Expr</A> &lt;Rbrace&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod125">CompCommentConstructor</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;CommentLbrace&gt;  <A HREF="#prod38">Expr</A> &lt;Rbrace&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod126">CompPIConstructor</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;PINCNameLbrace&gt;  | ( &lt;PILbrace&gt;  <A HREF="#prod38">Expr</A> &lt;Rbrace&gt;  &lt;LbraceExprEnclosure&gt;  ) ) ( <A HREF="#prod38">Expr</A> )? &lt;Rbrace&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod72">SingleType</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod128">AtomicType</A> ( &lt;Optional&gt;  )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod32">TypeDeclaration</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;As&gt;  | &lt;AsForProlog&gt;  ) <A HREF="#prod35">SequenceType</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod35">SequenceType</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( <A HREF="#prod129">ItemType</A> ( <A HREF="#prod130">OccurrenceIndicator</A> )? ) | &lt;EmptySeqTok&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod130">OccurrenceIndicator</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;OccurrenceZeroOrOne&gt;  | &lt;OccurrenceZeroOrMore&gt;  | &lt;OccurrenceOneOrMore&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod129">ItemType</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod128">AtomicType</A> | <A HREF="#prod92">KindTest</A> | &lt;Item&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod128">AtomicType</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;QNameForSingleType&gt;  | &lt;QNameForAtomicType&gt;  | &lt;QNameForSequenceType&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod92">KindTest</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod131">DocumentTest</A> | <A HREF="#prod132">ElementTest</A> | <A HREF="#prod133">AttributeTest</A> | <A HREF="#prod134">SchemaElementTest</A> | <A HREF="#prod135">SchemaAttributeTest</A> | <A HREF="#prod136">PITest</A> | <A HREF="#prod137">CommentTest</A> | <A HREF="#prod138">TextTest</A> | <A HREF="#prod139">AnyKindTest</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod139">AnyKindTest</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;NodeLpar&gt; | &lt;NodeLparForKindTest&gt;  ) &lt;RparForKindTest&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod131">DocumentTest</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;DocumentLpar&gt;  | &lt;DocumentLparForKindTest&gt;  ) ( ( <A HREF="#prod132">ElementTest</A> | <A HREF="#prod134">SchemaElementTest</A> ) )? &lt;RparForKindTest&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod138">TextTest</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;TextLpar&gt; | &lt;TextLparForKindTest&gt;  ) &lt;RparForKindTest&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod137">CommentTest</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;CommentLpar&gt; | &lt;CommentLparForKindTest&gt;  ) &lt;RparForKindTest&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod136">PITest</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;ProcessingInstructionLpar&gt; | &lt;ProcessingInstructionLparForKindTest&gt;  ) ( ( &lt;NCNameForPI&gt;  | &lt;StringLiteralForKindTest&gt;  ) )? &lt;RparForKindTest&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod133">AttributeTest</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;AttributeType&gt;  | &lt;AttributeTypeForKindTest&gt;  ) ( ( <A HREF="#prod140">AttribNameOrWildcard</A> ( &lt;CommaForKindTest&gt;  <A HREF="#prod141">TypeName</A> )? ) )? &lt;RparForKindTest&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod140">AttribNameOrWildcard</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod142">AttributeName</A> | &lt;AnyName&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod135">SchemaAttributeTest</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;SchemaAttributeType&gt;  | &lt;SchemaAttributeTypeForKindTest&gt;  ) <A HREF="#prod143">AttributeDeclaration</A> &lt;RparForKindTest&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod143">AttributeDeclaration</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod142">AttributeName</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod132">ElementTest</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;ElementType&gt;  | &lt;ElementTypeForKindTest&gt;  | &lt;ElementTypeForDocumentTest&gt;  ) ( ( <A HREF="#prod144">ElementNameOrWildcard</A> ( &lt;CommaForKindTest&gt;  <A HREF="#prod141">TypeName</A> ( &lt;Nillable&gt;  )? )? ) )? &lt;RparForKindTest&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod144">ElementNameOrWildcard</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod145">ElementName</A> | &lt;AnyName&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod134">SchemaElementTest</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;SchemaElementType&gt;  | &lt;SchemaElementTypeForKindTest&gt;  | &lt;SchemaElementTypeForDocumentTest&gt;  ) <A HREF="#prod146">ElementDeclaration</A> &lt;RparForKindTest&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod146">ElementDeclaration</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod145">ElementName</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod142">AttributeName</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;QNameForItemType&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod145">ElementName</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;QNameForItemType&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod141">TypeName</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;QNameForItemType&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod62">FTSelection</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod147">FTOr</A> ( ( <A HREF="#prod28">FTMatchOption</A> | <A HREF="#prod148">FTProximity</A> ) )* ( &lt;FTWeightIndicator&gt;  &lt;DecimalLiteral&gt;  )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod149">FTOrExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod147">FTOr</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod147">FTOr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod150">FTAnd</A> ( &lt;FTOrIndicator&gt; <A HREF="#prod150">FTAnd</A>  )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod150">FTAnd</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod151">FTMildnot</A> ( &lt;FTAndIndicator&gt; <A HREF="#prod151">FTMildnot</A>  )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod151">FTMildnot</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod152">FTUnaryNot</A> ( &lt;FTMildnotIndicator&gt; <A HREF="#prod152">FTUnaryNot</A>  )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod152">FTUnaryNot</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;FTUnaryNotIndicator&gt;  )? <A HREF="#prod153">FTWordsSelection</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod153">FTWordsSelection</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod154">FTWords</A> | ( &lt;Lpar&gt; <A HREF="#prod62">FTSelection</A> &lt;Rpar&gt; ) )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod154">FTWords</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod97">Literal</A> | <A HREF="#prod98">VarRef</A> | <A HREF="#prod100">ContextItemExpr</A> | <A HREF="#prod101">FunctionCall</A> | ( &lt;LbraceExprEnclosure&gt;  <A HREF="#prod38">Expr</A> &lt;Rbrace&gt;  ) ) ( <A HREF="#prod155">FTAnyallOption</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod148">FTProximity</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;FTOrderedIndicator&gt;  | <A HREF="#prod156">FTWindow</A> | <A HREF="#prod157">FTDistance</A> | <A HREF="#prod158">FTTimes</A> | <A HREF="#prod159">FTScope</A> | <A HREF="#prod160">FTContent</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod28">FTMatchOption</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod161">FTCaseOption</A> | <A HREF="#prod162">FTDiacriticsOption</A> | <A HREF="#prod163">FTStemOption</A> | <A HREF="#prod164">FTThesaurusOption</A> | <A HREF="#prod165">FTStopwordOption</A> | <A HREF="#prod166">FTLanguageOption</A> | <A HREF="#prod167">FTWildCardOption</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod161">FTCaseOption</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;FTLowercaseIndicator&gt;  | &lt;FTUppercaseIndicator&gt;  | &lt;FTCasesensitiveIndicator&gt;  | &lt;FTCaseinsensitiveIndicator&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod162">FTDiacriticsOption</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;FTWithdiacriticsIndicator&gt;  | &lt;FTWithoutdiacriticsIndicator&gt;  | &lt;FTDiacriticsensitiveIndicator&gt;  | &lt;FTDiacriticinsensitiveIndicator&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod163">FTStemOption</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;FTWithstemIndicator&gt;  | &lt;FTWithoutstemIndicator&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod164">FTThesaurusOption</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;FTWithThesaurusIndicator&gt;  ( <A HREF="#prod168">FTThesaurusID</A> | &lt;Default&gt;  ) ) | ( &lt;FTWithThesaurusIndicatorGroup&gt;  ( <A HREF="#prod168">FTThesaurusID</A> | &lt;Default&gt;  ) ( &lt;Comma&gt; <A HREF="#prod168">FTThesaurusID</A> )* &lt;Rpar&gt; ) | &lt;FTWithoutThesaurusIndicator&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod168">FTThesaurusID</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;FTAtStringLiteralIndicator&gt;  ( &lt;FTRelationshipIndicator&gt;  )? ( <A HREF="#prod169">FTRange</A> &lt;FTLevelsIndicator&gt;  )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod165">FTStopwordOption</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;FTWithstopwordsIndicator&gt; <A HREF="#prod170">FTRefOrList</A> ( <A HREF="#prod171">FTInclExclStringLiteral</A> )* ) | &lt;FTWithoutstopwordsIndicator&gt; | ( &lt;FTWithDefaultstopwordsIndicator&gt; ( <A HREF="#prod171">FTInclExclStringLiteral</A> )* ) )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod170">FTRefOrList</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;FTAtStringLiteralIndicator&gt; | ( &lt;Lpar&gt; &lt;StringLiteral&gt; ( &lt;Comma&gt; &lt;StringLiteral&gt; )* &lt;Rpar&gt; ) )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod171">FTInclExclStringLiteral</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;Union&gt; | &lt;Except&gt; ) <A HREF="#prod170">FTRefOrList</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod166">FTLanguageOption</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;FTLanguageIndicator&gt; &lt;StringLiteral&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod167">FTWildCardOption</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;FTWithWildcardIndicator&gt; | &lt;FTWithoutWildcardIndicator&gt; )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod160">FTContent</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;FTStartIndicator&gt;  | &lt;FTEndIndicator&gt;  | &lt;FTEntireIndicator&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod155">FTAnyallOption</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;FTAnyIndicator&gt;  | &lt;FTAllIndicator&gt;  | &lt;FTPhraseIndicator&gt;  | &lt;FTAnywordIndicator&gt;  | &lt;FTAllwordIndicator&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod169">FTRange</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;FTExactlyIndicator&gt;  <A HREF="#prod66">UnionExpr</A> ) | ( &lt;FTAtleastIndicator&gt;  <A HREF="#prod66">UnionExpr</A> ) | ( &lt;FTAtmostIndicator&gt;  <A HREF="#prod66">UnionExpr</A> ) | ( &lt;FTFromIndicator&gt;  <A HREF="#prod66">UnionExpr</A> &lt;To&gt;  <A HREF="#prod66">UnionExpr</A> ) )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod157">FTDistance</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;FTDistanceIndicator&gt;  <A HREF="#prod169">FTRange</A> <A HREF="#prod172">FTUnit</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod156">FTWindow</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;FTWindowIndicator&gt;  <A HREF="#prod66">UnionExpr</A> <A HREF="#prod172">FTUnit</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod158">FTTimes</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;FTOccurrencesIndicator&gt;  <A HREF="#prod169">FTRange</A> &lt;FTTimesIndicator&gt; </TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod159">FTScope</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;FTSameIndicator&gt;  | &lt;FTDifferentIndicator&gt;  ) <A HREF="#prod173">FTBigUnit</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod172">FTUnit</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;FTWordsIndicator&gt;  | &lt;FTSentencesIndicator&gt;  | &lt;FTParagraphsIndicator&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod173">FTBigUnit</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;FTSentenceIndicator&gt;  | &lt;FTParagraphIndicator&gt;  )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod63">FTIgnoreOption</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;FTIgnoreIndicator&gt;  <A HREF="#prod66">UnionExpr</A></TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>

@@ -1,0 +1,198 @@
+<?xml version="1.0"?>
+<project name="data-model" default="all" >
+
+<!-- Import a bunch of global property definitions -->
+  <dirname property="etc.dir" file="../../etc/*"/>
+  <import file="${etc.dir}/build-constants.xml"/>
+
+<!-- Set properties for "this" document's build requirements -->
+  <property name="generic-shortname" value="xpath-datamodel"/>
+  <property name="spec.code" value="DM11"/>
+  <property name="this-spec-version-code" value="11"/>
+  <property name="xquery-version-code" value="11"/>
+  <property name="shortname" value="${generic-shortname}-${this-spec-version-code}"/>
+  <property name="spec.uri" value="${W3C.TR}/${shortname}/"/>
+  <property name="spec.xml" value="${src.dir}/${generic-shortname}.xml"/>
+  <!-- 2008-09-03, Jim: The following property has no meaning at present,     -->
+  <!--   because we do not build errata in the qtspecs tree. Maybe later...   -->
+<!--  <property name="errata.xml" value="${src.dir}/${generic-shortname}-errata.xml"/> -->
+
+  <dirname property="shared.grammar.dir" file="../grammar-${xquery-version-code}/*"/>
+  <property name="spec.style" value="${local.style.dir}/data-model.xsl"/>
+
+<!-- Import target, etc. definitions that work globally -->
+  <import file="${etc.dir}/build-impl.xml"/>
+
+<!-- Recall that any targets defined herein override targets of the same name -->
+<!--   that are defined in build-impl.xml.  If you cannot find a target of a  -->
+<!--   given name in this file, look in build-impl.xml.                       -->
+
+  <!-- additional properties -->
+
+  <property name="color-changes" value="no"/>
+
+  <!-- ====================================================================== -->
+
+  <!-- Overrides global template to omit ",errata" and add "clean,"           -->
+  <target name="all"
+          depends="clean,spec"
+          description="This is the default target. ">
+  </target>
+
+  <!-- ====================================================================== -->
+
+<!-- 2009-09-04: Jim removed lines related to files in the build directory    -->
+  <target name="chk.spec"
+	        depends="init,dm-example.xml.cdata,dm-example.xsd.cdata,dm-example.tbl.xml">
+    <condition property="spec.exists">
+      <uptodate targetfile="${spec.html}">
+        <srcfiles file="${base.dir}/build.xml"/>
+        <srcfiles file="${etc.dir}/build-constants.xml"/>
+        <srcfiles file="${etc.dir}/build-impl.xml"/>
+	      <srcfiles dir="${src.dir}" includes="**/*.xml"/>
+	      <srcfiles file="${local.style.dir}/data-model.xsl"/>
+	      <srcfiles file="${local.style.dir}/data-model-diff.xsl"/>
+        <srcfiles file="${shared.style.dir}/xsl-query.xsl"/>
+        <srcfiles file="${shared.style.dir}/xmlspec-override.xsl"/>
+        <srcfiles file="${shared.style.dir}/xmlspec.xsl"/>
+        <srcfiles file="${shared.style.dir}/funcproto.xsl"/>
+        <srcfiles file="${shared.schema.dir}/xsl-query.dtd"/>
+        <srcfiles file="${shared.schema.dir}/xmlspec.dtd"/>
+        <srcfiles file="${shared.schema.dir}/elements.dtd"/>
+        <srcfiles file="${shared.schema.dir}/tree-diagram.dtd"/>
+        <srcfiles file="${etc.dir}/status-entities.dtd"/>
+        <srcfiles file="${etc.dir}/status-general.xml"/>
+      </uptodate>
+    </condition>
+  </target>
+
+  <!-- ====================================================================== -->
+
+<!-- 2009-09-04: Jim added this target to clear out previous build files      -->
+  <target name="clean">
+    <delete dir="${build.dir}"/>
+  </target>
+
+  <!-- ====================================================================== -->
+
+<!-- 2009-09-04: Jim added this overriding target so we don't try to validate -->
+  <target name="validate-spec">
+  </target>
+
+<!-- ======================================================================== -->
+
+<!-- 2009-11-25, Jim: Added over-rode this target for more control -->
+  <!-- Overrides global template -->
+  <target name="-style-spec" depends="init,chk.spec,validate-spec"
+          if="build.spec" unless="spec.exists">
+    <echo message="Building ${shortname} ..."/>
+
+    <!-- XSLT 2.0 -->
+    <java fork="true" classname="net.sf.saxon.Transform">
+      <classpath refid="saxon8.classpath"/>
+      <arg value="-o"/>
+      <arg value="${build.dir}/${generic-shortname}-html.html"/>
+      <arg value="${spec.xml}"/>
+      <arg value="${spec.style}"/>
+    </java>
+
+<!-- 2009-11-25, Jim: Added param to pass DSTAMP and TSTAMP properties -->
+<echo message="Fixing up ${generic-shortname}.html"/>
+    <xslt in="${build.dir}/${generic-shortname}-html.html"
+          out="${dist.dir}/Overview.html"
+          style="${shared.style.dir}/html-fix.xsl"
+          classpathref="saxon6.classpath" force="yes">
+      <param name="currentDateTime" expression="${DSTAMP} ${TSTAMP}"/>
+    </xslt>
+
+  </target>
+
+  <!-- ====================================================================== -->
+
+  <!-- Overrides global template -->
+  <target name="copy-images" depends="init">
+    <copy todir="${dist.dir}" flatten="true">
+      <fileset dir="${local.images.dir}"/>
+      <file file="${shared.images.dir}/XPathTypeHierarchy-1-items.png"/>
+      <file file="${shared.images.dir}/XPathTypeHierarchy-2-anyTypes.png"/>
+      <file file="${shared.images.dir}/XPathTypeHierarchy-3-anyAtomicTypes.png"/>
+    </copy>
+  </target>
+
+  <!-- ====================================================================== -->
+
+  <target name="chk.dm-example.xml.cdata" depends="init">
+    <uptodate property="dm-example.xml.cdata.exists"
+              srcfile="${src.dir}/dm-example.xml"
+              targetfile="${build.dir}/dm-example.xml.cdata"/>
+  </target>
+
+  <!-- ====================================================================== -->
+
+  <target name="dm-example.xml.cdata"
+          depends="init,chk.dm-example.xml.cdata"
+          unless="dm-example.xml.cdata.exists">
+    <echo message="Building CDATA version of dm-example.xml ..." />
+    <antcall target="xsdvalidate">
+      <param name="xsd.file" value="${src.dir}/dm-example.xsd"/>
+      <param name="xml.file" value="${src.dir}/dm-example.xml"/>
+    </antcall>
+    <copy file="${src.dir}/dm-example.xml" tofile="${build.dir}/dm-example.xml.cdata"/>
+    <replace file="${build.dir}/dm-example.xml.cdata" token="&amp;" value="&amp;amp;"/>
+    <replace file="${build.dir}/dm-example.xml.cdata" token="&lt;" value="&amp;lt;"/>
+  </target>
+
+  <!-- ====================================================================== -->
+
+  <target name="chk.dm-example.xsd.cdata" depends="init">
+    <uptodate property="dm-example.xsd.cdata.exists"
+              srcfile="${src.dir}/dm-example.xsd"
+              targetfile="${build.dir}/dm-example.xsd.cdata"/>
+  </target>
+
+  <!-- ====================================================================== -->
+
+  <target name="dm-example.xsd.cdata"
+          depends="init,chk.dm-example.xsd.cdata"
+          unless="dm-example.xsd.cdata.exists">
+    <echo message="Building CDATA version of dm-example.xsd ..." />
+    <copy file="${src.dir}/dm-example.xsd" tofile="${build.dir}/dm-example.xsd.cdata"/>
+    <replace file="${build.dir}/dm-example.xsd.cdata" token="&amp;" value="&amp;amp;"/>
+    <replace file="${build.dir}/dm-example.xsd.cdata" token="&lt;" value="&amp;lt;"/>
+  </target>
+
+  <!-- ====================================================================== -->
+
+  <target name="chk.dm-example.tbl.xml" depends="init">
+    <uptodate property="dm-example.tbl.xml.exists"
+              srcfile="${build.dir}/dm-example.dm.xml"
+              targetfile="${build.dir}/dm-example.tbl.xml"/>
+  </target>
+
+  <!-- ====================================================================== -->
+
+  <target name="dm-example.tbl.xml"
+          depends="init,chk.dm-example.tbl.xml,dm-example.dm.xml"
+          unless="dm-example.tbl.xml.exists">
+    <xslt in="${build.dir}/dm-example.dm.xml" out="${build.dir}/dm-example.tbl.xml"
+          style="${local.style.dir}/dm-example.tbl.xsl" force="yes"/>
+  </target>
+
+  <!-- ====================================================================== -->
+
+  <target name="chk.dm-example.dm.xml" depends="init">
+    <uptodate property="dm-example.dm.xml.exists"
+              srcfile="${src.dir}/dm-example.xml"
+              targetfile="${build.dir}/dm-example.dm.xml"/>
+  </target>
+
+  <!-- ====================================================================== -->
+
+  <target name="dm-example.dm.xml"
+          depends="init,chk.dm-example.dm.xml"
+          unless="dm-example.dm.xml.exists">
+    <xslt in="${src.dir}/dm-example.xml" out="${build.dir}/dm-example.dm.xml"
+          style="${local.style.dir}/dm-example.dm.xsl" force="yes"/>
+  </target>
+
+</project>

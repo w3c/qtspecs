@@ -1,0 +1,393 @@
+<?xml version="1.0"?>
+<!DOCTYPE project [
+<!ENTITY SP "                   ">
+]>
+
+<!-- Build file for use with Ant (http://jakarta.apache.org/ant). -->
+<project name="grammar-parser-byaccj" default="all" basedir=".">
+
+  <description>
+This buildfile is used to build the XPath family of grammar descriptions, 
+specifications, and parser tests.
+
+Properties (first value given is the default):
+--------------------------------------
+Property name: spec           
+Property values: xquery|xpath|pathx1       
+Description: Specifies the desired grammar subset for many targets.
+--------------------------------------
+Property name: debug           
+Property values: false|true       
+Description: Turns debugging trace on for the parsers.
+--------------------------------------
+
+You can set a property from the command line via -Dpropname=propvalue.
+
+Keep in mind that you can use multiple targets.  
+Example:  build jars test
+</description>
+
+  <!-- Specifies the desired grammar subset for many targets. -->
+  <!-- property name="spec" value="xquery"/ -->
+
+  <property name="grammar-file" value="../xpath-grammar.xml"/>
+  <property name="tests-dir" value="../tests"/>
+  <property name="tests-temp-dir" value="${tests-dir}/temp"/>
+  <property name="parser-dir" value="../parser"/>
+  <property name="top-dir" value="../.."/>  
+  <property name="spec-file" value="${top-dir}/lang/XPathXQuery.xml"/>
+  <property name="use-cases-file" value="${top-dir}/xquery-use-cases/xquery-use-cases.xml"/>
+  <property name="build-dir" value="build"/>
+  
+  <property name="xquery-regression-tests" value="${tests-dir}/use-cases.xquery"/>
+  <property name="pathx1-tests" value="${tests-dir}/pathx1-tests.xml"/>
+  <!-- Turns debugging trace on for the parsers. -->
+  <property name="debug" value="false"/>
+  <!-- If this is set to true, the tests fail.  Not sure why.  Need to investigate. -->
+  <property name="unicodeinput" value="false"/>
+  
+  <!-- used for the test-xquery-major target. -->
+  <property name="dump" value=""/>
+
+  <property name="javacchome" value="../../lib"/>
+
+  <property name="yacc" value="bison"/>
+  <property name="lex" value="bin\uflex"/>
+  <!-- property name="lex" value="flex"/ -->
+  <!-- property name="lex" value="bin\uflex"/ -->
+  <property name="yacc.xsl" value="ytree.xsl"/>
+  <!-- property name="yacc.xsl" value="yacc.xsl"/ -->
+  <property name="lex.xsl" value="lex.xsl"/>
+  
+  <!-- property name="lalr_src" value="${spec}-src"/ -->
+  
+  <!-- property name="lex_name" value="${spec}.l"/ -->
+  <!-- property name="yacc_name" value="${spec}.y"/ -->
+
+  <property name="lex" value="byaccj1.1/yacc.exe"/>
+  <property name="yacc" value="byaccj1.1/yacc.exe"/>
+
+  <property name="test-dir" value=""/>
+  
+  <target name="all" depends="all-xpath, all-xquery"/>
+
+  <target name="all-xquery">
+  	<antcall target="gen-grammar">
+  		<param name="spec" value="xquery"/>
+  	</antcall>
+  </target>
+
+  <target name="all-xpath">
+  	<antcall target="gen-grammar">
+  		<param name="spec" value="xpath"/>
+  	</antcall>
+  </target>
+  
+  <target name="compile">
+    <mkdir dir="${build-dir}"/>
+    <javac srcdir="${spec}-src;ast-src" destdir="${build-dir}">
+      <!-- compilerarg value="-J-version"/ ...doesn't work -->
+      <sourcepath path="${spec}-src"/>
+      <sourcepath path="ast-src"/>
+      <classpath>
+		<pathelement path="${java.class.path}/" />
+		<pathelement path="${build-dir}" />
+      </classpath>
+    </javac>
+  </target>
+  
+  <target name="jars" depends="jar-xquery, jar-xpath"/>
+  
+  <target name="jar-xquery">
+  	<antcall target="jar-one">
+  		<param name="spec" value="xquery"/>
+  	</antcall>
+  </target>
+
+  <target name="jar-xpath">
+  	<antcall target="jar-one">
+  		<param name="spec" value="xpath"/>
+  	</antcall>
+  </target>
+
+  <target name="jar-one"  
+	  description="Build one of the grammar parser jars.  You must specify&#10;
+	  -Dspec=xpath|pathx1|xquery, or the jar will default&#10;
+	  to the xquery.jar">
+    <jar jarfile="${spec}.jar" manifest="MANIFEST.MF" >
+      <fileset dir="${build-dir}">
+      	<exclude name="*.l"/>
+      	<exclude name="*.y"/>
+      	<exclude name="y"/>
+      	<exclude name="YTweaker.class"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="gen-grammar" depends="lex, yacc"/>
+  
+  <target name="strip-grammar">
+    <style style="../parser/strip.xsl" in="${grammar-file}" 
+	   out="${spec}-src/stripped-xpath-grammar.xml" force="yes" extension=".jjt" destdir="${spec}-src">
+      <param name="spec1" expression="${spec}"/>
+      <param name="not-subspec" expression="dummy"/>
+    </style>
+  </target>
+    
+  <target name="gen-yacc" 
+	  description="Build a LALR grammar from XML.">
+    <mkdir dir="${spec}-src"/>
+    <antcall target="strip-grammar"/>
+    <style style="${yacc.xsl}" in="${spec}-src/stripped-xpath-grammar.xml" 
+	   out="${spec}-src/${spec}.y" force="yes" 
+	   extension=".y" destdir="${spec}-src">
+      <param name="spec" expression="${spec}-src"/>
+    </style>
+  </target>
+
+  <target name="debug-gen-yacc" 
+	  description="Build a LALR grammar from XML.">
+    <mkdir dir="${spec}-src"/>
+    <antcall target="strip-grammar"/>
+    
+   <java fork="yes" classname="org.apache.xalan.xslt.Process">
+      <classpath>
+				<pathelement path="${java.class.path}/" />
+      </classpath>
+      <arg value="-in"/>
+      <arg value="${spec}-src/stripped-xpath-grammar.xml"/>
+      <arg value="-xsl"/>
+      <arg value="${yacc.xsl}"/>
+      <arg value="-out"/>
+      <arg value="${spec}-src/${spec}.y"/>
+      <arg value="-param"/>
+      <arg value="spec"/>
+      <arg value="${spec}-src"/>
+      <arg value="-edump"/>
+      <arg value="-ttc"/>
+    </java>  
+  </target>
+
+  <target name="gen-lex" 
+	  description="Build a LEX grammar from XML.">
+	<echo message="Creating lex file for ${spec}"/>
+    <mkdir dir="${spec}-src"/>
+    <antcall target="strip-grammar"/>
+    <style style="${lex.xsl}" in="${spec}-src/stripped-xpath-grammar.xml" 
+	   out="${spec}-src/${spec}.l" force="yes" 
+	   destdir="${spec}-src">
+      <param name="spec" expression="${spec}"/>
+    </style>
+  </target>
+  
+  <target name="lex-only"> 
+   <echo message="lex-only... lalr_src: ${spec}-src"/>
+   <java fork="yes"  jar="JFlex/lib/JFlex.jar">
+      <classpath>
+				<pathelement path="${java.class.path}/" />
+      </classpath>
+      <arg value="${spec}-src/${spec}.l"/>
+      <arg value="-d"/>
+      <arg value="${spec}-src"/>
+    </java>  
+  </target>
+  
+  <target name="lex" depends="gen-lex, lex-only"/> 
+ 
+  <target name="yacc-only"> 
+   <exec executable="C:/proj/xqed2/grammar/lalr/byaccj1.1/yacc.exe"
+         dir="${spec}-src">
+   	 <arg value="-J"/>
+   	 <arg value="-Jnoconstruct"/>
+   	 <!-- arg value="-r"/ -->
+   	 <arg value="-v"/>
+     <arg value="${spec}.y"/>
+   </exec>
+   <antcall target="ytweak"/>
+  </target>
+  
+  <target name="yacc-usage"> 
+   <exec executable="C:/proj/xqed2/grammar/lalr/byaccj1.1/yacc.exe"/>
+  </target>
+
+  <target name="ytweak"> 
+   <java fork="yes" classname="YTweaker" dir="${spec}-src">
+      <classpath>
+				<pathelement path="${java.class.path}/" />
+				<pathelement path="build" />
+      </classpath>
+      <arg value="Parser.java"/>
+      <arg value="../build/YYCheckTable.tbl"/>
+    </java>  
+  </target>
+  
+  <target name="yacc" depends="gen-yacc, yacc-only"/>  
+  
+  <!-- ================ TEST STUFF =================== -->
+  
+  <target name="test-xpath-smoke" description="Smoke test for XPath2.    These tests&#10;
+	  are not compatible with XPath1">
+    <java fork="yes"  classname="Parser">
+      <classpath>
+				<pathelement path="${java.class.path}/" />
+				<pathelement path="${parser-jar}" />
+      </classpath>
+      <arg value="abc"/> 
+      <arg value="1+1*3"/> 
+      <arg value="1*1*(if(***) then if(div div div) then (/) * (/) else /*** else div:div*.)"/> 
+    </java> 
+  </target>
+  
+  <target name="test-xquery-smoke"  description="Smoke test for XQuery.    These tests&#10;
+	  are not compatible with XPath1 and XPath2.">
+    <java fork="yes"  classname="Parser">
+      <classpath>
+				<pathelement path="${java.class.path}/" />
+				<pathelement path="${parser-jar}" />
+      </classpath>
+      <arg value="if(&lt;abc/>) then $efg else 2 + 2 or false()"/> 
+    </java> 
+  </target>
+  
+  <target name="test-xquery-major"   
+          description="Smoke test for XQuery expressions. &#10;
+	  You must specify&#10;
+	  -Ddump=-dump if you want the jjtree dump&#10;
+	  (note the dash after the =).">
+    <java fork="yes"  classname="Parser">
+      <classpath>
+				<pathelement path="${java.class.path}/" />
+				<pathelement path="${parser-jar}" />
+      </classpath>
+      <arg value="${xquery-regression-tests}"/>
+      <arg value="${dump}"/>
+    </java> 
+  </target>
+  
+  <target name="test-once"   
+          description="Simple issolation test. &#10;
+	  You must specify&#10;
+	  -Ddump=-dump if you want the jjtree dump&#10;
+	  (note the dash after the =).">
+    <java fork="yes"  classname="Parser">
+      <classpath>
+				<pathelement path="${java.class.path}/" />
+				<pathelement path="${parser-jar}" />
+      </classpath>
+      <arg value="${tests-dir}/test.xquery"/>
+      <arg value="${dump}"/>
+    </java> 
+  </target>
+
+	
+  <target name="test-xquery-doc-frags">
+    <mkdir dir="${tests-temp-dir}"/>
+    <style style="${parser-dir}/testextr.xsl" in="${spec-file}" 
+      out="${tests-temp-dir}/docfrags.xquery" force="yes" extension=".xquery" destdir="${tests-temp-dir}">
+      <!-- param name="not-spec" expression="xpath"/ -->
+    </style>
+    <java fork="yes"  classname="Parser">
+      <classpath>
+				<pathelement path="${java.class.path}/" />
+				<pathelement path="${parser-jar}" />
+      </classpath>
+      <arg value="${tests-temp-dir}/docfrags.xquery"/>
+      <arg value="${dump}"/>
+    </java> 
+  </target>
+  
+  <target name="test-xquery-use-cases-doc-frags" >
+    <mkdir dir="${tests-temp-dir}"/>
+    <style style="${parser-dir}/usecasesextr.xsl" in="${use-cases-file}" 
+      out="${tests-temp-dir}/usecasesfrags.xquery" force="yes" extension=".xquery" destdir="${tests-temp-dir}">
+      <!-- param name="not-spec" expression="xpath"/ -->
+    </style>
+    <java fork="yes"  classname="Parser">
+      <classpath>
+				<pathelement path="${java.class.path}/" />
+				<pathelement path="${parser-jar}" />
+      </classpath>
+      <arg value="${tests-temp-dir}/usecasesfrags.xquery"/>
+      <arg value="${dump}"/>
+    </java> 
+  </target>
+  
+  <target name="test-pathx1-major" description="Smoke test for XPath1 expressions." >
+    <java fork="yes"  classname="Parser">
+      <classpath>
+				<pathelement path="${java.class.path}/" />
+				<pathelement path="${parser-jar}" />
+      </classpath>
+      <arg value="-f"/> 
+      <arg value="${pathx1-tests}"/> 
+      <arg value="${dump}"/>
+    </java> 
+  </target>
+  
+  <target name="validate"/>
+  
+  <target name="test-xquery-formal" description="Major formal test suite."
+    depends="validate">
+    
+    <apply executable="java" failonerror="no" >
+      <arg line="-classpath xquery.jar Test"/>
+      <srcfile/>
+       <!-- arg line="-dump"/ -->
+      <fileset dir="/proj/xqtest/Queries${test-dir}">
+        <patternset>
+          <include name="**/*.xq"/>
+          <exclude name="**/errors/*.xq"/>
+
+          <!-- known bugs. -->
+          <exclude name="**/IfExpr001.xq"/>
+
+          <!-- To be investigated. -->
+          <exclude name="**/IfExpr014.xq"/>
+        </patternset>
+     </fileset>
+    </apply>
+    
+  </target>
+  
+  
+  
+  
+  <target name="test-xquery" description="Runs all quick tests for xquery.">
+    <antcall target="test-pathx1-major">
+      <param name="parser-jar" value="xquery.jar"/>
+    </antcall>
+    <antcall target="test-xpath-smoke">
+      <param name="parser-jar" value="xquery.jar"/>
+    </antcall>
+    <antcall target="test-xquery-smoke">
+      <param name="parser-jar" value="xquery.jar"/>
+    </antcall>
+    <!-- antcall target="test-pathx1">
+      <param name="parser-jar" value="xquery.jar"/>
+    </antcall -->
+    <antcall target="test-xquery-doc-frags">
+      <param name="parser-jar" value="xquery.jar"/>
+    </antcall>
+    <antcall target="test-xquery-major">
+      <param name="parser-jar" value="xquery.jar"/>
+    </antcall>
+    <antcall target="test-xquery-use-cases-doc-frags">
+      <param name="parser-jar" value="xquery.jar"/>
+    </antcall>
+    <!-- antcall target="test-xpath-doc-frags">
+      <param name="parser-jar" value="xquery.jar"/>
+    </antcall -->
+  </target>
+  
+  <target name="test-xpath" description="Runs all quick tests for xpath.">
+    <antcall target="test-pathx1-major">
+      <param name="parser-jar" value="xpath.jar"/>
+    </antcall>
+    <antcall target="test-xpath-smoke">
+      <param name="parser-jar" value="xpath.jar"/>
+    </antcall>
+  </target>
+
+  
+  
+</project>

@@ -1,0 +1,508 @@
+<div2 id="AttributeNode">
+  <head>&attributeNode;s</head>
+
+<div3 id="AttributeNodeOverview">
+  <head>Overview</head>
+
+  <p>&attributeNode;s represent XML attributes. Attributes have the
+following properties:</p>
+
+<ulist>
+<item><p>&dm.prop.node-name;
+</p></item>
+<item><p>&dm.prop.parent;, possibly empty
+</p></item>
+<item><p>&dm.prop.type-name;
+</p></item>
+<item><p>&dm.prop.string-value;
+</p></item>
+<item><p>&dm.prop.typed-value;
+</p></item>
+<item><p><emph role='dm-node-property'>is-id</emph>
+</p></item>
+<item><p><emph role='dm-node-property'>is-idrefs</emph>
+</p></item>
+</ulist>
+
+<p>&attributeNode;s <rfc2119>must</rfc2119> satisfy the following constraints.</p>
+
+<olist>
+<item><p>If an &attributeNode; <emph>A</emph> is among the &dm.prop.attributes;
+of an element <emph>E</emph>, then the &dm.prop.parent; of <emph>A</emph>
+<rfc2119>must</rfc2119> be <emph>E</emph>.
+</p>
+</item>
+<item><p>If a &attributeNode; <emph>A</emph> has a parent element
+<emph>E</emph>, then <emph>A</emph> <rfc2119>must</rfc2119> be among
+the &dm.prop.attributes; of <emph>E</emph>.</p>
+<p>The data model permits &attributeNode;s without parents
+(to represent partial results during expression processing, for example).
+Such attributes <rfc2119>must not</rfc2119>
+appear among the &dm.prop.attributes; of any &elementNode;.
+</p>
+</item>
+<item><p>In the node-name of an attribute node, if a namespace URI is
+present then a prefix <rfc2119>must</rfc2119> also be present.
+</p>
+</item> 
+</olist>
+
+<p>For convenience, the &elementNode; that owns this attribute is called
+its "parent" even though an &attributeNode; is not a "child" of its
+parent element. </p>
+
+</div3>
+
+<div3 id="AttributeNodeAccessors">
+  <head>Accessors</head>
+
+<glist role="accessors">
+<gitem>
+<label><function>attributes</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>base-uri</function></label>
+<def>
+<p>If the attribute has a parent, returns the value of the
+<function>base-uri</function> of its parent; otherwise it returns
+the empty sequence.</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>children</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>document-uri</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>is-id</function></label>
+<def>
+<p>Returns the value of the <emph role='dm-node-property'>is-id</emph>
+property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>is-idrefs</function></label>
+<def>
+<p>Returns the value of the <emph role='dm-node-property'>is-idrefs</emph>
+property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>namespace-nodes</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>nilled</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>node-kind</function></label>
+<def>
+<p>Returns “<code>attribute</code>”.</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>node-name</function></label>
+<def>
+<p>Returns the value of the &dm.prop.node-name; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>parent</function></label>
+<def>
+<p>Returns the value of the &dm.prop.parent; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>string-value</function></label>
+<def>
+<p>Returns the value of the &dm.prop.string-value; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>type-name</function></label>
+<def>
+<p>Returns the value of the &dm.prop.type-name; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>typed-value</function></label>
+<def>
+<p>Returns the value of the &dm.prop.typed-value; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>unparsed-entity-public-id</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>unparsed-entity-system-id</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+</glist>
+
+</div3>
+
+<div3 id="const-infoset-attribute">
+<head>Construction from an Infoset</head>
+
+<p>The <emph role="info-item">attribute information items</emph> are
+required. An &attributeNode; is constructed for each
+<emph role="info-item">attribute information item</emph>.</p>
+
+<p>The following infoset properties are required:
+<emph role="infoset-property">namespace name</emph>,
+<emph role="infoset-property">local name</emph>,
+<emph role="infoset-property">normalized value</emph>,
+<emph role="infoset-property">attribute type</emph>, and
+<emph role="infoset-property">owner element</emph>.</p>
+
+<p>&attributeNode; properties are derived from the infoset as
+follows:</p>
+
+<glist>
+<gitem>
+<label>&dm.prop.node-name;</label>
+<def>
+<p>An <code>xs:QName</code> constructed from the
+<emph role="infoset-property">prefix</emph>,
+<emph role="infoset-property">local name</emph>,
+and
+<emph role="infoset-property">namespace name</emph> properties.</p>
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.parent;</label>
+<def>
+<p>The &elementNode; that corresponds to the value of the
+<emph role="infoset-property">owner element</emph> property
+or the empty sequence if there is no owner.</p>
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.type-name;</label>
+<def>
+<p>The value <code>xs:untypedAtomic</code>.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.string-value;</label>
+<def><p>The <emph role="infoset-property">normalized value</emph> of the
+attribute.</p>
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.typed-value;</label>
+<def>
+<p>The attribute’s typed-value
+is its <function>string-value</function> as an <code>xs:untypedAtomic</code>.
+</p>
+<!--
+<p>The typed-value is calculated as follows:</p>
+
+<ulist>
+<item>
+<p>If the attribute is of type <code>xs:untypedAtomic</code>: its typed-value
+is its <function>string-value</function> as an <code>xs:untypedAtomic</code>.
+</p>
+</item>
+<item>
+<p>Otherwise: its typed-value is a sequence of zero or more atomic
+values derived from the &dm.prop.string-value; of the node and its type in a way
+that is consistent with XML Schema validation.</p>
+<p>Note that in the case of dates and times, the timezone is preserved
+as described in <specref ref="dates-and-times"/>, and
+in the case of <code>xs:QName</code>s and <code>xs:NOTATION</code>s,
+the prefix is preserved as described in
+<specref ref="qnames-and-notations"/>.</p>
+</item>
+</ulist>
+-->
+</def>
+</gitem>
+
+<gitem>
+<label><emph role='dm-node-property'>is-id</emph></label>
+<def>
+<p>If the attribute is named <att>xml:id</att> and its
+<emph role="infoset-property">attribute type</emph> property does not
+have the value <code>ID</code>, then <bibref ref="xml-id"/> processing
+is performed. This will assure that the value does have the type <code>ID</code>
+and that it is properly normalized. If an error is encountered during
+xml:id processing, an implementation <rfc2119>may</rfc2119> raise a dynamic error.
+The
+<emph role='dm-node-property'>is-id</emph> property is always <code>true</code> for
+attributes named <att>xml:id</att>.</p>
+
+<p>If the <emph role="infoset-property">attribute type</emph> property
+has the value <code>ID</code>, <code>true</code>, otherwise <code>false</code>.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><emph role='dm-node-property'>is-idrefs</emph></label>
+<def>
+<p>If the <emph role="infoset-property">attribute type</emph> property
+has the value <code>IDREF</code> or <code>IDREFS</code>,
+<code>true</code>, otherwise <code>false</code>.
+</p>
+</def>
+</gitem>
+</glist>
+</div3>
+
+<div3 id="const-psvi-attribute">
+<head>Construction from a PSVI</head>
+
+<p>The following &attributeNode; properties are affected by PSVI properties.</p>
+
+<glist>
+<gitem>
+<label>&dm.prop.string-value;</label>
+<def>
+<ulist>
+<item><p>The <emph role="infoset-property">schema normalized value</emph>
+PSVI property if that exists.
+</p></item>
+<item><p>Otherwise, the <emph role="infoset-property">normalized value</emph> property.
+</p></item>
+</ulist>
+
+<p>If an implementation stores only the typed value of an attribute, it
+may use any valid lexical representation of the typed value for the
+&dm.prop.string-value; property.</p>
+
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.type-name;</label>
+<def>
+<p>The &dm.prop.type-name; is
+determined as described in <specref ref="PSVI2NodeTypes"/>.</p>
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.typed-value;</label>
+<def>
+<p>The typed-value is calculated as follows:</p>
+
+<ulist>
+<item>
+<p>If the attribute is of type <code>xs:untypedAtomic</code>: its typed-value
+is its <function>string-value</function> as an <code>xs:untypedAtomic</code>.
+</p>
+</item>
+<item>
+<p>Otherwise, a sequence of zero or more atomic values as described in 
+<specref ref="TypedValueDetermination"/>. The relationship between the 
+type-name, typed-value, and string-value of an attribute node is 
+consistent with XML Schema validation.</p>
+</item>
+</ulist>
+</def>
+</gitem>
+
+<gitem>
+<label><emph role='dm-node-property'>is-id</emph></label>
+<def>
+<p>If the attribute is named <att>xml:id</att> and
+its <emph role="infoset-property">attribute type</emph> property
+does not have the value <code>xs:ID</code> or a type derived from <code>xs:ID</code>,
+then <bibref ref="xml-id"/> processing is performed.
+This will assure that the value does have the type <code>xs:ID</code>
+and that it is properly normalized.
+If an error is encountered during xml:id processing,
+an implementation <rfc2119>may</rfc2119> raise a dynamic error.
+The <emph role='dm-node-property'>is-id</emph>
+property is always true for attributes named <code>xml:id</code>.</p>
+<p>Otherwise, if the typed-value of the attribute consists of
+exactly one atomic value and that value is of type <code>xs:ID</code>,
+or a type derived from <code>xs:ID</code>,
+the <emph role='dm-node-property'>is-id</emph>
+property is <code>true</code>, otherwise it is <code>false</code>.</p>
+<note><p>This means that in the case of a type constructed by list
+from <code>xs:ID</code>, the ID is recognized provided that the list
+is of length one. A type constructed as a union
+involving <code>xs:ID</code> is recognized provided the actual value
+is of type <code>xs:ID</code>.</p>
+</note>
+</def>
+</gitem>             
+<!-- old text
+<gitem>
+<label><emph role='dm-node-property'>is-id</emph></label>
+<def>
+<p>If the attribute is named <att>xml:id</att> and its
+<emph role="infoset-property">attribute type</emph> property does not
+have the value <code>xs:ID</code>, then <bibref ref="xml-id"/> processing
+is performed. This will assure that the value does have the type <code>xs:ID</code>
+and that it is properly normalized. If an error is encountered during
+xml:id processing, an implementation <rfc2119>may</rfc2119> raise a dynamic error.
+The
+<emph role='dm-node-property'>is-id</emph> property is always <code>true</code> for
+attributes named <att>xml:id</att>.</p>
+
+<p>If the &dm.prop.type-name; is <code>xs:ID</code> or a type derived from
+<code>xs:ID</code>, <code>true</code>, otherwise <code>false</code>.
+</p>
+</def>
+</gitem>
+-->
+
+<gitem>
+<label><emph role='dm-node-property'>is-idrefs</emph></label>
+<def>
+<p>If any of the atomic values in the typed-value of the
+attribute is of type <code>xs:IDREF</code> or <code>xs:IDREFS</code>, or
+a type derived from one of those types, the
+<emph role='dm-node-property'>is-idrefs</emph>
+property is <code>true</code>, otherwise it is <code>false</code>.
+</p>
+<note><p>This rule means that a
+<phrase diff="chg" at="2015-03-26">node whose type is</phrase>
+constructed by list with an item type of <code>xs:IDREF</code>
+(or a type derived from <code>xs:IDREF</code>)
+<phrase diff="chg" at="2015-03-26">may have</phrase> the
+<emph role='dm-node-property'>is-idrefs</emph> property,
+whether or not the list type is named <code>xs:IDREFS</code> or is derived from
+<code>xs:IDREFS</code>. Because union types are allowed, it also means that an
+element or attribute with the
+<emph role='dm-node-property'>is-idrefs</emph> property can contain atomic
+values of type <code>xs:IDREF</code> alongside values of other types.
+<phrase diff="add" at="2015-03-26">A node
+has the
+<emph role='dm-node-property'>is-idrefs</emph> property only if the typed value contains at least
+one atomic value that is an instance of <code>xs:IDREF</code>;
+it is not sufficient that the type annotation permits such values.</phrase>
+</p>
+</note>
+</def>
+</gitem>
+</glist>
+
+<p>All other properties have values that are consistent with construction
+from an infoset.</p>
+
+<p>Note: attributes from the XML Schema instance namespace,
+<quote><code>http://www.w3.org/2001/XMLSchema-instance</code></quote>,
+(<att>xsi:schemaLocation</att>,
+<att>xsi:type</att>, etc.) appear as ordinary attributes in the data model.
+</p>
+</div3>
+
+<div3 id="infoset-mapping-attribute">
+<head>Infoset Mapping</head>
+
+<p>An &attributeNode; maps to an <emph role="info-item">attribute information item</emph>.</p> 
+
+<p>The following properties are specified by this mapping:</p>
+
+<glist>
+<gitem>
+<label><emph role="infoset-property">namespace name</emph></label>
+<def>
+<p>The namespace name of the value of <function>node-name</function>.
+</p>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">local name</emph></label>
+<def>
+<p>The local part of the value of <function>node-name</function>.
+</p>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">prefix</emph></label>
+<def>
+<p>The prefix associated with the value of <function>node-name</function>.
+</p>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">normalized value</emph></label>
+<def>
+<p>The value of <function>string-value</function>.
+</p>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">owner element</emph></label>
+<def>
+<ulist>
+<item>
+<p>If this node has a parent, the information item that corresponds
+to the node returned by <function>parent</function>.
+</p>
+</item>
+<item>
+<p>Otherwise <emph>no value</emph>.
+</p>
+</item>
+</ulist>
+</def>
+</gitem>
+</glist>
+
+<p>The following properties have no value:
+<emph role="infoset-property">specified</emph>
+<emph role="infoset-property">attribute type</emph>
+<emph role="infoset-property">references</emph>.</p>
+
+</div3>
+</div2>

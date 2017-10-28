@@ -1,0 +1,879 @@
+<div2 id="ElementNode">
+<head>&elementNode;s</head>
+
+<div3 id="ElementNodeOverview">
+<head>Overview</head>
+
+<p>&elementNode;s encapsulate XML elements. Elements have the following properties:</p>
+
+<ulist>
+<item><p>&dm.prop.base-uri;, possibly empty.
+</p></item>
+<item><p>&dm.prop.node-name;
+</p></item>
+<item><p>&dm.prop.parent;, possibly empty
+</p></item>
+<item><p>&dm.prop.type-name;
+</p></item>
+<item><p>&dm.prop.children;, possibly empty
+</p></item>
+<item><p>&dm.prop.attributes;, possibly empty
+</p></item>
+<item><p>&dm.prop.namespaces;
+</p></item>
+<item><p>&dm.prop.nilled;
+</p></item>
+<item><p>&dm.prop.string-value;
+</p></item>
+<item><p>&dm.prop.typed-value;
+</p></item>
+<item><p><emph role='dm-node-property'>is-id</emph>
+</p></item>
+<item><p><emph role='dm-node-property'>is-idrefs</emph>
+</p></item>
+</ulist>
+
+<p>&elementNode;s <rfc2119>must</rfc2119> satisfy the following constraints.</p>
+
+<olist>
+<item id="elem-children">
+<p>The &dm.prop.children; <rfc2119>must</rfc2119> consist exclusively
+of Element, Processing Instruction, Comment, and &textNode;s if it is not empty.
+Attribute, Namespace, and &documentNode;s can never appear as children
+</p></item>
+<item><p>The &attributeNode;s of an element <rfc2119>must</rfc2119> have distinct
+<code>xs:QName</code>s.
+</p></item>
+<item><p>If a node <emph>N</emph> is among the &dm.prop.children; of an element
+<emph>E</emph>, then the &dm.prop.parent; of <emph>N</emph>
+<rfc2119>must</rfc2119> be <emph>E</emph>.
+</p></item>
+<item><p>Exclusive of Attribute and &namespaceNode;s, if a node
+<emph>N</emph> has a &dm.prop.parent; element <emph>E</emph>, then
+<emph>N</emph> <rfc2119>must</rfc2119> be among the &dm.prop.children; of
+<emph>E</emph>. (Attribute and &namespaceNode;s have a parent, but
+they do not appear among the children of their parent.)</p>
+<p>The data model permits &elementNode;s without parents
+(to represent partial results during expression processing, for example).
+Such &elementNode;s <rfc2119>must not</rfc2119>
+appear among the &dm.prop.children; of any other node.</p>
+<p diff="add" at="2014-11-11">An element may not be its own child or its own parent.</p>
+</item>
+<item><p>If an &attributeNode; <emph>A</emph> is among the &dm.prop.attributes;
+of an element <emph>E</emph>, then the &dm.prop.parent; of <emph>A</emph>
+<rfc2119>must</rfc2119> be <emph>E</emph>.
+</p>
+</item>
+<item><p>If an &attributeNode; <emph>A</emph> has a
+&dm.prop.parent; element <emph>E</emph>,
+then <emph>A</emph> <rfc2119>must</rfc2119> be among the &dm.prop.attributes;
+of <emph>E</emph>.</p>
+<p>The data model permits &attributeNode;s without parents.
+Such &attributeNode;s <rfc2119>must not</rfc2119>
+appear among the &dm.prop.attributes; of any &elementNode;.
+</p>
+</item>
+<item><p>If a &namespaceNode; <emph>N</emph> is among the namespaces
+of an element <emph>E</emph>, then the parent of <emph>N</emph>
+<rfc2119>must</rfc2119> be <emph>E</emph>.</p>
+</item>
+<item><p>If a &namespaceNode; <emph>N</emph> has a
+parent element <emph>E</emph>, then <emph>N</emph> <rfc2119>must</rfc2119>
+be among the &dm.prop.namespaces; of <emph>E</emph>.</p>
+<p>The data model permits &namespaceNode;s without parents. Such
+&namespaceNode;s <rfc2119>must not</rfc2119> appear among the
+&dm.prop.namespaces; of any &elementNode;.  This constraint
+is irrelevant for implementations that do not support &namespaceNode;s.
+</p>
+</item>
+<item><p>If the <function>type-name</function> of an &elementNode; is
+<code>xs:untyped</code>, then the <function>type-name</function> of all its
+descendant elements <rfc2119>must</rfc2119> also be <code>xs:untyped</code> and the
+<function>type-name</function> of all its &attributeNode;s <rfc2119>must</rfc2119> be
+<code>xs:untypedAtomic</code>.</p>
+</item>
+<item><p>If the <function>type-name</function> of an &elementNode; is
+<code>xs:untyped</code>, then the
+&dm.prop.nilled; property <rfc2119>must</rfc2119> be <code>false</code>.
+</p>
+</item>
+<item><p>If the &dm.prop.nilled; property is <code>true</code>, then the
+&dm.prop.children; property <rfc2119>must not</rfc2119> contain
+&elementNode;s or &textNode;s.</p>
+</item>
+<item><p>For every <termref def="dt-expanded-qname">expanded QName</termref>
+that appears in the <function>node-name</function> of the element,
+the <function>node-name</function> of any &attributeNode; among the
+&dm.prop.attributes; of the element, or in any value of type
+<code>xs:QName</code> or <code>xs:NOTATION</code> (or any type derived
+from those types) that appears in the typed-value of the element or
+the typed-value of any of its attributes, if the expanded QName has a non-empty URI, then
+there <rfc2119>must</rfc2119> be a prefix binding for this URI among the
+<emph role='dm-node-property'>namespaces</emph> of this
+&elementNode;.</p>
+<p>If any of the expanded QNames has an empty URI, then there
+<rfc2119>must not</rfc2119> be any binding among the 
+<emph role='dm-node-property'>namespaces</emph> of this
+&elementNode; which binds the empty prefix to a URI.</p>
+</item>
+<item><p>Every element must include a &namespaceNode; and/or namespace binding
+for the prefix <code>xml</code> bound to the URI
+<code>http://www.w3.org/XML/1998/namespace</code> and there must be no other
+prefix bound to that URI.</p>
+</item>
+<item><p>The &dm.prop.string-value; property of an &elementNode; must
+be the concatenation of the &dm.prop.string-value;s of all its
+&textNode; descendants in document order or,
+if the element has no such descendants, the zero-length string.
+</p></item>
+</olist>
+
+</div3>
+
+<div3 id="ElementNodeAccessors">
+<head>Accessors</head>
+
+<glist role="accessors">
+<gitem>
+<label><function>attributes</function></label>
+<def>
+<p>Returns the value of the &dm.prop.attributes; property. The order of
+&attributeNode;s is stable but implementation dependent.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>base-uri</function></label>
+<def>
+<p>Returns the value of the &dm.prop.base-uri; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>children</function></label>
+<def>
+<p>Returns the value of the &dm.prop.children; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>document-uri</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>is-id</function></label>
+<def>
+<p>Returns the value of the <emph role='dm-node-property'>is-id</emph>
+property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>is-idrefs</function></label>
+<def>
+<p>Returns the value of the <emph role='dm-node-property'>is-idrefs</emph>
+property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>namespace-nodes</function></label>
+<def>
+<p>Returns the value of the &dm.prop.namespaces; property as a sequence of
+&namespaceNode;s. The order of
+&namespaceNode;s is stable but implementation dependent.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>nilled</function></label>
+<def>
+<p>Returns the value of the &dm.prop.nilled; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>node-kind</function></label>
+<def>
+<p>Returns “<code>element</code>”.</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>node-name</function></label>
+<def>
+<p>Returns the value of the &dm.prop.node-name; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>parent</function></label>
+<def>
+<p>Returns the value of the &dm.prop.parent; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>string-value</function></label>
+<def>
+<p>Returns the value of the &dm.prop.string-value; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>type-name</function></label>
+<def>
+<p>Returns the value of the &dm.prop.type-name; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>typed-value</function></label>
+<def>
+<p>Returns the value of the &dm.prop.typed-value; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>unparsed-entity-public-id</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>unparsed-entity-system-id</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+</glist>
+
+</div3>
+
+<div3 id="const-infoset-element">
+<head>Construction from an Infoset</head>
+
+<p>The <emph role="info-item">element information items</emph> are
+required. An &elementNode; is constructed for each
+<emph role="info-item">element information item</emph>.</p>
+
+<p>The following infoset properties are required:
+<emph role="infoset-property">namespace name</emph>,
+<emph role="infoset-property">local name</emph>,
+<emph role="infoset-property">children</emph>,
+<emph role="infoset-property">attributes</emph>,
+<emph role="infoset-property">in-scope namespaces</emph>,
+<emph role="infoset-property">base URI</emph>, and
+<emph role="infoset-property">parent</emph>.</p>
+
+<p>&elementNode; properties are derived from the infoset as
+follows:</p>
+
+<glist>
+<gitem>
+<label>&dm.prop.base-uri;</label>
+<def>
+<!--
+<p>The value of the <emph role="infoset-property">base URI</emph>
+property. Note that the base URI property is always an absolute URI
+(if an absolute URI can be computed) though it may contain Unicode
+characters that are not allowed in URIs. These characters, if they
+occur, are present in the &dm.prop.base-uri; property and will have to
+be encoded and escaped by the application to obtain a URI suitable for
+retrieval, if retrieval is required.
+</p>
+-->
+<p>The value of the <emph role="infoset-property">base URI</emph>
+property, if available.
+Note that the base URI property, if available,
+is always an absolute URI
+(if an absolute URI can be computed) though it may contain Unicode
+characters that are not allowed in URIs. These characters, if they
+occur, are present in the &dm.prop.base-uri; property and will have to
+be encoded and escaped by the application to obtain a URI suitable for
+retrieval, if retrieval is required.
+</p>
+<p>In practice a <emph role="infoset-property">base URI</emph>
+is not always known. In this case the value of the
+&dm.prop.base-uri; property of the document node will be the empty
+sequence. This is not intrinsically an error, though it may cause some
+operations that depend on the base URI to fail.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.node-name;</label>
+<def>
+<p>An <code>xs:QName</code> constructed from the
+<emph role="infoset-property">prefix</emph>,
+<emph role="infoset-property">local name</emph>,
+and
+<emph role="infoset-property">namespace name</emph> properties.</p>
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.parent;</label>
+<def>
+<p>The node that corresponds to the
+value of the <emph role="infoset-property">parent</emph> property or
+the empty sequence if there is no parent.</p>
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.type-name;</label>
+<def><p>All &elementNode;s constructed from an infoset have the type
+<code>xs:untyped</code>.</p> 
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.children;</label>
+<def>
+<p>The sequence of nodes constructed from the information
+items found in the <emph role="infoset-property">children</emph>
+property.</p>
+<p>For
+each element, processing instruction, comment, and maximal sequence of
+adjacent <emph role="info-item">character information items</emph> found in the
+<emph role="infoset-property">children</emph> property, a corresponding
+Element, Processing Instruction, Comment, or &textNode; is constructed
+and that sequence of nodes is used as the value of the &dm.prop.children;
+property.</p>
+
+<p>Because the data model requires
+that all general entities be expanded, there will never be
+<emph role="info-item">unexpanded entity reference information item</emph>
+children.</p>
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.attributes;</label>
+<def><p>A set of &attributeNode;s constructed from the
+<emph role="info-item">attribute information items</emph>
+appearing in the <emph role="infoset-property">attributes</emph>
+property. This includes all of the <quote>special</quote> attributes
+(<att>xml:lang</att>, <att>xml:space</att>, <att>xsi:type</att>, etc.)
+but does not include namespace declarations (because they are not attributes).</p>
+<p>Default and fixed attributes provided by the DTD
+are added to the <emph role="infoset-property">attributes</emph> and are
+therefore included in the data model &dm.prop.attributes; of an element.</p>
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.namespaces;</label>
+<def>
+<p>A set of &namespaceNode;s constructed from the
+<emph role="info-item">namespace information items</emph>
+appearing in the <emph role="infoset-property">in-scope namespaces</emph>
+property. Implementations that do not support &namespaceNode;s may simply
+preserve the relevant bindings in this property.</p>
+
+<p>Implementations <rfc2119>may</rfc2119> ignore
+<emph role="info-item">namespace information items</emph> for
+namespaces which are not known to be used. A namespace is known to be
+used if:</p>
+
+<ulist>
+<item>
+<p>It appears in the <termref def="dt-expanded-qname">expanded QName</termref>
+of the &dm.prop.node-name; of the element.</p>
+</item>
+<item>
+<p>It appears in the <termref def="dt-expanded-qname">expanded QName</termref>
+of the &dm.prop.node-name; of any of the element's attributes.</p>
+</item>
+</ulist>
+
+<p>Note: applications may rely on namespaces that are not known to be used,
+for example when QNames are used in content and that content does not
+have a type of <code>xs:QName</code> Such applications may have difficulty
+processing data models where some namespaces have been ignored.</p>
+
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.nilled;</label>
+<def><p>All &elementNode;s constructed from an infoset have a
+&dm.prop.nilled; property of <quote><emph>false</emph></quote>.</p>
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.string-value;</label>
+<def>
+<p>The &dm.prop.string-value; is constructed from the
+<emph role="info-item">character information item</emph>
+<emph role="infoset-property">children</emph>
+of the
+element and all its descendants. The precise rules for selecting
+significant
+<emph role="info-item">character information items</emph> and
+constructing characters from them is described in
+<specref ref="const-infoset-text"/> of
+<specref ref="TextNode"/>.</p>
+<p>This process is equivalent to concatenating the
+<function>string-value</function>s
+of all of the &textNode; descendants of
+the resulting &elementNode;.</p>
+<p>If the element has no such descendants, the &dm.prop.string-value;
+is the empty string.</p>
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.typed-value;</label>
+<def>
+<p>The &dm.prop.string-value; as an <code>xs:untypedAtomic</code>.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><emph role='dm-node-property'>is-id</emph></label>
+<def>
+<p>All &elementNode;s constructed from an infoset have a
+<emph role='dm-node-property'>is-id</emph> property of
+<quote><emph>false</emph></quote>.</p>
+</def>
+</gitem>
+
+<gitem>
+<label><emph role='dm-node-property'>is-idrefs</emph></label>
+<def>
+<p>All &elementNode;s constructed from an infoset have a
+<emph role='dm-node-property'>is-idrefs</emph> property of
+<quote><emph>false</emph></quote>.</p>
+</def>
+</gitem>
+</glist>
+</div3>
+
+<div3 id="const-psvi-element">
+<head>Construction from a PSVI</head>
+
+<p>The following &elementNode; properties are affected by PSVI properties.</p>
+
+<glist>
+<gitem>
+<label>&dm.prop.type-name;</label>
+<def>
+<p>The &dm.prop.type-name; is
+determined as described in <specref ref="PSVI2NodeTypes"/>.</p>
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.children;</label>
+<def>
+
+<p>The sequence of nodes constructed from the information
+items found in the <emph role="infoset-property">children</emph>
+property.</p>
+
+<p>For each element, processing instruction, comment, and maximal
+sequence of adjacent <emph role="info-item">character information items</emph> found in the
+<emph role="infoset-property">children</emph> property, a corresponding
+Element, Processing Instruction, Comment, or &textNode; is constructed
+and that sequence of nodes is used as the value of the &dm.prop.children;
+property.</p>
+
+<p>For elements with schema simple types, or complex types with simple content,
+if the <emph role="infoset-property">schema normalized value</emph>
+PSVI property exists, the processor
+<rfc2119>may</rfc2119> use a sequence of nodes
+containing the Processing Instruction and &commentNode;s corresponding
+to the
+<emph role="info-item">processing instruction</emph> and
+<emph role="info-item">comment information items</emph> found in the
+<emph role="infoset-property">children</emph>
+property, plus an optional single &textNode; whose string value is
+the <emph role="infoset-property">schema normalized value</emph> for
+the &dm.prop.children; property.
+If the <emph role="infoset-property">schema normalized value</emph> is
+the empty string, the &textNode; <rfc2119>must not</rfc2119> be
+present, otherwise it <rfc2119>must</rfc2119> be present.</p>
+
+<p>The relative order of Processing Instruction and &commentNode;s must
+be preserved, but the position of the &textNode;, if it is present, among
+them is implementation defined.</p>
+
+<p>The effect of the above rules is that where a fixed or default
+value for an element is defined in the schema, and the element takes
+this default value, a text node will be created to contain the value,
+even though there are no character information items representing the
+value in the PSVI. The position of this text node relative to any
+comment or processing instruction children is
+implementation-dependent.</p>
+
+<p><bibref ref="xmlschema-1"/> also permits an element with mixed
+content to take a default or fixed value (which will always be a
+simple value), but it is unclear how such
+a defaulted value is represented in the PSVI. Implementations
+therefore <rfc2119>may</rfc2119> represent such a default value by
+creating a text node, but are not required to do so.</p>
+
+<note><p>Section 3.3.1 in
+<bibref ref="xmlschema11-1"/> clarifies the PSVI
+contributions of element default or fixed values in mixed content:
+additional character information items are not added to the PSVI.
+</p>
+</note>
+
+<p>Because the data model requires
+that all general entities be expanded, there will never be
+<emph role="info-item">unexpanded entity reference information item</emph>
+children.</p>
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.attributes;</label>
+<def><p>A set of &attributeNode;s constructed from the
+<emph role="info-item">attribute information items</emph>
+appearing in the <emph role="infoset-property">attributes</emph>
+property. This includes all of the <quote>special</quote> attributes
+(<att>xml:lang</att>, <att>xml:space</att>, <att>xsi:type</att>, etc.)
+but does not include namespace declarations (because they are not attributes).</p>
+<p>Default and fixed attributes provided by XML Schema processing
+are added to the <emph role="infoset-property">attributes</emph> and are
+therefore included in the data model &dm.prop.attributes; of an element.</p>
+</def>
+</gitem>
+
+
+<gitem>
+<label>&dm.prop.namespaces;</label>
+<def>
+<p>A set of &namespaceNode;s constructed from the
+<emph role="info-item">namespace information items</emph>
+appearing in the <emph role="infoset-property">in-scope namespaces</emph>
+property. Implementations that do not support &namespaceNode;s may simply
+preserve the relevant bindings in this property.</p>
+
+<p>Implementations <rfc2119>may</rfc2119> ignore
+<emph role="info-item">namespace information items</emph> for
+namespaces which are not known to be used. A namespace is known to be
+used if:</p>
+
+<ulist>
+<item>
+<p>It appears in the <termref def="dt-expanded-qname">expanded QName</termref>
+of the &dm.prop.node-name; of the element.</p>
+</item>
+<item>
+<p>It appears in the <termref def="dt-expanded-qname">expanded QName</termref>
+of the &dm.prop.node-name; of any of the element's attributes.</p>
+</item>
+<item>
+<p>It appears in the <termref def="dt-expanded-qname">expanded QName</termref>
+of any values of type <code>xs:QName</code> that appear among the
+element's children or the typed values of its attributes.</p>
+</item>
+</ulist>
+
+<p>Note: applications may rely on namespaces that are not known to be used,
+for example when QNames are used in content and that content does not
+have a type of <code>xs:QName</code> Such applications may have difficulty
+processing data models where some namespaces have been ignored.</p>
+
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.nilled;</label>
+<def>
+
+<p>If the <emph role="infoset-property">validity</emph> property exists on
+an information item and is <quote><emph>valid</emph></quote> then if
+the <emph role="infoset-property">nil</emph> property exists and is true,
+then the &dm.prop.nilled; property is <quote><emph>true</emph></quote>.
+In all other cases, including all cases where schema validity assessment was
+not attempted or did not succeed, the
+&dm.prop.nilled; property is <quote><emph>false</emph></quote>.</p>
+
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.string-value;</label>
+<def>
+<p>The string-value is calculated as follows:</p>
+
+<ulist>
+<item>
+<p>If the element is empty: its string value is the zero length string.
+</p>
+</item>
+
+<item>
+<p>If the element has a type of <code>xs:untyped</code>, a complex
+type with element-only content, or a complex type with mixed content: its
+string-value is the concatenation of the &dm.prop.string-value;s of all its
+&textNode; descendants in document order.
+</p>
+</item>
+
+<item>
+<p>If the element has a simple type or a complex type with simple content:
+its string-value is the <emph role="infoset-property">schema normalized value</emph>
+of the node.
+</p>
+</item>
+</ulist>
+
+<p>If an implementation stores only the typed value of an element, it
+may use any valid lexical representation of the typed value for the
+&dm.prop.string-value; property.</p>
+
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.typed-value;</label>
+<def>
+<p>The typed-value is calculated as follows:</p>
+
+<ulist>
+<item>
+<p>If the element is of type <code>xs:untyped</code>, its typed-value
+is its <function>string-value</function> as an <code>xs:untypedAtomic</code>.
+</p>
+</item>
+
+<item>
+<p>If the element has a complex type with empty content, its typed-value
+is the empty sequence.
+</p>
+</item>
+
+<item>
+<p>If the element has a simple type or a complex type with simple content:
+its typed value is computed as described in
+<specref ref="TypedValueDetermination"/>.
+The result is a sequence of zero or more atomic values. The
+relationship between the type-name, typed-value, and string-value of an
+element node is consistent with XML Schema validation.
+</p>
+<p>Note that in the case of dates and times, the timezone is preserved
+as described in <specref ref="dates-and-times"/>, and
+in the case of <code>xs:QName</code>s and <code>xs:NOTATION</code>s,
+the prefix is preserved as described in
+<specref ref="qnames-and-notations"/>.</p>
+</item>
+
+<item>
+<p>If the element has a complex type with mixed content
+(including <code>xs:anyType</code>), its typed-value
+is its <function>string-value</function> as an <code>xs:untypedAtomic</code>.
+</p>
+</item>
+
+<item>
+<p>Otherwise, the element must be a complex type with element-only content.
+The typed-value of such an element is <termref def="dt-absent">absent</termref>.
+Attempting to access this property with the
+<function>typed-value</function> accessor always raises an error.
+</p>
+</item>
+</ulist>
+</def>
+</gitem>
+
+<gitem>
+<label><emph role='dm-node-property'>is-id</emph></label>
+<def>
+<p>If the element has a complex type with element-only content,
+the <emph role='dm-node-property'>is-id</emph>
+property is <code>false</code>.
+Otherwise, if the typed-value of the element consists of exactly
+one atomic value and that value is of type <code>xs:ID</code>,
+or a type derived from <code>xs:ID</code>,
+the <emph role='dm-node-property'>is-id</emph>
+property is <code>true</code>, otherwise it is <code>false</code>.</p>
+<note><p>This means that in the case of a type constructed by list
+from <code>xs:ID</code>, the ID is recognized provided that the list
+is of length one. A type constructed as a union
+involving <code>xs:ID</code> is recognized provided the actual value
+is of type <code>xs:ID</code>.</p>
+</note>
+<note><p>The element that is marked with the
+<emph role='dm-node-property'>is-id</emph> property, and which will
+therefore be retrieved by the fn:id function, is the node whose typed
+value contains the <code>xs:ID</code> value.
+This node is a child of the element node that, according to XML Schema,
+is uniquely identified by this ID.</p>
+</note>
+</def>
+</gitem>                  
+<!-- old text
+<gitem>
+<label><emph role='dm-node-property'>is-id</emph></label>
+<def>
+<p>If the element has a complex type with element-only content, the
+<emph role='dm-node-property'>is-id</emph>
+property is <code>false</code>. Otherwise, if the typed-value of the element
+consists of exactly one atomic value that value is of type <code>xs:ID</code>, or
+a type derived from <code>xs:ID</code>, the
+<emph role='dm-node-property'>is-id</emph> property is <code>true</code>,
+otherwise it is <code>false</code>.</p>
+</def>
+</gitem>
+-->
+
+<gitem>
+<label><emph role='dm-node-property'>is-idrefs</emph></label>
+<def>
+<p>If the element has a complex type with element-only content, the
+<emph role='dm-node-property'>is-idrefs</emph>
+property is <code>false</code>. 
+Otherwise, if any of the atomic values in the typed-value of the
+element is of type <code>xs:IDREF</code> or <code>xs:IDREFS</code>, or
+a type derived from one of those types, the
+<emph role='dm-node-property'>is-idrefs</emph>
+property is <code>true</code>, otherwise it is <code>false</code>.
+</p>
+</def>
+</gitem>
+
+</glist>
+
+<p>All other properties have values that are consistent with construction
+from an infoset.</p>
+</div3>
+
+<div3 id="infoset-mapping-element">
+<head>Infoset Mapping</head>
+
+<p>An &elementNode; maps to an <emph role="info-item">element information item</emph>.</p> 
+
+<p>The following properties are specified by this mapping:</p>
+
+<glist>
+<gitem>
+<label><emph role="infoset-property">namespace name</emph></label>
+<def>
+<p>The namespace name of the value of <function>node-name</function>.
+</p>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">local name</emph></label>
+<def>
+<p>The local part of the value of <function>node-name</function>.
+</p>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">prefix</emph></label>
+<def>
+<p>The prefix associated with the value of <function>node-name</function>.
+</p>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">children</emph></label>
+<def>
+<p>A list of information items obtained by processing each of the
+<function>children</function> in order and mapping each to
+the appropriate information item(s).
+</p>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">attributes</emph></label>
+<def>
+<p>An unordered set of information items obtained by processing each of the
+<function>attributes</function> and mapping each to
+the appropriate information item(s).
+</p>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">in-scope namespaces</emph></label>
+<def>
+<p>An unordered set of <emph role="info-item">namespace information items</emph> constructed from the
+<emph role='dm-node-property'>namespaces</emph>.
+</p>
+
+<p>Each in-scope namespace maps to a <emph role="info-item">namespace information item</emph>. The
+following properties are specified by this mapping:</p>
+
+<glist>
+<gitem>
+<label><emph role="infoset-property">prefix</emph></label>
+<def>
+<p>The prefix associated with the namespace.
+</p>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">namespace name</emph></label>
+<def>
+<p>The URI associated with the namespace.
+</p>
+</def>
+</gitem>
+</glist>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">base URI</emph></label>
+<def>
+<p>The value of <function>base-uri</function>.
+</p>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">parent</emph></label>
+<def>
+<ulist>
+<item>
+<p>If this node is the root of the infoset mapping operation,
+<emph>unknown</emph>.</p>
+</item>
+<item>
+<p>If this node has a parent, the information item that corresponds
+to the node returned by <function>parent</function>.
+</p>
+</item>
+<item>
+<p>Otherwise <emph>no value</emph>.
+</p>
+</item>
+</ulist>
+</def>
+</gitem>
+</glist>
+
+<p>The following property has no value:
+<emph role="infoset-property">namespace attributes</emph>.</p>
+
+</div3>
+
+</div2>
+

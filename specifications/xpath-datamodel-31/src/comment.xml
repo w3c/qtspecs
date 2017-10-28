@@ -1,0 +1,246 @@
+<div2 id="CommentNode">
+  <head>&commentNode;s</head>
+
+<div3 id="CommentNodeOverview">
+<head>Overview</head>
+
+<p>&commentNode;s encapsulate XML comments. Comments have the following properties:
+</p>
+
+<ulist>
+<item><p>&dm.prop.content;
+</p></item>
+<item><p>&dm.prop.parent;, possibly empty
+</p></item>
+</ulist>
+
+<p>&commentNode;s <rfc2119>must</rfc2119> satisfy the following constraints.</p>
+
+<olist>
+<item><p>The string <quote>--</quote> <rfc2119>must not</rfc2119> occur within the
+&dm.prop.content;.</p>
+</item>
+<item><p>The character <quote>-</quote> <rfc2119>must not</rfc2119> occur as the
+last character of the
+&dm.prop.content;.</p>
+</item>
+</olist>
+</div3>
+
+<div3 id="CommentNodeAccessors">
+  <head>Accessors</head>
+
+<glist role="accessors">
+<gitem>
+<label><function>attributes</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>base-uri</function></label>
+<def>
+<p>If the comment has a parent, returns the value of the
+<function>base-uri</function> of its parent; otherwise, returns
+the empty sequence.</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>children</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>document-uri</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>is-id</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>is-idrefs</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>namespace-nodes</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>nilled</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>node-kind</function></label>
+<def>
+<p>Returns “<code>comment</code>”.</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>node-name</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>parent</function></label>
+<def>
+<p>Returns the value of the &dm.prop.parent; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>string-value</function></label>
+<def>
+<p>Returns the value of the &dm.prop.content; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>type-name</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>typed-value</function></label>
+<def>
+<p>Returns the value of the &dm.prop.content; property as a
+<code>xs:string</code>.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>unparsed-entity-public-id</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>unparsed-entity-system-id</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+</glist>
+</div3>
+
+<div3 id="const-infoset-comment">
+<head>Construction from an Infoset</head>
+
+<p>The <emph role="info-item">comment information items</emph> are
+optional.</p>
+
+<p>A &commentNode; is constructed for each
+<emph role="info-item">comment information item</emph>.</p>
+
+<p>The following infoset properties are required:
+<emph role="infoset-property">content</emph> and
+<emph role="infoset-property">parent</emph>.</p>
+
+<p>&commentNode; properties are derived from the infoset as
+follows:</p>
+
+<glist>
+<gitem>
+  <label>&dm.prop.content;</label>
+  <def>
+    <p>The value of the <emph role="infoset-property">content</emph> property.</p>
+  </def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.parent;</label>
+<def>
+<p>The node corresponding to the value of the
+<emph role="infoset-property">parent</emph> property.</p>
+</def>
+</gitem>
+</glist>
+
+<p>There are no &commentNode;s for comments that are children of a
+<emph role="info-item">document type declaration information item</emph>.</p>
+</div3>
+
+<div3 id="const-psvi-comment">
+<head>Construction from a PSVI</head>
+<p>Construction from a PSVI is identical to construction
+from the Infoset.</p>
+</div3>
+
+<div3 id="infoset-mapping-comment">
+<head>Infoset Mapping</head>
+
+<p>A &commentNode; maps to a <emph role="info-item">comment information item</emph>.</p> 
+
+<p>The following properties are specified by this mapping:</p>
+
+<glist>
+<gitem>
+<label><emph role="infoset-property">content</emph></label>
+<def>
+<p>The value of the <function>string-value</function>.
+</p>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">parent</emph></label>
+<def>
+<ulist>
+<item>
+<p>If this node is the root of the infoset mapping operation,
+<emph>unknown</emph>.</p>
+</item>
+<item>
+<p>If this node has a parent, the information item that corresponds
+to the node returned by <function>parent</function>.
+</p>
+</item>
+<item>
+<p>Otherwise <emph>no value</emph>.
+</p>
+</item>
+</ulist>
+</def>
+</gitem>
+</glist>
+</div3>
+
+</div2>

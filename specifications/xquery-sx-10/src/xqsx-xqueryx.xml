@@ -1,0 +1,152 @@
+<div1 id="id-xqsx-xqueryx">
+<head>XML Syntax (XQueryX) for &language;</head>
+
+<p>
+<bibref ref="XQX10"/> defines an XML representation of <bibref ref="XQ10"/>. 
+<bibref ref="ScriptingRequirements"/> states
+"The syntax for updates MAY have more than one syntax binding. 
+One syntax MUST be convenient for humans to read and write. 
+One syntax MUST be expressed in XML in a way that reflects
+the underlying structure of the operations."
+This appendix specifies an XML Schema that defines the
+XML representation of &language; by representing the abstract syntax
+found in <specref ref="id-grammar"/>. 
+This XML representation for &language; integrates
+with the XML representation for XQuery 1.0 and that for the 
+XQuery Update Facility 1.0.</p>
+
+<p>
+The XML Schema specified in this appendix accomplishes its integration by importing
+the XML Schema defined for XQueryX in <bibref ref="XQueryUpdate"/>,
+incorporating all of its type and element definitions. 
+It then extends that schema by adding definitions of new types and elements
+in a namespace belonging to the &language; specification. 
+</p>
+
+
+<div2 id="id-xqsx-xqueryx-schema">
+<head>Schema</head>
+
+<p>
+This section specifies the XML Schema that defines the complex types and elements
+for XQueryX in support of &language;, including changes to the prolog
+and the addition of several new expressions.
+It also specifies a second XML Schema that redefines an element defined in
+XQueryX 1.0. 
+Copies of these two schemata can be found at
+<loc href="http://www.w3.org/2008/xquery-sx-10/xquery-sx-10-xqueryx.xsd">http://www.w3.org/2008/xquery-sx-10/xquery-sx-10-xqueryx.xsd</loc>. 
+and <loc href="http://www.w3.org/2008/xquery-sx-10/xquery-sx-10-xqueryx-redef.xsd">http://www.w3.org/2008/xquery-sx-10/xquery-sx-10-xqueryx-redef.xsd</loc>. 
+Please note that the content of these schemata are subject to change at any time before this document is published as a Recommendation. 
+</p>
+
+<eg>
+&xqsx-xqueryx-schema;
+
+&xqsx-xqueryx-redef-schema;
+</eg>
+
+</div2>
+
+
+<div2 id="id-xqsx-xqueryx-stylesheet">
+<head>Stylesheet</head>
+
+<p>
+This section specifies the XSLT stylesheet that defines the semantics of XQueryX
+in support of &language;. It imports the XSLT stylesheet defined in <bibref ref="XQueryUpdate"/>,
+and provides additional templates that
+define the semantics of the XQueryX representation of &language;
+by transforming that XQueryX representation into
+the human readable syntax of &language;. 
+A copy of this stylesheet is located at
+<loc href="http://www.w3.org/2008/xquery-sx-10/xquery-sx-10-xqueryx.xsl">http://www.w3.org/2008/xquery-sx-10/xquery-sx-10-xqueryx.xsl</loc>. 
+Please note that the content of this stylesheet is subject to change at any time before this document is published as a Recommendation. 
+</p>
+
+<eg>
+&xqsx-xqueryx-stylesheet;
+</eg>
+
+</div2>
+
+
+<div2 id="id-xqsx-xqueryx-examples">
+<head>Example</head>
+
+<p>
+The following example is based on the data and queries in the use cases
+in <bibref ref="ScriptingUseCases"/>. 
+In this example, we show the English description of the query,
+the XQuery Scripting Extension solution given in <bibref ref="ScriptingUseCases"/>,
+an XQueryX solution, and the XQuery Update Facility expression
+that results from applying the Update Facility XQueryX-to-XQuery Update Facility transformation
+defined by the stylesheet in <specref ref="id-xqsx-xqueryx-stylesheet"/>
+to the Scripting Extension XQueryX solution.
+The XQuery Scripting Extension expression that is produced is presented only as a sanity-check&mdash;the
+intent of the stylesheet is not to recreate the original
+XQuery expression, but to produce <emph>a</emph> valid
+XQuery expression with the same semantics. 
+The semantics of the Scripting Extension XQueryX solution are determined by the
+semantics of the XQuery Update Facility expression that
+results from that transformation. 
+The "correctness" of that transformation is determined by
+asking the following the question:
+Can some Scripting Extension XQueryX processor QX process some
+Scripting Extension XQueryX document D1 to produce results R1,
+after which the stylesheet is used to translate D1 into an
+XQuery Scripting Extension expression E1 that, when processed by some
+XQuery Scripting Extension processor Q, produces results R2 that are equivalent
+(under some meaningful definition of "equivalent") to results R1?
+</p>
+
+<p>Comparison of the results of the Scripting Extension XQueryX-to-XQuery Scripting Extension
+transformation given in this document with the XQuery Scripting Extension solutions
+in <bibref ref="ScriptingUseCases"/> may be helpful in evaluating
+the correctness of the Update Facility XQueryX solution in each example. </p>
+
+<p>The XQuery Scripting Extension Use Cases solution given for each
+example is provided only to assist readers of this
+document in understanding the Scripting Extension XQueryX solution. 
+There is no intent to imply that this
+document specifies a "compilation" or "transformation" of
+XQuery Scripting Extension syntax into Scripting Extension XQueryX syntax. 
+</p>
+
+<p>In the following example, note that path expressions are expanded to show their
+structure. Also, note that the prefix syntax for binary operators like "and" makes the
+precedence explicit. In general, humans find it easier to read an XML representation
+that does not expand path expressions, but it is less convenient for programmatic
+representation and manipulation.  XQueryX is designed as a language that is convenient
+for production and modification by software, and not as a convenient syntax for humans to
+read and write. </p>
+
+<p>Finally, please note that white space, including new lines, have been added to
+some of the Scripting Extension XQueryX documents and
+XQuery Scripting Extension expressions for readability. 
+That additional white space is not produced by the
+Scripting Extension XQueryX-to-XQuery Scripting Extension transformation.</p>
+
+<p>This example is based on query "Q2" from <bibref ref="ScriptingUseCases"/>,
+use case "R": "Scripting Relational Data":</p>
+
+
+<div3 id="id-xqsx-xqueryx-xq-rep"><head>XQuery Representation</head>
+
+<eg>&xqsx-xqueryx-xq-example1a;</eg></div3>
+
+
+<div3 id="id-xqsx-xqueryx-xqx-rep"><head>XQueryX Representation</head>
+
+<eg>&xqsx-xqueryx-xqx-example1b;</eg></div3>
+
+
+<div3 id="id-xqsx-xqueryx-transformed-rep"><head>Transformed XQuery Representation</head>
+
+<p>Application of the stylesheet in <specref ref="id-xqsx-xqueryx-stylesheet"/> to the
+Update Facility XQueryX representation results in the following XQuery representation:</p>
+
+<eg>&xqsx-xqueryx-xq-trans-example1c;</eg></div3>
+
+</div2>
+
+</div1>

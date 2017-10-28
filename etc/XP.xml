@@ -1,0 +1,1809 @@
+<?xml version="1.0" encoding="utf-8"?>
+<document-summary uri="http://www.w3.org/TR/xpath20/">
+<title>XML Path Language (XPath)</title>
+<div1 id="id-introduction">
+<head>
+1 Introduction</head>
+</div1>
+<div1 id="id-basics">
+<head>
+2 Basics</head>
+<div2 id="context">
+<head>
+2.1 Expression Context</head>
+<div3 id="static_context">
+<head>
+2.1.1 Static Context</head>
+</div3>
+<div3 id="eval_context">
+<head>
+2.1.2 Dynamic Context</head>
+</div3>
+</div2>
+<div2 id="id-processing-model">
+<head>
+2.2 Processing
+                         Model</head>
+<div3 id="id-data-model-generation">
+<head>
+2.2.1 Data Model Generation</head>
+</div3>
+<div3 id="id-schema-import-processing">
+<head>
+2.2.2 Schema Import
+Processing</head>
+</div3>
+<div3 id="id-expression-processing">
+<head>
+2.2.3 Expression
+Processing</head>
+<div4 id="id-static-analysis">
+<head>
+2.2.3.1 Static Analysis Phase</head>
+</div4>
+<div4 id="id-dynamic-evaluation">
+<head>
+2.2.3.2 Dynamic Evaluation Phase</head>
+</div4>
+</div3>
+<div3 id="id-serialization">
+<head>
+2.2.4 Serialization</head>
+</div3>
+<div3 id="id-consistency-constraints">
+<head>
+2.2.5 Consistency Constraints</head>
+</div3>
+</div2>
+<div2 id="errors">
+<head>
+2.3 Error Handling</head>
+<div3 id="id-kinds-of-errors">
+<head>
+2.3.1 Kinds of Errors</head>
+</div3>
+<div3 id="id-identifying-errors">
+<head>
+2.3.2 Identifying and Reporting Errors</head>
+</div3>
+<div3 id="id-handling-dynamic">
+<head>
+2.3.3 Handling Dynamic Errors</head>
+</div3>
+<div3 id="id-errors-and-opt">
+<head>
+2.3.4 Errors and
+      Optimization</head>
+</div3>
+</div2>
+<div2 id="id-important-concepts">
+<head>
+2.4 Concepts</head>
+<div3 id="id-document-order">
+<head>
+2.4.1 Document Order</head>
+</div3>
+<div3 id="id-atomization">
+<head>
+2.4.2 Atomization</head>
+</div3>
+<div3 id="id-ebv">
+<head>
+2.4.3 Effective Boolean Value</head>
+</div3>
+<div3 id="id-input-sources">
+<head>
+2.4.4 Input Sources</head>
+</div3>
+</div2>
+<div2 id="id-types">
+<head>
+2.5 Types</head>
+<div3 id="id-predefined-types">
+<head>
+2.5.1 Predefined Schema Types</head>
+</div3>
+<div3 id="id-typed-value">
+<head>
+2.5.2 Typed Value and String Value</head>
+</div3>
+<div3 id="id-sequencetype-syntax">
+<head>
+2.5.3 SequenceType Syntax</head>
+</div3>
+<div3 id="id-sequencetype-matching">
+<head>
+2.5.4 SequenceType Matching</head>
+<div4 id="id-matching-value">
+<head>
+2.5.4.1 Matching a SequenceType and a Value</head>
+</div4>
+<div4 id="id-matching-item">
+<head>
+2.5.4.2 Matching an ItemType and an
+Item</head>
+</div4>
+<div4 id="id-element-test">
+<head>
+2.5.4.3 Element Test</head>
+</div4>
+<div4 id="id-schema-element-test">
+<head>
+2.5.4.4 Schema Element Test</head>
+</div4>
+<div4 id="id-attribute-test">
+<head>
+2.5.4.5 Attribute Test</head>
+</div4>
+<div4 id="id-schema-attribute-test">
+<head>
+2.5.4.6 Schema Attribute Test</head>
+</div4>
+</div3>
+</div2>
+<div2 id="comments">
+<head>
+2.6 Comments</head>
+</div2>
+</div1>
+<div1 id="id-expressions">
+<head>
+3 Expressions</head>
+<div2 id="id-primary-expressions">
+<head>
+3.1 Primary Expressions</head>
+<div3 id="id-literals">
+<head>
+3.1.1 Literals</head>
+</div3>
+<div3 id="id-variables">
+<head>
+3.1.2 Variable References</head>
+</div3>
+<div3 id="id-paren-expressions">
+<head>
+3.1.3 Parenthesized Expressions</head>
+</div3>
+<div3 id="id-context-item-expression">
+<head>
+3.1.4 Context Item Expression</head>
+</div3>
+<div3 id="id-function-calls">
+<head>
+3.1.5 Function Calls</head>
+</div3>
+</div2>
+<div2 id="id-path-expressions">
+<head>
+3.2 Path Expressions</head>
+<div3 id="id-steps">
+<head>
+3.2.1 Steps</head>
+<div4 id="axes">
+<head>
+3.2.1.1 Axes</head>
+</div4>
+<div4 id="node-tests">
+<head>
+3.2.1.2 Node Tests</head>
+</div4>
+</div3>
+<div3 id="id-predicates">
+<head>
+3.2.2 Predicates</head>
+</div3>
+<div3 id="unabbrev">
+<head>
+3.2.3 Unabbreviated Syntax</head>
+</div3>
+<div3 id="abbrev">
+<head>
+3.2.4 Abbreviated Syntax</head>
+</div3>
+</div2>
+<div2 id="id-sequence-expressions">
+<head>
+3.3 Sequence Expressions</head>
+<div3 id="construct_seq">
+<head>
+3.3.1 Constructing Sequences</head>
+</div3>
+<div3 id="id-filter-expr">
+<head>
+3.3.2 Filter Expressions</head>
+</div3>
+<div3 id="combining_seq">
+<head>
+3.3.3 Combining Node Sequences</head>
+</div3>
+</div2>
+<div2 id="id-arithmetic">
+<head>
+3.4 Arithmetic Expressions</head>
+</div2>
+<div2 id="id-comparisons">
+<head>
+3.5 Comparison Expressions</head>
+<div3 id="id-value-comparisons">
+<head>
+3.5.1 Value Comparisons</head>
+</div3>
+<div3 id="id-general-comparisons">
+<head>
+3.5.2 General Comparisons</head>
+</div3>
+<div3 id="id-node-comparisons">
+<head>
+3.5.3 Node Comparisons</head>
+</div3>
+</div2>
+<div2 id="id-logical-expressions">
+<head>
+3.6 Logical Expressions</head>
+</div2>
+<div2 id="id-for-expressions">
+<head>
+3.7 For Expressions</head>
+</div2>
+<div2 id="id-conditionals">
+<head>
+3.8 Conditional Expressions</head>
+</div2>
+<div2 id="id-quantified-expressions">
+<head>
+3.9 Quantified Expressions</head>
+</div2>
+<div2 id="id-expressions-on-datatypes">
+<head>
+3.10 Expressions on SequenceTypes</head>
+<div3 id="id-instance-of">
+<head>
+3.10.1 Instance Of</head>
+</div3>
+<div3 id="id-cast">
+<head>
+3.10.2 Cast</head>
+</div3>
+<div3 id="id-castable">
+<head>
+3.10.3 Castable</head>
+</div3>
+<div3 id="id-constructor-functions">
+<head>
+3.10.4 Constructor
+Functions</head>
+</div3>
+<div3 id="id-treat">
+<head>
+3.10.5 Treat</head>
+</div3>
+</div2>
+</div1>
+<div1 id="nt-bnf">
+<head>
+A XPath Grammar</head>
+<div2 id="id-grammar">
+<head>
+A.1 EBNF</head>
+<div3 id="EBNFNotation">
+<head>
+A.1.1 Notation</head>
+</div3>
+<div3 id="extra-grammatical-constraints">
+<head>
+A.1.2 Extra-grammatical Constraints</head>
+</div3>
+<div3 id="notes-on-parsing">
+<head>
+A.1.3 Grammar Notes</head>
+</div3>
+</div2>
+<div2 id="lexical-structure">
+<head>
+A.2 Lexical structure</head>
+<div3 id="terminal-symbols">
+<head>
+A.2.1 Terminal Symbols</head>
+</div3>
+<div3 id="id-terminal-delimitation">
+<head>
+A.2.2 Terminal Delimitation</head>
+</div3>
+<div3 id="id-eol-handling">
+<head>
+A.2.3 End-of-Line Handling</head>
+<div4 id="id-xml10-eol-handling">
+<head>
+A.2.3.1 XML 1.0 End-of-Line Handling</head>
+</div4>
+<div4 id="id-xml11-eol-handling">
+<head>
+A.2.3.2 XML 1.1 End-of-Line Handling</head>
+</div4>
+</div3>
+<div3 id="whitespace-rules">
+<head>
+A.2.4 Whitespace Rules</head>
+<div4 id="DefaultWhitespaceHandling">
+<head>
+A.2.4.1 Default Whitespace Handling</head>
+</div4>
+<div4 id="ExplicitWhitespaceHandling">
+<head>
+A.2.4.2 Explicit  Whitespace Handling</head>
+</div4>
+</div3>
+</div2>
+<div2 id="id-reserved-fn-names">
+<head>
+A.3 Reserved Function Names</head>
+</div2>
+<div2 id="id-precedence-order">
+<head>
+A.4 Precedence Order</head>
+</div2>
+</div1>
+<div1 id="id-type-promotion-and-operator-mapping">
+<head>
+B Type Promotion and Operator Mapping</head>
+<div2 id="promotion">
+<head>
+B.1 Type Promotion</head>
+</div2>
+<div2 id="mapping">
+<head>
+B.2 Operator Mapping</head>
+</div2>
+</div1>
+<div1 id="id-xp-context-components">
+<head>
+C Context Components</head>
+<div2 id="id-xp-static-context-components">
+<head>
+C.1 Static Context
+Components</head>
+</div2>
+<div2 id="id-xp-evaluation-context-components">
+<head>
+C.2 Dynamic Context Components</head>
+</div2>
+</div1>
+<div1 id="id-impl-defined-items">
+<head>
+D Implementation-Defined Items</head>
+</div1>
+<div1 id="id-references">
+<head>
+E References</head>
+<div2 id="id-normative-references">
+<head>
+E.1 Normative References</head>
+</div2>
+<div2 id="id-non-normative-references">
+<head>
+E.2 Non-normative References</head>
+</div2>
+<div2 id="id-background-material">
+<head>
+E.3 Background Material</head>
+</div2>
+</div1>
+<div1 id="id-xpath-conformance">
+<head>
+F Conformance</head>
+<div2 id="id-xpath-static-typing">
+<head>
+F.1 Static Typing Feature</head>
+<div3 id="id-xpath-static-extensions">
+<head>
+F.1.1 Static Typing Extensions</head>
+</div3>
+</div2>
+</div1>
+<div1 id="id-errors">
+<head>
+G Error Conditions</head>
+</div1>
+<inform-div1 id="id-glossary">
+<head>
+H Glossary (Non-Normative)</head>
+</inform-div1>
+<inform-div1 id="id-backwards-compatibility">
+<head>
+I Backwards Compatibility with
+XPath 1.0 (Non-Normative)</head>
+</inform-div1>
+<inform-div1 id="id-revisions-log">
+<head>
+J Changes since the First Edition (Non-Normative)</head>
+</inform-div1>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-datamodel" term="data model"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-implementation-defined" term="implementation defined"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-implementation-dependent" term="implementation   dependent"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="value" id="dt-value"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-sequence" term="sequence"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-item" term="item"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-atomic-value" term="atomic value"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-node" term="node"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-undefined" term="undefined" diff="add" at="XQ.E23 and XP.E15"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-singleton" term="singleton"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-empty-sequence" term="empty sequence"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-data-model-instance" term="XDM instance"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-qname" term="QName"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-expanded-qname" term="expanded QName"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="in-scope namespaces" id="dt-in-scope-namespaces"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="URI" id="dt-URI"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-expression-context" term="expression context"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-static-context" term="static context"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-xpath-compat-mode" term="XPath 1.0 compatibility     mode"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-static-namespaces" term="statically known namespaces"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-def-elemtype-ns" term="default element/type namespace"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-def-fn-ns" term="default function namespace"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-issd" term="in-scope schema definitions"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-is-types" term="in-scope schema type"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-is-elems" term="in-scope element declarations"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="substitution group" id="dt-substitution-group"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-is-attrs" term="in-scope attribute declarations"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-in-scope-variables" term="in-scope variables"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="context item static type" id="dt-context-item-static-type"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-function-signature" term="function signature"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-static-collations" term="statically known collations"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="collation" id="dt-collation"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-def-collation" term="default collation"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-base-uri" term="base URI"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-known-docs" term="statically known  documents"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-known-collections" term="statically known  collections"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-known-default-collection" term="statically known default collection type"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-dynamic-context" term="dynamic context"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-focus" term="focus"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-context-item" term="context item"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-context-node" term="context node"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-context-position" term="context position"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-context-size" term="context size"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-variable-values" term="variable values"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="function implementation" id="dt-function-implementation"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-date-time" term="current dateTime"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-timezone" term="implicit timezone"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-available-docs" term="available documents"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-available-collections" term="available collections"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-default-collection" term="default collection"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="type annotation" id="dt-type-annotation"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-static-analysis" term="static analysis phase"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-static-type" term="static type"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-dynamic-evaluation" term="dynamic evaluation phase"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="dynamic type" id="dt-dynamic-type"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-serialization" term="serialization"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-data-model-schema" term="data model schema"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-static-error" term="static error"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-dynamic-error" term="dynamic error"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-type-error" term="type error"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-warning" term="warning"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-error-value" term="error value"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="reverse document order" id="dt-reverse-document-order"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="document order" id="dt-document-order"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="stable" id="stable"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-atomization" term="atomization"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-ebv" term="effective boolean value"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-sequence-type" term="sequence type"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-schema-type" term="schema type"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="xs:untyped" id="dt-untyped"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-untypedAtomic" term="xs:untypedAtomic"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="xs:dayTimeDuration" id="dt-dayTimeDuration"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="xs:yearMonthDuration" id="dt-yearMonthDuration"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="xs:anyAtomicType" id="dt-anyAtomicType" diff="chg" at="XQ.E20 and XP.E11"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="typed value" id="dt-typed-value"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-string-value" term="string value"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-sequencetype-matching" term="SequenceType matching"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="subtype substitution" id="dt-subtype-substitution"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-primary-expression" term="primary expression"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-literal" term="literal"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-variable-reference" term="variable reference"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="built-in function" id="dt-built-in-function"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-path-expression" term="path expression"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="step" id="dt-step"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="axis step" id="dt-axis-step"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-principal-node-kind" term="principal node kind"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-node-test" term="node test"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-name-test" term="name test"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="kind test" id="dt-kind-test"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="predicate" id="dt-predicate"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="numeric predicate" id="dt-numeric-predicate"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="comma operator" id="dt-comma-operator"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-filter-expression" term="filter expression"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="constructor function" id="dt-constructor-function"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="symbol" term="symbol"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="terminal" id="terminal"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="delimiting-token" term="delimiting terminal symbol"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="non-delimiting-token" term="non-delimiting terminal symbol"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="symbolseparators" term="symbol separators"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="Whitespace" term="whitespace"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="ignorable whitespace" id="IgnorableWhitespace"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="type promotion" id="dt-type-promotion"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="operator function" id="dt-operator-function"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-numeric" term="numeric"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-gregorian" term="Gregorian"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-xpath-static-typing-feature" term="static typing feature" role="xpath"/>
+<termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="static typing extension" id="dt-xpath-static-typing-extension"/>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-QName" xlink:type="simple">
+<nt def="prod-xpath-QName" xlink:type="simple">QName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ExprSingle" xlink:type="simple">
+<nt def="doc-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ExprSingle" xlink:type="simple">
+<nt def="doc-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementTest" xlink:type="simple">
+<nt def="doc-xpath-ElementTest" xlink:type="simple">ElementTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AttributeTest" xlink:type="simple">
+<nt def="doc-xpath-AttributeTest" xlink:type="simple">AttributeTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SequenceType" xlink:type="simple">
+<nt def="doc-xpath-SequenceType" xlink:type="simple">SequenceType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SequenceType" xlink:type="simple">
+<nt def="doc-xpath-SequenceType" xlink:type="simple">SequenceType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ItemType" xlink:type="simple">
+<nt def="doc-xpath-ItemType" xlink:type="simple">ItemType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-OccurrenceIndicator" xlink:type="simple">
+<nt def="doc-xpath-OccurrenceIndicator" xlink:type="simple">OccurrenceIndicator</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-KindTest" xlink:type="simple">
+<nt def="doc-xpath-KindTest" xlink:type="simple">KindTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AtomicType" xlink:type="simple">
+<nt def="doc-xpath-AtomicType" xlink:type="simple">AtomicType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-QName" xlink:type="simple">
+<nt def="prod-xpath-QName" xlink:type="simple">QName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-DocumentTest" xlink:type="simple">
+<nt def="doc-xpath-DocumentTest" xlink:type="simple">DocumentTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementTest" xlink:type="simple">
+<nt def="doc-xpath-ElementTest" xlink:type="simple">ElementTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AttributeTest" xlink:type="simple">
+<nt def="doc-xpath-AttributeTest" xlink:type="simple">AttributeTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SchemaElementTest" xlink:type="simple">
+<nt def="doc-xpath-SchemaElementTest" xlink:type="simple">SchemaElementTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SchemaAttributeTest" xlink:type="simple">
+<nt def="doc-xpath-SchemaAttributeTest" xlink:type="simple">SchemaAttributeTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-PITest" xlink:type="simple">
+<nt def="doc-xpath-PITest" xlink:type="simple">PITest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-CommentTest" xlink:type="simple">
+<nt def="doc-xpath-CommentTest" xlink:type="simple">CommentTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-TextTest" xlink:type="simple">
+<nt def="doc-xpath-TextTest" xlink:type="simple">TextTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AnyKindTest" xlink:type="simple">
+<nt def="doc-xpath-AnyKindTest" xlink:type="simple">AnyKindTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementTest" xlink:type="simple">
+<nt def="doc-xpath-ElementTest" xlink:type="simple">ElementTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SchemaElementTest" xlink:type="simple">
+<nt def="doc-xpath-SchemaElementTest" xlink:type="simple">SchemaElementTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementNameOrWildcard" xlink:type="simple">
+<nt def="doc-xpath-ElementNameOrWildcard" xlink:type="simple">ElementNameOrWildcard</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-TypeName" xlink:type="simple">
+<nt def="doc-xpath-TypeName" xlink:type="simple">TypeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementDeclaration" xlink:type="simple">
+<nt def="doc-xpath-ElementDeclaration" xlink:type="simple">ElementDeclaration</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementName" xlink:type="simple">
+<nt def="doc-xpath-ElementName" xlink:type="simple">ElementName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AttribNameOrWildcard" xlink:type="simple">
+<nt def="doc-xpath-AttribNameOrWildcard" xlink:type="simple">AttribNameOrWildcard</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-TypeName" xlink:type="simple">
+<nt def="doc-xpath-TypeName" xlink:type="simple">TypeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AttributeDeclaration" xlink:type="simple">
+<nt def="doc-xpath-AttributeDeclaration" xlink:type="simple">AttributeDeclaration</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AttributeName" xlink:type="simple">
+<nt def="doc-xpath-AttributeName" xlink:type="simple">AttributeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementName" xlink:type="simple">
+<nt def="doc-xpath-ElementName" xlink:type="simple">ElementName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-QName" xlink:type="simple">
+<nt def="prod-xpath-QName" xlink:type="simple">QName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AttributeName" xlink:type="simple">
+<nt def="doc-xpath-AttributeName" xlink:type="simple">AttributeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-QName" xlink:type="simple">
+<nt def="prod-xpath-QName" xlink:type="simple">QName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-QName" xlink:type="simple">
+<nt def="prod-xpath-QName" xlink:type="simple">QName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-NCName" xlink:type="simple">
+<nt def="prod-xpath-NCName" xlink:type="simple">NCName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-StringLiteral" xlink:type="simple">
+<nt def="doc-xpath-StringLiteral" xlink:type="simple">StringLiteral</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SequenceType" xlink:type="simple">
+<nt def="doc-xpath-SequenceType" xlink:type="simple">SequenceType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ItemType" xlink:type="simple">
+<nt def="doc-xpath-ItemType" xlink:type="simple">ItemType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-OccurrenceIndicator" xlink:type="simple">
+<nt def="doc-xpath-OccurrenceIndicator" xlink:type="simple">OccurrenceIndicator</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ItemType" xlink:type="simple">
+<nt def="doc-xpath-ItemType" xlink:type="simple">ItemType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ItemType" xlink:type="simple">
+<nt def="doc-xpath-ItemType" xlink:type="simple">ItemType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-OccurrenceIndicator" xlink:type="simple">
+<nt def="doc-xpath-OccurrenceIndicator" xlink:type="simple">OccurrenceIndicator</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-OccurrenceIndicator" xlink:type="simple">
+<nt def="doc-xpath-OccurrenceIndicator" xlink:type="simple">OccurrenceIndicator</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ItemType" xlink:type="simple">
+<nt def="doc-xpath-ItemType" xlink:type="simple">ItemType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-OccurrenceIndicator" xlink:type="simple">
+<nt def="doc-xpath-OccurrenceIndicator" xlink:type="simple">OccurrenceIndicator</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-OccurrenceIndicator" xlink:type="simple">
+<nt def="doc-xpath-OccurrenceIndicator" xlink:type="simple">OccurrenceIndicator</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ItemType" xlink:type="simple">
+<nt def="doc-xpath-ItemType" xlink:type="simple">ItemType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AtomicType" xlink:type="simple">
+<nt def="doc-xpath-AtomicType" xlink:type="simple">AtomicType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AtomicType" xlink:type="simple">
+<nt def="doc-xpath-AtomicType" xlink:type="simple">AtomicType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AtomicType" xlink:type="simple">
+<nt def="doc-xpath-AtomicType" xlink:type="simple">AtomicType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementTest" xlink:type="simple">
+<nt def="doc-xpath-ElementTest" xlink:type="simple">ElementTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SchemaElementTest" xlink:type="simple">
+<nt def="doc-xpath-SchemaElementTest" xlink:type="simple">SchemaElementTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ItemType" xlink:type="simple">
+<nt def="doc-xpath-ItemType" xlink:type="simple">ItemType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementTest" xlink:type="simple">
+<nt def="doc-xpath-ElementTest" xlink:type="simple">ElementTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SchemaElementTest" xlink:type="simple">
+<nt def="doc-xpath-SchemaElementTest" xlink:type="simple">SchemaElementTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AttributeTest" xlink:type="simple">
+<nt def="doc-xpath-AttributeTest" xlink:type="simple">AttributeTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SchemaAttributeTest" xlink:type="simple">
+<nt def="doc-xpath-SchemaAttributeTest" xlink:type="simple">SchemaAttributeTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementTest" xlink:type="simple">
+<nt def="doc-xpath-ElementTest" xlink:type="simple">ElementTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementTest" xlink:type="simple">
+<nt def="doc-xpath-ElementTest" xlink:type="simple">ElementTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementName" xlink:type="simple">
+<nt def="doc-xpath-ElementName" xlink:type="simple">ElementName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-TypeName" xlink:type="simple">
+<nt def="doc-xpath-TypeName" xlink:type="simple">TypeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementTest" xlink:type="simple">
+<nt def="doc-xpath-ElementTest" xlink:type="simple">ElementTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementName" xlink:type="simple">
+<nt def="doc-xpath-ElementName" xlink:type="simple">ElementName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementName" xlink:type="simple">
+<nt def="doc-xpath-ElementName" xlink:type="simple">ElementName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementName" xlink:type="simple">
+<nt def="doc-xpath-ElementName" xlink:type="simple">ElementName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-TypeName" xlink:type="simple">
+<nt def="doc-xpath-TypeName" xlink:type="simple">TypeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementName" xlink:type="simple">
+<nt def="doc-xpath-ElementName" xlink:type="simple">ElementName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-TypeName" xlink:type="simple">
+<nt def="doc-xpath-TypeName" xlink:type="simple">TypeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementName" xlink:type="simple">
+<nt def="doc-xpath-ElementName" xlink:type="simple">ElementName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-TypeName" xlink:type="simple">
+<nt def="doc-xpath-TypeName" xlink:type="simple">TypeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementName" xlink:type="simple">
+<nt def="doc-xpath-ElementName" xlink:type="simple">ElementName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-TypeName" xlink:type="simple">
+<nt def="doc-xpath-TypeName" xlink:type="simple">TypeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-TypeName" xlink:type="simple">
+<nt def="doc-xpath-TypeName" xlink:type="simple">TypeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-TypeName" xlink:type="simple">
+<nt def="doc-xpath-TypeName" xlink:type="simple">TypeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-TypeName" xlink:type="simple">
+<nt def="doc-xpath-TypeName" xlink:type="simple">TypeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-TypeName" xlink:type="simple">
+<nt def="doc-xpath-TypeName" xlink:type="simple">TypeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SchemaElementTest" xlink:type="simple">
+<nt def="doc-xpath-SchemaElementTest" xlink:type="simple">SchemaElementTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementName" xlink:type="simple">
+<nt def="doc-xpath-ElementName" xlink:type="simple">ElementName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementName" xlink:type="simple">
+<nt def="doc-xpath-ElementName" xlink:type="simple">ElementName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SchemaElementTest" xlink:type="simple">
+<nt def="doc-xpath-SchemaElementTest" xlink:type="simple">SchemaElementTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SchemaElementTest" xlink:type="simple">
+<nt def="doc-xpath-SchemaElementTest" xlink:type="simple">SchemaElementTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementName" xlink:type="simple">
+<nt def="doc-xpath-ElementName" xlink:type="simple">ElementName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementName" xlink:type="simple">
+<nt def="doc-xpath-ElementName" xlink:type="simple">ElementName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementName" xlink:type="simple">
+<nt def="doc-xpath-ElementName" xlink:type="simple">ElementName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementName" xlink:type="simple">
+<nt def="doc-xpath-ElementName" xlink:type="simple">ElementName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SchemaElementTest" xlink:type="simple">
+<nt def="doc-xpath-SchemaElementTest" xlink:type="simple">SchemaElementTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AttributeTest" xlink:type="simple">
+<nt def="doc-xpath-AttributeTest" xlink:type="simple">AttributeTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AttributeTest" xlink:type="simple">
+<nt def="doc-xpath-AttributeTest" xlink:type="simple">AttributeTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AttributeName" xlink:type="simple">
+<nt def="doc-xpath-AttributeName" xlink:type="simple">AttributeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-TypeName" xlink:type="simple">
+<nt def="doc-xpath-TypeName" xlink:type="simple">TypeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AttributeName" xlink:type="simple">
+<nt def="doc-xpath-AttributeName" xlink:type="simple">AttributeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AttributeName" xlink:type="simple">
+<nt def="doc-xpath-AttributeName" xlink:type="simple">AttributeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AttributeName" xlink:type="simple">
+<nt def="doc-xpath-AttributeName" xlink:type="simple">AttributeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-TypeName" xlink:type="simple">
+<nt def="doc-xpath-TypeName" xlink:type="simple">TypeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AttributeName" xlink:type="simple">
+<nt def="doc-xpath-AttributeName" xlink:type="simple">AttributeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-TypeName" xlink:type="simple">
+<nt def="doc-xpath-TypeName" xlink:type="simple">TypeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-TypeName" xlink:type="simple">
+<nt def="doc-xpath-TypeName" xlink:type="simple">TypeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-TypeName" xlink:type="simple">
+<nt def="doc-xpath-TypeName" xlink:type="simple">TypeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SchemaAttributeTest" xlink:type="simple">
+<nt def="doc-xpath-SchemaAttributeTest" xlink:type="simple">SchemaAttributeTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AttributeName" xlink:type="simple">
+<nt def="doc-xpath-AttributeName" xlink:type="simple">AttributeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AttributeName" xlink:type="simple">
+<nt def="doc-xpath-AttributeName" xlink:type="simple">AttributeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SchemaAttributeTest" xlink:type="simple">
+<nt def="doc-xpath-SchemaAttributeTest" xlink:type="simple">SchemaAttributeTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SchemaAttributeTest" xlink:type="simple">
+<nt def="doc-xpath-SchemaAttributeTest" xlink:type="simple">SchemaAttributeTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AttributeName" xlink:type="simple">
+<nt def="doc-xpath-AttributeName" xlink:type="simple">AttributeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AttributeName" xlink:type="simple">
+<nt def="doc-xpath-AttributeName" xlink:type="simple">AttributeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SchemaAttributeTest" xlink:type="simple">
+<nt def="doc-xpath-SchemaAttributeTest" xlink:type="simple">SchemaAttributeTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-CommentContents" xlink:type="simple">
+<nt def="doc-xpath-CommentContents" xlink:type="simple">CommentContents</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-Comment" xlink:type="simple">
+<nt def="doc-xpath-Comment" xlink:type="simple">Comment</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-Char" xlink:type="simple">
+<nt def="prod-xpath-Char" xlink:type="simple">Char</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-Expr" xlink:type="simple">
+<nt def="doc-xpath-Expr" xlink:type="simple">Expr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ExprSingle" xlink:type="simple">
+<nt def="doc-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ExprSingle" xlink:type="simple">
+<nt def="doc-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ForExpr" xlink:type="simple">
+<nt def="doc-xpath-ForExpr" xlink:type="simple">ForExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-QuantifiedExpr" xlink:type="simple">
+<nt def="doc-xpath-QuantifiedExpr" xlink:type="simple">QuantifiedExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-IfExpr" xlink:type="simple">
+<nt def="doc-xpath-IfExpr" xlink:type="simple">IfExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-OrExpr" xlink:type="simple">
+<nt def="doc-xpath-OrExpr" xlink:type="simple">OrExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-Expr" xlink:type="simple">
+<nt def="doc-xpath-Expr" xlink:type="simple">Expr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ExprSingle" xlink:type="simple">
+<nt def="doc-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ExprSingle" xlink:type="simple">
+<nt def="doc-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ExprSingle" xlink:type="simple">
+<nt def="doc-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ExprSingle" xlink:type="simple">
+<nt def="doc-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ExprSingle" xlink:type="simple">
+<nt def="doc-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ForExpr" xlink:type="simple">
+<nt def="doc-xpath-ForExpr" xlink:type="simple">ForExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-QuantifiedExpr" xlink:type="simple">
+<nt def="doc-xpath-QuantifiedExpr" xlink:type="simple">QuantifiedExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-IfExpr" xlink:type="simple">
+<nt def="doc-xpath-IfExpr" xlink:type="simple">IfExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-OrExpr" xlink:type="simple">
+<nt def="doc-xpath-OrExpr" xlink:type="simple">OrExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-Literal" xlink:type="simple">
+<nt def="doc-xpath-Literal" xlink:type="simple">Literal</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-VarRef" xlink:type="simple">
+<nt def="doc-xpath-VarRef" xlink:type="simple">VarRef</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ParenthesizedExpr" xlink:type="simple">
+<nt def="doc-xpath-ParenthesizedExpr" xlink:type="simple">ParenthesizedExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ContextItemExpr" xlink:type="simple">
+<nt def="doc-xpath-ContextItemExpr" xlink:type="simple">ContextItemExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-FunctionCall" xlink:type="simple">
+<nt def="doc-xpath-FunctionCall" xlink:type="simple">FunctionCall</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-NumericLiteral" xlink:type="simple">
+<nt def="doc-xpath-NumericLiteral" xlink:type="simple">NumericLiteral</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-StringLiteral" xlink:type="simple">
+<nt def="doc-xpath-StringLiteral" xlink:type="simple">StringLiteral</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-IntegerLiteral" xlink:type="simple">
+<nt def="doc-xpath-IntegerLiteral" xlink:type="simple">IntegerLiteral</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-DecimalLiteral" xlink:type="simple">
+<nt def="doc-xpath-DecimalLiteral" xlink:type="simple">DecimalLiteral</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-DoubleLiteral" xlink:type="simple">
+<nt def="doc-xpath-DoubleLiteral" xlink:type="simple">DoubleLiteral</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-Digits" xlink:type="simple">
+<nt def="doc-xpath-Digits" xlink:type="simple">Digits</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-Digits" xlink:type="simple">
+<nt def="doc-xpath-Digits" xlink:type="simple">Digits</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-Digits" xlink:type="simple">
+<nt def="doc-xpath-Digits" xlink:type="simple">Digits</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-Digits" xlink:type="simple">
+<nt def="doc-xpath-Digits" xlink:type="simple">Digits</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-Digits" xlink:type="simple">
+<nt def="doc-xpath-Digits" xlink:type="simple">Digits</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-Digits" xlink:type="simple">
+<nt def="doc-xpath-Digits" xlink:type="simple">Digits</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-EscapeQuot" xlink:type="simple">
+<nt def="doc-xpath-EscapeQuot" xlink:type="simple">EscapeQuot</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-EscapeApos" xlink:type="simple">
+<nt def="doc-xpath-EscapeApos" xlink:type="simple">EscapeApos</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-VarName" xlink:type="simple">
+<nt def="doc-xpath-VarName" xlink:type="simple">VarName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-QName" xlink:type="simple">
+<nt def="prod-xpath-QName" xlink:type="simple">QName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-Expr" xlink:type="simple">
+<nt def="doc-xpath-Expr" xlink:type="simple">Expr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-QName" xlink:type="simple">
+<nt def="prod-xpath-QName" xlink:type="simple">QName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ExprSingle" xlink:type="simple">
+<nt def="doc-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ExprSingle" xlink:type="simple">
+<nt def="doc-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-RelativePathExpr" xlink:type="simple">
+<nt def="doc-xpath-RelativePathExpr" xlink:type="simple">RelativePathExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-RelativePathExpr" xlink:type="simple">
+<nt def="doc-xpath-RelativePathExpr" xlink:type="simple">RelativePathExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-RelativePathExpr" xlink:type="simple">
+<nt def="doc-xpath-RelativePathExpr" xlink:type="simple">RelativePathExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-StepExpr" xlink:type="simple">
+<nt def="doc-xpath-StepExpr" xlink:type="simple">StepExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-StepExpr" xlink:type="simple">
+<nt def="doc-xpath-StepExpr" xlink:type="simple">StepExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-FilterExpr" xlink:type="simple">
+<nt def="doc-xpath-FilterExpr" xlink:type="simple">FilterExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AxisStep" xlink:type="simple">
+<nt def="doc-xpath-AxisStep" xlink:type="simple">AxisStep</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ReverseStep" xlink:type="simple">
+<nt def="doc-xpath-ReverseStep" xlink:type="simple">ReverseStep</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ForwardStep" xlink:type="simple">
+<nt def="doc-xpath-ForwardStep" xlink:type="simple">ForwardStep</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-PredicateList" xlink:type="simple">
+<nt def="doc-xpath-PredicateList" xlink:type="simple">PredicateList</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ForwardAxis" xlink:type="simple">
+<nt def="doc-xpath-ForwardAxis" xlink:type="simple">ForwardAxis</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-NodeTest" xlink:type="simple">
+<nt def="doc-xpath-NodeTest" xlink:type="simple">NodeTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AbbrevForwardStep" xlink:type="simple">
+<nt def="doc-xpath-AbbrevForwardStep" xlink:type="simple">AbbrevForwardStep</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ReverseAxis" xlink:type="simple">
+<nt def="doc-xpath-ReverseAxis" xlink:type="simple">ReverseAxis</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-NodeTest" xlink:type="simple">
+<nt def="doc-xpath-NodeTest" xlink:type="simple">NodeTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AbbrevReverseStep" xlink:type="simple">
+<nt def="doc-xpath-AbbrevReverseStep" xlink:type="simple">AbbrevReverseStep</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-Predicate" xlink:type="simple">
+<nt def="doc-xpath-Predicate" xlink:type="simple">Predicate</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-KindTest" xlink:type="simple">
+<nt def="doc-xpath-KindTest" xlink:type="simple">KindTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-NameTest" xlink:type="simple">
+<nt def="doc-xpath-NameTest" xlink:type="simple">NameTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-QName" xlink:type="simple">
+<nt def="prod-xpath-QName" xlink:type="simple">QName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-Wildcard" xlink:type="simple">
+<nt def="doc-xpath-Wildcard" xlink:type="simple">Wildcard</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-NCName" xlink:type="simple">
+<nt def="prod-xpath-NCName" xlink:type="simple">NCName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-NCName" xlink:type="simple">
+<nt def="prod-xpath-NCName" xlink:type="simple">NCName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-Expr" xlink:type="simple">
+<nt def="doc-xpath-Expr" xlink:type="simple">Expr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-NodeTest" xlink:type="simple">
+<nt def="doc-xpath-NodeTest" xlink:type="simple">NodeTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AttributeTest" xlink:type="simple">
+<nt def="doc-xpath-AttributeTest" xlink:type="simple">AttributeTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SchemaAttributeTest" xlink:type="simple">
+<nt def="doc-xpath-SchemaAttributeTest" xlink:type="simple">SchemaAttributeTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ExprSingle" xlink:type="simple">
+<nt def="doc-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ExprSingle" xlink:type="simple">
+<nt def="doc-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AdditiveExpr" xlink:type="simple">
+<nt def="doc-xpath-AdditiveExpr" xlink:type="simple">AdditiveExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AdditiveExpr" xlink:type="simple">
+<nt def="doc-xpath-AdditiveExpr" xlink:type="simple">AdditiveExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ExprSingle" xlink:type="simple">
+<nt def="doc-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-PrimaryExpr" xlink:type="simple">
+<nt def="doc-xpath-PrimaryExpr" xlink:type="simple">PrimaryExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-PredicateList" xlink:type="simple">
+<nt def="doc-xpath-PredicateList" xlink:type="simple">PredicateList</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-Predicate" xlink:type="simple">
+<nt def="doc-xpath-Predicate" xlink:type="simple">Predicate</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-IntersectExceptExpr" xlink:type="simple">
+<nt def="doc-xpath-IntersectExceptExpr" xlink:type="simple">IntersectExceptExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-IntersectExceptExpr" xlink:type="simple">
+<nt def="doc-xpath-IntersectExceptExpr" xlink:type="simple">IntersectExceptExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-InstanceofExpr" xlink:type="simple">
+<nt def="doc-xpath-InstanceofExpr" xlink:type="simple">InstanceofExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-InstanceofExpr" xlink:type="simple">
+<nt def="doc-xpath-InstanceofExpr" xlink:type="simple">InstanceofExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-MultiplicativeExpr" xlink:type="simple">
+<nt def="doc-xpath-MultiplicativeExpr" xlink:type="simple">MultiplicativeExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-MultiplicativeExpr" xlink:type="simple">
+<nt def="doc-xpath-MultiplicativeExpr" xlink:type="simple">MultiplicativeExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-UnionExpr" xlink:type="simple">
+<nt def="doc-xpath-UnionExpr" xlink:type="simple">UnionExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-UnionExpr" xlink:type="simple">
+<nt def="doc-xpath-UnionExpr" xlink:type="simple">UnionExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ValueExpr" xlink:type="simple">
+<nt def="doc-xpath-ValueExpr" xlink:type="simple">ValueExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-PathExpr" xlink:type="simple">
+<nt def="doc-xpath-PathExpr" xlink:type="simple">PathExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-RangeExpr" xlink:type="simple">
+<nt def="doc-xpath-RangeExpr" xlink:type="simple">RangeExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ValueComp" xlink:type="simple">
+<nt def="doc-xpath-ValueComp" xlink:type="simple">ValueComp</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-GeneralComp" xlink:type="simple">
+<nt def="doc-xpath-GeneralComp" xlink:type="simple">GeneralComp</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-NodeComp" xlink:type="simple">
+<nt def="doc-xpath-NodeComp" xlink:type="simple">NodeComp</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-RangeExpr" xlink:type="simple">
+<nt def="doc-xpath-RangeExpr" xlink:type="simple">RangeExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AndExpr" xlink:type="simple">
+<nt def="doc-xpath-AndExpr" xlink:type="simple">AndExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AndExpr" xlink:type="simple">
+<nt def="doc-xpath-AndExpr" xlink:type="simple">AndExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ComparisonExpr" xlink:type="simple">
+<nt def="doc-xpath-ComparisonExpr" xlink:type="simple">ComparisonExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ComparisonExpr" xlink:type="simple">
+<nt def="doc-xpath-ComparisonExpr" xlink:type="simple">ComparisonExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SimpleForClause" xlink:type="simple">
+<nt def="doc-xpath-SimpleForClause" xlink:type="simple">SimpleForClause</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ExprSingle" xlink:type="simple">
+<nt def="doc-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-VarName" xlink:type="simple">
+<nt def="doc-xpath-VarName" xlink:type="simple">VarName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ExprSingle" xlink:type="simple">
+<nt def="doc-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-VarName" xlink:type="simple">
+<nt def="doc-xpath-VarName" xlink:type="simple">VarName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ExprSingle" xlink:type="simple">
+<nt def="doc-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-Expr" xlink:type="simple">
+<nt def="doc-xpath-Expr" xlink:type="simple">Expr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ExprSingle" xlink:type="simple">
+<nt def="doc-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ExprSingle" xlink:type="simple">
+<nt def="doc-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-VarName" xlink:type="simple">
+<nt def="doc-xpath-VarName" xlink:type="simple">VarName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ExprSingle" xlink:type="simple">
+<nt def="doc-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-VarName" xlink:type="simple">
+<nt def="doc-xpath-VarName" xlink:type="simple">VarName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ExprSingle" xlink:type="simple">
+<nt def="doc-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ExprSingle" xlink:type="simple">
+<nt def="doc-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-TreatExpr" xlink:type="simple">
+<nt def="doc-xpath-TreatExpr" xlink:type="simple">TreatExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SequenceType" xlink:type="simple">
+<nt def="doc-xpath-SequenceType" xlink:type="simple">SequenceType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SequenceType" xlink:type="simple">
+<nt def="doc-xpath-SequenceType" xlink:type="simple">SequenceType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-UnaryExpr" xlink:type="simple">
+<nt def="doc-xpath-UnaryExpr" xlink:type="simple">UnaryExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SingleType" xlink:type="simple">
+<nt def="doc-xpath-SingleType" xlink:type="simple">SingleType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AtomicType" xlink:type="simple">
+<nt def="doc-xpath-AtomicType" xlink:type="simple">AtomicType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-CastExpr" xlink:type="simple">
+<nt def="doc-xpath-CastExpr" xlink:type="simple">CastExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SingleType" xlink:type="simple">
+<nt def="doc-xpath-SingleType" xlink:type="simple">SingleType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AtomicType" xlink:type="simple">
+<nt def="doc-xpath-AtomicType" xlink:type="simple">AtomicType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-CastableExpr" xlink:type="simple">
+<nt def="doc-xpath-CastableExpr" xlink:type="simple">CastableExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SequenceType" xlink:type="simple">
+<nt def="doc-xpath-SequenceType" xlink:type="simple">SequenceType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SequenceType" xlink:type="simple">
+<nt def="doc-xpath-SequenceType" xlink:type="simple">SequenceType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-Expr" xlink:type="simple">
+<nt def="prod-xpath-Expr" xlink:type="simple">Expr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ExprSingle" xlink:type="simple">
+<nt def="prod-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ExprSingle" xlink:type="simple">
+<nt def="prod-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ForExpr" xlink:type="simple">
+<nt def="prod-xpath-ForExpr" xlink:type="simple">ForExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-QuantifiedExpr" xlink:type="simple">
+<nt def="prod-xpath-QuantifiedExpr" xlink:type="simple">QuantifiedExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-IfExpr" xlink:type="simple">
+<nt def="prod-xpath-IfExpr" xlink:type="simple">IfExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-OrExpr" xlink:type="simple">
+<nt def="prod-xpath-OrExpr" xlink:type="simple">OrExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-SimpleForClause" xlink:type="simple">
+<nt def="prod-xpath-SimpleForClause" xlink:type="simple">SimpleForClause</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ExprSingle" xlink:type="simple">
+<nt def="prod-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-VarName" xlink:type="simple">
+<nt def="prod-xpath-VarName" xlink:type="simple">VarName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ExprSingle" xlink:type="simple">
+<nt def="prod-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-VarName" xlink:type="simple">
+<nt def="prod-xpath-VarName" xlink:type="simple">VarName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ExprSingle" xlink:type="simple">
+<nt def="prod-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-VarName" xlink:type="simple">
+<nt def="prod-xpath-VarName" xlink:type="simple">VarName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ExprSingle" xlink:type="simple">
+<nt def="prod-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-VarName" xlink:type="simple">
+<nt def="prod-xpath-VarName" xlink:type="simple">VarName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ExprSingle" xlink:type="simple">
+<nt def="prod-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ExprSingle" xlink:type="simple">
+<nt def="prod-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-Expr" xlink:type="simple">
+<nt def="prod-xpath-Expr" xlink:type="simple">Expr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ExprSingle" xlink:type="simple">
+<nt def="prod-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ExprSingle" xlink:type="simple">
+<nt def="prod-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-AndExpr" xlink:type="simple">
+<nt def="prod-xpath-AndExpr" xlink:type="simple">AndExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-AndExpr" xlink:type="simple">
+<nt def="prod-xpath-AndExpr" xlink:type="simple">AndExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ComparisonExpr" xlink:type="simple">
+<nt def="prod-xpath-ComparisonExpr" xlink:type="simple">ComparisonExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ComparisonExpr" xlink:type="simple">
+<nt def="prod-xpath-ComparisonExpr" xlink:type="simple">ComparisonExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-RangeExpr" xlink:type="simple">
+<nt def="prod-xpath-RangeExpr" xlink:type="simple">RangeExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ValueComp" xlink:type="simple">
+<nt def="prod-xpath-ValueComp" xlink:type="simple">ValueComp</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-GeneralComp" xlink:type="simple">
+<nt def="prod-xpath-GeneralComp" xlink:type="simple">GeneralComp</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-NodeComp" xlink:type="simple">
+<nt def="prod-xpath-NodeComp" xlink:type="simple">NodeComp</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-RangeExpr" xlink:type="simple">
+<nt def="prod-xpath-RangeExpr" xlink:type="simple">RangeExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-AdditiveExpr" xlink:type="simple">
+<nt def="prod-xpath-AdditiveExpr" xlink:type="simple">AdditiveExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-AdditiveExpr" xlink:type="simple">
+<nt def="prod-xpath-AdditiveExpr" xlink:type="simple">AdditiveExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-MultiplicativeExpr" xlink:type="simple">
+<nt def="prod-xpath-MultiplicativeExpr" xlink:type="simple">MultiplicativeExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-MultiplicativeExpr" xlink:type="simple">
+<nt def="prod-xpath-MultiplicativeExpr" xlink:type="simple">MultiplicativeExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-UnionExpr" xlink:type="simple">
+<nt def="prod-xpath-UnionExpr" xlink:type="simple">UnionExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-UnionExpr" xlink:type="simple">
+<nt def="prod-xpath-UnionExpr" xlink:type="simple">UnionExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-IntersectExceptExpr" xlink:type="simple">
+<nt def="prod-xpath-IntersectExceptExpr" xlink:type="simple">IntersectExceptExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-IntersectExceptExpr" xlink:type="simple">
+<nt def="prod-xpath-IntersectExceptExpr" xlink:type="simple">IntersectExceptExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-InstanceofExpr" xlink:type="simple">
+<nt def="prod-xpath-InstanceofExpr" xlink:type="simple">InstanceofExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-InstanceofExpr" xlink:type="simple">
+<nt def="prod-xpath-InstanceofExpr" xlink:type="simple">InstanceofExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-TreatExpr" xlink:type="simple">
+<nt def="prod-xpath-TreatExpr" xlink:type="simple">TreatExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-SequenceType" xlink:type="simple">
+<nt def="prod-xpath-SequenceType" xlink:type="simple">SequenceType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-CastableExpr" xlink:type="simple">
+<nt def="prod-xpath-CastableExpr" xlink:type="simple">CastableExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-SequenceType" xlink:type="simple">
+<nt def="prod-xpath-SequenceType" xlink:type="simple">SequenceType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-CastExpr" xlink:type="simple">
+<nt def="prod-xpath-CastExpr" xlink:type="simple">CastExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-SingleType" xlink:type="simple">
+<nt def="prod-xpath-SingleType" xlink:type="simple">SingleType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-UnaryExpr" xlink:type="simple">
+<nt def="prod-xpath-UnaryExpr" xlink:type="simple">UnaryExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-SingleType" xlink:type="simple">
+<nt def="prod-xpath-SingleType" xlink:type="simple">SingleType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ValueExpr" xlink:type="simple">
+<nt def="prod-xpath-ValueExpr" xlink:type="simple">ValueExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-PathExpr" xlink:type="simple">
+<nt def="prod-xpath-PathExpr" xlink:type="simple">PathExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-RelativePathExpr" xlink:type="simple">
+<nt def="prod-xpath-RelativePathExpr" xlink:type="simple">RelativePathExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-RelativePathExpr" xlink:type="simple">
+<nt def="prod-xpath-RelativePathExpr" xlink:type="simple">RelativePathExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-RelativePathExpr" xlink:type="simple">
+<nt def="prod-xpath-RelativePathExpr" xlink:type="simple">RelativePathExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-StepExpr" xlink:type="simple">
+<nt def="prod-xpath-StepExpr" xlink:type="simple">StepExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-StepExpr" xlink:type="simple">
+<nt def="prod-xpath-StepExpr" xlink:type="simple">StepExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-FilterExpr" xlink:type="simple">
+<nt def="prod-xpath-FilterExpr" xlink:type="simple">FilterExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-AxisStep" xlink:type="simple">
+<nt def="prod-xpath-AxisStep" xlink:type="simple">AxisStep</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ReverseStep" xlink:type="simple">
+<nt def="prod-xpath-ReverseStep" xlink:type="simple">ReverseStep</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ForwardStep" xlink:type="simple">
+<nt def="prod-xpath-ForwardStep" xlink:type="simple">ForwardStep</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-PredicateList" xlink:type="simple">
+<nt def="prod-xpath-PredicateList" xlink:type="simple">PredicateList</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ForwardAxis" xlink:type="simple">
+<nt def="prod-xpath-ForwardAxis" xlink:type="simple">ForwardAxis</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-NodeTest" xlink:type="simple">
+<nt def="prod-xpath-NodeTest" xlink:type="simple">NodeTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-AbbrevForwardStep" xlink:type="simple">
+<nt def="prod-xpath-AbbrevForwardStep" xlink:type="simple">AbbrevForwardStep</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-NodeTest" xlink:type="simple">
+<nt def="prod-xpath-NodeTest" xlink:type="simple">NodeTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ReverseAxis" xlink:type="simple">
+<nt def="prod-xpath-ReverseAxis" xlink:type="simple">ReverseAxis</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-NodeTest" xlink:type="simple">
+<nt def="prod-xpath-NodeTest" xlink:type="simple">NodeTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-AbbrevReverseStep" xlink:type="simple">
+<nt def="prod-xpath-AbbrevReverseStep" xlink:type="simple">AbbrevReverseStep</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-KindTest" xlink:type="simple">
+<nt def="prod-xpath-KindTest" xlink:type="simple">KindTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-NameTest" xlink:type="simple">
+<nt def="prod-xpath-NameTest" xlink:type="simple">NameTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-QName" xlink:type="simple">
+<nt def="prod-xpath-QName" xlink:type="simple">QName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-Wildcard" xlink:type="simple">
+<nt def="prod-xpath-Wildcard" xlink:type="simple">Wildcard</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-NCName" xlink:type="simple">
+<nt def="prod-xpath-NCName" xlink:type="simple">NCName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-NCName" xlink:type="simple">
+<nt def="prod-xpath-NCName" xlink:type="simple">NCName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-PrimaryExpr" xlink:type="simple">
+<nt def="prod-xpath-PrimaryExpr" xlink:type="simple">PrimaryExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-PredicateList" xlink:type="simple">
+<nt def="prod-xpath-PredicateList" xlink:type="simple">PredicateList</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-Predicate" xlink:type="simple">
+<nt def="prod-xpath-Predicate" xlink:type="simple">Predicate</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-Expr" xlink:type="simple">
+<nt def="prod-xpath-Expr" xlink:type="simple">Expr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-Literal" xlink:type="simple">
+<nt def="prod-xpath-Literal" xlink:type="simple">Literal</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-VarRef" xlink:type="simple">
+<nt def="prod-xpath-VarRef" xlink:type="simple">VarRef</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ParenthesizedExpr" xlink:type="simple">
+<nt def="prod-xpath-ParenthesizedExpr" xlink:type="simple">ParenthesizedExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ContextItemExpr" xlink:type="simple">
+<nt def="prod-xpath-ContextItemExpr" xlink:type="simple">ContextItemExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-FunctionCall" xlink:type="simple">
+<nt def="prod-xpath-FunctionCall" xlink:type="simple">FunctionCall</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-NumericLiteral" xlink:type="simple">
+<nt def="prod-xpath-NumericLiteral" xlink:type="simple">NumericLiteral</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-StringLiteral" xlink:type="simple">
+<nt def="prod-xpath-StringLiteral" xlink:type="simple">StringLiteral</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-IntegerLiteral" xlink:type="simple">
+<nt def="prod-xpath-IntegerLiteral" xlink:type="simple">IntegerLiteral</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-DecimalLiteral" xlink:type="simple">
+<nt def="prod-xpath-DecimalLiteral" xlink:type="simple">DecimalLiteral</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-DoubleLiteral" xlink:type="simple">
+<nt def="prod-xpath-DoubleLiteral" xlink:type="simple">DoubleLiteral</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-VarName" xlink:type="simple">
+<nt def="prod-xpath-VarName" xlink:type="simple">VarName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-QName" xlink:type="simple">
+<nt def="prod-xpath-QName" xlink:type="simple">QName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-Expr" xlink:type="simple">
+<nt def="prod-xpath-Expr" xlink:type="simple">Expr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-QName" xlink:type="simple">
+<nt def="prod-xpath-QName" xlink:type="simple">QName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ExprSingle" xlink:type="simple">
+<nt def="prod-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ExprSingle" xlink:type="simple">
+<nt def="prod-xpath-ExprSingle" xlink:type="simple">ExprSingle</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-AtomicType" xlink:type="simple">
+<nt def="prod-xpath-AtomicType" xlink:type="simple">AtomicType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ItemType" xlink:type="simple">
+<nt def="prod-xpath-ItemType" xlink:type="simple">ItemType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-OccurrenceIndicator" xlink:type="simple">
+<nt def="prod-xpath-OccurrenceIndicator" xlink:type="simple">OccurrenceIndicator</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-KindTest" xlink:type="simple">
+<nt def="prod-xpath-KindTest" xlink:type="simple">KindTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-AtomicType" xlink:type="simple">
+<nt def="prod-xpath-AtomicType" xlink:type="simple">AtomicType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-QName" xlink:type="simple">
+<nt def="prod-xpath-QName" xlink:type="simple">QName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-DocumentTest" xlink:type="simple">
+<nt def="prod-xpath-DocumentTest" xlink:type="simple">DocumentTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ElementTest" xlink:type="simple">
+<nt def="prod-xpath-ElementTest" xlink:type="simple">ElementTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-AttributeTest" xlink:type="simple">
+<nt def="prod-xpath-AttributeTest" xlink:type="simple">AttributeTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-SchemaElementTest" xlink:type="simple">
+<nt def="prod-xpath-SchemaElementTest" xlink:type="simple">SchemaElementTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-SchemaAttributeTest" xlink:type="simple">
+<nt def="prod-xpath-SchemaAttributeTest" xlink:type="simple">SchemaAttributeTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-PITest" xlink:type="simple">
+<nt def="prod-xpath-PITest" xlink:type="simple">PITest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-CommentTest" xlink:type="simple">
+<nt def="prod-xpath-CommentTest" xlink:type="simple">CommentTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-TextTest" xlink:type="simple">
+<nt def="prod-xpath-TextTest" xlink:type="simple">TextTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-AnyKindTest" xlink:type="simple">
+<nt def="prod-xpath-AnyKindTest" xlink:type="simple">AnyKindTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ElementTest" xlink:type="simple">
+<nt def="prod-xpath-ElementTest" xlink:type="simple">ElementTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-SchemaElementTest" xlink:type="simple">
+<nt def="prod-xpath-SchemaElementTest" xlink:type="simple">SchemaElementTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-NCName" xlink:type="simple">
+<nt def="prod-xpath-NCName" xlink:type="simple">NCName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-StringLiteral" xlink:type="simple">
+<nt def="prod-xpath-StringLiteral" xlink:type="simple">StringLiteral</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-AttribNameOrWildcard" xlink:type="simple">
+<nt def="prod-xpath-AttribNameOrWildcard" xlink:type="simple">AttribNameOrWildcard</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-TypeName" xlink:type="simple">
+<nt def="prod-xpath-TypeName" xlink:type="simple">TypeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-AttributeName" xlink:type="simple">
+<nt def="prod-xpath-AttributeName" xlink:type="simple">AttributeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-AttributeDeclaration" xlink:type="simple">
+<nt def="prod-xpath-AttributeDeclaration" xlink:type="simple">AttributeDeclaration</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-AttributeName" xlink:type="simple">
+<nt def="prod-xpath-AttributeName" xlink:type="simple">AttributeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ElementNameOrWildcard" xlink:type="simple">
+<nt def="prod-xpath-ElementNameOrWildcard" xlink:type="simple">ElementNameOrWildcard</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-TypeName" xlink:type="simple">
+<nt def="prod-xpath-TypeName" xlink:type="simple">TypeName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ElementName" xlink:type="simple">
+<nt def="prod-xpath-ElementName" xlink:type="simple">ElementName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ElementDeclaration" xlink:type="simple">
+<nt def="prod-xpath-ElementDeclaration" xlink:type="simple">ElementDeclaration</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-ElementName" xlink:type="simple">
+<nt def="prod-xpath-ElementName" xlink:type="simple">ElementName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-QName" xlink:type="simple">
+<nt def="prod-xpath-QName" xlink:type="simple">QName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-QName" xlink:type="simple">
+<nt def="prod-xpath-QName" xlink:type="simple">QName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-QName" xlink:type="simple">
+<nt def="prod-xpath-QName" xlink:type="simple">QName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-Char" xlink:type="simple">
+<nt def="prod-xpath-Char" xlink:type="simple">Char</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-Char" xlink:type="simple">
+<nt def="prod-xpath-Char" xlink:type="simple">Char</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-Char" xlink:type="simple">
+<nt def="prod-xpath-Char" xlink:type="simple">Char</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-RelativePathExpr" xlink:type="simple">
+<nt def="doc-xpath-RelativePathExpr" xlink:type="simple">RelativePathExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-NameTest" xlink:type="simple">
+<nt def="doc-xpath-NameTest" xlink:type="simple">NameTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-RelativePathExpr" xlink:type="simple">
+<nt def="doc-xpath-RelativePathExpr" xlink:type="simple">RelativePathExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-PathExpr" xlink:type="simple">
+<nt def="doc-xpath-PathExpr" xlink:type="simple">PathExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-FunctionCall" xlink:type="simple">
+<nt def="doc-xpath-FunctionCall" xlink:type="simple">FunctionCall</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-IfExpr" xlink:type="simple">
+<nt def="doc-xpath-IfExpr" xlink:type="simple">IfExpr</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SequenceType" xlink:type="simple">
+<nt def="doc-xpath-SequenceType" xlink:type="simple">SequenceType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ItemType" xlink:type="simple">
+<nt def="doc-xpath-ItemType" xlink:type="simple">ItemType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-OccurrenceIndicator" xlink:type="simple">
+<nt def="doc-xpath-OccurrenceIndicator" xlink:type="simple">OccurrenceIndicator</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SequenceType" xlink:type="simple">
+<nt def="doc-xpath-SequenceType" xlink:type="simple">SequenceType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-OccurrenceIndicator" xlink:type="simple">
+<nt def="doc-xpath-OccurrenceIndicator" xlink:type="simple">OccurrenceIndicator</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-FunctionCall" xlink:type="simple">
+<nt def="doc-xpath-FunctionCall" xlink:type="simple">FunctionCall</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-Comment" xlink:type="simple">
+<nt def="doc-xpath-Comment" xlink:type="simple">Comment</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-Comment" xlink:type="simple">
+<nt def="doc-xpath-Comment" xlink:type="simple">Comment</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-Digits" xlink:type="simple">
+<nt def="prod-xpath-Digits" xlink:type="simple">Digits</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-Digits" xlink:type="simple">
+<nt def="prod-xpath-Digits" xlink:type="simple">Digits</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-Digits" xlink:type="simple">
+<nt def="prod-xpath-Digits" xlink:type="simple">Digits</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-Digits" xlink:type="simple">
+<nt def="prod-xpath-Digits" xlink:type="simple">Digits</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-Digits" xlink:type="simple">
+<nt def="prod-xpath-Digits" xlink:type="simple">Digits</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-Digits" xlink:type="simple">
+<nt def="prod-xpath-Digits" xlink:type="simple">Digits</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-EscapeQuot" xlink:type="simple">
+<nt def="prod-xpath-EscapeQuot" xlink:type="simple">EscapeQuot</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-EscapeApos" xlink:type="simple">
+<nt def="prod-xpath-EscapeApos" xlink:type="simple">EscapeApos</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-CommentContents" xlink:type="simple">
+<nt def="prod-xpath-CommentContents" xlink:type="simple">CommentContents</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-Comment" xlink:type="simple">
+<nt def="prod-xpath-Comment" xlink:type="simple">Comment</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-Char" xlink:type="simple">
+<nt def="prod-xpath-Char" xlink:type="simple">Char</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-StringLiteral" xlink:type="simple">
+<nt def="prod-xpath-StringLiteral" xlink:type="simple">StringLiteral</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-IntegerLiteral" xlink:type="simple">
+<nt def="prod-xpath-IntegerLiteral" xlink:type="simple">IntegerLiteral</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-NCName" xlink:type="simple">
+<nt def="prod-xpath-NCName" xlink:type="simple">NCName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-DecimalLiteral" xlink:type="simple">
+<nt def="prod-xpath-DecimalLiteral" xlink:type="simple">DecimalLiteral</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-DoubleLiteral" xlink:type="simple">
+<nt def="prod-xpath-DoubleLiteral" xlink:type="simple">DoubleLiteral</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="prod-xpath-QName" xlink:type="simple">
+<nt def="prod-xpath-QName" xlink:type="simple">QName</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-Comment" xlink:type="simple">
+<nt def="doc-xpath-Comment" xlink:type="simple">Comments</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-Comment" xlink:type="simple">
+<nt def="doc-xpath-Comment" xlink:type="simple">Comments</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-Comment" xlink:type="simple">
+<nt def="doc-xpath-Comment" xlink:type="simple">Comments</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-Comment" xlink:type="simple">
+<nt def="doc-xpath-Comment" xlink:type="simple">Comments</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ForExpr" xlink:type="simple">
+<nt def="doc-xpath-ForExpr" xlink:type="simple">for</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-QuantifiedExpr" xlink:type="simple">
+<nt def="doc-xpath-QuantifiedExpr" xlink:type="simple">some, every</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-IfExpr" xlink:type="simple">
+<nt def="doc-xpath-IfExpr" xlink:type="simple">if</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-OrExpr" xlink:type="simple">
+<nt def="doc-xpath-OrExpr" xlink:type="simple">or</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AndExpr" xlink:type="simple">
+<nt def="doc-xpath-AndExpr" xlink:type="simple">and</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ValueComp" xlink:type="simple">
+<nt def="doc-xpath-ValueComp" xlink:type="simple">eq, ne, lt, le, gt, ge</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-GeneralComp" xlink:type="simple">
+<nt def="doc-xpath-GeneralComp" xlink:type="simple">=, !=, &lt;, &lt;=, &gt;, &gt;=</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-NodeComp" xlink:type="simple">
+<nt def="doc-xpath-NodeComp" xlink:type="simple">is</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-NodeComp" xlink:type="simple">
+<nt def="doc-xpath-NodeComp" xlink:type="simple">&lt;&lt;, &gt;&gt;</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-RangeExpr" xlink:type="simple">
+<nt def="doc-xpath-RangeExpr" xlink:type="simple">to</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AdditiveExpr" xlink:type="simple">
+<nt def="doc-xpath-AdditiveExpr" xlink:type="simple">+, -</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-MultiplicativeExpr" xlink:type="simple">
+<nt def="doc-xpath-MultiplicativeExpr" xlink:type="simple">*, div, idiv, mod</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-UnionExpr" xlink:type="simple">
+<nt def="doc-xpath-UnionExpr" xlink:type="simple">union, |</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-IntersectExceptExpr" xlink:type="simple">
+<nt def="doc-xpath-IntersectExceptExpr" xlink:type="simple">intersect, except</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-InstanceofExpr" xlink:type="simple">
+<nt def="doc-xpath-InstanceofExpr" xlink:type="simple">instance of</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-TreatExpr" xlink:type="simple">
+<nt def="doc-xpath-TreatExpr" xlink:type="simple">treat</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-CastableExpr" xlink:type="simple">
+<nt def="doc-xpath-CastableExpr" xlink:type="simple">castable</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-CastExpr" xlink:type="simple">
+<nt def="doc-xpath-CastExpr" xlink:type="simple">cast</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-UnaryExpr" xlink:type="simple">
+<nt def="doc-xpath-UnaryExpr" xlink:type="simple"> -(unary),  +(unary)</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-OccurrenceIndicator" xlink:type="simple">
+<nt def="doc-xpath-OccurrenceIndicator" xlink:type="simple">?, *(OccurrenceIndicator), +(OccurrenceIndicator)</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-PathExpr" xlink:type="simple">
+<nt def="doc-xpath-PathExpr" xlink:type="simple">/, //</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-Predicate" xlink:type="simple">
+<nt def="doc-xpath-Predicate" xlink:type="simple">[ ]</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-ElementTest" xlink:type="simple">
+<nt def="doc-xpath-ElementTest" xlink:type="simple">ElementTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AttributeTest" xlink:type="simple">
+<nt def="doc-xpath-AttributeTest" xlink:type="simple">AttributeTest</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-AtomicType" xlink:type="simple">
+<nt def="doc-xpath-AtomicType" xlink:type="simple">AtomicType</nt>
+</nt>
+<nt xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:xlink="http://www.w3.org/1999/xlink" def="doc-xpath-SequenceType" xlink:type="simple">
+<nt def="doc-xpath-SequenceType" xlink:type="simple">SequenceType</nt>
+</nt>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XP" code="0001" class="ST" type="static"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XP" code="0002" class="DY" type="dynamic"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XP" code="0003" class="ST" type="static"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XP" code="0004" class="TY" type="type"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XP" code="0005" class="ST" type="static"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XP" code="0006" class="TY" type="type"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XP" code="0007" class="TY" type="type"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XP" code="0008" class="ST" type="static"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XP" code="0010" class="ST" type="static"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XP" code="0017" class="ST" type="static"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XP" code="0018" class="TY" type="type"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XP" code="0019" class="TY" type="type"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XP" code="0020" class="TY" type="type"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XP" code="0021" class="DY" type="dynamic"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XP" code="0050" class="DY" type="dynamic"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XP" code="0051" class="ST" type="static"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XP" code="0080" class="ST" type="static"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XP" code="0081" class="ST" type="static"/>
+<error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="XP" code="0083" class="ST" type="static"/>
+</document-summary>

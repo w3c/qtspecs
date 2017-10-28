@@ -1,0 +1,77 @@
+CHANGES.TXT for XQueryX 3.1
+
+Items below are not yet incorporated into the editor's drafts unless they
+are marked with 'DONE'. Once completed items have been entered into the
+revision log, they are moved to the COMPLETED section of this document.
+
+
+Status of XQueryX 3.1 Document and Change Proposals
+
+Updated 2014-08-28 by Jim
+
+
+****************************************************************
+****************************************************************
+
+STILL MUST BE DONE!!!
+
+****************************************************************
+****************************************************************
+
+(nothing)
+
+
+****************************************************************
+****************************************************************
+
+COMPLETED
+
+****************************************************************
+****************************************************************
+
+* Add schema definitions and transformations for MapTest
+
+  MapTest ::= "map" "(" ("*" | (AtomicOrUnionType "," SequenceType)) ")"
+
+* Add schema definitions and transformations for ArrayText
+
+  ArrayTest ::= WildcardArrayTest | TypedArrayTest
+  WildcardArrayTest ::= "array" "(" "*" ")"
+  TypedArrayTest ::= "array" "(" SequenceType ")"
+
+* Add schema definitions and transformations for the Arrow operator (=>)
+
+  PostfixExpr ::= PrimaryExpr (Predicate | ArgumentList | MapLookup | ArrowPostfix)*
+  ArrowPostfix ::= "=>" ArrowFunctionSpecifier ArgumentList
+
+* Add schema definitions and transformations for MapLookup
+
+  PostfixExpr ::= PrimaryExpr (Predicate | ArgumentList | MapLookup | ArrowPostfix)*
+  MapLookup ::= "?" MapKeySpecifier
+  UnaryMapLookup ::= "?" MapKeySpecifier
+  MapKeySpecifier ::= NCName | StringLiteral | ParenthesizedExpr 
+
+* Add schema definitions and transformations for MapConstructor
+
+  MapConstructor ::= "map" "{" (MapConstructorEntry ("," MapConstructorEntry)*)? "}"
+  MapConstructorEntry ::= MapKeyExpr ":" MapValueExpr
+  MapKeyExpr ::= ExprSingle
+  MapValueExpr ::= ExprSingle
+
+* Add schema definitions and transformations for ArrayConstructor
+
+  ArrayConstructor ::= SquareArrayConstructor | CurlyArrayConstructor
+  SquareArrayConstructor ::= "[" (ExprSingle ("," ExprSingle)*)? "]"
+  CurlyArrayConstructor ::= "array" "{" Expr? "}"
+
+* Add schema definitions and transformations for DecimalFormatDecl (new stuff)
+
+  "exponent-separator"
+
+  NO CHANGES REQUIRED
+
+* In MapKeySpecifier, add a fourth alternative:
+
+    ... | "*"
+
+

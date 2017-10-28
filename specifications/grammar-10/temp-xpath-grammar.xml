@@ -1,0 +1,1836 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+Copyright (c) 2002 W3C(r) (http://www.w3.org/) (MIT (http://www.lcs.mit.edu/),
+INRIA (http://www.inria.fr/), Keio (http://www.keio.ac.jp/)),
+All Rights Reserved.
+See http://www.w3.org/Consortium/Legal/ipr-notice-20000612#Copyright.
+W3C liability
+(http://www.w3.org/Consortium/Legal/ipr-notice-20000612#Legal_Disclaimer),
+trademark
+(http://www.w3.org/Consortium/Legal/ipr-notice-20000612#W3C_Trademarks),
+document use
+(http://www.w3.org/Consortium/Legal/copyright-documents-19990405),
+and software licensing rules
+(http://www.w3.org/Consortium/Legal/copyright-software-19980720)
+apply.
+--><g:grammar xmlns:g="http://www.w3.org/2001/03/XPath/grammar">
+  <!-- ====================== Meta Information ==================== -->
+  <!-- SJB grammar2spec.xsl seems to pick the first of these to create anchor names -->
+  <g:language id="xpath" display-name="XPath 2.0" if="xpath"/>
+  
+  
+  
+  
+  <!-- g:language id="xslt1-patterns" display-name="XSLT 1.0 Match Patterns" if="pathx1"/ -->
+  
+  
+  <!-- ====================== Entry Point Information ==================== -->
+  
+  <g:start name="XPath" state="DEFAULT" if="xpath"/>
+  
+  
+  
+
+  <!-- ====================== Grammar Productions ==================== -->
+  <!-- The QueryList production is  not in the official grammar,
+       and is not shown in the bnf.  It is here only for the purpose
+       of testing a series of queries.
+    -->
+  
+  <g:production name="XPath" if="xpath">
+    <!--<g:optional name="XPathOptionalExpr">-->
+    <g:ref name="Expr"/>
+    <!--</g:optional>-->
+  </g:production>
+  <!-- DEFAULT PROLOG -->
+  <!-- ### Use the name="" names instead of Expr_1() for generated .jj code -->
+  
+  
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <!-- END PROLOG -->
+
+  
+
+  <g:production name="Expr" if="xpath xquery core">
+    <g:ref name="ExprSingle"/>
+    <g:zeroOrMore name="CommaExpr">
+      <g:string>,</g:string>
+      <g:ref name="ExprSingle"/>
+    </g:zeroOrMore>
+  </g:production>
+  <g:production name="ExprSingle" node-type="void">
+    <g:choice break="true" name="ExprSingleChoice">
+      
+      <g:ref name="ForExpr" if="xpath" lookahead="2"/>
+      <g:ref name="QuantifiedExpr" if="xquery xpath core" lookahead="2"/>
+      
+      <g:ref name="IfExpr" if="xpath core xquery" lookahead="2"/>
+	  
+	  
+	  
+	  
+	  
+      <g:ref name="OrExpr" if="xpath core xquery pathx1"/>
+    </g:choice>
+  </g:production>
+  
+  <g:production name="ForExpr" if="xpath">
+    <g:ref name="SimpleForClause"/>
+    <g:string>return</g:string>
+    <g:ref name="ExprSingle"/>
+  </g:production>
+  <!-- ForClause is slightly different now for XQuery vs. XPath.  -sb -->
+  
+  
+  <!-- SimpleForClause is slightly different now for XQuery vs. XPath.  -sb -->
+  <g:production name="SimpleForClause" if="xpath" node-type="void">
+    <g:string tokgroup="2">for</g:string>
+    <g:string>$</g:string>
+    <g:ref name="VarName"/>
+    <!-- JD: fulltext requires score variable option here. 2005-08-16 -->
+    
+    <g:string>in</g:string>
+    <g:ref name="ExprSingle"/>
+    <g:zeroOrMore name="SimpleForClauseTail">
+      <g:string>,</g:string>
+      <g:string>$</g:string>
+      <g:ref name="VarName"/>
+      <!-- JD: fulltext requires score variable option here. 2005-08-16 -->
+      
+      <g:string>in</g:string>
+      <g:ref name="ExprSingle"/>
+    </g:zeroOrMore>
+  </g:production>
+  <!-- JD: add a score variable option for fulltext 2005-08-16 -->
+  
+  
+  
+  
+  
+  
+  
+  <g:production name="QuantifiedExpr" if="xquery xpath core">
+    <g:choice name="SomeOrEvery">
+      <g:string process-value="yes" tokgroup="2">some</g:string>
+      <g:string process-value="yes" tokgroup="2">every</g:string>
+    </g:choice>
+    <g:string>$</g:string>
+    <g:ref name="VarName"/>
+    
+    <g:string>in</g:string>
+    <g:ref name="ExprSingle"/>
+    <g:zeroOrMore name="QuantifiedVarDeclListTail">
+      <g:string>,</g:string>
+      <g:string>$</g:string>
+      <g:ref name="VarName"/>
+      
+      <g:string>in</g:string>
+      <g:ref name="ExprSingle"/>
+    </g:zeroOrMore>
+    <g:string>satisfies</g:string>
+    <g:ref name="ExprSingle"/>
+  </g:production>
+  
+  
+  <g:production name="IfExpr" if="xpath core xquery">
+    <g:string tokgroup="2">if</g:string>
+    <g:string>(</g:string>
+    <g:ref name="Expr"/>
+    <g:string>)</g:string>
+    <!-- XPath TF decision to remove, Oct 16, 2002 -->
+    <g:string>then</g:string>
+    <g:ref name="ExprSingle"/>
+    <g:string>else</g:string>
+    <g:ref name="ExprSingle"/>
+  </g:production>
+  <g:exprProduction name="OperatorExpr" node-type="void" if="xquery core xpath pathx1">
+    <g:level>
+      <g:binary name="OrExpr" if="core xpath xquery pathx1" condition="&gt; 1">
+        <g:string>or</g:string>
+      </g:binary>
+    </g:level>
+    <g:level>
+      <g:binary name="AndExpr" if="core xpath xquery pathx1" condition="&gt; 1">
+        <g:string>and</g:string>
+      </g:binary>
+    </g:level>
+    <g:level>
+      <g:binary name="ComparisonExpr" prefix-seq-type="?" if="xpath xquery" condition="&gt; 1">
+        <g:choice break="true" name="ValueOrGeneralOrNodeComp">
+          <g:ref name="ValueComp"/>
+          <g:ref name="GeneralComp"/>
+          <g:ref name="NodeComp"/>
+        </g:choice>
+      </g:binary>
+    </g:level>
+    <g:level>
+      
+    </g:level>
+    <g:level>
+      <g:binary name="RangeExpr" if="xquery xpath" prefix-seq-type="?" condition="&gt; 1">
+        <g:string>to</g:string>
+      </g:binary>
+    </g:level>
+    <g:level>
+      <g:binary name="AdditiveExpr" if="xquery xpath pathx1" condition="&gt; 1">
+        <g:choice name="AdditiveOps">
+          <g:ref name="Plus"/>
+          <g:ref name="Minus"/>
+        </g:choice>
+      </g:binary>
+    </g:level>
+    <g:level>
+      <g:binary name="MultiplicativeExpr" if="xquery xpath pathx1" condition="&gt; 1">
+        <g:choice name="MultiplicativeOps">
+          <g:string>*</g:string>
+          <g:string>div</g:string>
+          <g:string>idiv</g:string>
+          <g:string>mod</g:string>
+        </g:choice>
+      </g:binary>
+    </g:level>
+    <g:level>
+      <g:binary name="UnionExpr" if="xquery xpath pathx1" condition="&gt; 1">
+        <g:choice name="UnionOps">
+          <g:string if="xquery xpath">union</g:string>
+          <g:string>|</g:string>
+        </g:choice>
+      </g:binary>
+    </g:level>
+    <g:level>
+      <g:binary name="IntersectExceptExpr" if="xquery xpath" condition="&gt; 1">
+        <g:choice name="IntersectOps">
+          <g:string>intersect</g:string>
+          <g:string>except</g:string>
+        </g:choice>
+      </g:binary>
+    </g:level>
+    <g:level>
+      <g:postfix name="InstanceofExpr" if="xquery xpath" prefix-seq-type="?" condition="&gt; 1">
+        <g:sequence name="InstanceOfExprOps">
+          <g:string tokgroup="2">instance</g:string>
+          <g:string>of</g:string>
+          <g:ref name="SequenceType"/>
+        </g:sequence>
+      </g:postfix>
+    </g:level>
+    <g:level>
+      <g:postfix name="TreatExpr" if="xquery xpath" prefix-seq-type="?" condition="&gt; 1">
+        <g:sequence name="TreatExprOps">
+          <g:string tokgroup="2">treat</g:string>
+          <g:string>as</g:string>
+          <g:ref name="SequenceType"/>
+        </g:sequence>
+      </g:postfix>
+    </g:level>
+    <g:level>
+      <g:postfix name="CastableExpr" if="core xquery xpath" prefix-seq-type="?" condition="&gt; 1">
+        <g:sequence name="CastableExprOps">
+          <g:string tokgroup="2">castable</g:string>
+          <g:string>as</g:string>
+          <g:ref name="SingleType"/>
+        </g:sequence>
+      </g:postfix>
+    </g:level>
+    <g:level>
+      <g:postfix name="CastExpr" if="core xquery xpath" prefix-seq-type="?" condition="&gt; 1">
+        <g:sequence name="CastExprOps">
+          <g:string tokgroup="2">cast</g:string>
+          <g:string>as</g:string>
+          <g:ref name="SingleType"/>
+        </g:sequence>
+      </g:postfix>
+    </g:level>
+    <g:level node-type="UnaryExpr" level-user-action="boolean keepUnary=false;">
+      <g:prefix name="UnaryExpr" if="xquery xpath pathx1" condition="keepUnary" prefix-seq-type="*">
+        <g:choice name="UnaryExprOps">
+          <g:ref name="Minus" token-user-action="keepUnary=true;"/>
+          <g:ref name="Plus" if="xquery xpath core" token-user-action="keepUnary=true;"/>
+        </g:choice>
+      </g:prefix>
+    </g:level>
+    <g:level>
+      <g:primary name="ValueExpr">
+        <g:choice name="ValueExprChoices">
+          
+          <g:ref name="PathExpr" if="xquery xpath pathx1"/>
+          
+          
+        </g:choice>
+      </g:primary>
+    </g:level>
+  </g:exprProduction>
+  <g:production name="GeneralComp" if="xpath xquery pathx1" is-binary="yes" node-type="void">
+    <g:choice break="false" name="GeneralCompOps">
+      <g:string>=</g:string>
+      <g:string>!=</g:string>
+	  <!-- This is a parser-context-based lexical state switch, which is
+		very dangerous and not reliable if lookahead is past this point.
+		The alternatives have been very carefully considered!
+		-->
+      <g:ref name="LessThanOpOrTagO" token-user-action="/* Careful! */ token_source.SwitchTo(DEFAULT); token_source.stateStack.pop(); "/>
+      <g:string>&lt;=</g:string>
+      <g:string>&gt;</g:string>
+      <g:string>&gt;=</g:string>
+    </g:choice>
+  </g:production>
+  <g:production name="ValueComp" if="xpath xquery" is-binary="yes" node-type="void">
+    <g:choice break="false" name="ValueCompOps">
+      <g:string>eq</g:string>
+      <g:string>ne</g:string>
+      <g:string>lt</g:string>
+      <g:string>le</g:string>
+      <g:string>gt</g:string>
+      <g:string>ge</g:string>
+    </g:choice>
+  </g:production>
+  <g:production name="NodeComp" if="xpath xquery" is-binary="yes" node-type="void">
+    <g:choice break="false" name="NodeCompOps">
+      <g:string>is</g:string>
+      <!-- g:ref name="IsNot"/ -->
+      <g:string>&lt;&lt;</g:string>
+      <g:string>&gt;&gt;</g:string>
+    </g:choice>
+  </g:production>
+  
+  
+  
+  
+  
+  <g:production name="PathExpr" xgc-id="leading-lone-slash" if="xquery xpath pathx1" condition="&gt;1">
+    <g:choice break="true" name="PathExprChoices">
+      <g:sequence>
+        <g:ref name="Slash"/>
+		<!-- tell the parser to shutup with lookahead="(1)" for "/ * /*" vs. "/*/*" -->
+        <g:optional name="OptionalRootExprTail" lookahead="1">
+          <g:ref name="RelativePathExpr"/>
+        </g:optional>
+      </g:sequence>
+      <g:sequence>
+        <g:ref name="SlashSlash"/>
+        <g:ref name="RelativePathExpr"/>
+      </g:sequence>
+      <g:ref name="RelativePathExpr" if="xquery xpath"/>
+    </g:choice>
+  </g:production>
+  <!-- g:production inline="yes" name="Root" value-type="id">
+    <g:string>/</g:string>
+  </g:production>
+  <g:production inline="yes" name="RootDescendants" value-type="id">
+    <g:string>//</g:string>
+  </g:production -->
+  <g:production name="RelativePathExpr" if="xquery xpath pathx1" node-type="void">
+    <g:ref name="StepExpr"/>
+    <g:zeroOrMore name="RelativePathExprTail">
+      <g:choice name="RelativePathExprStepSep">
+		<g:ref name="Slash" node-type="void"/>
+        <g:ref name="SlashSlash"/>
+      </g:choice>
+      <g:ref name="StepExpr"/>
+    </g:zeroOrMore>
+  </g:production>
+  <g:production name="StepExpr" node-type="StepExpr" if="core xquery xpath pathx1" condition="&gt;1 || isStep" prod-user-action="boolean savedIsStep = isStep; isStep=false;">
+    <g:choice name="AxisOrFilterStep">
+	  <!-- Need to look ahead 3 here for computed constructors: "element div {baz}" vs "element div baz". -->
+      <g:ref name="FilterExpr" if="xpath xquery" nt-user-action-end="isStep = savedIsStep;" lookahead="3"/>
+      
+      <g:ref name="AxisStep" nt-user-action-start="isStep=true;" nt-user-action-end="isStep = savedIsStep;"/>
+    </g:choice>
+  </g:production>
+  
+  <g:production name="AxisStep" node-type="void">
+    <g:choice name="ForwardOrReverseStep">
+      <g:ref name="ReverseStep" lookahead="2"/>
+      <g:ref name="ForwardStep"/>
+    </g:choice>
+    <g:ref name="PredicateList" if="xquery xpath pathx1"/>
+  </g:production>
+  <g:production name="ForwardStep" node-type="void">
+    <g:choice name="ForwardAxisOrAbbrev">
+      <g:sequence lookahead="2">
+        <g:ref name="ForwardAxis"/>
+        <g:ref name="NodeTest"/>
+      </g:sequence>
+      <g:ref name="AbbrevForwardStep" if="xpath xquery pathx1"/>
+    </g:choice>
+  </g:production>
+  <g:production name="ForwardAxis">
+    <g:choice break="true" name="ForwardAxisNames">
+      <g:sequence>
+        <g:string process-value="yes" tokgroup="2">child</g:string>
+        <g:string>::</g:string>
+      </g:sequence>
+      <g:sequence>
+        <g:string process-value="yes" tokgroup="2">descendant</g:string>
+        <g:string>::</g:string>
+      </g:sequence>
+      <g:sequence>
+        <g:string process-value="yes" tokgroup="2">attribute</g:string>
+        <g:string>::</g:string>
+      </g:sequence>
+      <g:sequence>
+        <g:string process-value="yes" tokgroup="2">self</g:string>
+        <g:string>::</g:string>
+      </g:sequence>
+      <g:sequence>
+        <g:string process-value="yes" tokgroup="2">descendant-or-self</g:string>
+        <g:string>::</g:string>
+      </g:sequence>
+      <g:sequence if="xquery xpath">
+        <g:string process-value="yes" tokgroup="2">following-sibling</g:string>
+        <g:string if="xquery xpath">::</g:string>
+      </g:sequence>
+      <g:sequence if="xquery xpath">
+        <g:string process-value="yes" tokgroup="2">following</g:string>
+        <g:string if="xquery xpath">::</g:string>
+      </g:sequence>
+      <g:sequence if="xpath core pathx1">
+        <g:string process-value="yes" tokgroup="2">namespace</g:string>
+        <g:string if="xpath core pathx1">::</g:string>
+      </g:sequence>
+    </g:choice>
+  </g:production>
+  <g:production name="AbbrevForwardStep" if="xquery xpath pathx1">
+    <!-- g:ref name="Dot"/ -->
+    <g:optional name="OptionalAtSugar">
+      <g:string process-value="yes">@</g:string>
+    </g:optional>
+    <g:ref name="NodeTest"/>
+    <!-- child axis -->
+  </g:production>
+  <g:production name="ReverseStep" node-type="void">
+    <g:choice name="ReverseAxisOrAbbrev">
+      <g:sequence>
+        <g:ref name="ReverseAxis"/>
+        <g:ref name="NodeTest"/>
+      </g:sequence>
+      <g:ref name="AbbrevReverseStep" if="xpath xquery pathx1"/>
+    </g:choice>
+  </g:production>
+  <g:production name="ReverseAxis">
+    <g:choice break="true" name="ReverseAxisNames">
+      <g:sequence>
+        <g:string process-value="yes" tokgroup="2">parent</g:string>
+        <g:string>::</g:string>
+      </g:sequence>
+      <g:sequence>
+        <g:string process-value="yes" tokgroup="2">ancestor</g:string>
+        <g:string>::</g:string>
+      </g:sequence>
+      <g:sequence if="xquery xpath">
+        <g:string process-value="yes" tokgroup="2">preceding-sibling</g:string>
+        <g:string if="xquery xpath">::</g:string>
+      </g:sequence>
+      <g:sequence if="xquery xpath">
+        <g:string process-value="yes" tokgroup="2">preceding</g:string>
+        <g:string if="xquery xpath">::</g:string>
+      </g:sequence>
+      <g:sequence>
+        <g:string process-value="yes" tokgroup="2">ancestor-or-self</g:string>
+        <g:string>::</g:string>
+      </g:sequence>
+    </g:choice>
+  </g:production>
+  <g:production name="AbbrevReverseStep" if="xquery xpath pathx1">
+    <g:string>..</g:string>
+  </g:production>
+  <g:production name="NodeTest">
+    <g:choice name="KindOrNameTest">
+      <g:ref name="KindTest" lookahead="2"/>
+      <g:ref name="NameTest"/>
+    </g:choice>
+  </g:production>
+  <g:production name="NameTest">
+    <g:choice name="QNameOrWildcard">
+      <g:ref name="QName"/>
+      <g:ref name="Wildcard"/>
+    </g:choice>
+  </g:production>
+  <g:production name="Wildcard" whitespace-spec="explicit">
+    <g:choice break="true" name="WildcardChoice">
+      <g:string process-value="yes">*</g:string>
+      <g:ref name="NCNameColonStar" needs-exposition-parens="yes"/>
+      <g:ref name="StarColonNCName" if="xquery core xpath" needs-exposition-parens="yes"/>
+    </g:choice>
+  </g:production>
+  <g:production name="FilterExpr" node-type="void" if="xquery xpath pathx1">
+    <g:ref name="PrimaryExpr" if="xpath xquery"/>
+    
+    <g:ref name="PredicateList"/>
+  </g:production>
+  <g:production name="PredicateList" if="xquery xpath pathx1" condition="&gt; 0">
+    <g:zeroOrMore name="PredicatesListX">
+      <g:ref name="Predicate"/>
+    </g:zeroOrMore>
+  </g:production>
+  <g:production name="Predicate" if="xquery xpath pathx1" condition="&gt; 0">
+    <g:string>[</g:string>
+    <g:ref name="Expr" if="xpath xquery core"/>
+    
+    <g:string>]</g:string>
+  </g:production>
+  
+  <g:production name="PrimaryExpr" node-type="void">
+    <g:choice name="PrimaryExprChoices">
+      <g:ref name="Literal"/>
+      <g:ref name="VarRef" if="xpath xquery core"/>
+      <g:ref name="ParenthesizedExpr" if="xpath xquery core"/>
+      <g:ref name="ContextItemExpr" nt-user-action-start="isStep=true;" if="xquery xpath"/>
+      <g:ref name="FunctionCall" if="xpath xquery core" lookahead="2"/>
+      
+      
+      
+    </g:choice>
+  </g:production>
+  <g:production name="Literal" node-type="void">
+    <g:choice name="NumericOrStringLit">
+      <g:ref name="NumericLiteral"/>
+      <g:ref name="StringLiteral"/>
+    </g:choice>
+  </g:production>
+  <g:production name="NumericLiteral" node-type="void">
+    <g:choice name="NumericLitChoice">
+      <g:ref name="IntegerLiteral"/>
+      <g:ref name="DecimalLiteral"/>
+      <g:ref name="DoubleLiteral" if="xpath xquery core"/>
+    </g:choice>
+  </g:production>
+  <g:production name="VarRef" node-type="void">
+    <g:string>$</g:string>
+    <g:ref name="VarName"/>
+  </g:production>
+  <g:production name="VarName">
+    <g:ref name="QName"/>
+  </g:production>
+  <g:production name="ParenthesizedExpr">
+    <g:string>(</g:string>
+    <g:optional name="OptionalExpr">
+      <g:ref name="Expr"/>
+    </g:optional>
+    
+    <g:string>)</g:string>
+  </g:production>
+  <g:production name="ContextItemExpr" if="xquery xpath pathx1">
+    <g:string process-value="yes">.</g:string>
+  </g:production>
+  
+  
+  <g:production name="FunctionCall" comment-id="parens" xgc-id="reserved-function-names">
+     <g:ref name="FunctionQName" tokgroup="2"/>
+     <g:string>(</g:string>
+     <g:optional name="ArgList">
+      <g:ref name="ExprSingle"/>
+      <g:zeroOrMore name="ArgListTail">
+        <g:string>,</g:string>
+        <g:ref name="ExprSingle"/>
+      </g:zeroOrMore>
+    </g:optional>
+    <g:string>)</g:string>
+  </g:production>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <!-- This is the logical location for LocalNamespaceDecls -->
+  <!-- FS.E002 start -->
+  
+  
+  
+  
+  
+  
+  <g:production name="SingleType">
+    <g:ref name="AtomicType"/>
+    <g:optional name="OptionalOccurrenceIndicator">
+      <g:string process-value="yes">?</g:string>
+    </g:optional>
+  </g:production>
+  
+  <g:production name="SequenceType">
+    <g:choice break="true" name="ItemTypeOrEmpty">
+      <g:sequence lookahead="2">
+        <g:string process-value="yes" tokgroup="3">empty-sequence</g:string>
+        <g:string>(</g:string>
+        <g:string>)</g:string>
+      </g:sequence>
+      <g:sequence>
+        <g:ref name="ItemType"/>
+        <g:optional name="OptionalOccurrenceIndicatorForSequenceType" lookahead="1">
+          <g:ref name="OccurrenceIndicator"/>
+        </g:optional>
+      </g:sequence>
+    </g:choice>
+  </g:production>
+  <g:production name="OccurrenceIndicator" xgc-id="occurrence-indicators">
+    <g:choice name="OccurrenceIndicatorOps">
+      <!-- ref name="Star" if="xpath xquery core" show="no"/>
+        <g:ref name="Multiply" if="xpath xquery core"/>
+        <g:ref name="Plus"/>
+        <g:ref name="QMark"/ -->
+      <g:string process-value="yes">?</g:string>
+      <g:string process-value="yes">*</g:string>
+      <g:ref node-type="void" name="Plus"/>
+    </g:choice>
+  </g:production>
+  <g:production name="ItemType">
+    <g:choice break="false" name="ItemTypeChoice">
+      <g:ref name="KindTest" lookahead="2"/>
+      <g:sequence lookahead="2">
+        <g:string process-value="yes" tokgroup="3">item</g:string>
+        <g:string>(</g:string>
+        <g:string>)</g:string>
+      </g:sequence>
+      <g:ref name="AtomicType"/>
+    </g:choice>
+  </g:production>
+  <g:production name="AtomicType">
+    <g:ref name="QName"/>
+  </g:production>
+  <g:production name="KindTest" node-type="void">
+    <g:choice break="true" name="KindTestChoice">
+      <g:ref name="DocumentTest"/>
+      <g:ref name="ElementTest"/>
+      <g:ref name="AttributeTest"/>
+      <g:ref name="SchemaElementTest"/>
+      <g:ref name="SchemaAttributeTest"/>
+      <g:ref name="PITest"/>
+      <g:ref name="CommentTest"/>
+      <g:ref name="TextTest"/>
+      <g:ref name="AnyKindTest"/>
+    </g:choice>
+  </g:production>
+  <g:production name="AnyKindTest">
+    <g:string tokgroup="2">node</g:string>
+    <g:string>(</g:string>
+    <g:string>)</g:string>
+  </g:production>
+  <g:production name="DocumentTest">
+    <g:string tokgroup="2">document-node</g:string>
+	<g:string>(</g:string>
+    <g:optional name="OptionalDocumentTestBody">
+      <g:choice name="DocumentTestBodyChoice">
+        <g:ref name="ElementTest"/>
+        <g:ref name="SchemaElementTest"/>
+      </g:choice>
+    </g:optional>
+    <g:string>)</g:string>
+  </g:production>
+  <g:production name="TextTest">
+    <g:string tokgroup="2">text</g:string>
+    <g:string>(</g:string>
+    <g:string>)</g:string>
+  </g:production>
+  <g:production name="CommentTest">
+	<g:string tokgroup="2">comment</g:string>
+	<g:string>(</g:string>
+	<g:string>)</g:string>
+  </g:production>
+  <g:production name="PITest">
+    <g:string tokgroup="2">processing-instruction</g:string>
+    <g:string>(</g:string>
+    <g:optional name="OptionalPITestBody">
+      <g:choice name="NCNameForPIOrStringLit">
+        <g:ref name="NCName" if="xpath xquery core"/>
+        <g:ref name="StringLiteral"/>
+      </g:choice>
+    </g:optional>
+    <g:string>)</g:string>
+  </g:production>
+  <g:production name="AttributeTest">
+    <g:string tokgroup="2">attribute</g:string>
+    <g:string>(</g:string>
+    <g:optional name="OptionalAttributeTestBody">
+      <g:sequence>
+        <!-- g:ref name="At"/ -->
+        <g:ref name="AttribNameOrWildcard"/>
+        <g:optional name="AttributeTestBodyOptionalParam">
+          <g:string>,</g:string>
+          <g:ref name="TypeName"/>
+        </g:optional>
+      </g:sequence>
+    </g:optional>
+    <g:string>)</g:string>
+  </g:production>
+  <g:production name="AttribNameOrWildcard" if="xpath xquery core">
+    <g:choice name="AttrNameOrWildcardChoice">
+      <g:ref name="AttributeName"/>
+      <g:string process-value="yes">*</g:string>
+    </g:choice>
+  </g:production>
+  <g:production name="SchemaAttributeTest">
+    <g:string tokgroup="2">schema-attribute</g:string>
+    <g:string>(</g:string>
+    <g:ref name="AttributeDeclaration"/>
+    <g:string>)</g:string>
+  </g:production>
+  <g:production name="AttributeDeclaration">
+    <g:ref name="AttributeName"/>
+  </g:production>
+  <g:production name="ElementTest">
+	<g:string tokgroup="2">element</g:string>
+	<g:string>(</g:string>
+    <g:optional name="OptionalElementTestBody">
+      <g:sequence>
+        <g:ref name="ElementNameOrWildcard"/>
+        <g:optional name="ElementTestBodyOptionalParam">
+          <g:string>,</g:string>
+          <g:ref name="TypeName"/>
+          <g:optional name="Nillable">
+            <g:string process-value="yes">?</g:string>
+          </g:optional>
+        </g:optional>
+      </g:sequence>
+    </g:optional>
+    <g:string>)</g:string>
+  </g:production>
+  <g:production name="ElementNameOrWildcard" if="xpath xquery core">
+    <g:choice name="ElemNameOrWildcardChoice">
+      <g:ref name="ElementName"/>
+      <g:string process-value="yes">*</g:string>
+    </g:choice>
+  </g:production>
+  <g:production name="SchemaElementTest">
+	<g:string tokgroup="2">schema-element</g:string>
+	<g:string>(</g:string>
+    <g:ref name="ElementDeclaration"/>
+    <g:string>)</g:string>
+  </g:production>
+  <g:production name="ElementDeclaration" if="xpath xquery core">
+    <g:ref name="ElementName"/>
+  </g:production>
+  <g:production name="AttributeName" if="xpath xquery core">
+    <g:ref name="QName"/>
+  </g:production>
+  <g:production name="ElementName" if="xpath xquery core">
+    <g:ref name="QName"/>
+  </g:production>
+  <g:production name="TypeName" if="xpath xquery core">
+    <g:ref name="QName"/>
+  </g:production>
+  
+
+  <!-- ============================== -->
+  <!-- XSLT PATTERNS -->
+  <!-- ============================== -->
+  
+  
+  
+  
+  
+  
+  
+  <!-- SJB Full Text Productions start -->
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  <!-- JD: START FT positional filters sub-grammar -->
+  
+  
+  
+  
+  
+  
+  
+  
+  <!-- JD: END FT positional filters sub-grammar -->
+
+  <!-- JD: START FTMatchOptions sub-grammar -->
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <!-- JD: END FTMatchOptions and children -->
+  
+  <!-- SJB Full Text Productions end -->
+  <!-- XQuery Update Facility Start -->
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <!-- End XQuery Update Facility -->
+
+  <g:production name="NCName" show="no" is-xml="yes" xhref="http://www.w3.org/TR/REC-xml-names/#NT-NCName" xgc-id="xml-version" reduce-contained="yes">
+	<!-- TODO: For right now, parser has to flag NCName with ":" in it!  -->
+	<!-- One would like to structure QName as a multi-part production... however, the problem with this
+		is it makes it necessary to make a look-ahead of 4 for many choices... for instance, functionCall:
+		foo:baz(). Also whitespace is easier to control if QName is a single token!  -->
+	<g:ref name="QName"/>
+  </g:production>
+  <g:production name="QName" show="no" xgc-id="xml-version" xhref="http://www.w3.org/TR/REC-xml-names/#NT-QName" is-xml="yes" reduce-contained="yes">
+    <g:choice name="QNameChoiceList">
+      <g:ref name="FunctionQName"/>
+	  <g:string process-value="yes">attribute</g:string>
+	  <g:string process-value="yes">comment</g:string>
+	  <g:string process-value="yes">document-node</g:string>
+	  <g:string process-value="yes">element</g:string>
+	  <g:string process-value="yes" if="xpath core xquery">if</g:string>
+	  <g:string process-value="yes">item</g:string>
+	  <g:string process-value="yes">node</g:string>
+	  <g:string process-value="yes">processing-instruction</g:string>
+	  <g:string process-value="yes">schema-attribute</g:string>
+	  <g:string process-value="yes">schema-element</g:string>
+	  <g:string process-value="yes">text</g:string>
+	  
+	  <g:string process-value="yes">empty-sequence</g:string>
+	</g:choice>
+  </g:production>
+
+  <g:production name="FunctionQName" exposition-name="QName" show="no" xgc-id="xml-version" xhref="http://www.w3.org/TR/REC-xml-names/#NT-QName" is-xml="yes" reduce-contained="yes">
+    <g:choice name="FunctionQNameChoiceList">
+      <g:ref name="QNameToken" show="no"/>
+	  <g:ref node-type="void" name="External"/>
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  <g:string process-value="yes">return</g:string>
+	  
+	  
+	  <g:string process-value="yes">for</g:string>
+	  <g:string process-value="yes">in</g:string>
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  <g:string process-value="yes" if="xquery xpath core">some</g:string>
+	  <g:string process-value="yes" if="xquery xpath core">every</g:string>
+	  <g:string process-value="yes" if="xquery xpath core">satisfies</g:string>
+	  
+	  <g:string process-value="yes" if="xpath core xquery">then</g:string>
+	  <g:string process-value="yes" if="xpath core xquery">else</g:string>
+	  <g:string process-value="yes" if="core xpath xquery pathx1">or</g:string>
+	  <g:string process-value="yes" if="core xpath xquery pathx1">and</g:string>
+	  
+	  <g:string process-value="yes" if="xquery xpath">to</g:string>
+	  <g:string process-value="yes">div</g:string>
+	  <g:string process-value="yes" if="xquery xpath pathx1">idiv</g:string>
+	  <g:string process-value="yes" if="xquery xpath pathx1">mod</g:string>
+	  <g:string process-value="yes" if="xquery xpath">union</g:string>
+	  <g:string process-value="yes" if="xquery xpath">intersect</g:string>
+	  <g:string process-value="yes" if="xquery xpath">except</g:string>
+	  <g:string process-value="yes" if="xquery xpath">instance</g:string>
+	  <g:string process-value="yes" if="xquery xpath">of</g:string>
+	  <g:string process-value="yes" if="xquery xpath">treat</g:string>
+	  <g:string process-value="yes" if="core xquery xpath">castable</g:string>
+	  <g:string process-value="yes" if="core xquery xpath">cast</g:string>
+	  <g:string process-value="yes" if="xpath xquery">eq</g:string>
+	  <g:string process-value="yes" if="xpath xquery">ne</g:string>
+	  <g:string process-value="yes" if="xpath xquery">lt</g:string>
+	  <g:string process-value="yes" if="xpath xquery">le</g:string>
+	  <g:string process-value="yes" if="xpath xquery">gt</g:string>
+	  <g:string process-value="yes" if="xpath xquery">ge</g:string>
+	  <g:string process-value="yes" if="xpath xquery">is</g:string>
+	  
+	  <g:string process-value="yes">child</g:string>
+	  <g:string process-value="yes">descendant</g:string>
+	  <g:string process-value="yes">self</g:string>
+	  <g:string process-value="yes">descendant-or-self</g:string>
+	  <g:string process-value="yes" if="xquery xpath">following-sibling</g:string>
+	  <g:string process-value="yes" if="xquery xpath">following</g:string>
+	  <g:string process-value="yes">parent</g:string>
+	  <g:string process-value="yes">ancestor</g:string>
+	  <g:string process-value="yes" if="xquery xpath">preceding-sibling</g:string>
+	  <g:string process-value="yes" if="xquery xpath">preceding</g:string>
+	  <g:string process-value="yes">ancestor-or-self</g:string>
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  <g:string process-value="yes">type</g:string>
+	</g:choice>
+  </g:production>
+
+  <!-- FS.E002 start -->
+  
+  <!-- FS.E002 end -->
+
+
+  <!-- ====================== Lexical Specifications ==================== -->
+  <!-- re-use "To" -->
+  <!-- We may need to use an alias for "To", IF we decide the FTToIndicator goes in a different state from "To" -->
+  <!-- SJB this is the same as AtString Literal, but with different transitions -->
+  <!-- SJB add Full Text terminals END -->
+  <!-- XQuery Update Facility -->
+  <!-- XQeary Update Facility End -->
+  <g:token name="IntegerLiteral" inline="false" value-type="number" type="literal" delimiter-type="nondelimiting">
+    <g:ref name="Digits"/>
+  </g:token>
+  <g:token name="DecimalLiteral" inline="false" value-type="number" type="literal" whitespace-spec="explicit" delimiter-type="nondelimiting">
+    <g:choice name="DecimalString">
+      <g:sequence>
+        <g:string>.</g:string>
+        <g:ref name="Digits"/>
+      </g:sequence>
+      <g:sequence>
+        <g:ref name="Digits"/>
+        <g:string>.</g:string>
+        <g:zeroOrMore name="DecimalFractionPart">
+          <g:charClass>
+            <g:charRange minChar="0" maxChar="9"/>
+          </g:charClass>
+        </g:zeroOrMore>
+      </g:sequence>
+    </g:choice>
+  </g:token>
+  <g:token name="DoubleLiteral" inline="false" delimiter-type="nondelimiting" value-type="number" type="literal" whitespace-spec="explicit" if="xpath xquery core">
+    <g:choice name="DoubleString">
+      <g:sequence>
+        <g:string>.</g:string>
+        <g:ref name="Digits"/>
+      </g:sequence>
+      <g:sequence>
+        <g:ref name="Digits"/>
+        <g:optional name="DoubleOptionFractionPart">
+          <g:string>.</g:string>
+          <g:zeroOrMore name="DoubleFractionPart">
+            <g:charClass>
+              <g:charRange minChar="0" maxChar="9"/>
+            </g:charClass>
+          </g:zeroOrMore>
+        </g:optional>
+      </g:sequence>
+    </g:choice>
+    <g:charClass>
+      <g:char>e</g:char>
+      <g:char>E</g:char>
+    </g:charClass>
+    <g:optional name="DoubleNegOrPos">
+      <g:charClass>
+        <g:char>+</g:char>
+        <g:char>-</g:char>
+      </g:charClass>
+    </g:optional>
+    <g:ref name="Digits"/>
+  </g:token>
+
+  <g:token name="StringLiteral" inline="false" value-type="string" type="literal" whitespace-spec="explicit" delimiter-type="delimiting">
+    <g:choice name="StringDilimitType">
+      <g:sequence>
+        <g:string>"</g:string>
+        <g:zeroOrMore name="CharsInQuote">
+          <g:choice name="QuoteTypeChar">
+            
+            
+            <g:ref name="EscapeQuot"/>
+            <g:complement>
+              <g:charClass>
+                <g:char>"</g:char>
+                
+              </g:charClass>
+            </g:complement>
+          </g:choice>
+        </g:zeroOrMore>
+        <g:string>"</g:string>
+      </g:sequence>
+      <g:sequence>
+        <g:string>'</g:string>
+        <g:zeroOrMore name="CharsInApos">
+          <g:choice name="AposTypeChar">
+            
+            
+            <g:ref name="EscapeApos"/>
+            <g:complement>
+              <g:charClass>
+                <g:char>'</g:char>
+                
+              </g:charClass>
+            </g:complement>
+          </g:choice>
+        </g:zeroOrMore>
+        <g:string>'</g:string>
+      </g:sequence>
+    </g:choice>
+  </g:token>
+  
+
+  <g:skip recognize="DEFAULT OPERAND OPERATOR SINGLETYPE ITEMTYPE KINDTEST CLOSEKINDTEST OCCURRENCEINDICATOR VARNAME" if="xpath">
+    <g:oneOrMore name="SkippedWhitespaceStringForXPath">
+      <g:ref name="WhitespaceChar"/>
+    </g:oneOrMore>
+  </g:skip>
+  <!-- g:token name="NotOccurrenceIndicator" skip="yes">
+    <g:complement>
+      <g:charClass>
+        <g:char>*</g:char>
+        <g:char>?</g:char>
+        <g:char>+</g:char>
+      </g:charClass>
+    </g:complement>
+  </g:token -->
+  
+
+  <g:token name="Minus" value-type="id">
+    <g:string>-</g:string>
+  </g:token>
+  <g:token name="Plus" value-type="id">
+    <g:string>+</g:string>
+  </g:token>
+  <g:token name="External" value-type="id">
+    <g:string>external</g:string>
+  </g:token>
+  
+  
+  
+  
+
+  <!-- JD: fulltext match options may be declared in prolog. 2005-08-16 -->
+  <g:token name="Prefix" value-type="string" visible="false" is-xml="yes" xhref="http://www.w3.org/TR/REC-xml-names/#NT-Prefix" xgc-id="xml-version">
+    <g:ref name="NCNameTok"/>
+  </g:token>
+  <g:token name="LocalPart" value-type="string" visible="false" is-xml="yes" xhref="http://www.w3.org/TR/REC-xml-names/#NT-LocalPart" xgc-id="xml-version">
+    <g:ref name="NCNameTok"/>
+  </g:token>
+  <g:token name="Nmstart" inline="false" visible="false">
+    <g:choice name="NmstartChar">
+      <g:ref name="Letter"/>
+      <g:string>_</g:string>
+    </g:choice>
+  </g:token>
+  <g:token name="Nmchar" inline="false" visible="false">
+    <g:choice name="NmcharChoice">
+      <g:ref name="Letter"/>
+      <g:ref name="CombiningChar"/>
+      <g:ref name="Extender"/>
+      <g:ref name="Digit"/>
+      <g:string>.</g:string>
+      <g:string>-</g:string>
+      <g:string>_</g:string>
+    </g:choice>
+  </g:token>
+
+  <!-- OpenQuot and CloseQuote need to be before StringLiteral in
+	order for them to be matched by flex. -->
+  <!-- Recognizing it in content disallows ]]> in content same as XML. -->
+  <!-- This effectively disallows in element content and attribute
+       values ampersands that are not part of entity or character
+       references. -->
+  
+
+  <!-- Recognize in OPERATOR state for function definitions. -->
+  <!-- These should be query only, once we get the validate issue fixed! -->
+  <!-- Should only be recognized in attribute content. -->
+  <g:token name="EscapeQuot" inline="false" override="yes" delimiter-type="hide">
+    <g:string>""</g:string>
+  </g:token>
+  <g:token name="EscapeApos" inline="false" delimiter-type="hide">
+    <g:string>''</g:string>
+  </g:token>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  <g:token name="LessThanOpOrTagO" override="yes">
+    <g:string>&lt;</g:string>
+  </g:token>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <!-- Recognizing it in content disallows ]]> in content same as XML. -->
+  
+  
+  
+  
+  <g:token name="Comment" if="xquery xpath" inline="false" comment-id="comments" special="yes" type="skip-token" whitespace-spec="explicit" delimiter-type="delimiting">
+    <g:ref name="CommentStart"/>
+    <g:zeroOrMore name="OptionalCommentContent">
+      <g:choice name="CharOrComment">
+        <g:ref name="CommentContents"/>
+        <g:ref name="Comment" notational-only="yes"/>
+      </g:choice>
+    </g:zeroOrMore>
+    <g:ref name="CommentEnd"/>
+  </g:token>
+  <g:token name="CommentStart" special="yes" inline="true" type="skip-token" comment-id="comments">
+    <g:string>(:</g:string>
+  </g:token>
+  <!-- For the moment removed special="yes" from CommentContent-->
+  <g:token name="CommentContent" special="yes" inline="true" type="skip-token">
+    <g:ref name="Char"/>
+  </g:token>
+  <g:token name="CommentEnd" special="yes" inline="true" type="skip-token">
+    <g:string>:)</g:string>
+  </g:token>
+  <g:token name="Slash">
+    <g:string>/</g:string>
+  </g:token>
+  <g:token name="SlashSlash">
+    <g:string>//</g:string>
+  </g:token>
+  
+  
+  
+  <g:token name="QNameToken" exposition-name="QName" delimiter-type="nondelimiting" inline="false" node-type="void" is-xml="yes" xhref="http://www.w3.org/TR/REC-xml-names/#NT-QName" xgc-id="xml-version">
+    <g:optional name="QNamePrefixAndDelimiter">
+      <g:ref name="Prefix"/>
+      <g:string>:</g:string>
+    </g:optional>
+    <g:ref name="LocalPart"/>
+  </g:token>
+  
+  
+  
+  <g:token name="NCNameTok" exposition-name="NCName" delimiter-type="nondelimiting" inline="false" value-type="string" is-xml="yes" xhref="http://www.w3.org/TR/REC-xml-names/#NT-NCName" xgc-id="xml-version">
+    <g:ref name="Nmstart"/>
+    <g:zeroOrMore name="NCNameTail">
+      <g:ref name="Nmchar"/>
+    </g:zeroOrMore>
+  </g:token>
+  <g:token name="NCNameColonStar" value-type="string" inline="true">
+    <g:ref name="NCNameTok"/>
+    <g:string>:</g:string>
+    <g:string>*</g:string>
+  </g:token>
+  <g:token name="StarColonNCName" value-type="string" if="xpath xquery core" inline="true">
+    <g:string>*</g:string>
+    <g:string>:</g:string>
+    <g:ref name="NCNameTok"/>
+  </g:token>
+  
+  
+  
+  <g:token name="Char" inline="false" delimiter-type="hide" value-type="string" is-xml="yes" xgc-id="xml-version" xhref="http://www.w3.org/TR/REC-xml#NT-Char">
+    <g:charClass>
+      <g:charCode value="0009"/>
+      <g:charCode value="000D"/>
+      <g:charCode value="000A"/>
+      <!-- This isn't quite right, but JavaCC doesn't understand surrogates. -->
+      <g:charCodeRange minValue="0020" maxValue="FFFD"/>
+    </g:charClass>
+  </g:token>
+  <g:token name="Digits" delimiter-type="hide" inline="false" is-local-to-terminal-symbol="yes">
+    <g:oneOrMore name="DigitsString">
+      <g:charClass>
+        <g:charRange minChar="0" maxChar="9"/>
+      </g:charClass>
+    </g:oneOrMore>
+  </g:token>
+  <g:token name="CommentContents" special="yes" inline="false" if="xquery xpath" is-local-to-terminal-symbol="yes">
+    <g:oneOrMore name="CommentContentBody" subtract-reg-expr="(Char* ('(:' | ':)') Char*)">
+      <g:ref name="CommentContent"/>
+    </g:oneOrMore>
+  </g:token>
+  <!-- It would be nice to not take character content runs one character
+       at a time.  However, it seems difficult to say, "all these characters
+       but these three", at least in JavaCC. -->
+  <g:token name="WhitespaceChar" inline="false" visible="false">
+    <g:charClass>
+      <!-- NOTE: From XML 1.1: -->
+      <!-- To simplify the tasks of applications, the XML processor MUST behave as if it normalized  -->
+      <!-- all line breaks in external parsed entities (including the document entity) on input,  -->
+      <!-- before parsing, by translating all of the following to a single #xA character: -->
+      <!-- 1. the two-character sequence #xD #xA -->
+      <!-- 2. the two-character sequence #xD #x85 -->
+      <!-- 3. the single character #x85 -->
+      <!-- 4. the single character #x2028 -->
+      <!-- 5. any #xD character that is not immediately followed by #xA or #x85. -->
+      <g:charCode value="0009"/>
+      <g:charCode value="000D"/>
+      <g:charCode value="000A"/>
+      <!-- char xml:space="preserve"> </g:char -->
+      <!-- SGML mode in EMacs doesn't like xml:space, so
+                             we avoid it for now. -->
+      <g:charCode value="0020"/>
+    </g:charClass>
+  </g:token>
+  <g:token name="Letter" inline="false" is-macro="yes" is-xml="yes" xhref="http://www.w3.org/TR/REC-xml#NT-Letter" xgc-id="xml-version" visible="false">
+    <g:choice name="LetterChars">
+      <g:ref name="BaseChar"/>
+      <g:ref name="Ideographic"/>
+    </g:choice>
+  </g:token>
+  <g:token name="BaseChar" inline="false" is-macro="yes" is-xml="yes" xhref="http://www.w3.org/TR/REC-xml#NT-BaseChar" xgc-id="xml-version" visible="false">
+    <g:charClass>
+      <g:charCodeRange minValue="0041" maxValue="005a"/>
+      <g:charCodeRange minValue="0061" maxValue="007a"/>
+      <g:charCodeRange minValue="00c0" maxValue="00d6"/>
+      <g:charCodeRange minValue="00d8" maxValue="00f6"/>
+      <g:charCodeRange minValue="00f8" maxValue="00ff"/>
+      <g:charCodeRange minValue="0100" maxValue="0131"/>
+      <g:charCodeRange minValue="0134" maxValue="013e"/>
+      <g:charCodeRange minValue="0141" maxValue="0148"/>
+      <g:charCodeRange minValue="014a" maxValue="017e"/>
+      <g:charCodeRange minValue="0180" maxValue="01c3"/>
+      <g:charCodeRange minValue="01cd" maxValue="01f0"/>
+      <g:charCodeRange minValue="01f4" maxValue="01f5"/>
+      <g:charCodeRange minValue="01fa" maxValue="0217"/>
+      <g:charCodeRange minValue="0250" maxValue="02a8"/>
+      <g:charCodeRange minValue="02bb" maxValue="02c1"/>
+      <g:charCode value="0386"/>
+      <g:charCodeRange minValue="0388" maxValue="038a"/>
+      <g:charCode value="038c"/>
+      <g:charCodeRange minValue="038e" maxValue="03a1"/>
+      <g:charCodeRange minValue="03a3" maxValue="03ce"/>
+      <g:charCodeRange minValue="03d0" maxValue="03d6"/>
+      <g:charCode value="03da"/>
+      <g:charCode value="03dc"/>
+      <g:charCode value="03de"/>
+      <g:charCode value="03e0"/>
+      <g:charCodeRange minValue="03e2" maxValue="03f3"/>
+      <g:charCodeRange minValue="0401" maxValue="040c"/>
+      <g:charCodeRange minValue="040e" maxValue="044f"/>
+      <g:charCodeRange minValue="0451" maxValue="045c"/>
+      <g:charCodeRange minValue="045e" maxValue="0481"/>
+      <g:charCodeRange minValue="0490" maxValue="04c4"/>
+      <g:charCodeRange minValue="04c7" maxValue="04c8"/>
+      <g:charCodeRange minValue="04cb" maxValue="04cc"/>
+      <g:charCodeRange minValue="04d0" maxValue="04eb"/>
+      <g:charCodeRange minValue="04ee" maxValue="04f5"/>
+      <g:charCodeRange minValue="04f8" maxValue="04f9"/>
+      <g:charCodeRange minValue="0531" maxValue="0556"/>
+      <g:charCode value="0559"/>
+      <g:charCodeRange minValue="0561" maxValue="0586"/>
+      <g:charCodeRange minValue="05d0" maxValue="05ea"/>
+      <g:charCodeRange minValue="05f0" maxValue="05f2"/>
+      <g:charCodeRange minValue="0621" maxValue="063a"/>
+      <g:charCodeRange minValue="0641" maxValue="064a"/>
+      <g:charCodeRange minValue="0671" maxValue="06b7"/>
+      <g:charCodeRange minValue="06ba" maxValue="06be"/>
+      <g:charCodeRange minValue="06c0" maxValue="06ce"/>
+      <g:charCodeRange minValue="06d0" maxValue="06d3"/>
+      <g:charCode value="06d5"/>
+      <g:charCodeRange minValue="06e5" maxValue="06e6"/>
+      <g:charCodeRange minValue="0905" maxValue="0939"/>
+      <g:charCode value="093d"/>
+      <g:charCodeRange minValue="0958" maxValue="0961"/>
+      <g:charCodeRange minValue="0985" maxValue="098c"/>
+      <g:charCodeRange minValue="098f" maxValue="0990"/>
+      <g:charCodeRange minValue="0993" maxValue="09a8"/>
+      <g:charCodeRange minValue="09aa" maxValue="09b0"/>
+      <g:charCode value="09b2"/>
+      <g:charCodeRange minValue="09b6" maxValue="09b9"/>
+      <g:charCodeRange minValue="09dc" maxValue="09dd"/>
+      <g:charCodeRange minValue="09df" maxValue="09e1"/>
+      <g:charCodeRange minValue="09f0" maxValue="09f1"/>
+      <g:charCodeRange minValue="0a05" maxValue="0a0a"/>
+      <g:charCodeRange minValue="0a0f" maxValue="0a10"/>
+      <g:charCodeRange minValue="0a13" maxValue="0a28"/>
+      <g:charCodeRange minValue="0a2a" maxValue="0a30"/>
+      <g:charCodeRange minValue="0a32" maxValue="0a33"/>
+      <g:charCodeRange minValue="0a35" maxValue="0a36"/>
+      <g:charCodeRange minValue="0a38" maxValue="0a39"/>
+      <g:charCodeRange minValue="0a59" maxValue="0a5c"/>
+      <g:charCode value="0a5e"/>
+      <g:charCodeRange minValue="0a72" maxValue="0a74"/>
+      <g:charCodeRange minValue="0a85" maxValue="0a8b"/>
+      <g:charCode value="0a8d"/>
+      <g:charCodeRange minValue="0a8f" maxValue="0a91"/>
+      <g:charCodeRange minValue="0a93" maxValue="0aa8"/>
+      <g:charCodeRange minValue="0aaa" maxValue="0ab0"/>
+      <g:charCodeRange minValue="0ab2" maxValue="0ab3"/>
+      <g:charCodeRange minValue="0ab5" maxValue="0ab9"/>
+      <g:charCode value="0abd"/>
+      <g:charCode value="0ae0"/>
+      <g:charCodeRange minValue="0b05" maxValue="0b0c"/>
+      <g:charCodeRange minValue="0b0f" maxValue="0b10"/>
+      <g:charCodeRange minValue="0b13" maxValue="0b28"/>
+      <g:charCodeRange minValue="0b2a" maxValue="0b30"/>
+      <g:charCodeRange minValue="0b32" maxValue="0b33"/>
+      <g:charCodeRange minValue="0b36" maxValue="0b39"/>
+      <g:charCode value="0b3d"/>
+      <g:charCodeRange minValue="0b5c" maxValue="0b5d"/>
+      <g:charCodeRange minValue="0b5f" maxValue="0b61"/>
+      <g:charCodeRange minValue="0b85" maxValue="0b8a"/>
+      <g:charCodeRange minValue="0b8e" maxValue="0b90"/>
+      <g:charCodeRange minValue="0b92" maxValue="0b95"/>
+      <g:charCodeRange minValue="0b99" maxValue="0b9a"/>
+      <g:charCode value="0b9c"/>
+      <g:charCodeRange minValue="0b9e" maxValue="0b9f"/>
+      <g:charCodeRange minValue="0ba3" maxValue="0ba4"/>
+      <g:charCodeRange minValue="0ba8" maxValue="0baa"/>
+      <g:charCodeRange minValue="0bae" maxValue="0bb5"/>
+      <g:charCodeRange minValue="0bb7" maxValue="0bb9"/>
+      <g:charCodeRange minValue="0c05" maxValue="0c0c"/>
+      <g:charCodeRange minValue="0c0e" maxValue="0c10"/>
+      <g:charCodeRange minValue="0c12" maxValue="0c28"/>
+      <g:charCodeRange minValue="0c2a" maxValue="0c33"/>
+      <g:charCodeRange minValue="0c35" maxValue="0c39"/>
+      <g:charCodeRange minValue="0c60" maxValue="0c61"/>
+      <g:charCodeRange minValue="0c85" maxValue="0c8c"/>
+      <g:charCodeRange minValue="0c8e" maxValue="0c90"/>
+      <g:charCodeRange minValue="0c92" maxValue="0ca8"/>
+      <g:charCodeRange minValue="0caa" maxValue="0cb3"/>
+      <g:charCodeRange minValue="0cb5" maxValue="0cb9"/>
+      <g:charCode value="0cde"/>
+      <g:charCodeRange minValue="0ce0" maxValue="0ce1"/>
+      <g:charCodeRange minValue="0d05" maxValue="0d0c"/>
+      <g:charCodeRange minValue="0d0e" maxValue="0d10"/>
+      <g:charCodeRange minValue="0d12" maxValue="0d28"/>
+      <g:charCodeRange minValue="0d2a" maxValue="0d39"/>
+      <g:charCodeRange minValue="0d60" maxValue="0d61"/>
+      <g:charCodeRange minValue="0e01" maxValue="0e2e"/>
+      <g:charCode value="0e30"/>
+      <g:charCodeRange minValue="0e32" maxValue="0e33"/>
+      <g:charCodeRange minValue="0e40" maxValue="0e45"/>
+      <g:charCodeRange minValue="0e81" maxValue="0e82"/>
+      <g:charCode value="0e84"/>
+      <g:charCodeRange minValue="0e87" maxValue="0e88"/>
+      <g:charCode value="0e8a"/>
+      <g:charCode value="0e8d"/>
+      <g:charCodeRange minValue="0e94" maxValue="0e97"/>
+      <g:charCodeRange minValue="0e99" maxValue="0e9f"/>
+      <g:charCodeRange minValue="0ea1" maxValue="0ea3"/>
+      <g:charCode value="0ea5"/>
+      <g:charCode value="0ea7"/>
+      <g:charCodeRange minValue="0eaa" maxValue="0eab"/>
+      <g:charCodeRange minValue="0ead" maxValue="0eae"/>
+      <g:charCode value="0eb0"/>
+      <g:charCodeRange minValue="0eb2" maxValue="0eb3"/>
+      <g:charCode value="0ebd"/>
+      <g:charCodeRange minValue="0ec0" maxValue="0ec4"/>
+      <g:charCodeRange minValue="0f40" maxValue="0f47"/>
+      <g:charCodeRange minValue="0f49" maxValue="0f69"/>
+      <g:charCodeRange minValue="10a0" maxValue="10c5"/>
+      <g:charCodeRange minValue="10d0" maxValue="10f6"/>
+      <g:charCode value="1100"/>
+      <g:charCodeRange minValue="1102" maxValue="1103"/>
+      <g:charCodeRange minValue="1105" maxValue="1107"/>
+      <g:charCode value="1109"/>
+      <g:charCodeRange minValue="110b" maxValue="110c"/>
+      <g:charCodeRange minValue="110e" maxValue="1112"/>
+      <g:charCode value="113c"/>
+      <g:charCode value="113e"/>
+      <g:charCode value="1140"/>
+      <g:charCode value="114c"/>
+      <g:charCode value="114e"/>
+      <g:charCode value="1150"/>
+      <g:charCodeRange minValue="1154" maxValue="1155"/>
+      <g:charCode value="1159"/>
+      <g:charCodeRange minValue="115f" maxValue="1161"/>
+      <g:charCode value="1163"/>
+      <g:charCode value="1165"/>
+      <g:charCode value="1167"/>
+      <g:charCode value="1169"/>
+      <g:charCodeRange minValue="116d" maxValue="116e"/>
+      <g:charCodeRange minValue="1172" maxValue="1173"/>
+      <g:charCode value="1175"/>
+      <g:charCode value="119e"/>
+      <g:charCode value="11a8"/>
+      <g:charCode value="11ab"/>
+      <g:charCodeRange minValue="11ae" maxValue="11af"/>
+      <g:charCodeRange minValue="11b7" maxValue="11b8"/>
+      <g:charCode value="11ba"/>
+      <g:charCodeRange minValue="11bc" maxValue="11c2"/>
+      <g:charCode value="11eb"/>
+      <g:charCode value="11f0"/>
+      <g:charCode value="11f9"/>
+      <g:charCodeRange minValue="1e00" maxValue="1e9b"/>
+      <g:charCodeRange minValue="1ea0" maxValue="1ef9"/>
+      <g:charCodeRange minValue="1f00" maxValue="1f15"/>
+      <g:charCodeRange minValue="1f18" maxValue="1f1d"/>
+      <g:charCodeRange minValue="1f20" maxValue="1f45"/>
+      <g:charCodeRange minValue="1f48" maxValue="1f4d"/>
+      <g:charCodeRange minValue="1f50" maxValue="1f57"/>
+      <g:charCode value="1f59"/>
+      <g:charCode value="1f5b"/>
+      <g:charCode value="1f5d"/>
+      <g:charCodeRange minValue="1f5f" maxValue="1f7d"/>
+      <g:charCodeRange minValue="1f80" maxValue="1fb4"/>
+      <g:charCodeRange minValue="1fb6" maxValue="1fbc"/>
+      <g:charCode value="1fbe"/>
+      <g:charCodeRange minValue="1fc2" maxValue="1fc4"/>
+      <g:charCodeRange minValue="1fc6" maxValue="1fcc"/>
+      <g:charCodeRange minValue="1fd0" maxValue="1fd3"/>
+      <g:charCodeRange minValue="1fd6" maxValue="1fdb"/>
+      <g:charCodeRange minValue="1fe0" maxValue="1fec"/>
+      <g:charCodeRange minValue="1ff2" maxValue="1ff4"/>
+      <g:charCodeRange minValue="1ff6" maxValue="1ffc"/>
+      <g:charCode value="2126"/>
+      <g:charCodeRange minValue="212a" maxValue="212b"/>
+      <g:charCode value="212e"/>
+      <g:charCodeRange minValue="2180" maxValue="2182"/>
+      <g:charCodeRange minValue="3041" maxValue="3094"/>
+      <g:charCodeRange minValue="30a1" maxValue="30fa"/>
+      <g:charCodeRange minValue="3105" maxValue="312c"/>
+      <g:charCodeRange minValue="ac00" maxValue="d7a3"/>
+    </g:charClass>
+  </g:token>
+  <g:token name="Ideographic" inline="false" is-macro="yes" is-xml="yes" xhref="http://www.w3.org/TR/REC-xml#NT-Ideographic" xgc-id="xml-version" visible="false">
+    <g:charClass>
+      <g:charCodeRange minValue="4e00" maxValue="9fa5"/>
+      <g:charCode value="3007"/>
+      <g:charCodeRange minValue="3021" maxValue="3029"/>
+    </g:charClass>
+  </g:token>
+  <g:token name="CombiningChar" inline="false" is-macro="yes" is-xml="yes" xhref="http://www.w3.org/TR/REC-xml#NT-CombiningChar" xgc-id="xml-version" visible="false">
+    <g:charClass>
+      <g:charCodeRange minValue="0300" maxValue="0345"/>
+      <g:charCodeRange minValue="0360" maxValue="0361"/>
+      <g:charCodeRange minValue="0483" maxValue="0486"/>
+      <g:charCodeRange minValue="0591" maxValue="05a1"/>
+      <g:charCodeRange minValue="05a3" maxValue="05b9"/>
+      <g:charCodeRange minValue="05bb" maxValue="05bd"/>
+      <g:charCode value="05bf"/>
+      <g:charCodeRange minValue="05c1" maxValue="05c2"/>
+      <g:charCode value="05c4"/>
+      <g:charCodeRange minValue="064b" maxValue="0652"/>
+      <g:charCode value="0670"/>
+      <g:charCodeRange minValue="06d6" maxValue="06dc"/>
+      <g:charCodeRange minValue="06dd" maxValue="06df"/>
+      <g:charCodeRange minValue="06e0" maxValue="06e4"/>
+      <g:charCodeRange minValue="06e7" maxValue="06e8"/>
+      <g:charCodeRange minValue="06ea" maxValue="06ed"/>
+      <g:charCodeRange minValue="0901" maxValue="0903"/>
+      <g:charCode value="093c"/>
+      <g:charCodeRange minValue="093e" maxValue="094c"/>
+      <g:charCode value="094d"/>
+      <g:charCodeRange minValue="0951" maxValue="0954"/>
+      <g:charCodeRange minValue="0962" maxValue="0963"/>
+      <g:charCodeRange minValue="0981" maxValue="0983"/>
+      <g:charCode value="09bc"/>
+      <g:charCode value="09be"/>
+      <g:charCode value="09bf"/>
+      <g:charCodeRange minValue="09c0" maxValue="09c4"/>
+      <g:charCodeRange minValue="09c7" maxValue="09c8"/>
+      <g:charCodeRange minValue="09cb" maxValue="09cd"/>
+      <g:charCode value="09d7"/>
+      <g:charCodeRange minValue="09e2" maxValue="09e3"/>
+      <g:charCode value="0a02"/>
+      <g:charCode value="0a3c"/>
+      <g:charCode value="0a3e"/>
+      <g:charCode value="0a3f"/>
+      <g:charCodeRange minValue="0a40" maxValue="0a42"/>
+      <g:charCodeRange minValue="0a47" maxValue="0a48"/>
+      <g:charCodeRange minValue="0a4b" maxValue="0a4d"/>
+      <g:charCodeRange minValue="0a70" maxValue="0a71"/>
+      <g:charCodeRange minValue="0a81" maxValue="0a83"/>
+      <g:charCode value="0abc"/>
+      <g:charCodeRange minValue="0abe" maxValue="0ac5"/>
+      <g:charCodeRange minValue="0ac7" maxValue="0ac9"/>
+      <g:charCodeRange minValue="0acb" maxValue="0acd"/>
+      <g:charCodeRange minValue="0b01" maxValue="0b03"/>
+      <g:charCode value="0b3c"/>
+      <g:charCodeRange minValue="0b3e" maxValue="0b43"/>
+      <g:charCodeRange minValue="0b47" maxValue="0b48"/>
+      <g:charCodeRange minValue="0b4b" maxValue="0b4d"/>
+      <g:charCodeRange minValue="0b56" maxValue="0b57"/>
+      <g:charCodeRange minValue="0b82" maxValue="0b83"/>
+      <g:charCodeRange minValue="0bbe" maxValue="0bc2"/>
+      <g:charCodeRange minValue="0bc6" maxValue="0bc8"/>
+      <g:charCodeRange minValue="0bca" maxValue="0bcd"/>
+      <g:charCode value="0bd7"/>
+      <g:charCodeRange minValue="0c01" maxValue="0c03"/>
+      <g:charCodeRange minValue="0c3e" maxValue="0c44"/>
+      <g:charCodeRange minValue="0c46" maxValue="0c48"/>
+      <g:charCodeRange minValue="0c4a" maxValue="0c4d"/>
+      <g:charCodeRange minValue="0c55" maxValue="0c56"/>
+      <g:charCodeRange minValue="0c82" maxValue="0c83"/>
+      <g:charCodeRange minValue="0cbe" maxValue="0cc4"/>
+      <g:charCodeRange minValue="0cc6" maxValue="0cc8"/>
+      <g:charCodeRange minValue="0cca" maxValue="0ccd"/>
+      <g:charCodeRange minValue="0cd5" maxValue="0cd6"/>
+      <g:charCodeRange minValue="0d02" maxValue="0d03"/>
+      <g:charCodeRange minValue="0d3e" maxValue="0d43"/>
+      <g:charCodeRange minValue="0d46" maxValue="0d48"/>
+      <g:charCodeRange minValue="0d4a" maxValue="0d4d"/>
+      <g:charCode value="0d57"/>
+      <g:charCode value="0e31"/>
+      <g:charCodeRange minValue="0e34" maxValue="0e3a"/>
+      <g:charCodeRange minValue="0e47" maxValue="0e4e"/>
+      <g:charCode value="0eb1"/>
+      <g:charCodeRange minValue="0eb4" maxValue="0eb9"/>
+      <g:charCodeRange minValue="0ebb" maxValue="0ebc"/>
+      <g:charCodeRange minValue="0ec8" maxValue="0ecd"/>
+      <g:charCodeRange minValue="0f18" maxValue="0f19"/>
+      <g:charCode value="0f35"/>
+      <g:charCode value="0f37"/>
+      <g:charCode value="0f39"/>
+      <g:charCode value="0f3e"/>
+      <g:charCode value="0f3f"/>
+      <g:charCodeRange minValue="0f71" maxValue="0f84"/>
+      <g:charCodeRange minValue="0f86" maxValue="0f8b"/>
+      <g:charCodeRange minValue="0f90" maxValue="0f95"/>
+      <g:charCode value="0f97"/>
+      <g:charCodeRange minValue="0f99" maxValue="0fad"/>
+      <g:charCodeRange minValue="0fb1" maxValue="0fb7"/>
+      <g:charCode value="0fb9"/>
+      <g:charCodeRange minValue="20d0" maxValue="20dc"/>
+      <g:charCode value="20e1"/>
+      <g:charCodeRange minValue="302a" maxValue="302f"/>
+      <g:charCode value="3099"/>
+      <g:charCode value="309a"/>
+    </g:charClass>
+  </g:token>
+  <g:token name="Digit" inline="false" is-macro="yes" is-xml="yes" xhref="http://www.w3.org/TR/REC-xml#NT-Digit" visible="false">
+    <g:charClass>
+      <g:charCodeRange minValue="0030" maxValue="0039"/>
+      <g:charCodeRange minValue="0660" maxValue="0669"/>
+      <g:charCodeRange minValue="06f0" maxValue="06f9"/>
+      <g:charCodeRange minValue="0966" maxValue="096f"/>
+      <g:charCodeRange minValue="09e6" maxValue="09ef"/>
+      <g:charCodeRange minValue="0a66" maxValue="0a6f"/>
+      <g:charCodeRange minValue="0ae6" maxValue="0aef"/>
+      <g:charCodeRange minValue="0b66" maxValue="0b6f"/>
+      <g:charCodeRange minValue="0be7" maxValue="0bef"/>
+      <g:charCodeRange minValue="0c66" maxValue="0c6f"/>
+      <g:charCodeRange minValue="0ce6" maxValue="0cef"/>
+      <g:charCodeRange minValue="0d66" maxValue="0d6f"/>
+      <g:charCodeRange minValue="0e50" maxValue="0e59"/>
+      <g:charCodeRange minValue="0ed0" maxValue="0ed9"/>
+      <g:charCodeRange minValue="0f20" maxValue="0f29"/>
+    </g:charClass>
+  </g:token>
+  <g:token name="Extender" inline="false" is-macro="yes" is-xml="yes" xhref="http://www.w3.org/TR/REC-xml#NT-Extender" xgc-id="xml-version" visible="false">
+    <g:charClass>
+      <g:charCode value="00b7"/>
+      <g:charCode value="02d0"/>
+      <g:charCode value="02d1"/>
+      <g:charCode value="0387"/>
+      <g:charCode value="0640"/>
+      <g:charCode value="0e46"/>
+      <g:charCode value="0ec6"/>
+      <g:charCode value="3005"/>
+      <g:charCodeRange minValue="3031" maxValue="3035"/>
+      <g:charCodeRange minValue="309d" maxValue="309e"/>
+      <g:charCodeRange minValue="30fc" maxValue="30fe"/>
+    </g:charClass>
+  </g:token>
+  <!-- g:token name="NotOperatorKeyword" show="no">
+    <g:oneOrMore name="NotOperatorKeywordSequence">
+      <g:charClass>
+        <g:charRange minChar="0" maxChar="9"/>
+        <g:charRange minChar="a" maxChar="z"/>
+        <g:charRange minChar="A" maxChar="Z"/>
+      </g:charClass>
+    </g:oneOrMore>
+  </g:token -->
+
+  <g:token name="NotNumber" show="no">
+    <g:choice name="DoubleStringNotNumber">
+      <g:sequence>
+        <g:string>.</g:string>
+        <g:ref name="Digits"/>
+      </g:sequence>
+      <g:sequence>
+        <g:ref name="Digits"/>
+        <g:optional name="DoubleOptionFractionPartNotNumber">
+          <g:string>.</g:string>
+          <g:zeroOrMore name="DoubleFractionPartNotNumber">
+            <g:charClass>
+              <g:charRange minChar="0" maxChar="9"/>
+            </g:charClass>
+          </g:zeroOrMore>
+        </g:optional>
+      </g:sequence>
+    </g:choice>
+    <g:optional name="NotNumberOptionalFractionPart">
+      <g:charClass>
+        <g:char>e</g:char>
+        <g:char>E</g:char>
+      </g:charClass>
+      <g:optional name="DoubleNegOrPosNotNumber">
+        <g:charClass>
+          <g:char>+</g:char>
+          <g:char>-</g:char>
+        </g:charClass>
+      </g:optional>
+      <g:ref name="Digits"/>
+    </g:optional>
+    <g:charClass>
+      <g:charRange minChar="a" maxChar="z"/>
+      <g:charRange minChar="A" maxChar="Z"/>
+    </g:charClass>
+    <g:zeroOrMore name="NotNumberTail">
+      <g:charClass>
+        <g:charRange minChar="0" maxChar="9"/>
+        <g:charRange minChar="a" maxChar="z"/>
+        <g:charRange minChar="A" maxChar="Z"/>
+      </g:charClass>
+    </g:zeroOrMore>
+  </g:token>
+  <!-- ================================================
+       These states define the lex-time disambiguations of tokens.  The are
+       probably non-normative.
+  ================================================ -->
+  <g:state-list>
+    <g:state name="ANY" show="no">
+      <g:description>This state is for very general patterns that can be
+                recognized in any state, but are not recognized as significant
+                patterns by themselves in the grammar. </g:description>
+      <g:transition>
+        <g:description>No state change.</g:description>
+        <g:tref name="WhitespaceChar"/>
+        <g:tref name="Nmstart"/>
+        <g:tref name="NCNameTok"/>
+        <g:tref name="Nmchar"/>
+        <g:tref name="Prefix"/>
+        <g:tref name="LocalPart"/>
+        <g:tref name="Digits"/>
+        <g:tref name="Letter"/>
+        <g:tref name="BaseChar"/>
+        <g:tref name="Ideographic"/>
+        <g:tref name="CombiningChar"/>
+        <g:tref name="Digit"/>
+        <g:tref name="Extender"/>
+        <g:tref name="HexDigits"/>
+        <g:tref name="Comment"/>
+        <g:tref name="CommentContents" if="xquery xpath"/>
+		<g:tref name="EscapeQuot" if="xpath"/>
+		<g:tref name="EscapeApos" if="xpath"/>
+		<!-- g:tref name="CommentContent"/>
+        <g:tref name="CommentStart"/>
+        <g:tref name="CommentEnd"/ -->
+        <!-- g:tref name="SForExt"/ -->
+      </g:transition>
+    </g:state>
+    <g:state name="DEFAULT">
+      <g:description>XXX</g:description>
+      
+      <g:transition next-state="EXPR_COMMENT" action="pushState">
+        <g:tref name="CommentStart"/>
+      </g:transition>
+      
+      
+      
+      <g:transition next-state="DEFAULT" action="pushState(DEFAULT)" if="xpath">
+        <g:tref name="LessThanOpOrTagO"/>
+      </g:transition>
+      
+      <g:transition action="popState">
+        <g:tref name="Rbrace"/>
+      </g:transition>
+	  <g:transition next-state="DEFAULT" action="pushState(DEFAULT)">
+        <g:tref name="LbraceExprEnclosure"/>
+      </g:transition>
+
+      <g:transition>
+        <g:tref name="Slash"/>
+        <g:tref name="SlashSlash"/>
+        <g:tref name="IntegerLiteral"/>
+        <g:tref name="DecimalLiteral"/>
+        <g:tref name="DoubleLiteral" if="xpath xquery core"/>
+        <g:tref name="URILiteral"/>
+        <g:tref name="StringLiteral"/>
+        <!-- g:tref name="NotOccurrenceIndicator"/ -->
+
+        <g:tref name="QNameToken"/>
+        <g:tref name="NCNameColonStar"/>
+        <g:tref name="StarColonNCName"/>
+        
+        <!-- g:tref name="NotOperatorKeyword"/ -->
+        <g:tref name="NotNumber"/>
+        <g:tref name="Char"/>
+
+        
+        
+
+        <g:tref name="Minus"/>
+        <g:tref name="Plus"/>
+		<g:tref name="External"/>
+
+		
+		
+		
+		
+
+      </g:transition>
+	</g:state>
+    
+
+    
+    
+    
+    <g:state name="EXPR_COMMENT">
+      <g:description>The "(:" token marks the beginning of an expression
+                Comment, and the ":)" token marks the end. This allows no special
+                interpretation of other characters in this state.</g:description>
+      <g:transition action="popState">
+        <g:tref name="CommentEnd"/>
+      </g:transition>
+      <g:transition next-state="EXPR_COMMENT" action="pushState">
+        <g:tref name="CommentStart"/>
+      </g:transition>
+      <g:transition>
+        <g:description>No state change.</g:description>
+        <g:tref name="CommentContent"/>
+      </g:transition>
+    </g:state>
+    
+    
+    
+    
+    <!-- ================== -->
+    
+    
+    
+    
+
+  </g:state-list>
+
+</g:grammar>

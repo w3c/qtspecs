@@ -1,0 +1,781 @@
+<!--XSLT Processor: Saxonica SAXON HE 9.6.0.7--><spec xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" w3c-doctype="wgnote"><header><title>XQuery Update Facility 3.0 Requirements and Use Cases</title><w3c-designation>NOTE-xquery-update-30-requirements-use-cases</w3c-designation><w3c-doctype>W3C Working Group Note</w3c-doctype><pubdate><day>24</day><month>January</month><year>2017</year></pubdate><publoc>
+			<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="https://www.w3.org/TR/2017/NOTE-xquery-update-30-requirements-use-cases-20170124/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">https://www.w3.org/TR/2017/NOTE-xquery-update-30-requirements-use-cases-20170124/</loc>
+		</publoc><latestloc>
+			<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="https://www.w3.org/TR/xquery-update-30-requirements-use-cases/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">https://www.w3.org/TR/xquery-update-30-requirements-use-cases/</loc>
+		</latestloc><prevlocs>
+			<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="https://www.w3.org/TR/2012/WD-xquery-update-30-requirements-use-cases-20120327/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">https://www.w3.org/TR/2012/WD-xquery-update-30-requirements-use-cases-20120327/</loc>
+		</prevlocs><authlist><author diff="chg"><name>Andrew Coleman</name><affiliation>IBM Hursley Laboratories</affiliation><email xmlns:xlink="http://www.w3.org/1999/xlink" href="mailto:andrew_coleman@uk.ibm.com" xlink:type="simple" xlink:show="new" xlink:actuate="onRequest">andrew_coleman@uk.ibm.com</email></author></authlist><!--* Common status section for QT specs.
+    * Use is currently not required, but it simplifies things.
+    * 
+    * Revisions:
+    * 2007-01-15 : CMSMcQ : made file, to simplify publication of Rec.
+    * 2008-02-15 : JimMelton : cloned from MSM's REC-only material
+                     to generalize for all stages
+    *--><status id="status"><!-- ************************************************************************** --><!-- * All Status sections must start with the standard boilerplate paragraph * --><!-- *   This entity is defined in status-entities.dtd                        * --><!-- ************************************************************************** --><p><emph>This section describes the status of this
+         document at the time of its publication.
+         Other documents may supersede this document.
+         A list of current W3C publications and the latest
+         revision of this technical report can be found in the
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="https://www.w3.org/TR/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">W3C technical reports index</loc>
+         at https://www.w3.org/TR/.</emph></p><p>This document is governed by the
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" id="w3c_process_revision" href="https://www.w3.org/2015/Process-20150901/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">1 September 2015 W3C Process Document</loc>. </p><!-- ************************************************************************** --><!-- * QT publishes suites of documents, which must be described in the       * --><!--     Status section of each document within such a suite.                 * --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><!-- ************************************************************************** --><!-- * There is a lot of detailed customization based on the document stage   * --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><p>This is a <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="https://www.w3.org/2015/Process-20150901/#Note" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Working Group Note</loc> as described in the <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="https://www.w3.org/2015/Process-20150901/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Process Document</loc>. 
+It was developed by the W3C <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="https://www.w3.org/XML/Query/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XML Query Working Group</loc>,
+which is part of the <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="https://www.w3.org/XML/Activity" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XML Activity</loc>.
+</p><!-- ************************************************************************** --><!-- * CR documents must cite features at risk                                * --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><!-- ************************************************************************** --><!-- * Every Status section must have a customized paragraph                  * --><!-- *   This entity is defined completely in the host document.              * --><!-- ************************************************************************** --><p>This document includes,
+for each requirement, a corresponding status, indicating the 
+situation of the requirement in <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="https://www.w3.org/TR/xquery-update-30/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery Update Facility 3.0</loc>
+at the time that it was issued as a Working Group Note in January 2017.</p><p>Three status levels are used:</p><glist><gitem><label>"Green" status</label><def><p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/> This indicates that the requirement, according to its
+original formulation, has been completely met. Optional clarificatory text
+may follow.</p></def></gitem><gitem><label>"Yellow" status</label><def><p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/yellow-ball.gif" alt="yellow status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/> This indicates that the requirement has been partially met
+according to its original formulation. When this status is indicated,
+explanatory text is provided to better clarify the current scope of the
+requirement.</p></def></gitem><gitem><label>"Red" status</label><def><p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/red-ball.gif" alt="red status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/> This indicates that the requirement, according to its
+original formulation, has not been met. If this is the case, explanatory text
+is provided.</p></def></gitem></glist><p>This document also incorporates a number of Use Cases that assist the Working Groups
+in determining whether a candidate requirement is, in fact, a real requirement and illustrating various
+problems that XQuery Update Facility 3.0 is intended to address.</p><!-- ************************************************************************** --><!-- * CR docs should, and PR docs must, have a pointer to an implementation  * --><!-- *   report.  We also want to point to the test suite.                    * --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><!-- ************************************************************************** --><!-- * The Status section should point to a changelog                         * --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><!-- ************************************************************************** --><!-- * The Status section must tell readers where to send comments            * --><!-- *   This entity is defined in status-entities.dtd                        * --><!-- ************************************************************************** --><p>Please report errors in this document using W3C's
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="https://www.w3.org/Bugs/Public/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">public Bugzilla system</loc>
+         (instructions can be found at
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="https://www.w3.org/XML/2005/04/qt-bugzilla" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">https://www.w3.org/XML/2005/04/qt-bugzilla</loc>).
+         If access to that system is not feasible, you may send your comments
+         to the W3C XSLT/XPath/XQuery public comments mailing list,
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="mailto:public-qt-comments@w3.org" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">public-qt-comments@w3.org</loc>.
+         It will be very helpful if you include the string 
+         “[UPD30req]”
+         in the subject line of your report, whether made in Bugzilla or in email.
+         Please use multiple Bugzilla entries (or, if necessary, multiple email messages)
+         if you have more than one comment to make.
+         Archives of the comments and responses are available at
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="https://lists.w3.org/Archives/Public/public-qt-comments/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">https://lists.w3.org/Archives/Public/public-qt-comments/</loc>. </p><!-- ************************************************************************** --><!-- Status sections must state the stability (not stable, or REC) of the document --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><p>Publication as a <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="https://www.w3.org/2015/Process-20150901/#Note" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Working Group Note</loc>
+does not imply endorsement by the W3C Membership. 
+This is a draft document and may be updated, replaced or obsoleted
+by other documents at any time. 
+It is inappropriate to cite this document as other than work in progress.</p><!-- ************************************************************************** --><!-- * Finally, all Status sections must end with the appropriate IPR para    * --><!-- *   This entity is defined in status-entities.dtd                        * --><!-- ************************************************************************** --><p>This document was produced by a group operating under the
+  <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="https://www.w3.org/Consortium/Patent-Policy-20040205/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">5 February 2004
+  W3C Patent Policy</loc>.
+<!--
+  The group does not expect this document to become a W3C Recommendation.
+-->
+  W3C maintains a 
+  <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="https://www.w3.org/2004/01/pp-impl/18797/status#disclosures" rel="disclosure" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">public list of any patent disclosures</loc>
+  made in connection with the deliverables of the group; 
+  that page also includes instructions for disclosing a patent.
+  An individual who has actual knowledge of a patent 
+  which the individual believes contains
+  <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="https://www.w3.org/Consortium/Patent-Policy-20040205/#def-essential" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Essential Claim(s)</loc>
+  must disclose the information in accordance with
+  <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="https://www.w3.org/Consortium/Patent-Policy-20040205/#sec-Disclosure" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">
+  section 6 of the W3C Patent Policy</loc>. </p></status><abstract diff="chg"><p>This document specifies goals, requirements and use cases for the XQuery Update Facility 3.0.</p></abstract><langusage><language id="en">English</language></langusage><revisiondesc><p>First internal draft.</p></revisiondesc></header><body><div1 id="id-update-goals"><head>Goals</head><p>This document describes the requirements and use cases for the XQuery Update Facility 3.0. 
+          <bibref ref="xquery-30"/> provides queries, but has no support for adding new values or
+				changing existing values. The XML Query Working Group intends to add support for
+				updates in a future version of XQuery.  This document only contains requirements
+				that have not been previously met by <bibref ref="xquery-update-10"/></p></div1><div1 id="id-update-usage-scenarios"><head>Usage Scenarios</head><p>The following usage scenarios describe how the XQuery Update Facility 3.0 may be used in
+				various environments, and represent a wide range of activities and needs that
+				illustrate the problem space to be addressed. They are intended to be used as design
+				cases during the development of the XQuery Update Facility 3.0, and should be reviewed
+				when critical decisions are made. These usage scenarios should also prove useful in
+				helping non-members of the XML Query Working Group understand the intent and goals
+				of the project.</p><glist role="req"><gitem><label>Updating persistent XML stores</label><def><p>Modify XML in persistent XML stores, including native XML databases, XML
+							files stored on a file system, or XML stored in SQL databases.</p></def></gitem><gitem><label>Modify XML messages</label><def><p>Modify XML messages to change status and add information created while
+							processing the message.</p></def></gitem><gitem><label>Add to existing XML document</label><def><p>Add new data to an existing XML document; for instance, add a new entry
+							to a BLOG or a data log.</p></def></gitem><gitem><label>Updating XML registries</label><def><p>Perform updates on configuration files, user profiles, or administrative
+							logs represented in XML.</p></def></gitem><gitem><label>Creating edited copies</label><def><p>Create a new copy of an XML document or subtree that differs from the
+							original in the way specified by the update. For instance, updates could
+							be used to modify a web message in order to add new information and
+							change headers to reflect the modified status.</p></def></gitem><gitem><label>Modifying XML views</label><def><p>Modifying XML views of non-XML sources, such as an <bibref ref="sqlxml"/>
+							view of a SQL database.</p></def></gitem></glist></div1><div1 id="id-update-requirements"><head>Requirements</head><div2 id="id-update-terminology"><head>Terminology</head><p>The following key words are used throughout the document to specify the extent to
+					which an item is a requirement for the work of the XML Query Working Group:</p><glist><gitem><label id="terminology-must">MUST</label><def><p>This word means that the item is an absolute requirement.</p></def></gitem><gitem><label id="terminology-must-not">MUST NOT</label><def><p>This word means that the item is an absolute prohibition.</p></def></gitem><gitem><label id="terminology-should">SHOULD</label><def><p>This word means that there may exist valid reasons not to treat this
+								item as a requirement, but the full implications should be
+								understood and the case carefully weighed before discarding this
+								item.</p></def></gitem><gitem><label id="terminology-may">MAY</label><def><p>This word means that an item deserves attention, but further study is
+								needed to determine whether the item should be treated as a
+								requirement.</p></def></gitem></glist><p>When the words <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>, <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-should" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">SHOULD</loc>, or
+            <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-may" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MAY</loc> are used in this technical sense,
+            they occur as a hyperlink to these
+					definitions. These words will also be used with their conventional English
+					meaning, in which case there is no hyperlink. For instance, the phrase "the full
+					implications should be understood" uses the word "should" in its conventional
+					English sense, and therefore occurs without the hyperlink.</p></div2><div2 id="id-update-general-requirements"><head>General Requirements</head><glist role="req"><gitem><label diff="add">Compatibility</label><def><p>The XQuery Update Facility 3.0 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> be
+								backwards compatible with <bibref ref="xquery-update-10"/>.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.</p></def></gitem></glist></div2><div2 id="id-update-relationship-to-XQ30"><head>Relationship to XQuery 3.0</head><glist role="req"><gitem><label diff="chg">Based on Data Model 3.0</label><def><p>The XQuery Update Facility 3.0 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>
+								be defined on the <bibref ref="xpath-datamodel-30"/>.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.</p><note><p>The properties of a Data Model instance that can be modified by
+									the XQuery Update Facility 3.0 are discussed in <specref ref="id-update-functionality"/>.</p></note><!-- ### KILL ### - redundant with 'consistency'
+		   The &language; <loc href="#terminology-must">MUST</loc> ensure
+		   that Data Model constraints are not violated.
+--><!--           The Update language <loc href="#terminology-may">MAY</loc>
+		   be used to update atomic values not contained in a node in
+		   a Data Model instance.</p>
+							<note>
+								<p>We have not determined whether updates need to be
+		able to work on an arbitrary sequence.</p>
+							</note>
+							<note>
+								<p>"Aspect" might need better definition.</p>
+							</note>
+--></def></gitem><gitem><label diff="chg">Based on XQuery 3.0</label><def><p>The XQuery Update Facility 3.0 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> be
+								based on <bibref ref="xquery-30"/>. The XQuery Update Facility 3.0 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> use XQuery 3.0 to identify items
+								to be updated. The XQuery Update Facility 3.0 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> use XQuery 3.0 to specify items
+									used in the updates.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.</p></def></gitem></glist></div2><div2 id="id-update-functionality"><head>XML Query Update Functionality</head><glist role="req"><!-- #### KILL KILL KILL
+	   <gitem>
+		   <label>Support for collections</label>
+
+		   <def><p>The &language; <loc href="#terminology-must">MUST</loc>
+		   support the addition, removal and modification of
+		   nodes/items in a collection identified in any of the
+		   following ways: a) by the doc() or collection() function,
+		   b) by means of a bound variable, c) by binding of the
+		   context item, or d) by a user-defined function.</p>
+
+	   <issue><p>We need to make sure we have "nodes/items"
+	   correct above.</p></issue>
+	   </def>
+	   </gitem>
+ --><!--
+					<gitem>
+						<label>Merge</label>
+						<def>
+							<p>The &language; <loc href="#terminology-should">SHOULD</loc> be able to insert or
+		   replace a node depending on whether the node already exists
+		   (note: this operation is sometimes called upsert or
+		   merge).</p>
+						</def>
+					</gitem>
+--><gitem><label>Validation</label><def><p>The XQuery Update Facility 3.0 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-may" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MAY</loc>
+								support an explicit XML Schema validation operation that preserves
+								node identity.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/red-ball.gif" alt="red          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/> This requirement has not been met.
+									A decision was made by the Working Group not to do this; 
+									however, it is possible to work around this by making a "null" update.
+								</p></def></gitem><gitem><label>Compositionality</label><def><p>The
+								XQuery Update Facility 3.0 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-may" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MAY</loc> be
+								compositional with respect to XQuery 3.0 expressions; that is, it may be
+								possible to use an update wherever an XQuery 3.0 expression is used.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/red-ball.gif" alt="red         status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>
+								<emph>Status:</emph> this requirement has not been met.
+								Updating expressions are limited to specific syntactic contexts.</p><p diff="add">The XQuery Update Facility 3.0 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>
+							be able to support expressions that return both a non-empty XDM instance and 
+							a non-empty pending update list.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/yellow-ball.gif" alt="yellow          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been partially met; a non-empty XDM instance and 
+							a non-empty pending update list can be returned by expressions, 
+							but support for what can be done with such mixed results is limited.</p></def></gitem></glist></div2><div2 id="id-update-transaction-characteristics"><head>Transaction characteristics</head><p>In this section, the terms Atomicity, Consistency, Isolation, and Durability are
+					taken from the ACID model of transaction characteristics for databases, which is
+					described in <bibref ref="gray"/>.</p><glist role="req"><gitem><label>Consistency</label><def><p>At the end of an outermost update operation (that is, an update
+								operation invoked from the external environment), the data model
+									<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> be consistent with
+								respect to the constraints specified in the Data Model 3.0.
+								<!-- <xspecref spec="DM"
+	  ref="construction"/>.--> In particular,
+								all type annotations <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> be
+								consistent with the content of the items they govern.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.</p><p>The XQuery Update Facility 3.0 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-may" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MAY</loc> define
+								additional levels of granularity at which Data Model 3.0 constraints are
+								enforced.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/red-ball.gif" alt="red          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has not been met.</p></def></gitem><gitem><label>Isolation</label><def diff="chg"><p>The XQuery Update Facility 3.0 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must-not" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST NOT</loc> preclude the means by which operations can be isolated
+								from concurrent operations.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.</p></def></gitem><gitem><label>Durability</label><def><p>The XQuery Update Facility 3.0 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must-not" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST NOT</loc>
+								preclude a means to control the durability of atomic operations and
+								atomic execution units.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.</p></def></gitem><!-- #### KILL KILL KILL 
+	   <gitem>
+
+		   <label>Validity at transactional boundaries</label>
+
+		   <def><p>Updates <loc href="#terminology-must">MUST</loc>
+		   enforce schema validity at transactional boundaries. It
+		   <loc href="#terminology-may">MAY</loc> provide a means
+		   to allow this constraint to be relaxed.</p></def>
+
+	   </gitem>
+--></glist></div2></div1><div1 id="use-cases-for-xquery-updates" diff="add"><head>Use Cases for XQuery Update Facility 3.0</head><p diff="chg">The
+			use cases listed below were created by the <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/XML/Query/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XML Query Working Group</loc>
+      to illustrate important
+			applications for an XML update facility. Each
+			use case is focused on a specific application
+			area, and contains a Document Type Definition
+			(DTD) and example input data. Each use case
+			specifies a set of updates that might be
+			applied to the input data, and the expected
+			resulting value of the modified input 
+			for each update. Since the English
+			description of each query is concise, the
+			expected results form an important part of the
+			definition of each update directive.
+      These use cases are inspired by section
+			<specref ref="id-update-requirements"/>.</p><p>These use cases represent a snapshot of an
+          ongoing work. Some important application areas and important
+          operations are not yet adequately covered by a use case. The
+          XML Query Working Group reserves the right to add, delete,
+          or modify individual queries or whole use cases as the work
+          progresses. The presence of a query in this set of use cases
+          does not necessarily indicate that the query will be
+          expressible in the XQuery Update Facility to be created by
+          the XML Query Working Group.</p><div2 id="rdb"><head>Use Case "R" - Updating Relational Data</head><p>One important use of an XML update language will be to update data stored in
+        relational databases. This use case describes a set of such possible updates.</p><div3 id="rdb-description"><head>Description</head><p>This use case is based on
+					performing updates on the data
+					used in Use Case "R" from the
+            <bibref ref="xquery-use-cases"/>. The
+					sample data from this Use Case
+					is copied below for
+					convenience, and exactly match
+					the data found in the XQuery
+					1.0 Use Cases. Instead of
+					DTDs, we describe this data
+					with W3C XML Schemas.</p><p>The data represents a relational database used by an
+                        online auction. The auction maintains a USERS table
+                        containing information on registered users, each
+                        identified by a unique userid, who can either offer
+                        items for sale or bid on items. An ITEMS table lists
+                        items currently or recently for sale, with the userid of
+                        the user who offered each item. A BIDS table contains
+                        all bids on record, keyed by the userid of the bidder
+                        and the item number of the item to which the bid
+                        applies.</p><p>The three tables used by the online auction are below,
+                        with their column-names indicated in parentheses.</p><eg xml:space="preserve">USERS ( USERID, NAME, RATING )
+ITEMS ( ITEMNO, DESCRIPTION, OFFERED_BY, 
+        START_DATE, END_DATE, RESERVE_PRICE ) 
+BIDS ( USERID, ITEMNO, BID, BID_DATE )</eg></div3><div3 id="rdb-dtd"><head>XML Schemas</head><p>This use case is based on three separate input documents
+                        named users.xml, items.xml, and bids.xml. Each of the
+                        documents represents one of the tables in the relational
+                      database described above, using the following schemas:</p><div4 id="schema-for-users.xml"><head>Schema for users.xml</head><eg xml:space="preserve">
+                                            
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"&gt;
+  &lt;xs:element name="users"&gt;
+    &lt;xs:complexType&gt;
+      &lt;xs:sequence&gt;
+        &lt;xs:element minOccurs="0" maxOccurs="unbounded" ref="user_tuple"/&gt;
+      &lt;/xs:sequence&gt;
+    &lt;/xs:complexType&gt;
+  &lt;/xs:element&gt;
+  &lt;xs:element name="user_tuple"&gt;
+    &lt;xs:complexType&gt;
+      &lt;xs:sequence&gt;
+        &lt;xs:element ref="userid"/&gt;
+        &lt;xs:element ref="name"/&gt;
+        &lt;xs:element minOccurs="0" ref="rating"/&gt;
+      &lt;/xs:sequence&gt;
+    &lt;/xs:complexType&gt;
+  &lt;/xs:element&gt;
+  &lt;xs:element name="userid" type="xs:string"/&gt;
+  &lt;xs:element name="name" type="xs:string"/&gt;
+  &lt;xs:element name="rating" type="xs:string"/&gt;
+&lt;/xs:schema&gt;
+ </eg></div4><div4 id="schema-for-items.xml"><head>Schema for items.xml</head><eg xml:space="preserve">
+                  
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"&gt;
+  &lt;xs:element name="items"&gt;
+    &lt;xs:complexType&gt;
+      &lt;xs:sequence&gt;
+        &lt;xs:element minOccurs="0" maxOccurs="unbounded" ref="item_tuple"/&gt;
+      &lt;/xs:sequence&gt;
+    &lt;/xs:complexType&gt;
+  &lt;/xs:element&gt;
+  &lt;xs:element name="item_tuple"&gt;
+    &lt;xs:complexType&gt;
+      &lt;xs:sequence&gt;
+        &lt;xs:element ref="itemno"/&gt;
+        &lt;xs:element ref="description"/&gt;
+        &lt;xs:element ref="offered_by"/&gt;
+        &lt;xs:element minOccurs="0" ref="start_date"/&gt;
+        &lt;xs:element minOccurs="0" ref="end_date"/&gt;
+        &lt;xs:element minOccurs="0" ref="reserve_price"/&gt;
+      &lt;/xs:sequence&gt;
+    &lt;/xs:complexType&gt;
+  &lt;/xs:element&gt;
+  &lt;xs:element name="itemno" type="xs:string"/&gt;
+  &lt;xs:element name="description" type="xs:string"/&gt;
+  &lt;xs:element name="offered_by" type="xs:string"/&gt;
+  &lt;xs:element name="start_date" type="xs:string"/&gt;
+  &lt;xs:element name="end_date" type="xs:string"/&gt;
+  &lt;xs:element name="reserve_price" type="xs:string"/&gt;
+&lt;/xs:schema&gt;
+
+</eg></div4><div4 id="schema-for-bids.xml"><head>Schema for bids.xml</head><eg xml:space="preserve">
+                      
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"&gt;
+  &lt;xs:element name="bids"&gt;
+    &lt;xs:complexType&gt;
+      &lt;xs:sequence&gt;
+        &lt;xs:element minOccurs="0" maxOccurs="unbounded" ref="bid_tuple"/&gt;
+      &lt;/xs:sequence&gt;
+    &lt;/xs:complexType&gt;
+  &lt;/xs:element&gt;
+  &lt;xs:element name="bid_tuple"&gt;
+    &lt;xs:complexType&gt;
+      &lt;xs:sequence&gt;
+        &lt;xs:element ref="userid"/&gt;
+        &lt;xs:element ref="itemno"/&gt;
+        &lt;xs:element ref="bid"/&gt;
+        &lt;xs:element ref="bid_date"/&gt;
+      &lt;/xs:sequence&gt;
+    &lt;/xs:complexType&gt;
+  &lt;/xs:element&gt;
+  &lt;xs:element name="userid" type="xs:string"/&gt;
+  &lt;xs:element name="itemno" type="xs:string"/&gt;
+  &lt;xs:element name="bid" type="xs:string"/&gt;
+  &lt;xs:element name="bid_date" type="xs:string"/&gt;
+&lt;/xs:schema&gt;
+
+                      </eg></div4></div3><div3 id="rdb-data"><head>Input Data</head><p>The following data is an excerpt of the initial state for Q1. In this particular use case, 
+                    each update begins with the
+                    state resulting from the prior update.</p><eg role="data" xml:space="preserve">&lt;items&gt;
+  &lt;item_tuple&gt;
+    &lt;itemno&gt;1001&lt;/itemno&gt;
+    &lt;description&gt;Red Bicycle&lt;/description&gt;
+    &lt;offered_by&gt;U01&lt;/offered_by&gt;
+    &lt;start_date&gt;1999-01-05&lt;/start_date&gt;
+    &lt;end_date&gt;1999-01-20&lt;/end_date&gt;
+    &lt;reserve_price&gt;40&lt;/reserve_price&gt;
+  &lt;/item_tuple&gt;
+  <emph>  ... Snip ... </emph>
+&lt;/items&gt;
+&lt;users&gt;
+  &lt;user_tuple&gt;
+    &lt;userid&gt;U01&lt;/userid&gt;
+    &lt;name&gt;Tom Jones&lt;/name&gt;
+    &lt;rating&gt;B&lt;/rating&gt;
+  &lt;/user_tuple&gt;
+  <emph>  ... Snip ... </emph>
+&lt;/users&gt;
+&lt;bids&gt;
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U02&lt;/userid&gt; 
+    &lt;itemno&gt;1001&lt;/itemno&gt; 
+    &lt;bid&gt;35&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-01-07&lt;/bid_date&gt; 
+    &lt;/bid_tuple&gt; 
+  &lt;bid_tuple&gt; 
+  <emph>  ... Snip ... </emph>
+&lt;/bids&gt;
+                    </eg><p>The entire data set is represented by the following tables:</p><table border="1" summary="USERS"><thead><tr><td rowspan="1" colspan="1">USERID</td><td rowspan="1" colspan="1">NAME</td><td rowspan="1" colspan="1">RATING</td></tr></thead><tbody><tr><td rowspan="1" colspan="1">U01</td><td rowspan="1" colspan="1">Tom Jones</td><td rowspan="1" colspan="1">B</td></tr><tr><td rowspan="1" colspan="1">U02</td><td rowspan="1" colspan="1">Mary Doe</td><td rowspan="1" colspan="1">A</td></tr><tr><td rowspan="1" colspan="1">U03</td><td rowspan="1" colspan="1">Dee Linquent</td><td rowspan="1" colspan="1">D</td></tr><tr><td rowspan="1" colspan="1">U04</td><td rowspan="1" colspan="1">Roger Smith</td><td rowspan="1" colspan="1">C</td></tr><tr><td rowspan="1" colspan="1">U05</td><td rowspan="1" colspan="1">Jack Sprat</td><td rowspan="1" colspan="1">B</td></tr><tr><td rowspan="1" colspan="1">U06</td><td rowspan="1" colspan="1">Rip Van Winkle</td><td rowspan="1" colspan="1">B</td></tr></tbody></table><table border="1" summary="ITEMS"><thead><tr><td rowspan="1" colspan="1">ITEMNO</td><td rowspan="1" colspan="1">DESCRIPTION</td><td rowspan="1" colspan="1">OFFERED_BY</td><td rowspan="1" colspan="1">START_DATE</td><td rowspan="1" colspan="1">END_DATE</td><td rowspan="1" colspan="1">RESERVE_PRICE</td></tr></thead><tbody><tr><td rowspan="1" colspan="1">1001</td><td rowspan="1" colspan="1">Red Bicycle</td><td rowspan="1" colspan="1">U01</td><td rowspan="1" colspan="1">1999-01-05</td><td rowspan="1" colspan="1">1999-01-20</td><td rowspan="1" colspan="1">40</td></tr><tr><td rowspan="1" colspan="1">1002</td><td rowspan="1" colspan="1">Motorcycle</td><td rowspan="1" colspan="1">U02</td><td rowspan="1" colspan="1">1999-02-11</td><td rowspan="1" colspan="1">1999-03-15</td><td rowspan="1" colspan="1">500</td></tr><tr><td rowspan="1" colspan="1">1003</td><td rowspan="1" colspan="1">Old Bicycle</td><td rowspan="1" colspan="1">U02</td><td rowspan="1" colspan="1">1999-01-10</td><td rowspan="1" colspan="1">1999-02-20</td><td rowspan="1" colspan="1">25</td></tr><tr><td rowspan="1" colspan="1">1004</td><td rowspan="1" colspan="1">Tricycle</td><td rowspan="1" colspan="1">U01</td><td rowspan="1" colspan="1">1999-02-25</td><td rowspan="1" colspan="1">1999-03-08</td><td rowspan="1" colspan="1">15</td></tr><tr><td rowspan="1" colspan="1">1005</td><td rowspan="1" colspan="1">Tennis Racket</td><td rowspan="1" colspan="1">U03</td><td rowspan="1" colspan="1">1999-03-19</td><td rowspan="1" colspan="1">1999-04-30</td><td rowspan="1" colspan="1">20</td></tr><tr><td rowspan="1" colspan="1">1006</td><td rowspan="1" colspan="1">Helicopter</td><td rowspan="1" colspan="1">U03</td><td rowspan="1" colspan="1">1999-05-05</td><td rowspan="1" colspan="1">1999-05-25</td><td rowspan="1" colspan="1">50000</td></tr><tr><td rowspan="1" colspan="1">1007</td><td rowspan="1" colspan="1">Racing Bicycle</td><td rowspan="1" colspan="1">U04</td><td rowspan="1" colspan="1">1999-01-20</td><td rowspan="1" colspan="1">1999-02-20</td><td rowspan="1" colspan="1">200</td></tr><tr><td rowspan="1" colspan="1">1008</td><td rowspan="1" colspan="1">Broken Bicycle</td><td rowspan="1" colspan="1">U01</td><td rowspan="1" colspan="1">1999-02-05</td><td rowspan="1" colspan="1">1999-03-06</td><td rowspan="1" colspan="1">25</td></tr></tbody></table><table border="1" summary="BIDS"><thead><tr><td rowspan="1" colspan="1">USERID</td><td rowspan="1" colspan="1">ITEMNO</td><td rowspan="1" colspan="1">BID</td><td rowspan="1" colspan="1">BID_DATE</td></tr></thead><tbody><tr><td rowspan="1" colspan="1">U02</td><td rowspan="1" colspan="1">1001</td><td rowspan="1" colspan="1">35</td><td rowspan="1" colspan="1">1999-01-07</td></tr><tr><td rowspan="1" colspan="1">U04</td><td rowspan="1" colspan="1">1001</td><td rowspan="1" colspan="1">40</td><td rowspan="1" colspan="1">1999-01-08</td></tr><tr><td rowspan="1" colspan="1">U02</td><td rowspan="1" colspan="1">1001</td><td rowspan="1" colspan="1">45</td><td rowspan="1" colspan="1">1999-01-11</td></tr><tr><td rowspan="1" colspan="1">U04</td><td rowspan="1" colspan="1">1001</td><td rowspan="1" colspan="1">50</td><td rowspan="1" colspan="1">1999-01-13</td></tr><tr><td rowspan="1" colspan="1">U02</td><td rowspan="1" colspan="1">1001</td><td rowspan="1" colspan="1">55</td><td rowspan="1" colspan="1">1999-01-15</td></tr><tr><td rowspan="1" colspan="1">U01</td><td rowspan="1" colspan="1">1002</td><td rowspan="1" colspan="1">400</td><td rowspan="1" colspan="1">1999-02-14</td></tr><tr><td rowspan="1" colspan="1">U02</td><td rowspan="1" colspan="1">1002</td><td rowspan="1" colspan="1">600</td><td rowspan="1" colspan="1">1999-02-16</td></tr><tr><td rowspan="1" colspan="1">U03</td><td rowspan="1" colspan="1">1002</td><td rowspan="1" colspan="1">800</td><td rowspan="1" colspan="1">1999-02-17</td></tr><tr><td rowspan="1" colspan="1">U04</td><td rowspan="1" colspan="1">1002</td><td rowspan="1" colspan="1">1000</td><td rowspan="1" colspan="1">1999-02-25</td></tr><tr><td rowspan="1" colspan="1">U02</td><td rowspan="1" colspan="1">1002</td><td rowspan="1" colspan="1">1200</td><td rowspan="1" colspan="1">1999-03-02</td></tr><tr><td rowspan="1" colspan="1">U04</td><td rowspan="1" colspan="1">1003</td><td rowspan="1" colspan="1">15</td><td rowspan="1" colspan="1">1999-01-22</td></tr><tr><td rowspan="1" colspan="1">U05</td><td rowspan="1" colspan="1">1003</td><td rowspan="1" colspan="1">20</td><td rowspan="1" colspan="1">1999-02-03</td></tr><tr><td rowspan="1" colspan="1">U01</td><td rowspan="1" colspan="1">1004</td><td rowspan="1" colspan="1">40</td><td rowspan="1" colspan="1">1999-03-05</td></tr><tr><td rowspan="1" colspan="1">U03</td><td rowspan="1" colspan="1">1007</td><td rowspan="1" colspan="1">175</td><td rowspan="1" colspan="1">1999-01-25</td></tr><tr><td rowspan="1" colspan="1">U05</td><td rowspan="1" colspan="1">1007</td><td rowspan="1" colspan="1">200</td><td rowspan="1" colspan="1">1999-02-08</td></tr><tr><td rowspan="1" colspan="1">U04</td><td rowspan="1" colspan="1">1007</td><td rowspan="1" colspan="1">225</td><td rowspan="1" colspan="1">1999-02-12</td></tr></tbody></table><p>The underlying database system has the following referential integrity constraints:</p><ulist><item><p>A foreign key on the BIDS table requires that BIDS.USERID contains a value that is found in USERS.USERID</p></item><item><p>A foreign key on the BIDS table requires that BIDS.ITEMNO contains a value that is found in ITEMS.ITEMNO</p></item></ulist></div3><div3 id="rdb-updates-results"><head>Updates and Results</head><div4 diff="add" id="rdb-updates-results-u1"><head>Q1</head><!-- http://lists.w3.org/Archives/Member/w3c-xml-query-wg/2006Aug/0015.html --><p>Insert a new bid for Roger Smith on item 1002, adding 10% to the best bid
+            received so far for this item, and report back what bid was just entered.</p><p>
+							<emph>Solution in the XQuery Update Facility:</emph>
+						</p><eg xml:space="preserve">
+let $uid := doc("users.xml")/users/user_tuple[name = "Roger Smith"]/userid
+let $topbid := max(doc("bids.xml")/bids/bid_tuple[itemno = 1002]/bid)
+let $newbid := $topbid * 1.1
+return (
+  insert nodes
+    &lt;bid_tuple&gt; 
+      &lt;userid&gt;{ data($uid) }&lt;/userid&gt; 
+      &lt;itemno&gt;1002&lt;/itemno&gt; 
+      &lt;bid&gt;{ $newbid }&lt;/bid&gt; 
+      &lt;bid_date&gt;1999-03-03&lt;/bid_date&gt; 
+    &lt;/bid_tuple&gt;
+  into doc("bids.xml")/bids,
+  &lt;new_bid&gt;{ $newbid }&lt;/new_bid&gt;
+)
+
+</eg><p>
+							<emph>Expected Result:</emph>
+						</p><p>The best bid for item 1002 had been at 1200, thus Roger's bid is at 1320.</p><eg role="result" xml:space="preserve">
+&lt;new_bid&gt;1320&lt;/new_bid&gt;
+            </eg><p>
+							<emph>Expected resulting content of bids.xml:</emph>
+						</p><eg role="result" xml:space="preserve">&lt;bids&gt;
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U02&lt;/userid&gt; 
+    &lt;itemno&gt;1001&lt;/itemno&gt; 
+    &lt;bid&gt;35&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-01-07&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+  <emph>  ... Snip ... </emph>
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U01&lt;/userid&gt; 
+    &lt;itemno&gt;1002&lt;/itemno&gt; 
+    &lt;bid&gt;400&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-02-14&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+  <emph>  ... Snip ... </emph>
+   &lt;bid_tuple&gt; 
+    &lt;userid&gt;U04&lt;/userid&gt; 
+    &lt;itemno&gt;1007&lt;/itemno&gt; 
+    &lt;bid&gt;225&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-02-12&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+  <emph>  ... Snip ... </emph>
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U04&lt;/userid&gt; 
+    &lt;itemno&gt;1002&lt;/itemno&gt; 
+    &lt;bid&gt;1320&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-03-03&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+&lt;/bids&gt;
+						</eg></div4><!--**************************************************--><div4 diff="add" id="rdb-updates-results-u2"><head>Q2</head><!-- http://lists.w3.org/Archives/Member/w3c-xml-query-wg/2006Aug/0015.html --><p>Place a bid for Roger Smith on item 1007, adding 10% to the best bid received
+            so far on that item, but only if the bid amount does not exceed a given
+            limit.  Otherwise return the current top bid.</p><p>
+							<emph>Solution in the XQuery Update Facility:</emph>
+						</p><eg xml:space="preserve">
+let $uid := doc("users.xml")/users/user_tuple[name = "Roger Smith"]/userid
+let $topbid := max(doc("bids.xml")/bids/bid_tuple[itemno = 1007]/bid)
+let $newbid := $topbid * 1.1
+return
+  if($newbid &lt;= 240) then (
+    insert nodes
+      &lt;bid_tuple&gt;
+        &lt;userid&gt;{ data($uid) }&lt;/userid&gt;
+        &lt;itemno&gt;1002&lt;/itemno&gt;
+        &lt;bid&gt;{ $newbid }&lt;/bid&gt;
+        &lt;bid_date&gt;1999-03-03&lt;/bid_date&gt;
+      &lt;/bid_tuple&gt;
+    into doc("bids.xml")/bids,
+    &lt;new_bid&gt;{ $newbid }&lt;/new_bid&gt;
+  ) else (
+    &lt;top_bid&gt;{ $topbid }&lt;/top_bid&gt;
+  )
+
+</eg><p>
+							<emph>Expected Result:</emph>
+						</p><p>Adding 10% to the best bid on item 1007 would require a bid of 247.5, which is more than the allowed limit of 240. Thus,
+          the bids.xml document does not change.</p><eg role="result" xml:space="preserve">
+&lt;top_bid&gt;225&lt;/top_bid&gt;
+            </eg></div4><!--**************************************************--><div4 diff="add" id="rdb-updates-results-u3"><head>Q3</head><!-- http://www.w3.org/Bugs/Public/show_bug.cgi?id=2796#c1 --><p>Erase user Dee Linquent and the corresponding associated items and bids.
+            Return a count of the items and bids deleted.</p><p>
+							<emph>Solution in the XQuery Update Facility:</emph>
+						</p><eg xml:space="preserve">
+let $user := doc("users.xml")/users/user_tuple[name = "Dee Linquent"]
+let $items := doc("items.xml")/items/item_tuple[offered_by = $user/userid]
+let $bids := doc("bids.xml")/bids/bid_tuple[userid = $user/userid]
+return (
+  delete nodes ($user, $items, $bids),
+  &lt;deleted&gt;
+    &lt;items&gt;{ count($items) }&lt;/items&gt;
+    &lt;bids&gt;{ count($bids) }&lt;/bids&gt;
+  &lt;/deleted&gt;
+)
+</eg><p>
+							<emph>Expected Result:</emph>
+						</p><eg role="result" xml:space="preserve">
+&lt;deleted&gt;
+  &lt;items&gt;2&lt;/items&gt;
+  &lt;bids&gt;2&lt;/bids&gt;
+&lt;/deleted&gt;
+</eg><p>
+							<emph>Expected resulting content of items.xml:</emph>
+						</p><eg role="result" xml:space="preserve">&lt;items&gt;
+  &lt;item_tuple&gt;
+    &lt;itemno&gt;1001&lt;/itemno&gt;
+    &lt;description&gt;Red Bicycle&lt;/description&gt;
+    &lt;offered_by&gt;U01&lt;/offered_by&gt;
+    &lt;start_date&gt;1999-01-05&lt;/start_date&gt;
+    &lt;end_date&gt;1999-01-20&lt;/end_date&gt;
+    &lt;reserve_price&gt;40&lt;/reserve_price&gt;
+  &lt;/item_tuple&gt;
+  <emph>  ... Snip ... </emph>
+  &lt;item_tuple&gt;
+    &lt;itemno&gt;1004&lt;/itemno&gt;
+    &lt;description&gt;Tricycle&lt;/description&gt;
+    &lt;offered_by&gt;U01&lt;/offered_by&gt;
+    &lt;start_date&gt;1999-02-25&lt;/start_date&gt;
+    &lt;end_date&gt;1999-03-08&lt;/end_date&gt;
+    &lt;reserve_price&gt;15&lt;/reserve_price&gt;
+  &lt;/item_tuple&gt;
+  &lt;item_tuple&gt;
+    &lt;itemno&gt;1007&lt;/itemno&gt;
+    &lt;description&gt;Racing bicycle&lt;/description&gt;
+    &lt;offered_by&gt;U04&lt;/offered_by&gt;
+    &lt;start_date&gt;1999-01-20&lt;/start_date&gt;
+    &lt;end_date&gt;1999-02-20&lt;/end_date&gt;
+    &lt;reserve_price&gt;200&lt;/reserve_price&gt;
+  &lt;/item_tuple&gt;
+  &lt;item_tuple&gt;
+    &lt;itemno&gt;1008&lt;/itemno&gt;
+    &lt;description&gt;Broken bicycle&lt;/description&gt;
+    &lt;offered_by&gt;U01&lt;/offered_by&gt;
+    &lt;start_date&gt;1999-02-05&lt;/start_date&gt;
+    &lt;end_date&gt;1999-03-06&lt;/end_date&gt;
+    &lt;reserve_price&gt;25&lt;/reserve_price&gt;
+  &lt;/item_tuple&gt;
+&lt;/items&gt;
+</eg><p>
+							<emph>Expected resulting content of users.xml:</emph>
+						</p><eg role="result" xml:space="preserve">&lt;users&gt;
+  &lt;user_tuple&gt;
+    &lt;userid&gt;U01&lt;/userid&gt;
+    &lt;name&gt;Tom Jones&lt;/name&gt;
+    &lt;rating&gt;B&lt;/rating&gt;
+  &lt;/user_tuple&gt;
+  &lt;user_tuple&gt;
+    &lt;userid&gt;U02&lt;/userid&gt;
+    &lt;name&gt;Mary Doe&lt;/name&gt;
+    &lt;rating&gt;A&lt;/rating&gt;
+  &lt;/user_tuple&gt;
+   &lt;user_tuple&gt;
+    &lt;userid&gt;U04&lt;/userid&gt;
+    &lt;name&gt;Roger Smith&lt;/name&gt;
+    &lt;rating&gt;C&lt;/rating&gt;
+  &lt;/user_tuple&gt;
+<emph>  ... Snip ... </emph>
+  &lt;user_tuple&gt;
+   &lt;userid&gt;U06&lt;/userid&gt;
+   &lt;name&gt;Rip Van Winkle&lt;/name&gt;
+   &lt;rating&gt;B&lt;/rating&gt;
+  &lt;/user_tuple&gt;
+&lt;/users&gt;
+</eg><p>
+							<emph>Expected resulting content of bids.xml:</emph>
+						</p><eg role="result" xml:space="preserve">&lt;bids&gt;
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U02&lt;/userid&gt; 
+    &lt;itemno&gt;1001&lt;/itemno&gt; 
+    &lt;bid&gt;35&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-01-07&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U04&lt;/userid&gt; 
+    &lt;itemno&gt;1001&lt;/itemno&gt; 
+    &lt;bid&gt;40&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-01-08&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+<emph>  ... Snip ... </emph>
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U02&lt;/userid&gt; 
+    &lt;itemno&gt;1002&lt;/itemno&gt; 
+    &lt;bid&gt;600&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-02-16&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U04&lt;/userid&gt; 
+    &lt;itemno&gt;1002&lt;/itemno&gt; 
+    &lt;bid&gt;1000&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-02-25&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+<emph>  ... Snip ... </emph>
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U04&lt;/userid&gt; 
+    &lt;itemno&gt;1007&lt;/itemno&gt; 
+    &lt;bid&gt;225&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-02-12&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+&lt;/bids&gt;
+
+</eg></div4><!--**************************************************--></div3></div2><div2 diff="add" id="use-case-wiki"><head>Use case "Wiki" - traversing a set of Wiki pages</head><p>This scenario demonstrates the use of an updating function that returns a non-empty XDM instance.
+        The recursive function traverses a set of html documents by following the href attributes, 
+        returning an index structure representing the linkage hierarchy.  The function also updates a list
+        of visited documents in order to avoid a document being visited more than once.</p><note><p>This use case requires side-effects in the language and so is unlikely to be supported.  It may be removed in a future draft of this document.</p></note><div3 id="use-case-wiki-input-data"><head>Input data</head><p>
+            <emph>Documentation.html</emph>: The top level Wiki page.</p><eg xml:space="preserve">&lt;html&gt;
+  &lt;head&gt;&lt;title&gt;Documentation&lt;/title&gt;&lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Contents&lt;/h1&gt;
+	&lt;ul&gt;
+	  &lt;li&gt;&lt;a href="section1.html"&gt;Section 1&lt;/a&gt;&lt;/li&gt;
+	  &lt;li&gt;&lt;a href="section2.html"&gt;Section 2&lt;/a&gt;&lt;/li&gt;
+	&lt;/ul&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+          </eg><p>
+            <emph>section1.html</emph>:</p><eg xml:space="preserve">&lt;html&gt;
+  &lt;head&gt;&lt;title&gt;Section 1&lt;/title&gt;&lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;First&lt;/h1&gt;
+	&lt;p&gt;Some interesting detail. More in the &lt;a href="section1a.html"&gt;next section&lt;/a&gt;&lt;/p&gt;
+	&lt;p&gt;Back to the &lt;a href="Documentation.html"&gt;index page&lt;/a&gt;&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+          </eg><p>
+            <emph>section1a.html</emph>:</p><eg xml:space="preserve">&lt;html&gt;
+  &lt;head&gt;&lt;title&gt;Section 1a&lt;/title&gt;&lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Subsection&lt;/h1&gt;
+	&lt;p&gt;More of the same&lt;/p&gt;
+	&lt;p&gt;Back to the &lt;a href="Documentation.html"&gt;index page&lt;/a&gt;&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+          </eg><p>
+            <emph>section2.html</emph>:</p><eg xml:space="preserve">&lt;html&gt;
+  &lt;head&gt;&lt;title&gt;Section 2&lt;/title&gt;&lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Second&lt;/h1&gt;
+	&lt;p&gt;Summary of &lt;a href="section1.html"&gt;section 1&lt;/a&gt;
+	          and &lt;a href="section1a.html"&gt;section 1a&lt;/a&gt;&lt;/p&gt;
+	&lt;p&gt;Back to the &lt;a href="Documentation.html"&gt;index page&lt;/a&gt;&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+          </eg></div3><div3 id="use-case-wiki-q1"><head>Q1</head><p>Return the document hierarchy omitting duplicates.</p><p>
+            <emph>Solution in the XQuery Update Facility:</emph>
+          </p><eg xml:space="preserve">declare variable $prefix := "/html/";
+declare variable $visited := &lt;visited/&gt;;
+
+declare function local:filetree($s as xs:string, $depth)
+{
+if ($depth &lt; 5) then
+  &lt;level depth="{$depth}"&gt;
+    &lt;file&gt;{ $s }&lt;/file&gt;
+    { 
+      let $relname := concat($prefix, $s)
+      let $doc := doc($relname)
+      for $href in $doc//@href
+      where contains($href,"htm")
+        and not(contains($href,"http"))
+        and (every $url in $visited/url satisfies $url != $href)
+      return ( 
+             insert node &lt;url&gt;{ $href }&lt;/url&gt; into $visited,
+             &lt;newcall&gt;{ local:filetree($href, $depth+1) }&lt;/newcall&gt; 
+      )
+    }
+  &lt;/level&gt;
+ else ()
+};
+
+local:filetree("Documentation.html", 1)
+          </eg><p>
+            <emph>Expected result:</emph>
+          </p><eg xml:space="preserve">&lt;level depth="1"&gt;
+  &lt;file&gt; Documentation.html &lt;/file&gt;
+  &lt;newcall&gt;
+    &lt;level depth="2"&gt;
+      &lt;file&gt; section1.html &lt;/file&gt;
+      &lt;newcall&gt;
+        &lt;level depth="3"&gt;
+          &lt;file&gt; section1a.html &lt;/file&gt;
+        &lt;/level&gt;
+      &lt;/newcall&gt;
+    &lt;/level&gt;
+  &lt;/newcall&gt;
+  &lt;newcall&gt;
+    &lt;level depth="2"&gt;
+      &lt;file&gt; section2.html &lt;/file&gt;
+    &lt;/level&gt;
+  &lt;/newcall&gt;
+&lt;/level&gt;
+          </eg></div3></div2><div2 diff="add" at="2014-07-31" id="use-case-ebook"><head>Use case "ebook" - Create files for an ebook</head><p>Create multiple files for an EPUB ebook from a single query, including
+JavaScript, XML manifest, XHTML book chapters and contents, CSS.</p><p>This use case illustrates creating multiple output documents in differing
+formats, here for an EPUB 3 ebook but the same issues apply for creating a
+Web app or a rich Web page with styles and scripts.</p><p>The solution presupposes functions that will create the documents that we need to write out.</p><div3 id="use-case-ebook-q1"><head>Q1</head><p>
+            <emph>Solution in the XQuery Update Facility:</emph>
+          </p><eg xml:space="preserve">let $chapters := makebook(),
+          $js := makejs($chapters),
+         $css := makecss($chapters),
+         $toc := maketoc($chapters),
+    $manifest := makemanifest($chapters, $js, $css, $toc),
+      $output := function($method as xs:string) {
+                   &lt;output:serialization-parameters
+                           xmlns:output="http://www.w3.org/2010/xslt-xquery-serialization"&gt;
+                     &lt;output:method value="{$method}"/&gt;
+                   &lt;/output:serialization-parameters&gt;
+                 }
+
+return (
+    for $c in $chapters return put($c, urifor($c), $output("xml")),
+    put($js, "tmp/lib/js.js", $output("text")),
+    put($css, "tmp/lib/styles.css", $output("text")),
+    put($toc, "tmp/tox.xhtml", $output("xhtml")),
+    put($manifest, "tmp/manifest.xhtml", $output("xhtml"))
+)
+          </eg><p>
+            <emph>Expected result:</emph>
+          </p><p>On systems that can write to files, a folder called "tmp" will be made
+containing XHTML, XML, JavaScript and CSS files.</p></div3></div2></div1></body><!--
+Vocab:
+
+- Serializable
+
+3.5.1.
+- Simple update language operations MUST be atomic.
+- Complex update
+- Composed update
+
+# -> MUST provide a set of atomic operations.
+
+# -> MUST provide a means to group atomic operations into an
+atomic execution unit.
+
+3.5.2
+
+# -> At the end of an outermost update operation (that is, an update
+operation invoked from the external environment), the data model MUST
+be consistent.  ### In particular, all type annotations MUST be
+consistent with the content of the items they govern. ### The XQuery
+Updates specification MAY define additional levels of granularity at
+which Data Model constraints are enforced.
+
+3.5.3 Isolation
+
+# -> SHOULD define the means by which operations can be isolated
+from concurrent operations.
+
+3.5.4 Durability
+
+# -> There MUST be a means to control the durability of atomic
+operations and atomic execution units.
+
+3.5.5 Validity at transactional boundaries
+
+Version 5: Add to above 'consistency' text:
+
+# -> At the end of an outermost update operation (that is, an update
+operation invoked from the external environment), the data model MUST
+be consistent. ### In particular, all type annotations MUST be
+consistent with the content of the items they govern. ### The XQuery
+Updates specification MAY define additional levels of granularity at
+which Data Model constraints are enforced.
+
+
+
+
+
+#-> Modify XML in persistent XML stores, including native XML
+	databases, XML files stored on a file system, or XML stored in
+	SQL databases.
+
+
+ 3.4.12 Validation
+
+	Updates MAY support an explicit or implicit in-place XML Schema
+	validation (i.e. no XQuery Schema validation copy semantics).
+
+#-> Updates MAY support an explicit XML Schema validation operation
+	that preserves node identity.
+
+========================================================================
+
+s/Updates/"The &language;"
+
+#-> MUST, SHOULD - isolate on separate lines for the ball exercise.
+
+
+
+
+3.4.11 Compositionality
+
+	The &language; MUST be able to compose update
+	operators with other update operators. 
+
+	The &language; MAY be compositional with respect to
+	XQuery expressions; that is, it may be possible to use an update
+	wherever an XQuery expression is used.
+
+	if ($foo)
+	  then update asdf
+	  else ()
+
+	if ($foo)
+	  then <foo>This is a foo</foo>
+	  else ()
+
+The &language; SHOULD provide a means to parameterize
+update operations.
+
+The &language; SHOULD provide an optional static type
+checking feature.
+
+--><back><div1 id="id-update-references"><head>References</head><blist><bibl xmlns:xlink="http://www.w3.org/1999/xlink" key="Transaction Processing Concepts and Techniques" id="gray" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest"> Gray, J. and
+					Reuter, A. 1994. <emph>Transaction Processing Concepts and Techniques</emph>.
+					Morgan Kaufmann Publishers, San Mateo, CA </bibl><bibl xmlns:xlink="http://www.w3.org/1999/xlink" key="SQL/XML" id="sqlxml" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">International Organization for Standardization
+					(ISO). <emph>ISO/IEC 9075-14:2008, Information Technology — Database Languages —
+						SQL — Part 14, XML-Related Specifications (SQL/XML)</emph>. (Available from
+					American National Standards Institute, New York, NY 10036, (212) 642-4900.)</bibl><bibl xmlns:xlink="http://www.w3.org/1999/xlink" key="XQuery and XPath Data Model (XDM) 3.0" id="xpath-datamodel-30" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest"/><bibl xmlns:xlink="http://www.w3.org/1999/xlink" key="XQuery 3.0: An XML Query Language" id="xquery-30" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest"/><bibl xmlns:xlink="http://www.w3.org/1999/xlink" key="XML Query Use Cases" id="xquery-use-cases" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest"/><bibl xmlns:xlink="http://www.w3.org/1999/xlink" key="XQuery Update Facility 1.0 Requirements" id="xquery-update-10-requirements" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest"/><bibl xmlns:xlink="http://www.w3.org/1999/xlink" key="XQuery Update Facility 1.0" id="xquery-update-10" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest"/><bibl xmlns:xlink="http://www.w3.org/1999/xlink" key="SOAP Version 1.2 Part 0:Primer" id="SOAPPrimer" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">World Wide
+Web Consortium. <emph>SOAP Version 1.2 Part 0: Primer</emph>
+W3C Recommendation 24 June 2003. See <loc href="http://www.w3.org/TR/2003/REC-soap12-part0-20030624/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest"/>.</bibl></blist></div1></back></spec>

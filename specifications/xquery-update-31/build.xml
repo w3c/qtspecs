@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding='utf-8'?>
+<project name="xquery-update-31" default="all" basedir=".">
+
+<!-- Import a bunch of global property definitions -->
+  <dirname property="etc.dir" file="../../etc/*"/>
+  <import file="${etc.dir}/build-constants.xml"/>
+
+<!-- Set properties for "this" document's build requirements -->
+  <property name="generic-shortname" value="xquery-update"/>
+  <property name="spec.code" value="XQU31"/>
+  <property name="this-spec-version-code" value="31"/>
+  <property name="xquery-version-code" value="30"/>
+  <property name="shortname" value="${generic-shortname}-${this-spec-version-code}"/>
+  <property name="spec.uri" value="${W3C.TR}/${shortname}/"/>
+  <property name="spec.xml" value="${src.dir}/${generic-shortname}.xml"/>
+  <!-- 2008-09-03, Jim: The following property has no meaning at present,     -->
+  <!--   because we do not build errata in the qtspecs tree. Maybe later...   -->
+<!--  <property name="errata.xml" value="${src.dir}/${generic-shortname}-errata.xml"/> -->
+
+  <property name="namespace-name" value="xquery-update"/>
+
+  <dirname property="shared.grammar.dir" file="../grammar-${xquery-version-code}/*"/>
+  <!-- <property name="spec.style" value="${shared.style.dir}/xmlspec-override.xsl"/> -->
+  <property name="spec.style" value="${local.style.dir}/xquery-update-semantics.xsl"/>
+  <property name="spec.style.diff" value="${local.style.dir}/xquery-update-semantics-diff.xsl"/>
+
+<!-- Import target, etc. definitions that work globally -->
+  <import file="${etc.dir}/build-impl.xml"/>
+
+<!-- Recall that any targets defined herein override targets of the same name -->
+<!--   that are defined in build-impl.xml.  If you cannot find a target of a  -->
+<!--   given name in this file, look in build-impl.xml.                       -->
+
+  <!-- ============================================================ -->
+  <!-- additional properties -->
+
+  <property name="color-changes" value="no"/>
+  <property name="grammar-file" value="${shared.grammar.dir}/xpath-grammar.xml"/>
+  <property name="strip-grammar-file" value="${shared.grammar.dir}/parser/strip.xsl"/>
+  <property name="strip-core-grammar" value="${shared.style.dir}/strip-core.xsl"/>
+  <property name="grammar-map-file" value="${src.dir}/grammar-map.xml"/>
+  <property name="assemble-spec-file" value="${local.style.dir}/assemble-update.xsl"/>
+
+  <!-- ============================================================ -->
+
+  <!-- Overrides global template to omit ",errata" -->
+  <target name="all"
+          depends="spec,namespacedoc"
+          description="This is the default target. "/>
+
+  <!-- ====================================================================== -->
+
+  <!-- Overrides internal template -->
+  <target name="chk.spec" depends="init">
+<echo message="Target chk.spec starting"/>
+    <condition property="spec.exists">
+      <uptodate targetfile="${spec.html}">
+         <srcfiles file="${base.dir}/build.xml"/>
+         <srcfiles file="${etc.dir}/build-constants.xml"/>
+         <srcfiles file="${etc.dir}/build-impl.xml"/>
+         <srcfiles file="${etc.dir}/status-entities.dtd"/>
+         <srcfiles file="${etc.dir}/status-general.xml"/>
+         <srcfiles dir="${src.dir}" includes="**/*.xml"/>
+         <srcfiles file="${grammar-file}"/>
+         <srcfiles file="${grammar-map-file}"/>
+         <srcfiles file="${strip-grammar-file}"/>
+         <srcfiles file="${assemble-spec-file}"/>
+         <srcfiles file="${strip-core-grammar}"/>
+         <srcfiles file="${spec.style}"/>
+         <srcfiles file="${shared.style.dir}/assemble-spec.xsl"/>
+         <srcfiles file="${shared.style.dir}/xsl-query.xsl"/>
+         <srcfiles file="${shared.style.dir}/xmlspec-override.xsl"/>
+         <srcfiles file="${shared.style.dir}/xmlspec.xsl"/>
+         <srcfiles file="${grammar-map-file}"/>
+         <srcfiles file="${shared.style.dir}/html-fix.xsl"/>
+         <srcfiles file="${shared.style.dir}/identity.xsl"/>
+         <srcfiles file="${shared.schema.dir}/xsl-query.dtd"/>
+         <srcfiles file="${shared.schema.dir}/xmlspec.dtd"/>
+         <srcfiles file="${shared.schema.dir}/elements.dtd"/>
+         <srcfiles file="${shared.schema.dir}/tree-diagram.dtd"/>
+      </uptodate>
+    </condition>
+  </target>
+
+  <!-- ============================================================ -->
+
+  <target name="-style-spec" depends="init,chk.spec,validate-spec"
+          if="build.spec" unless="spec.exists">
+<echo message="Target -style-spec starting"/>
+
+  <!-- Creation of the temp grammar files is needed for assembling the        -->
+  <!--   "complete" document, including grammar and extensions                -->
+<echo message="Creating temp-xquery-grammar.xml"/>
+    <xslt in="${grammar-file}" out="${build.dir}/temp-xquery-grammar.xml"
+          style="${strip-grammar-file}" force="yes">
+      <param name="spec1" expression="xquery31"/>
+      <param name="spec2" expression="update30"/>
+    </xslt>
+
+<!--
+<echo message="Creating temp-core-grammar.xml"/>
+    <xslt in="${grammar-file}" out="${build.dir}/temp-core-grammar.xml"
+          style="${strip-core-grammar}" force="yes">
+    </xslt>
+-->
+
+  <!-- The assembly step is used to bring together all of the source files    -->
+  <!--   that are incorporated by using entity references, but also to        -->
+  <!--   transform grammar-related productions into XML elements that can be  -->
+  <!--   readily rendered into a form needed in the HTML document.            -->
+<echo message="Creating update-assembled.xml"/>
+    <xslt in="${spec.xml}" out="${build.dir}/update-assembled.xml"
+          style="${assemble-spec-file}" force="yes"
+          classpathref="saxon9.classpath">
+      <param name="grammar-map-file-name" expression="${grammar-map-file}"/>
+      <param name="grammar-file" expression="${build.dir}/temp-xquery-grammar.xml"/>
+      <param name="spec" expression="xquery"/>
+      <param name="not-spec" expression="xxpath"/>
+    </xslt>
+
+<echo message="Validating update-assembled.xml"/>
+    <xmlvalidate file="${build.dir}/update-assembled.xml" 
+                 failonerror="yes" lenient="no" warn="yes"/>
+
+<echo message="Transforming update-assembled.xml"/>
+    <xslt in="${build.dir}/update-assembled.xml"
+          out="${build.dir}/update-html.html"
+          style="${spec.style}" force="yes"
+          classpathref="saxon9.classpath">
+      <param name="spec" expression="update"/>
+      <param name="kwFull" expression="brief"/>
+      <param name="kwSort" expression="cluster"/>
+    </xslt>
+
+<!-- 2009-11-25, Jim: Added param to pass DSTAMP and TSTAMP properties -->
+<echo message="Fixing up update.html"/>
+    <xslt in="${build.dir}/update-html.html"
+          out="${spec.html}"
+          style="${shared.style.dir}/html-fix.xsl"
+          classpathref="saxon9.classpath" force="yes">
+      <param name="currentDateTime" expression="${DSTAMP} ${TSTAMP}"/>
+    </xslt>
+
+<!-- Build diff version -->
+  <!-- The assembly step is used to bring together all of the source files    -->
+  <!--   that are incorporated by using entity references, but also to        -->
+  <!--   transform grammar-related productions into XML elements that can be  -->
+  <!--   readily rendered into a form needed in the HTML document.            -->
+<echo message="Creating update-assembled-diff.xml"/>
+    <xslt in="${spec.xml}" out="${build.dir}/update-assembled-diff.xml"
+          style="${assemble-spec-file}" force="yes"
+          classpathref="saxon9.classpath">
+      <param name="grammar-map-file-name" expression="${grammar-map-file}"/>
+      <param name="grammar-file" expression="${build.dir}/temp-xquery-grammar.xml"/>
+      <param name="spec" expression="xquery"/>
+      <param name="not-spec" expression="xxpath"/>
+      <param name="show.diff.markup" expression="1"/>
+    </xslt>
+
+<echo message="Validating update-assembled-diff.xml"/>
+    <xmlvalidate file="${build.dir}/update-assembled-diff.xml" 
+                 failonerror="yes" lenient="no" warn="yes"/>
+
+<echo message="Transforming update-assembled-diff.xml"/>
+    <xslt in="${build.dir}/update-assembled-diff.xml"
+          out="${build.dir}/update-html-diff.html"
+          style="${spec.style}" force="yes"
+          classpathref="saxon9.classpath">
+      <param name="spec" expression="update"/>
+      <param name="kwFull" expression="brief"/>
+      <param name="kwSort" expression="cluster"/>
+      <param name="show-markup" expression="1"/>
+    </xslt>
+
+<!-- 2009-11-25, Jim: Added param to pass DSTAMP and TSTAMP properties -->
+<echo message="Fixing up update-html-diff.html"/>
+    <xslt in="${build.dir}/update-html-diff.html"
+          out="${spec.diffs.html}"
+          style="${shared.style.dir}/html-fix.xsl"
+          classpathref="saxon9.classpath" force="yes">
+      <param name="currentDateTime" expression="${DSTAMP} ${TSTAMP}"/>
+    </xslt>
+
+  </target>
+
+  <!-- Overrides internal template -->
+  <target name="-copy-xml" depends="init,chk.spec"
+          if="build.spec" unless="spec.exists">
+    <echo message="Copying XML for ${shortname}..." />
+
+    <xslt in="${build.dir}/update-assembled.xml"
+          out="${dist.dir}/${shortname}.xml"
+          style="${shared.style.dir}/identity.xsl" force="yes"
+          classpathref="saxon9.classpath"/>
+  </target>
+
+  <!-- ============================================================ -->
+
+  <target name="copy-images" depends="init">
+    <mkdir dir="${dist.dir}/images"/>
+    <copy todir="${dist.dir}/images" flatten="true">
+      <fileset dir="${local.images.dir}"/>
+    </copy>
+  </target>
+
+  <!-- ============================================================ -->
+
+  <target name="namespacedoc"
+          depends="style-namespacedoc,init"/>
+
+<!-- ======================================================================== -->
+
+  <target name="chk.namespacedoc">
+
+    <condition property="namespacedoc.exists">
+      <uptodate targetfile="${dist.dir}/ns-${namespace-name}.html">
+         <srcfiles file="${base.dir}/build.xml"/>
+         <srcfiles file="${etc.dir}/build-constants.xml"/>
+         <srcfiles file="${etc.dir}/build-impl.xml"/>
+         <srcfiles file="${etc.dir}/status-entities.dtd"/>
+         <srcfiles file="${etc.dir}/status-general.xml"/>
+         <srcfiles file="${src.dir}/ns-${namespace-name}.xml"/>
+         <srcfiles file="${shared.style.dir}/xsl-query.xsl"/>
+         <srcfiles file="${shared.style.dir}/xmlspec.xsl"/>
+         <srcfiles file="${shared.style.dir}/ns-blank.xsl"/>
+         <srcfiles file="${shared.schema.dir}/xsl-query.dtd"/>
+         <srcfiles file="${shared.schema.dir}/xmlspec.dtd"/>
+         <srcfiles file="${shared.schema.dir}/elements.dtd"/>
+         <srcfiles file="${shared.schema.dir}/tree-diagram.dtd"/>
+         <srcfiles file="${shared.schema.dir}/qtnamespaces.dtd"/>
+      </uptodate>
+    </condition>
+
+  </target>
+
+  <!-- ============================================================ -->
+
+  <target name="style-namespacedoc"
+          depends="chk.namespacedoc,init"
+          unless="namespacedoc.exists">
+    <echo message="Building XQuery Update Namespace Doc ..." />
+
+    <echo message="Transforming namespace XML source to HTML with RDDL"/>
+    <xslt in="${src.dir}/ns-${namespace-name}.xml"
+	        out="${build.dir}/ns-${namespace-name}.html"
+	        style="${shared.style.dir}/ns-blank.xsl" force="yes"
+	        classpathref="saxon9.classpath"/>
+
+    <echo message="Generating RDF from HTML"/>
+    <xslt in="${build.dir}/ns-${namespace-name}.html"
+	        out="${dist.dir}/ns-${namespace-name}.rdf"
+	        style="${shared.style.dir}/qt-ns-grddl.xsl" force="yes"
+	        classpathref="saxon9.classpath">
+      <param name="doc" expression="http://www.w3.org/2014/xquery-update-31"/>
+    </xslt>
+
+    <echo message="Fixing up HTML namespace document by removing traces of RDDL"/>
+    <xslt in="${build.dir}/ns-${namespace-name}.html"
+	        out="${dist.dir}/ns-${namespace-name}.html"
+	        style="${shared.style.dir}/html-namespace-fixup.xsl" force="yes"
+	        classpathref="saxon9.classpath"/>
+
+    <echo message="Fixing up RDDL namespace document to add xhtml namespace"/>
+    <xslt in="${build.dir}/ns-${namespace-name}.html"
+	        out="${dist.dir}/ns-${namespace-name}.xhtml"
+	        style="${shared.style.dir}/rddl-namespace-fixup.xsl" force="yes"
+	        classpathref="saxon9.classpath"/>
+
+    <echo message="Tidy up the HTML file for pubrules"/>
+    <exec executable="tidy">
+      <arg value="--doctype"/>
+      <arg value="transitional"/>
+      <arg value="-utf8"/>
+      <arg value="-mnq"/>
+      <arg value="-asxml"/>
+      <arg value="${dist.dir}/ns-${namespace-name}.html"/>
+    </exec>
+
+  </target>
+
+</project>

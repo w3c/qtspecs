@@ -1,0 +1,1182 @@
+<div1 id="id-type-promotion-and-operator-mapping">
+<head>Type Promotion and Operator Mapping</head>
+
+<div2 id="promotion">
+<head>Type Promotion</head>
+
+<p><termdef term="type promotion" id="dt-type-promotion">Under certain circumstances, an atomic value can be promoted from
+one type to another. <term>Type promotion</term> is used in evaluating function calls (see <specref ref="id-function-calls"/>)<phrase role="xquery">, <code>order by</code> clauses (see <specref ref="id-order-by-clause"/>),</phrase>  and operators that accept numeric or string operands (see <specref ref="mapping"/>).</termdef> The following type promotions are permitted:</p>
+
+<olist>
+<item><p>Numeric type promotion:</p><olist>
+<item><p>A value of type <code>xs:float</code> (or any type
+derived by restriction from <code>xs:float</code>) can be promoted to
+the type <code>xs:double</code>. The result is the
+<code>xs:double</code> value that is the same as the original
+value.</p></item>
+
+
+<item><p>A value of type <code>xs:decimal</code> (or any type derived
+by restriction from <code>xs:decimal</code>) can be promoted to either
+of the types <code>xs:float</code> or <code>xs:double</code>.  The
+result of this promotion is created by casting the original value to
+the required type. This kind of promotion may cause loss of
+precision.</p></item></olist></item>
+<item><p>URI type promotion: A value of type <code>xs:anyURI</code> (or any type derived by restriction from <code>xs:anyURI</code>) can be promoted to the type <code>xs:string</code>. The result of this promotion is created by casting the original value to the type <code>xs:string</code>.</p><note><p>Since <code>xs:anyURI</code> values can be promoted to <code>xs:string</code>, functions and operators that compare strings using the <termref def="dt-def-collation">default collation</termref> also compare <code>xs:anyURI</code> values using the <termref def="dt-def-collation">default collation</termref>. This ensures that orderings that include strings, <code>xs:anyURI</code> values, or any combination of the two types are consistent and well-defined.</p></note></item>
+
+
+</olist>
+<p>Note that <termref def="dt-type-promotion">type promotion</termref> is different from <termref def="dt-subtype-substitution">subtype substitution</termref>. For example:</p><ulist>
+<item><p>A function that expects a parameter <code>$p</code> of type <code>xs:float</code> can be invoked with a value of type <code>xs:decimal</code>. This is an example of <termref def="dt-type-promotion">type promotion</termref>. The value is actually converted to the expected type. Within the body of the function, <code>$p instance of xs:decimal</code> returns <code>false</code>.</p></item>
+<item><p>A function that expects a parameter <code>$p</code> of type <code>xs:decimal</code> can be invoked with a value of type <code>xs:integer</code>. This is an example of <termref def="dt-subtype-substitution">subtype substitution</termref>. The value retains its original type. Within the body of the function, <code>$p instance of xs:integer</code> returns <code>true</code>.</p></item></ulist></div2>
+
+<div2 id="mapping">
+<head>Operator Mapping</head> <p>The operator mapping tables in this section list the
+combinations of types for which the various operators of &language;
+are defined. <termdef term="operator function" id="dt-operator-function">For each operator and valid combination of operand types, the operator mapping tables specify a result type and an <term>operator function</term> that implements the semantics of the operator for the given types.</termdef> The definitions of the operator functions are given in  <bibref ref="xpath-functions-11"/>. The result of an operator may be the raising of an error by its operator function, as defined in <bibref ref="xpath-functions-11"/>. In some cases, the operator function does not implement the full semantics of
+a given operator. For the definition of each operator (including its
+behavior for empty sequences or sequences of length greater than one),
+see the descriptive material in the main part of this
+document.</p><p>The <code>and</code> and
+<code>or</code> operators are defined directly in the main body of
+this document, and do not occur in the operator mapping tables.</p><p>If an operator in the operator mapping tables expects an operand of type 
+<emph>ET</emph>, that operator can be applied to an operand of type <emph>AT</emph> if type <emph>AT</emph> can 
+be converted to type <emph>ET</emph> by a combination of <termref def="dt-type-promotion">type promotion</termref> and <termref def="dt-subtype-substitution">subtype substitution</termref>. For example, a table entry indicates that the <code>gt</code> operator may
+be applied to two <code>xs:date</code> operands, returning
+<code>xs:boolean</code>. Therefore, the <code>gt</code> operator may
+also be applied to two (possibly different) subtypes of
+<code>xs:date</code>, also returning <code>xs:boolean</code>.</p><p><termdef id="dt-numeric" term="numeric">When referring to a type, the term <term>numeric</term> denotes the types
+<code>xs:integer</code>, <code>xs:decimal</code>,
+<code>xs:float</code>, and <code>xs:double</code>.</termdef> An operator whose
+operands and result are designated as <termref def="dt-numeric">numeric</termref> might be
+thought of as representing four operators, one for each of the numeric
+types. For example, the numeric <code>+</code> operator might be
+thought of as representing the following four operators:</p>
+
+
+<table width="80%" border="1" summary="Operators"><tbody>
+<tr><td align="center">Operator</td><td align="center">First operand type</td><td align="center">Second operand type</td><td align="center">Result type</td></tr>
+<tr><td align="center"><code>+</code></td><td align="center"><code>xs:integer</code></td><td align="center"><code>xs:integer</code></td><td align="center"><code>xs:integer</code></td></tr>
+<tr><td align="center"><code>+</code></td><td align="center"><code>xs:decimal</code></td><td align="center"><code>xs:decimal</code></td><td align="center"><code>xs:decimal</code></td></tr>
+<tr><td align="center"><code>+</code></td><td align="center"><code>xs:float</code></td><td align="center"><code>xs:float</code></td><td align="center"><code>xs:float</code></td></tr>
+<tr><td align="center"><code>+</code></td><td align="center"><code>xs:double</code></td><td align="center"><code>xs:double</code></td><td align="center"><code>xs:double</code></td></tr></tbody></table><p>A numeric operator may be validly applied to an operand of type <emph>AT</emph> if type 
+<emph>AT</emph> can be converted to any of the four numeric types by a combination of 
+<termref def="dt-type-promotion">type promotion</termref> and <termref def="dt-subtype-substitution">subtype substitution</termref>. If the result type of an 
+operator is listed as numeric, it means "the first type in the ordered list <code>(xs:integer, xs:decimal, xs:float, xs:double)</code> into which all operands can be converted by <termref def="dt-subtype-substitution">subtype substitution</termref> and <termref def="dt-type-promotion">type promotion</termref>." As an example, suppose that the type <code>hatsize</code> is derived from <code>xs:integer</code> and the type <code>shoesize</code> is derived from <code>xs:float</code>.   Then if the <code>+</code> operator is invoked with operands of type <code>hatsize</code> and <code>shoesize</code>, it returns a result of type <code>xs:float</code>.  Similarly, if <code>+</code> is invoked with two operands of type <code>hatsize</code> it returns a result of type <code>xs:integer</code>.</p><p><termdef id="dt-gregorian" term="Gregorian">In the operator mapping tables,
+the term <term>Gregorian</term> refers to the types
+<code>xs:gYearMonth</code>, <code>xs:gYear</code>,
+<code>xs:gMonthDay</code>, <code>xs:gDay</code>, and
+<code>xs:gMonth</code>.</termdef>  For binary operators that accept two
+Gregorian-type operands, both operands must have the same type (for
+example, if one operand is of type <code>xs:gDay</code>, the other
+operand must be of type <code>xs:gDay</code>.)</p>
+
+<table border="1" summary="Binary operators" role="small">
+<caption>Binary Operators</caption>
+<tbody>
+
+<tr>
+<th>Operator</th>
+<th>Type(A)</th>
+<th>Type(B)</th>
+<th>Function</th>
+<th>Result type</th>
+</tr>
+
+<tr><td>A + B</td><td>numeric</td><td>numeric</td><td>op:numeric-add(A, B)</td><td>numeric</td></tr>
+
+<tr><td>A + B</td><td>xs:date</td><td>xs:yearMonthDuration</td><td>op:add-yearMonthDuration-to-date(A, B)</td><td>xs:date</td></tr>
+
+<tr><td>A + B</td><td>xs:yearMonthDuration</td><td>xs:date</td><td>op:add-yearMonthDuration-to-date(B, A)</td><td>xs:date</td></tr>
+<tr><td>A + B</td><td>xs:date</td><td>xs:dayTimeDuration</td><td>op:add-dayTimeDuration-to-date(A, B)</td><td>xs:date</td></tr>
+<tr><td>A + B</td><td>xs:dayTimeDuration</td><td>xs:date</td><td>op:add-dayTimeDuration-to-date(B, A)</td><td>xs:date</td></tr>
+
+<tr><td>A + B</td><td>xs:time</td><td>xs:dayTimeDuration</td><td>op:add-dayTimeDuration-to-time(A, B)</td><td>xs:time</td></tr>
+<tr><td>A + B</td><td>xs:dayTimeDuration</td><td>xs:time</td><td>op:add-dayTimeDuration-to-time(B, A)</td><td>xs:time</td></tr>
+
+
+<tr><td>A + B</td><td>xs:dateTime</td><td>xs:yearMonthDuration</td><td>op:add-yearMonthDuration-to-dateTime(A, B)</td><td>xs:dateTime</td></tr>
+<tr><td>A + B</td><td>xs:yearMonthDuration</td><td>xs:dateTime</td><td>op:add-yearMonthDuration-to-dateTime(B, A)</td><td>xs:dateTime</td></tr>
+
+<tr><td>A + B</td><td>xs:dateTime</td><td>xs:dayTimeDuration</td><td>op:add-dayTimeDuration-to-dateTime(A, B)</td><td>xs:dateTime</td></tr>
+<tr><td>A + B</td><td>xs:dayTimeDuration</td><td>xs:dateTime</td><td>op:add-dayTimeDuration-to-dateTime(B, A)</td><td>xs:dateTime</td></tr>
+
+<tr><td>A + B</td><td>xs:yearMonthDuration</td><td>xs:yearMonthDuration</td><td>op:add-yearMonthDurations(A, B)</td><td>xs:yearMonthDuration</td></tr>
+<tr><td>A + B</td><td>xs:dayTimeDuration</td><td>xs:dayTimeDuration</td><td>op:add-dayTimeDurations(A, B)</td><td>xs:dayTimeDuration</td></tr>
+
+
+<tr><td>A - B</td><td>numeric</td><td>numeric</td><td>op:numeric-subtract(A, B)</td><td>numeric</td></tr>
+
+
+<tr><td>A - B</td><td>xs:date</td><td>xs:date</td><td>op:subtract-dates(A, B)</td><td>xs:dayTimeDuration</td></tr>
+<tr><td>A - B</td><td>xs:date</td><td>xs:yearMonthDuration</td><td>op:subtract-yearMonthDuration-from-date(A, B)</td><td>xs:date</td></tr>
+<tr><td>A - B</td><td>xs:date</td><td>xs:dayTimeDuration</td><td>op:subtract-dayTimeDuration-from-date(A, B)</td><td>xs:date</td></tr>
+
+<tr><td>A - B</td><td>xs:time</td><td>xs:time</td><td>op:subtract-times(A, B)</td><td>xs:dayTimeDuration</td></tr>
+
+<tr><td>A - B</td><td>xs:time</td><td>xs:dayTimeDuration</td><td>op:subtract-dayTimeDuration-from-time(A, B)</td><td>xs:time</td></tr>
+
+
+<tr><td>A - B</td><td>xs:dateTime</td><td>xs:dateTime</td><td>op:subtract-dateTimes(A, B)</td><td>xs:dayTimeDuration</td></tr>
+<tr><td>A - B</td><td>xs:dateTime</td><td>xs:yearMonthDuration</td><td>op:subtract-yearMonthDuration-from-dateTime(A, B)</td><td>xs:dateTime</td></tr>
+<tr><td>A - B</td><td>xs:dateTime</td><td>xs:dayTimeDuration</td><td>op:subtract-dayTimeDuration-from-dateTime(A, B)</td><td>xs:dateTime</td></tr>
+
+<tr><td>A - B</td><td>xs:yearMonthDuration</td><td>xs:yearMonthDuration</td><td>op:subtract-yearMonthDurations(A, B)</td><td>xs:yearMonthDuration</td></tr>
+<tr><td>A - B</td><td>xs:dayTimeDuration</td><td>xs:dayTimeDuration</td><td>op:subtract-dayTimeDurations(A, B)</td><td>xs:dayTimeDuration</td></tr>
+
+
+<tr><td>A * B</td><td>numeric</td><td>numeric</td><td>op:numeric-multiply(A, B)</td><td>numeric</td></tr>
+<tr><td>A * B</td><td>xs:yearMonthDuration</td><td>numeric</td><td>op:multiply-yearMonthDuration(A, B)</td><td>xs:yearMonthDuration</td></tr>
+<tr><td>A * B</td><td>numeric</td><td>xs:yearMonthDuration</td><td>op:multiply-yearMonthDuration(B, A)</td><td>xs:yearMonthDuration</td></tr>
+<tr><td>A * B</td><td>xs:dayTimeDuration</td><td>numeric</td><td>op:multiply-dayTimeDuration(A, B)</td><td>xs:dayTimeDuration</td></tr>
+<tr><td>A * B</td><td>numeric</td><td>xs:dayTimeDuration</td><td>op:multiply-dayTimeDuration(B, A)</td><td>xs:dayTimeDuration</td></tr>
+
+<tr><td>A idiv B</td><td>numeric</td><td>numeric</td><td>op:numeric-integer-divide(A, B)</td><td>xs:integer</td></tr>
+<tr><td>A div B</td><td>numeric</td><td>numeric</td><td>op:numeric-divide(A, B)</td><td>numeric; but xs:decimal if both operands are xs:integer</td></tr>
+<tr><td>A div B</td><td>xs:yearMonthDuration</td><td>numeric</td><td>op:divide-yearMonthDuration(A, B)</td><td>xs:yearMonthDuration</td></tr>
+<tr><td>A div B</td><td>xs:dayTimeDuration</td><td>numeric</td><td>op:divide-dayTimeDuration(A, B)</td><td>xs:dayTimeDuration</td></tr>
+<tr><td>A div B</td><td>xs:yearMonthDuration</td><td>xs:yearMonthDuration</td><td>op:divide-yearMonthDuration-by-yearMonthDuration (A, B)</td><td>xs:decimal</td></tr>
+<tr><td>A div B</td><td>xs:dayTimeDuration</td><td>xs:dayTimeDuration</td><td>op:divide-dayTimeDuration-by-dayTimeDuration (A, B)</td><td>xs:decimal</td></tr>
+
+<tr><td>A mod B</td><td>numeric</td><td>numeric</td><td>op:numeric-mod(A, B)</td><td>numeric</td></tr>
+
+
+<tr><td>A eq B</td><td>numeric</td><td>numeric</td><td>op:numeric-equal(A, B)</td><td>xs:boolean</td></tr>
+
+<tr><td>A eq B</td><td>xs:boolean</td><td>xs:boolean</td><td>op:boolean-equal(A, B)</td><td>xs:boolean</td></tr>
+
+<tr><td>A eq B</td><td>xs:string</td><td>xs:string</td><td>op:numeric-equal(fn:compare(A, B), 0)</td><td>xs:boolean</td></tr>
+
+<tr><td>A eq B</td><td>xs:date</td><td>xs:date</td><td>op:date-equal(A, B)</td><td>xs:boolean</td></tr>
+
+<tr><td>A eq B</td><td>xs:time</td><td>xs:time</td><td>op:time-equal(A, B)</td><td>xs:boolean</td></tr>
+
+<tr><td>A eq B</td><td>xs:dateTime</td><td>xs:dateTime</td><td>op:dateTime-equal(A, B)</td><td>xs:boolean</td></tr>
+
+<tr><td>A eq B</td><td>xs:duration</td><td>xs:duration</td><td>op:duration-equal(A, B)</td><td>xs:boolean</td></tr>
+
+<tr><td>A eq B</td><td>Gregorian</td><td>Gregorian</td><td>op:gYear-equal(A, B) etc.</td><td>xs:boolean</td></tr>
+
+<tr><td>A eq B</td><td>xs:hexBinary</td><td>xs:hexBinary</td><td>op:hexBinary-equal(A, B)</td><td>xs:boolean</td></tr>
+
+<tr><td>A eq B</td><td>xs:base64Binary</td><td>xs:base64Binary</td><td>op:base64Binary-equal(A, B)</td><td>xs:boolean</td></tr>
+
+<tr><td>A eq B</td><td>xs:anyURI</td><td>xs:anyURI</td><td>op:numeric-equal(fn:compare(A, B), 0)</td><td>xs:boolean</td></tr>
+
+<tr><td>A eq B</td><td>xs:QName</td><td>xs:QName</td><td>op:QName-equal(A, B)</td><td>xs:boolean</td></tr>
+<tr><td>A eq B</td><td>xs:NOTATION</td><td>xs:NOTATION</td><td>op:NOTATION-equal(A, B)</td><td>xs:boolean</td></tr>
+
+
+<tr><td>A ne B</td><td>numeric</td><td>numeric</td><td>fn:not(op:numeric-equal(A, B))</td><td>xs:boolean</td></tr>
+
+<tr><td>A ne B</td><td>xs:boolean</td><td>xs:boolean</td><td>fn:not(op:boolean-equal(A, B))</td><td>xs:boolean</td></tr>
+
+<tr><td>A ne B</td><td>xs:string</td><td>xs:string</td><td>fn:not(op:numeric-equal(fn:compare(A, B), 0))</td><td>xs:boolean</td></tr>
+
+<tr><td>A ne B</td><td>xs:date</td><td>xs:date</td><td>fn:not(op:date-equal(A, B))</td><td>xs:boolean</td></tr>
+
+<tr><td>A ne B</td><td>xs:time</td><td>xs:time</td><td>fn:not(op:time-equal(A, B))</td><td>xs:boolean</td></tr>
+
+<tr><td>A ne B</td><td>xs:dateTime</td><td>xs:dateTime</td><td>fn:not(op:dateTime-equal(A, B))</td><td>xs:boolean</td></tr>
+
+<tr><td>A ne B</td><td>xs:duration</td><td>xs:duration</td><td>fn:not(op:duration-equal(A, B))</td><td>xs:boolean</td></tr>
+
+<tr><td>A ne B</td><td>Gregorian</td><td>Gregorian</td><td>fn:not(op:gYear-equal(A, B)) etc.</td><td>xs:boolean</td></tr>
+
+<tr><td>A ne B</td><td>xs:hexBinary</td><td>xs:hexBinary</td><td>fn:not(op:hexBinary-equal(A, B))</td><td>xs:boolean</td></tr>
+
+<tr><td>A ne B</td><td>xs:base64Binary</td><td>xs:base64Binary</td><td>fn:not(op:base64Binary-equal(A, B))</td><td>xs:boolean</td></tr>
+
+<tr><td>A ne B</td><td>xs:anyURI</td><td>xs:anyURI</td><td>fn:not(op:numeric-equal(fn:compare(A, B), 0))</td><td>xs:boolean</td></tr>
+
+<tr><td>A ne B</td><td>xs:QName</td><td>xs:QName</td><td>fn:not(op:QName-equal(A, B))</td><td>xs:boolean</td></tr>
+
+
+<tr><td>A ne B</td><td>xs:NOTATION</td><td>xs:NOTATION</td><td>fn:not(op:NOTATION-equal(A, B))</td><td>xs:boolean</td></tr>
+
+
+<tr><td>A gt B</td><td>numeric</td><td>numeric</td><td>op:numeric-greater-than(A, B)</td><td>xs:boolean</td></tr>
+
+<tr><td>A gt B</td><td>xs:boolean</td><td>xs:boolean</td><td>op:boolean-greater-than(A, B)</td><td>xs:boolean</td></tr>
+
+<tr><td>A gt B</td><td>xs:string</td><td>xs:string</td><td>op:numeric-greater-than(fn:compare(A, B), 0)</td><td>xs:boolean</td></tr>
+
+<tr><td>A gt B</td><td>xs:date</td><td>xs:date</td><td>op:date-greater-than(A, B)</td><td>xs:boolean</td></tr>
+
+<tr><td>A gt B</td><td>xs:time</td><td>xs:time</td><td>op:time-greater-than(A, B)</td><td>xs:boolean</td></tr>
+
+<tr><td>A gt B</td><td>xs:dateTime</td><td>xs:dateTime</td><td>op:dateTime-greater-than(A, B)</td><td>xs:boolean</td></tr>
+
+<tr><td>A gt B</td><td>xs:yearMonthDuration</td><td>xs:yearMonthDuration</td><td>op:yearMonthDuration-greater-than(A, B)</td><td>xs:boolean</td></tr>
+<tr><td>A gt B</td><td>xs:dayTimeDuration</td><td>xs:dayTimeDuration</td><td>op:dayTimeDuration-greater-than(A, B)</td><td>xs:boolean</td></tr>
+<tr><td>A gt B</td><td>xs:anyURI</td><td>xs:anyURI</td><td>op:numeric-greater-than(fn:compare(A, B), 0)</td><td>xs:boolean</td></tr>
+
+
+<tr><td>A lt B</td><td>numeric</td><td>numeric</td><td>op:numeric-less-than(A, B)</td><td>xs:boolean</td></tr>
+
+<tr><td>A lt B</td><td>xs:boolean</td><td>xs:boolean</td><td>op:boolean-less-than(A, B)</td><td>xs:boolean</td></tr>
+
+<tr><td>A lt B</td><td>xs:string</td><td>xs:string</td><td>op:numeric-less-than(fn:compare(A, B), 0)</td><td>xs:boolean</td></tr>
+
+<tr><td>A lt B</td><td>xs:date</td><td>xs:date</td><td>op:date-less-than(A, B)</td><td>xs:boolean</td></tr>
+
+<tr><td>A lt B</td><td>xs:time</td><td>xs:time</td><td>op:time-less-than(A, B)</td><td>xs:boolean</td></tr>
+
+<tr><td>A lt B</td><td>xs:dateTime</td><td>xs:dateTime</td><td>op:dateTime-less-than(A, B)</td><td>xs:boolean</td></tr>
+
+<tr><td>A lt B</td><td>xs:yearMonthDuration</td><td>xs:yearMonthDuration</td><td>op:yearMonthDuration-less-than(A, B)</td><td>xs:boolean</td></tr>
+<tr><td>A lt B</td><td>xs:dayTimeDuration</td><td>xs:dayTimeDuration</td><td>op:dayTimeDuration-less-than(A, B)</td><td>xs:boolean</td></tr>
+<tr><td>A lt B</td><td>xs:anyURI</td><td>xs:anyURI</td><td>op:numeric-less-than(fn:compare(A, B), 0)</td><td>xs:boolean</td></tr>
+
+
+<tr><td>A ge B</td><td>numeric</td><td>numeric</td><td>op:numeric-greater-than(A, B) or op:numeric-equal(A, B)</td><td>xs:boolean</td></tr>
+<tr><td>A ge B</td><td>xs:boolean</td><td>xs:boolean</td><td>fn:not(op:boolean-less-than(A, B))</td><td>xs:boolean</td></tr>
+
+<tr><td>A ge B</td><td>xs:string</td><td>xs:string</td><td>op:numeric-greater-than(fn:compare(A, B), -1)</td><td>xs:boolean</td></tr>
+
+<tr><td>A ge B</td><td>xs:date</td><td>xs:date</td><td>fn:not(op:date-less-than(A, B))</td><td>xs:boolean</td></tr>
+
+<tr><td>A ge B</td><td>xs:time</td><td>xs:time</td><td>fn:not(op:time-less-than(A, B))</td><td>xs:boolean</td></tr>
+
+<tr><td>A ge B</td><td>xs:dateTime</td><td>xs:dateTime</td><td>fn:not(op:dateTime-less-than(A, B))</td><td>xs:boolean</td></tr>
+
+<tr><td>A ge B</td><td>xs:yearMonthDuration</td><td>xs:yearMonthDuration</td><td>fn:not(op:yearMonthDuration-less-than(A, B))</td><td>xs:boolean</td></tr>
+<tr><td>A ge B</td><td>xs:dayTimeDuration</td><td>xs:dayTimeDuration</td><td>fn:not(op:dayTimeDuration-less-than(A, B))</td><td>xs:boolean</td></tr>
+<tr><td>A ge B</td><td>xs:anyURI</td><td>xs:anyURI</td><td>op:numeric-greater-than(fn:compare(A, B), -1)</td><td>xs:boolean</td></tr>
+
+
+<tr><td>A le B</td><td>numeric</td><td>numeric</td><td>op:numeric-less-than(A, B) or op:numeric-equal(A, B)</td><td>xs:boolean</td></tr>
+<tr><td>A le B</td><td>xs:boolean</td><td>xs:boolean</td><td>fn:not(op:boolean-greater-than(A, B))</td><td>xs:boolean</td></tr>
+
+<tr><td>A le B</td><td>xs:string</td><td>xs:string</td><td>op:numeric-less-than(fn:compare(A, B), 1)</td><td>xs:boolean</td></tr>
+
+<tr><td>A le B</td><td>xs:date</td><td>xs:date</td><td>fn:not(op:date-greater-than(A, B))</td><td>xs:boolean</td></tr>
+
+<tr><td>A le B</td><td>xs:time</td><td>xs:time</td><td>fn:not(op:time-greater-than(A, B))</td><td>xs:boolean</td></tr>
+
+<tr><td>A le B</td><td>xs:dateTime</td><td>xs:dateTime</td><td>fn:not(op:dateTime-greater-than(A, B))</td><td>xs:boolean</td></tr>
+
+<tr><td>A le B</td><td>xs:yearMonthDuration</td><td>xs:yearMonthDuration</td><td>fn:not(op:yearMonthDuration-greater-than(A, B))</td><td>xs:boolean</td></tr>
+<tr><td>A le B</td><td>xs:dayTimeDuration</td><td>xs:dayTimeDuration</td><td>fn:not(op:dayTimeDuration-greater-than(A, B))</td><td>xs:boolean</td></tr>
+<tr><td>A le B</td><td>xs:anyURI</td><td>xs:anyURI</td><td>op:numeric-less-than(fn:compare(A, B), 1)</td><td>xs:boolean</td></tr>
+
+
+<tr><td>A is B</td><td>node()</td><td>node()</td><td>op:is-same-node(A, B)</td><td>xs:boolean</td></tr>
+
+
+
+<tr><td>A &lt;&lt; B</td><td>node()</td><td>node()</td><td>op:node-before(A, B)</td><td>xs:boolean</td></tr>
+
+<tr><td>A &gt;&gt; B</td><td>node()</td><td>node()</td><td>op:node-after(A, B)</td><td>xs:boolean</td></tr>
+
+
+
+
+<tr><td>A union B</td><td>node()*</td><td>node()*</td><td>op:union(A, B)</td><td>node()*</td></tr>
+
+<tr><td>A | B</td><td>node()*</td><td>node()*</td><td>op:union(A, B)</td><td>node()*</td></tr>
+
+<tr><td>A intersect B</td><td>node()*</td><td>node()*</td><td>op:intersect(A, B)</td><td>node()*</td></tr>
+
+<tr><td>A except B</td><td>node()*</td><td>node()*</td><td>op:except(A, B)</td><td>node()*</td></tr>
+
+
+<tr><td>A to B</td><td>xs:integer</td><td>xs:integer</td><td>op:to(A, B)</td><td>xs:integer*</td></tr>
+
+<tr><td>A , B</td><td>item()*</td><td>item()*</td><td>op:concatenate(A, B)</td><td>item()*</td></tr>
+
+</tbody>
+</table>
+
+<table border="1" summary="Unary operators" role="small">
+<caption>Unary Operators</caption>
+<tbody>
+
+<tr>
+<th>Operator</th>
+<th>Operand type</th>
+<th>Function</th>
+<th>Result type</th>
+</tr>
+
+<tr><td>+ A</td><td>numeric</td><td>op:numeric-unary-plus(A)</td><td>numeric</td></tr>
+
+<tr><td>- A</td><td>numeric</td><td>op:numeric-unary-minus(A)</td><td>numeric</td></tr>
+</tbody>
+</table>
+
+
+</div2>
+</div1>
+
+<div1 role="xquery" id="id-xq-context-components">
+  <head>Context Components</head>
+
+  <p>The tables in this section describe how values are assigned to
+  the various components of the static context and dynamic context,
+  and to the parameters that control the serialization process.</p>
+
+  <p><termdef term="scope of a component" id="dt-scope">The
+  <term>scope of a component</term> is the context in which the
+  component is associated with a value.</termdef> The following scopes are defined:</p>
+
+  <ulist>
+    <item><p><termdef term="global scope" id="td-global-scope">If a
+    component has <term>global scope</term>, then every expression in
+    the query has the same value for that component, and it can not be
+    overwritten by the query module or by an
+    expression.</termdef></p></item>
+
+    <item><p> <termdef term="module scope" id="td-module-scope">If a
+    component has <term>module scope</term>, then every expression in
+    a given module has the same value for that component, and it can
+    be overwritten or augmented for a given
+    module.</termdef></p></item>
+
+    <item><p><termdef term="lexical scope" id="td-lexical-scope">If a
+    component has <term>lexical scope</term>, then it is defined by a
+    query expression, and its scope is defined by the semantics of the
+    expression that defines it.</termdef></p></item>
+
+    <item><p><termdef term="dynamic scope" id="td-dynamic-scope">If a
+    component has <term>dynamic scope</term>, then it is defined by a
+    query expression, its scope is defined by the semantics of the
+    expression that defines it, and run-time evaluation may influence
+    its value.</termdef></p></item>
+  </ulist>
+
+<div2 id="id-xq-static-context-components">
+<head>Static Context Components</head>
+
+<p>The following table describes the components of the <term>static context</term>. The following aspects of each component are described:</p>
+
+<ulist>
+<item><p><emph>Default initial value:</emph> This is the
+initial value of the component if it is not overridden or augmented by
+the implementation or by a query.</p> </item>
+<item><p><emph>Can be
+overwritten or augmented by implementation:</emph> Indicates whether
+an XQuery implementation is allowed to replace the default initial
+value of the component by a different, <termref
+def="dt-implementation-defined">implementation-defined</termref> value
+and/or to augment the default initial value by additional <termref
+def="dt-implementation-defined">implementation-defined</termref>
+values.</p></item>
+<item><p><emph>Can be overwritten or augmented by a
+query:</emph> Indicates whether a query is allowed to replace and/or
+augment the initial value provided by default or by the
+implementation. If so, indicates how this is accomplished (for
+example, by a declaration in the
+prolog).</p></item>
+<item><p><emph>Scope:</emph> the <termref def="dt-scope">scope of the
+component</termref>.</p></item>
+<item><p><emph>Consistency
+Rules:</emph> Indicates rules that must be observed in assigning
+values to the component. Additional consistency rules may be found in
+<specref ref="id-consistency-constraints"/>.</p></item></ulist>
+
+<table width="100%" border="1" summary="Static Context" role="small">
+<caption>Static Context Components</caption>
+<tbody>
+
+<tr>
+<th>Component</th>
+<th>Default initial value</th>
+<th>Can be overwritten or augmented by implementation?</th>
+<th>Can be overwritten or augmented by a query?</th>
+<th>Scope</th>
+<th>Consistency rules</th>
+</tr>
+
+<tr>
+<td>XPath 1.0 Compatibility Mode</td>
+<td><code>false</code></td>
+<td>no</td>
+<td>no</td>
+<td>global</td>
+<td>Must be <code>false</code>.</td>
+</tr>
+<tr>
+<td>Statically known namespaces</td>
+<td><code>fn</code>, <code>xml</code>, <code>xs</code>, <code>xsi</code>,  <code>local</code></td>
+<td>overwriteable and augmentable (except for <code>xml</code>)</td>
+<td>overwriteable and augmentable by prolog or element constructor</td>
+<td>lexical</td>
+<td>Only one namespace can be assigned to a given prefix
+per lexical scope.</td>
+</tr>
+<tr><td>Default element/type namespace</td>
+  <td>no namespace</td>
+  <td>overwriteable</td>
+  <td>overwriteable by prolog or element constructor</td>
+  <td>lexical</td>
+  <td>Only one default namespace per lexical scope.</td></tr>
+<tr>
+  <td>Default function namespace</td>
+  <td><code>fn</code></td>
+  <td>overwriteable (not recommended)</td>
+  <td>overwriteable by prolog</td>
+  <td>module</td>
+  <td>None.</td></tr>
+<tr>
+  <td>In-scope schema types</td>
+  <td>built-in types in <code>xs</code></td>
+  <td>augmentable</td>
+  <td>augmentable by schema import in prolog</td>
+  <td>module</td>
+  <td>Only one definition per global or local type.</td></tr>
+<tr>
+  <td>In-scope element declarations</td>
+  <td>none</td>
+  <td>augmentable</td>
+  <td>augmentable by schema import in prolog</td>
+  <td>module</td>
+  <td>Only one definition per global or local element name.</td></tr>
+<tr>
+  <td>In-scope attribute declarations</td>
+  <td>none</td>
+  <td>augmentable</td>
+  <td>augmentable by schema import in prolog</td>
+  <td>module</td>
+  <td>Only one definition per global or local attribute name.</td></tr>
+<tr>
+  <td>In-scope variables</td>
+  <td>none</td>
+  <td>augmentable</td>
+  <td>overwriteable and augmentable by prolog and by variable-binding expressions</td>
+  <td>lexical</td>
+  <td>Only one definition per variable per lexical scope.</td></tr>
+
+<tr>
+  <td>Context item static type</td>
+  <td>none</td>
+  <td>overwriteable</td>
+  <td>overwriteable via a context item declaration, and by expresssions that set the context item</td>
+  <td>lexical</td>
+  <td>None.</td></tr>
+<tr>
+  <td>Function signatures</td>
+  <td>functions in <code>fn</code> namespace, and constructors for built-in atomic types</td>
+  <td>augmentable</td>
+  <td diff="chg">augmentable by module import and by function declaration in prolog; augmentable by schema import (which adds constructor functions for user-defined types)</td>
+  <td>module</td>
+  <td>Each function must have a unique <termref def="dt-expanded-qname">expanded QName</termref> and number of arguments.</td></tr>
+<tr>
+  <td>Statically known collations</td>
+  <td>only the default collation</td>
+  <td>augmentable</td>
+  <td>no</td>
+  <td>module</td>
+  <td>Each URI uniquely identifies a collation.</td></tr>
+<tr>
+  <td>Default collation</td>
+  <td>Unicode codepoint collation</td>
+  <td>overwriteable</td>
+  <td>overwriteable by prolog</td>
+  <td>module</td>
+  <td>None.</td></tr>
+<tr>
+  <td>Construction mode</td>
+  <td><code>preserve</code></td>
+  <td>overwriteable</td>
+  <td>overwriteable by prolog</td>
+  <td>module</td>
+  <td>Value must be <code>preserve</code> or <code>strip</code>. </td></tr>
+<tr>
+  <td>Ordering mode</td>
+  <td><code>ordered</code></td>
+  <td>overwriteable</td>
+  <td>overwriteable by prolog or expression</td>
+  <td>lexical</td>
+  <td>Value must be <code>ordered</code> or <code>unordered</code>.</td></tr>
+<tr>
+  <td>Default order for empty sequences</td>
+  <td>implementation-defined</td>
+  <td>overwriteable</td>
+  <td>overwriteable by prolog</td>
+  <td>module</td>
+  <td>Value must be <code>greatest</code> or <code>least</code>.</td></tr>
+<tr>
+  <td>Boundary-space policy</td>
+  <td><code>strip</code></td>
+  <td>overwriteable</td>
+  <td>overwriteable by prolog</td>
+  <td>module</td>
+  <td>Value must be <code>preserve</code> or <code>strip</code>. </td></tr>
+<tr>
+  <td>Copy-namespaces mode</td>
+  <td><code>inherit, preserve</code></td>
+  <td>overwriteable</td>
+  <td>overwriteable by prolog</td>
+  <td>module</td>
+  <td>Value consists of <code>inherit</code> or <code>no-inherit</code>, and <code>preserve</code> or <code>no-preserve</code>.</td></tr>
+<tr>
+  <td>Base URI</td>
+  <td>See rules in <specref ref="id-base-uri-decl"/></td>
+  <td>overwriteable</td>
+  <td>overwriteable by prolog</td>
+  <td>module</td>
+  <td>Value must be a valid lexical representation of the type xs:anyURI.</td></tr>
+<tr>
+  <td>Statically known documents</td>
+  <td>none</td>
+  <td>augmentable</td>
+  <td>no</td>
+  <td>module</td>
+  <td>None.</td></tr>
+<tr>
+  <td>Statically known collections</td>
+  <td>none</td>
+  <td>augmentable</td>
+  <td>no</td>
+  <td>module </td>
+  <td>None.</td></tr>
+<tr>
+  <td>Statically known default collection type</td>
+  <td><code>node()*</code></td>
+  <td>overwriteable</td>
+  <td>no</td>
+  <td>module</td>
+  <td>None.</td></tr>
+</tbody>
+</table></div2>
+<div2 id="id-xq-evaluation-context-components">
+  <head>Dynamic Context Components</head>
+
+  <p>The following table describes the components of the <term>dynamic context</term>. The following aspects of each component are described:</p><ulist>
+<item><p><emph>Default initial value:</emph> This is the initial value of the component if it is not overridden or augmented by the implementation or by a query.</p> </item>
+<item><p><emph>Can be overwritten or augmented by implementation:</emph> Indicates whether an XQuery implementation is allowed to replace the default initial value of the component by a different <termref def="dt-implementation-defined">implementation-defined</termref> value and/or to augment the default initial value by additional <termref def="dt-implementation-defined">implementation-defined</termref> values.</p></item>
+<item><p><emph>Can be overwritten or augmented by a query:</emph> Indicates whether a query is allowed to replace and/or augment the initial value provided by default or by the implementation. If so, indicates how this is accomplished.</p></item>
+<item><p><emph>Scope:</emph> the <termref def="dt-scope">scope of the
+component</termref>.</p></item>
+<item><p><emph>Consistency Rules:</emph> Indicates rules that must be observed in assigning values to the component. Additional consistency rules may be found in <specref ref="id-consistency-constraints"/>.</p></item></ulist><table width="100%" border="1" summary="Static Context" role="small">
+<caption>Dynamic Context Components</caption>
+<tbody>
+
+<tr>
+<th>Component</th>
+<th>Default initial value</th>
+<th>Can be overwritten or augmented by implementation?</th>
+<th>Can be overwritten or augmented by a query?</th>
+<th>Scope</th>
+<th>Consistency rules</th>
+</tr>
+
+<tr>
+
+  <td>Context item</td>
+
+  <td>none</td>
+
+  <td>overwriteable</td>
+
+  <td>overwritten during evaluation of path expressions and predicates - initial value may be overwritten with a context item declaration.</td>
+
+  <td>dynamic</td>
+
+  <td>None</td>
+</tr>
+<tr>
+
+  <td>Context position</td>
+
+  <td>none</td>
+
+  <td>overwriteable </td>
+
+  <td>overwritten during evaluation of path expressions and predicates</td>
+
+  <td>dynamic</td>
+
+  <td>If context item is defined, context position must be &gt;0 and &lt;= context size; else  context position is undefined. </td>
+</tr>
+<tr>
+  <td>Context size</td>
+  <td>none</td>
+  <td>overwriteable</td>
+  <td>overwritten during evaluation of path expressions and predicates</td>
+  <td>dynamic</td>
+  <td>If context item is defined, context size must be &gt;0; else context size is undefined.</td></tr>
+<tr>
+  <td>Variable values</td>
+  <td>none</td>
+  <td>augmentable</td>
+  <td>overwriteable and augmentable by prolog and by variable-binding expressions</td>
+  <td>dynamic</td>
+  <td>Names and values must be consistent with in-scope variables.</td></tr>
+<tr>
+  <td>Function implementations</td>
+  <td>functions in <code>fn</code> namespace, and constructors for built-in atomic types</td>
+  <td>augmentable</td>
+  <td diff="chg">augmentable by module import and by function declaration in prolog; augmentable by schema import (which adds constructor functions for user-defined types)</td>
+  <td>global</td>
+  <td>Must be consistent with function signatures</td></tr>
+<tr>
+  <td>Current dateTime</td>
+  <td>none</td>
+  <td>must be initialized by implementation</td>
+  <td>no</td>
+  <td>global</td>
+  <td>Must include a timezone. Remains constant during evaluation of a query.</td></tr>
+<tr>
+  <td>Implicit timezone</td>
+  <td>none</td>
+  <td>must be initialized by implementation</td>
+  <td>no</td>
+  <td>global</td>
+  <td>Remains constant during evaluation of a query.</td></tr>
+<tr>
+  <td>Available documents</td>
+  <td>none</td>
+  <td>must be initialized by implementation</td>
+  <td>no</td>
+  <td>global</td>
+  <td>None</td></tr>
+<tr>
+  <td>Available collections</td>
+  <td>none</td>
+  <td>must be initialized by implementation</td>
+  <td>no</td>
+  <td>global</td>
+  <td>None</td></tr>
+<tr>
+  <td>Default collection</td>
+  <td>none</td>
+  <td>overwriteable</td>
+  <td>no</td>
+  <td>global</td>
+  <td>None</td></tr>
+</tbody>
+</table></div2>
+<div2 id="id-xq-serialization-parameters"><head>Serialization Parameters</head><p>The following table specifies default values for  the parameters that control the process of serializing an <termref def="dt-data-model-instance">XDM instance</termref> into XML notation (<code>method = "xml"</code>). The meanings of the various parameters are defined in <bibref ref="xslt-xquery-serialization-11"/>. For each parameter, an XQuery implementation may (but is not required to) allow a query to override the default value with an option declaration, as discussed in <specref ref="id-serialization"/>.
+</p><table border="1" width="60%" summary="Unary operators" role="small">
+<caption>Serialization Parameters</caption>
+<tbody>
+
+<tr>
+<th>Parameter</th>
+<th>Default Value</th>
+</tr>
+
+<tr>
+  <td>byte-order-mark</td>
+  <td>implementation-defined</td></tr>
+<tr>
+  <td>cdata-section-elements</td>
+  <td>empty</td></tr>
+<tr>
+  <td>doctype-public</td>
+  <td>(none)</td></tr>
+<tr>
+  <td>doctype-system</td>
+  <td>(none)</td></tr>
+<tr>
+  <td>encoding</td>
+  <td>implementation-defined choice between "utf-8" and "utf-16"</td></tr>
+
+<tr>
+  <td>escape-uri-attributes</td>
+  <td>(not applicable when method = xml)</td></tr>
+<tr>
+  <td>include-content-type</td>
+  <td>(not applicable when method = xml)</td></tr>
+<tr>
+  <td>indent</td>
+  <td>no</td></tr>
+<tr>
+  <td>media-type</td>
+  <td>implementation-defined</td></tr>
+<tr>
+  <td>method</td>
+  <td>xml</td></tr>
+<tr>
+  <td>normalization-form</td>
+  <td>implementation-defined</td></tr>
+<tr>
+  <td>omit-xml-declaration</td>
+  <td>implementation-defined</td></tr>
+<tr>
+  <td>standalone</td>
+  <td>implementation-defined</td></tr>
+<tr>
+  <td>suppress-indentation</td>
+  <td>empty</td></tr>
+<tr>
+  <td>undeclare-prefixes</td>
+  <td>no</td></tr>
+<tr>
+  <td>use-character-maps</td>
+  <td>empty</td></tr>
+<tr>
+  <td>version</td>
+  <td>implementation-defined</td></tr>
+</tbody>
+</table></div2></div1>
+<div1 id="id-xp-context-components" role="xpath"><head>Context Components</head><p>The tables in this
+section describe the scope (range of applicability) of the various
+components in the static context and dynamic context.</p>
+
+<div2 id="id-xp-static-context-components"><head>Static Context
+Components</head><p>The following table describes the components of
+the <term>static context</term>. For each component, "global"
+indicates that the value of the component applies throughout an XPath
+expression, whereas "lexical" indicates that the value of the
+component applies only within the subexpression in which it is
+defined.</p>
+
+<table width="60%" border="1" summary="Static Context" role="small">
+
+<caption>Static Context Components</caption>
+<tbody>
+
+<tr>
+<th>Component</th>
+<th>Scope</th>
+</tr>
+
+<tr>
+  <td>XPath 1.0 Compatibility Mode</td>
+  <td>global</td>
+</tr>
+<tr>
+  <td>Statically known namespaces</td>
+  <td>global</td>
+</tr>
+<tr>
+  <td>Default element/type namespace</td>
+  <td>global</td></tr>
+<tr>
+  <td>Default function namespace</td>
+  <td>global</td></tr>
+<tr>
+  <td>In-scope schema types</td>
+  <td>global</td></tr>
+<tr>
+  <td>In-scope element declarations</td>
+  <td>global</td></tr>
+<tr>
+  <td>In-scope attribute declarations</td>
+  <td>global</td></tr>
+<tr>
+  <td>In-scope variables</td>
+  <td>lexical; for-expressions, let-expressions, and quantified expressions can bind new variables</td></tr>
+<tr>
+  <td>Context item static type</td>
+  <td>lexical</td></tr>
+<tr>
+  <td>Function signatures</td>
+  <td>global</td></tr>
+<tr>
+  <td>Statically known collations</td>
+  <td>global</td></tr>
+<tr>
+  <td>Default collation</td>
+  <td>global</td></tr>
+<tr>
+  <td>Base URI</td>
+  <td>global</td></tr>
+<tr>
+  <td>Statically known documents</td>
+  <td>global</td></tr>
+<tr>
+  <td>Statically known collections</td>
+  <td>global  </td></tr>
+<tr>
+  <td>Statically known default collection type</td>
+  <td>global</td></tr>
+</tbody>
+</table></div2>
+
+<div2 id="id-xp-evaluation-context-components"><head>Dynamic Context Components</head><p>The following table describes how values are assigned to the various components of the <term>dynamic context</term>. All these components are initialized by mechanisms defined by the host language. For each component, "global" indicates that the value of the component remains constant throughout evaluation of the XPath expression, whereas "dynamic" indicates that the value of the component can be modified by the evaluation of subexpressions.</p><table width="60%" border="1" summary="Static Context" role="small">
+<caption>Dynamic Context Components</caption>
+<tbody>
+
+<tr>
+<th>Component</th>
+
+
+
+<th>Scope</th>
+
+</tr>
+
+<tr>
+
+  <td>Context item</td>
+
+
+
+
+  <td>dynamic; changes during evaluation of path expressions and predicates</td>
+
+</tr>
+<tr>
+
+  <td>Context position</td>
+
+
+
+
+  <td>dynamic; changes during evaluation of path expressions and predicates</td>
+
+</tr>
+<tr>
+  <td>Context size</td>
+  <td>dynamic; changes during evaluation of path expressions and predicates</td></tr>
+<tr>
+  <td>Variable values</td>
+  <td>dynamic; for-expressions, let-expressions, and quantified expressions can bind new variables</td></tr>
+<tr>
+  <td>Current date and time</td>
+  <td>global; must be initialized by implementation</td></tr>
+<tr>
+  <td>Implicit timezone</td>
+  <td>global; must be initialized by implementation</td></tr>
+<tr>
+  <td>Available documents</td>
+  <td>global; must be initialized by implementation</td></tr>
+<tr>
+  <td>Available collections</td>
+  <td>global; must be initialized by implementation</td></tr>
+<tr>
+  <td>Default collection</td>
+  <td>global; overwriteable by implementation</td></tr>
+</tbody>
+</table></div2></div1>
+<div1 id="id-impl-defined-items"><head>Implementation-Defined Items</head><p>The following items in this specification are <termref def="dt-implementation-defined">implementation-defined</termref>:</p><olist>
+<item><p>The version of Unicode that is used to construct expressions.</p></item>
+<item><p>The <termref def="dt-static-collations">statically-known collations</termref>.</p></item>
+<item><p>The <termref def="dt-timezone">implicit timezone</termref>.</p></item>
+<item><p>The circumstances in which <termref def="dt-warning">warnings</termref> are raised, and the ways in which warnings are handled.</p></item>
+<item><p>The method by which errors are reported to the external processing environment.</p></item>
+<item diff="chg" at="XQ.E21"><p>Whether the implementation is based on the rules of  <bibref ref="XML"/> and <bibref ref="XMLNAMES"/> or the rules of <bibref ref="XML1.1"/> and <bibref ref="XMLNAMES11"/>. One of these sets of rules must be applied consistently by all aspects of the implementation. If the implementation is based on the rules of <bibref ref="XML"/>, the edition used must be at least Third Edition; the edition used is <termref def="dt-implementation-defined">implementation-defined</termref>, but we recommend that implementations use the latest version.</p></item>
+<item role="xquery"><p>Any components of the <termref def="dt-static-context">static context</termref> or <termref def="dt-dynamic-context">dynamic context</termref> that are overwritten or augmented by the implementation.</p></item><item role="xpath"><p>Whether the implementation supports the namespace axis.</p></item>
+<!--
+<item role="xquery" diff="del"><p>Which of the <termref def="dt-optional-axis">optional axes</termref> are supported by the implementation, if the <termref def="dt-full-axis-feature">Full-Axis Feature</termref> is not supported.</p></item>
+-->
+<item role="xquery"><p>The default handling of empty sequences returned by an ordering key (orderspec) in an <code>order by</code> clause (<code>empty least</code> or <code>empty greatest</code>).</p></item><item role="xquery"><p>The names and semantics of any <termref def="dt-extension-expression">extension expressions</termref> (<termref def="dt-pragma">pragmas</termref>) recognized by the implementation.</p></item><item role="xquery"><p>The names and semantics of any <termref def="dt-option-declaration">option declarations</termref>  recognized by the implementation.</p></item><item role="xquery"><p>Protocols (if any) by which parameters can be passed to an external function, and the result of the function can returned to the invoking query.</p></item><item role="xquery"><p>The process by which the specific modules to be imported by a 
+<termref def="dt-module-import">module import</termref> are identified, if the <termref def="dt-module-feature">Module Feature</termref> is supported (includes processing of location hints, if any.)</p></item>
+
+<item role="xquery"><p>The means by which serialization is invoked, if the <termref def="dt-serialization-feature">Serialization Feature</termref> is supported.</p></item><item role="xquery"><p>The default values for the <code>byte-order-mark</code>, <code>encoding</code>, <code>media-type</code>, <code>normalization-form</code>, <code>omit-xml-declaration</code>, <code>standalone</code>, and <code>version</code> parameters, if the <termref def="dt-serialization-feature">Serialization Feature</termref> is supported.</p></item><item role="xquery"><p>The result of an unsuccessful call to an external function (for example,
+if the function implementation cannot be found or does not return a value
+of the declared type).</p></item><item role="xquery"><p>Limits on ranges of values for various data types, as enumerated in <specref ref="id-data-model-conformance"/>.</p></item>
+
+<item role="xquery" diff="add" at="XQ.E22"><p>Syntactic extensions to XQuery, including both their syntax and semantics, as discussed in <specref ref="id-syntax-extensions"/>.</p></item>
+
+</olist><note><p>Additional <termref def="dt-implementation-defined">implementation-defined</termref> items are listed in <bibref ref="xpath-datamodel-11"/> and <bibref ref="xpath-functions-11"/>.</p></note></div1>
+<div1 id="id-references">
+<head>References</head>
+<div2 id="id-normative-references">
+<head>Normative References</head>
+
+<blist>
+
+<bibl id="RFC2119" key="RFC 2119">S. Bradner. 
+      <emph>Key Words for use in RFCs to Indicate Requirement Levels.</emph> IETF RFC 2119. 
+      See <loc href="http://rfc.net/rfc2119.html">http://www.ietf.org/rfc/rfc2119.txt</loc>.</bibl>
+
+<bibl id="RFC3986" key="RFC3986">T. Berners-Lee, R. Fielding, and
+      L. Masinter.  <emph>Uniform Resource Identifiers (URI): Generic
+      Syntax</emph>. IETF RFC 3986. 
+      See <loc href="http://www.ietf.org/rfc/rfc3986.txt">http://www.ietf.org/rfc/rfc3986.txt</loc>.</bibl>
+
+<bibl id="RFC3987" key="RFC3987">M. Duerst and M. Suignard. 
+      <emph>Internationalized Resource Identifiers (IRIs)</emph>. 
+      IETF RFC 3987. See <loc href="http://www.ietf.org/rfc/rfc3987.txt">http://www.ietf.org/rfc/rfc3987.txt</loc>.</bibl>
+
+<bibl id="ISO10646" key="ISO/IEC 10646">ISO (International Organization for Standardization). 
+      <emph>ISO/IEC 10646:2003. Information technology&mdash;Universal Multiple-Octet Coded Character Set (UCS)</emph>,
+      as, from time to time, amended, replaced by a new edition, or expanded by the addition of new parts. 
+      [Geneva]: International Organization for Standardization. 
+      (See <loc href="http://www.iso.org">http://www.iso.org</loc> for the latest version.)</bibl>
+
+<bibl id="Unicode" key="Unicode">The Unicode Consortium. <emph>The Unicode Standard</emph>
+      Reading, Mass.: Addison-Wesley, 2003, as updated from time to time by the publication of new versions. 
+      See <loc href="http://www.unicode.org/unicode/standard/versions">http://www.unicode.org/unicode/standard/versions</loc>
+      for the latest version and additional information on versions of the standard and of the Unicode Character Database. 
+      The version of Unicode to be used is <termref def="dt-implementation-defined">implementation-defined</termref>,
+      but implementations are recommended to use the latest Unicode version.</bibl>
+
+<bibl xmlns:xlink="http://www.w3.org/1999/xlink" id="XML" key="XML 1.0" diff="chg"
+      at="XQ.E21 and XP.E13" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">World Wide Web Consortium.
+      <emph>Extensible Markup Language (XML) 1.0.</emph>
+      W3C Recommendation.
+      See <loc href="http://www.w3.org/TR/REC-xml" xlink:type="simple" xlink:show="replace"
+      xlink:actuate="onRequest">http://www.w3.org/TR/REC-xml</loc>. 
+      The edition of XML 1.0 must be no earlier than the Third Edition;
+      the edition used is <termref def="dt-implementation-defined">implementation-defined</termref>,
+      but we recommend that implementations use the latest version.
+</bibl>
+
+<bibl id="XML1.1" key="XML 1.1">World Wide Web Consortium.
+      <emph>Extensible Markup Language (XML) 1.1.</emph>
+      W3C Recommendation.
+      See <loc href="http://www.w3.org/TR/xml11/">http://www.w3.org/TR/xml11/</loc>
+</bibl>
+
+<bibl id="XMLBASE" key="XML Base">World Wide Web Consortium. 
+      <emph>XML Base.</emph> W3C Recommendation. See
+      <loc href="http://www.w3.org/TR/xmlbase/">http://www.w3.org/TR/xmlbase/</loc>
+</bibl>
+
+<bibl id="XMLNAMES" key="XML Names">World Wide Web Consortium. 
+      <emph>Namespaces in XML.</emph> W3C Recommendation. See
+      <loc href="http://www.w3.org/TR/REC-xml-names/">http://www.w3.org/TR/REC-xml-names/</loc>
+</bibl>
+
+<bibl id="XMLNAMES11" key="XML Names 1.1">World Wide Web Consortium. 
+      <emph>Namespaces in XML 1.1.</emph> W3C Recommendation. See
+      <loc href="http://www.w3.org/TR/xml-names11/">http://www.w3.org/TR/xml-names11/</loc>
+</bibl>
+
+<bibl id="XMLID" key="XML ID">World Wide Web Consortium. <emph>xml:id Version 1.0.</emph>
+      W3C Recommendation. See <loc href="http://www.w3.org/TR/xml-id/">http://www.w3.org/TR/xml-id/</loc></bibl>
+
+<bibl id="XMLSchema" key="XML Schema">World Wide Web Consortium. 
+      <emph>XML Schema, Parts 0, 1, and 2 (Second Edition)</emph>. W3C Recommendation, 28 October 2004. 
+      See <loc href="http://www.w3.org/TR/xmlschema-0/">http://www.w3.org/TR/xmlschema-0/</loc>,
+      <loc href="http://www.w3.org/TR/xmlschema-1/" id="schema1">http://www.w3.org/TR/xmlschema-1/</loc>,
+      and <loc href="http://www.w3.org/TR/xmlschema-2/" id="schema2">http://www.w3.org/TR/xmlschema-2/</loc>.</bibl>
+
+<bibl key="XQuery and XPath Data Model (XDM) 1.1" id="xpath-datamodel-11"/>
+
+<bibl id="xpath-functions-11" key="XQuery and XPath Functions and Operators 1.1"/>
+
+<bibl key="XSLT and XQuery Serialization 1.1" id="xslt-xquery-serialization-11"/>
+
+</blist>
+</div2>
+<div2 id="id-non-normative-references">
+<head>Non-normative References</head>
+
+<blist>
+
+<bibl id="xquery-11-requirements" key="XQuery 1.1 Requirements" role="xquery"/>
+
+<bibl key="XML Path Language (XPath) 2.1" id="xpath-21" role="xpath21 xquery xquery11"/>
+
+<bibl key="XQuery 1.1: An XML Query Language" role="xpath" id="xquery-11"/>
+
+<bibl id="xquery-semantics" key="XQuery 1.0 and XPath 2.0 Formal Semantics"/>
+					
+<bibl key="XQueryX 1.1" id="xqueryx-11" role="xquery"/>
+
+<bibl id="xslt-21" key="XSL Transformations (XSLT) Version 2.1"/>
+
+<bibl id="DOM" key="Document Object Model">World Wide Web Consortium. <emph>Document Object Model (DOM) Level 3 Core Specification.</emph> W3C Recommendation, April 7, 2004. See <loc href="http://www.w3.org/TR/DOM-Level-3-Core/">http://www.w3.org/TR/DOM-Level-3-Core/</loc>.</bibl>
+
+<bibl id="XINFO" key="XML Infoset">World Wide Web
+Consortium. <emph>XML Information Set.</emph> W3C Recommendation 24 October 2001. See
+<loc href="http://www.w3.org/TR/xml-infoset/">http://www.w3.org/TR/xml-infoset/</loc>
+</bibl>
+
+<bibl key="XML Path Language (XPath) Version 1.0" id="xpath"/>
+
+<bibl id="XPTR" key="XPointer">World Wide Web Consortium. <emph>XML
+Pointer Language (XPointer).</emph> W3C Last Call Working Draft 8 January 2001. See <loc href="http://www.w3.org/TR/WD-xptr">http://www.w3.org/TR/WD-xptr</loc></bibl>
+
+<bibl id="UseCases" key="XML Query Use Cases" role="xquery">World Wide
+Web Consortium. <emph>XML Query Use Cases</emph>. W3C Working Draft, 8 June 2006. See <loc href="http://www.w3.org/TR/xquery-use-cases/">http://www.w3.org/TR/xquery-use-cases/</loc>.</bibl>
+
+<bibl id="xml11schema10" key="XML 1.1 and Schema 1.0" role="xquery">World Wide
+Web Consortium. <emph>Processing XML 1.0 Documents with XML Schema 1.0 Processors</emph>. W3C Working Group Note, 11 May 2005. See <loc href="http://www.w3.org/TR/xml11schema10/">http://www.w3.org/TR/xml11schema10/</loc>.</bibl>
+<bibl id="RFC1738" key="Uniform Resource Locators (URL)" role="xquery">Internet Engineering Task Force (IETF).  <emph>Uniform Resource Locators (URL)</emph>. Request For Comment No. 1738, Dec. 1994. See <loc href="http://www.ietf.org/rfc/rfc1738.txt">http://www.ietf.org/rfc/rfc1738.txt</loc>.</bibl>
+
+
+<bibl key="ODMG" id="ODMG" role="xquery">Rick Cattell et al. <emph>The
+Object Database Standard: ODMG-93, Release 1.2</emph>. Morgan Kaufmann
+Publishers, San Francisco, 1996.</bibl>
+
+<bibl key="Quilt" id="Quilt" role="xquery">Don Chamberlin,
+Jonathan Robie, and Daniela Florescu. <emph>Quilt: an XML Query Language for
+Heterogeneous Data Sources</emph>.  In <emph>Lecture Notes in Computer
+Science</emph>, Springer-Verlag, Dec. 2000.  Also available at <loc href="http://www.almaden.ibm.com/cs/people/chamberlin/quilt_lncs.pdf">http://www.almaden.ibm.com/cs/people/chamberlin/quilt_lncs.pdf</loc>.
+See also <loc href="http://www.almaden.ibm.com/cs/people/chamberlin/quilt.html">http://www.almaden.ibm.com/cs/people/chamberlin/quilt.html</loc>.</bibl>
+
+<bibl key="XML-QL" id="XML-QL" role="xquery">Alin Deutsch, Mary Fernandez,
+Daniela Florescu, Alon Levy, and Dan Suciu.
+<emph>A Query Language for XML</emph>.
+</bibl>
+
+<bibl key="SQL" id="SQL" role="xquery">International Organization for
+Standardization (ISO).  <emph>Information Technology &mdash; Database Language
+SQL</emph>. Standard No. ISO/IEC 9075:2008.  (Available from American
+National Standards Institute, New York, NY 10036, (212)
+642-4900.)</bibl>
+
+<bibl key="XQL" id="XQL" role="xquery">J. Robie, J. Lapp, D. Schach. <emph>XML
+Query Language (XQL)</emph>. See <loc href="http://www.w3.org/TandS/QL/QL98/pp/xql.html">http://www.w3.org/TandS/QL/QL98/pp/xql.html</loc>.</bibl> 
+
+</blist>
+</div2>
+
+<div2 id="id-background-material"><head>Background Material</head>
+<blist>
+
+<bibl id="CHARMOD" key="Character Model">World Wide Web Consortium.
+<emph>Character Model for the World Wide Web.</emph> W3C Working
+Draft. See <loc href="http://www.w3.org/TR/charmod/">http://www.w3.org/TR/charmod/</loc>.</bibl>
+
+<bibl id="xslt" key="XSL Transformations (XSLT) Version 1.0"/>
+
+<bibl id="UseCaseQueries" key="Use Case Sample Queries" role="xquery">Queries
+from the XQuery 1.0 Use Cases, presented in a single file.
+See
+<loc href="http://www.w3.org/TR/xquery-11-use-cases/xquery-11-use-case-queries.txt">http://www.w3.org/TR/xquery-11-use-cases/xquery-11-use-case-queries.txt</loc>.
+</bibl>
+			
+<bibl id="XQueryQueries" key="XQuery Sample Queries" role="xquery">Queries
+from this document, presented in a single file.
+See
+<loc href="http://www.w3.org/TR/xquery-11-use-cases/xquery-11-wd-queries.txt">http://www.w3.org/TR/xquery-11-use-cases/xquery-11-wd-queries.txt</loc>.
+</bibl>
+
+</blist>
+</div2>
+</div1>
+
+<div1 role="xpath" id="id-xpath-conformance"><head>Conformance</head><p>XPath is
+intended primarily as a component that can be used by other
+specifications. Therefore, XPath relies on specifications that use it
+(such as <bibref ref="XPTR"/> and <bibref ref="xslt-21"/>) to specify
+conformance criteria for XPath in their respective
+environments. Specifications that set conformance criteria for their
+use of XPath must not change the syntactic or semantic definitions of XPath as
+given in this specification, except by subsetting and/or compatible extensions.</p>
+
+<p>The specification of such a language may describe it as an
+extension of XPath provided that every expression that conforms to the
+XPath grammar behaves as described in this specification.</p>
+
+<div2 id="id-xpath-static-typing">
+<head>Static Typing Feature</head>
+
+<p>
+                <termdef id="dt-xpath-static-typing-feature" term="static typing feature" role="xpath">The <term>Static
+                    Typing Feature</term> is an optional feature of XPath that provides support for static semantics, and requires implementations to detect and report <termref def="dt-type-error">type errors</termref> during the <termref def="dt-static-analysis">static analysis phase</termref>.</termdef> Specifications that use XPath may specify conformance criteria for use of the Static Typing Feature.</p>
+            <p>If an implementation does not support the <termref def="dt-xpath-static-typing-feature">Static Typing Feature</termref>, but can
+                nevertheless determine during the static analysis phase that an expression will necessarily
+                raise a type error if evaluated at run time, the implementation may raise that error during the static analysis phase. The choice
+                of whether to raise such an error at analysis time is <termref def="dt-implementation-dependent">implementation dependent</termref>.</p>
+            
+
+</div2></div1>&errors;&mime-type;<inform-div1 id="id-glossary"><head>Glossary</head>
+<!-- This processing instruction automatically generates the glossary. -->
+<?glossary?>
+</inform-div1>
+
+
+&examples;
+
+&xpath-backwards-compat;
+
+<inform-div1 id="id-revision-log">
+<head>Change Log</head>
+
+<p role="xquery">This appendix lists the changes that have been made to this
+specification since the publication of the XQuery 1.0 Recommendation
+on 23 January 2007.</p>
+
+<p role="xpath">This appendix lists the changes that have been made to this
+specification since the publication of the XPath 2.0 Recommendation
+on 23 January 2007.</p>
+
+<div2>
+<head>Substantive Changes</head>
+
+<p>The following substantive changes have been made.</p>
+
+<!--
+
+1. 2e changes
+
+Added:
+
+        2.5.5 SequenceType Subtype Relationships
+            2.5.5.1 The SequenceType Subtype Judgement
+            2.5.5.2 The ItemType Subtype Judgement
+
+            3.1.5.1 Function Item Coercion
+
+        3.1.6 Literal Function Items
+        3.1.7 Inline Functions
+
+    3.8 Let Expressions
+
+Removed         F.1.1 Static Typing Extensions
+
+
+Added:  type information for derived-from() -->
+
+<olist>
+  <item role="xquery"><p>Applied all <loc href="http://www.w3.org/XML/2007/qt-errata/xquery-errata.html">XQuery 2ed errata</loc>.</p></item>
+  <item role="xpath"><p id="doc-xpath21-Annotation">Applied all <loc href="http://www.w3.org/XML/2007/qt-errata/xpath20-errata.html">XPath 2.0 2ed errata</loc>.</p></item>
+  <item role="xquery"><p>Added <code>group by</code> clause to FLWOR Expressions (<specref ref="id-group-by"/>).</p></item>
+  <item role="xquery"><p>Added <code>tumbling window</code> and <code>sliding window</code> in FLWOR Expressions (<specref ref="id-windows"/>).</p></item>
+  <item role="xquery"><p>Added <code>count</code> clause in FLWOR Expressions (<specref ref="id-count"/>).</p></item>
+  <item role="xquery"><p>Added <code>allowing empty</code> in <specref ref="id-xquery-for-clause"/>, for functionality similar to outer joins in SQL.</p></item>
+  <item role="xquery"><p>Added <specref ref="id-try-catch"/> for handling dynamic errors and type errors.</p></item>
+
+ 
+  <item><p>Added literal function items (<specref ref="id-literal-func-ref"/>).</p></item>
+  <item><p>Added inline functions (<specref ref="id-inline-func"/>).</p></item>
+  <item><p>Added dynamic function invocation (<specref ref="id-dynamic-function-invocation"/>).</p></item>
+  <item><p>Added <specref ref="id-function-coercion"/>.</p></item>
+  <item><p>Added <specref ref="id-sequencetype-subtype"/>, moving sequence type subtype judgements into the language specification rather than the formal semantics.</p></item>
+  <item role="xquery"><p>Added private functions (<specref ref="FunctionDeclns"/>).</p></item>
+  <item role="xquery"><p>Added support for nondeterministic functions (<specref ref="FunctionDeclns"/>)</p></item>
+  <item role="xquery"><p>Added switch expressions (<specref ref="id-switch"/>)</p></item>
+  <item role="xquery"><p>Added computed namespace constructors (<specref ref="id-computed-namespaces"/>).</p></item>
+  <item role="xquery"><p>Added output declarations (<specref ref="id-serialization"/>).</p></item>
+  <item role="xquery"><p>Added annotations (<specref ref="id-annotations"/>).</p></item>
+  <item role="xquery"><p>Added annotation assertions (<specref ref="id-annotation-assertion"/>).</p></item>
+  <item role="xquery"><p>Simplified BNF for FLWOR expressions, changed description of semantics so that each clause is understood as accepting a tuple stream as input, 
+acting on that tuple stream, and producing a tuple stream as output.</p></item>
+  <item role="xquery"><p>Modified <nt def="ValidateExpr">validate expressions</nt> to allow validation against a type that is explicitly specified in the query using the <code>type</code> keyword.</p></item> 
+  <item role="xquery"><p>Added support for declaring nondeterministic external functions in <specref ref="FunctionDeclns"/>, using annotations.</p></item>
+  <item role="xquery"><p>Extended <nt def="VarDecl">variable declarations</nt> to allow default values for external variables.</p></item>
+  <item role="xquery"><p>Added <specref ref="id-context-item-declarations"/>.</p></item>
+  <item role="xquery"><p>Modified <specref ref="id-version-declaration"/> to add support for XQuery 1.1.</p></item>
+  <item role="xquery"><p>Added <specref ref="id-decimal-format-decl"/> to allow a query to specify formats for <function>fn:format-number()</function>. Added corresponding properties to the static context.</p></item>
+
+  <item role="xquery"><p>Relaxed constraints on module imports in <specref ref="id-module-import"/> to allow modules to reference each other without restriction and to remove restrictions on forwards references to global variables.</p></item>
+  <item role="xquery"><p>Modified <specref ref="id-variable-declarations"/> to clarify type information and remove ambiguities with respect to types.</p></item>
+
+  <item role="xquery"><p>Removed obsolete Latin-1, using  ISO-8859-1 instead. Resolves <loc href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=7797">Bug 7797</loc>.</p></item>
+  <item role="xquery"><p>Changed conformance section to make full-axis support mandatory. Added note saying the Working Group has not yet decided which XQuery 1.1 features are optional.</p></item>
+
+  <item role="xquery"><p>Added normative rules for resolving module URIs to <specref ref="id-module-import"/>.</p></item>
+
+  <item><p>Clarified type information available to <function>derives-from()</function> in <specref ref="id-sequencetype-matching"/>. Resolves <loc href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=6513#c21">Bug 6513, Comment #21</loc>.</p></item>
+
+  <item><p>Modified <function>derives-from()</function> in <specref ref="id-sequencetype-matching"/> to support union types. Resolves <loc href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=7749#c2">Bug 7749</loc>.</p></item>
+
+  <item><p>Added <termref def="dt-annotation-assertion">annotation assertions</termref> to <nt def="FunctionTest">function tests</nt>.</p></item>
+
+  <item role="xpath"><p>Added <termref def="id-let-expressions">let expressions</termref>.</p></item>
+  <item><p>Removed section on static typing extensions.</p></item>
+</olist>
+
+</div2>
+
+<div2>
+<head>Incompatibilities</head>
+<p>No change in this specification introduces an incompatibility with XQuery 1.0.</p>
+</div2>
+
+<div2 role="xquery">
+<head>Editorial Changes</head>
+
+<p>The following are some of the editorial changes that have been made.</p>
+
+<olist role="xquery">
+  <item role="xquery"><p>Add Note to group-by section on unexpected replication of LET-bindings after grouping. Advises users to use a separate FLWOR to bind the expression, and a nested FLWOR for grouping, like this: let $x := 47 return for $e in //emps group by $d := $e/dept return f($d, $x)</p></item>
+  <item><p>Changed introductory text on the relationship between XQuery and XPath to list the cases where a syntactically valid query can return different results in the two languages - see http://www.w3.org/Bugs/Public/show_bug.cgi?id=7163. </p></item>
+  <item><p>Introduced definitions of scope, global scope, module scope, lexical scope, and dynamic scope to <specref ref="id-xq-context-components"/>.</p></item>
+  <item><p>Fixed names of <code>op:hexBinary-equal</code> and <code>op:base64Binary-equal</code> in <specref ref="mapping"/>. Resolves <loc href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=7048">Bug 7048</loc>.</p></item>
+  <item role="xquery"><p>Clarified overwriteability of the context item static type, resolving <loc href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=8875#c1">Bug 8875</loc>.</p></item>
+</olist>
+
+</div2>
+
+</inform-div1>

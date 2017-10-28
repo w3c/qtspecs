@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<div1 id="id-xquery-conformance" role="xquery">
+  <head>Conformance</head>
+
+  <p>The XQuery Formal Semantics is intended primarily as a component
+  that can be used by <bibref ref="xquery-30"/>, or a host language of
+  <bibref ref="xpath-30"/>. Therefore, the XQuery Formal Semantics
+  relies on specifications that use it (such as [XPath 3.0], [XSLT
+  3.0], and [XQuery 3.0]) to specify conformance criteria in their
+  respective environments. Specifications that set conformance
+  criteria for their use of the formal semantics must not relax the
+  constraints expressed in this specification.</p>
+
+  <div2 id="id-static-typing-feature">
+    <head>Static Typing Feature</head>
+
+    <p>This specification normatively defines the static typing
+    feature which can be used in <bibref ref="xquery-30"/> or a host
+    language of <bibref ref="xpath-30"/>. The static typing feature is
+    specified using the static typing judgment introduced in <specref
+    ref="sec_static"/>.</p>
+
+    <div3 id="id-static-extensions">
+      <head>Static Typing Extensions</head>
+
+      <p>In some cases, the static typing rules are not very precise
+      (see, for example, the type inference rules for the ancestor
+      axes&mdash;parent, ancestor, and ancestor-or-self&mdash;and for
+      the function <code>fn:root</code>). If an implementation
+      supports a static typing extension, it must always provide a
+      more precise type than the one defined in this
+      specification.</p>
+
+      <p id="jd_has_type_extension">This constraint is formally
+      expressed as follows. A static typing extension &gr_Expr;
+      &jd_has_type_extension; &gr_Type; must be such that for every
+      expression &gr_Expr; the following holds.</p>
+
+      <infergr>
+       <infer>
+        <prejudge>
+         <multiclause>
+          <clause><environment>&xq_stat_env;</environment>
+      	    <expression>&gr_Expr; &jd_has_type; &gr_Type;</expression>
+          </clause>
+         </multiclause>
+         <multiclause>
+          <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_Type;' &jd_subtype_of; &gr_Type;</expression>
+          </clause>
+         </multiclause>
+        </prejudge>
+        <postjudge>
+         <multiclause>
+          <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_Expr; &jd_has_type_extension; &gr_Type;'</expression>
+          </clause>
+         </multiclause>
+        </postjudge>
+       </infer>
+      </infergr>
+
+      <note><p>It is not recommended for a static typing extension to
+      change the static typing behavior of expressions that specify a
+      type explicitly (<code>treat as</code>, <code>cast as</code>,
+      <code>typeswitch</code>, function parameters, and type
+      declarations in variable bindings), since the purpose of those
+      expressions is to impose a specific type.</p></note>
+
+    </div3>
+  </div2>
+</div1>
+

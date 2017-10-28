@@ -1,0 +1,436 @@
+<div2 id="DocumentNode">
+<head>&documentNode;s</head>
+
+<div3 id="DocumentNodeOverview">
+<head>Overview</head>
+
+<p>&documentNode;s encapsulate XML documents. Documents have the following
+properties:</p>
+
+<ulist>
+<item><p>&dm.prop.base-uri;, possibly empty.
+</p></item>
+<item><p>&dm.prop.children;, possibly empty.
+</p></item>
+<item><p><emph role='dm-node-property'>unparsed-entities</emph>, possibly empty.
+</p></item>
+<item><p><emph role='dm-node-property'>document-uri</emph>, possibly empty.
+</p></item>
+<item><p>&dm.prop.string-value;
+</p></item>
+<item><p>&dm.prop.typed-value;
+</p></item>
+</ulist>
+
+<p id="constraints-document">&documentNode;s <rfc2119>must</rfc2119> satisfy the following constraints.</p>
+
+<olist>
+<item><p>The &dm.prop.children; <rfc2119>must</rfc2119> consist exclusively
+of Element, Processing Instruction, Comment, and Text Nodes if it is not empty.
+Attribute, Namespace, and &documentNode;s can never appear as children
+</p></item>
+<item><p>If a node <emph>N</emph> is among the &dm.prop.children; of a &documentNode;
+<emph>D</emph>, then the &dm.prop.parent; of <emph>N</emph>
+<rfc2119>must</rfc2119> be <emph>D</emph>.</p></item>
+<item><p>If a node <emph>N</emph> has a &dm.prop.parent; &documentNode; <emph>D</emph>,
+then <emph>N</emph> <rfc2119>must</rfc2119> be among the &dm.prop.children; of
+<emph>D</emph>.
+</p></item>
+<item><p>The &dm.prop.string-value; property of a &documentNode; must
+be the concatenation of the &dm.prop.string-value;s of all its
+&textNode; descendants in document order or,
+if the document has no such descendants, the zero-length string.
+</p></item>
+</olist>
+
+<p>In the <bibref ref="xml-infoset"/>, a
+<emph role="info-item">document information item</emph>
+must have at least one child, its children must consist exclusively of
+<emph role="info-item">element information item</emph>s,
+<emph role="info-item">processing instruction information item</emph>s
+and <emph role="info-item">comment information item</emph>s,
+and exactly one of the children must be
+an <emph role="info-item">element information item</emph>.
+This data model is more permissive: a
+&documentNode; may be empty, it may have more than one &elementNode; as a
+child, and it also permits &textNode;s as children.</p>
+
+<p>Implementations that support DTD processing and access to the
+unparsed entity accessors use the
+<emph role='dm-node-property'>unparsed-entities</emph> property to associate
+information about an unordered collection of unparsed entities with a
+&documentNode;. This property is accessed indirectly through the
+<function>unparsed-entity-system-id</function> and
+<function>unparsed-entity-public-id</function> functions.
+<phrase diff="add" at="2014-12-01">There is at most one unparsed
+entity associated with any given name. Conforming XML documents may include
+more than one unparsed entity declaration for the same name, but XML
+mandates that only the first such declaration is significant.
+</phrase>
+</p>
+</div3>
+
+<div3 id="DocumentNodeAccessors">
+<head>Accessors</head>
+
+<glist role="accessors">
+<gitem>
+<label><function>attributes</function></label>
+<def>
+<p>Returns the empty sequence
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>base-uri</function></label>
+<def>
+<p>Returns the value of the &dm.prop.base-uri; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>children</function></label>
+<def>
+<p>Returns the value of the &dm.prop.children; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>document-uri</function></label>
+<def>
+<p>Returns the absolute URI of the resource from which the &documentNode; was
+constructed, or the empty sequence if no such absolute URI is available.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>is-id</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>is-idrefs</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>namespace-nodes</function></label>
+<def>
+<p>Returns the empty sequence
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>nilled</function></label>
+<def>
+<p>Returns the empty sequence
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>node-kind</function></label>
+<def>
+<p>Returns “<code>document</code>”.</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>node-name</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>parent</function></label>
+<def>
+<p>Returns the empty sequence
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>string-value</function></label>
+<def>
+<p>Returns the value of the &dm.prop.string-value; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>type-name</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>typed-value</function></label>
+<def>
+<p>Returns the value of the &dm.prop.typed-value; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>unparsed-entity-public-id</function></label>
+<def>
+<p>Returns the public identifier of the specified unparsed entity or
+the empty sequence if no such entity exists.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>unparsed-entity-system-id</function></label>
+<def>
+<p>Returns the system identifier of the specified unparsed entity or
+the empty sequence if no such entity exists.
+</p>
+</def>
+</gitem>
+</glist>
+
+</div3>
+
+<div3 id="const-infoset-document">
+<head>Construction from an Infoset</head>
+
+<p>The <emph role="info-item">document information item</emph> is
+required. A &documentNode; is constructed for each
+<emph role="info-item">document information item</emph>.</p>
+
+<p>The following infoset properties are required:
+<emph role="infoset-property">children</emph> and
+<emph role="infoset-property">base URI</emph>.</p>
+
+<p>The following infoset properties are optional:
+<emph role="infoset-property">unparsed entities</emph>.</p>
+
+<p>&documentNode; properties are derived from the infoset as
+follows:</p>
+
+<glist>
+<gitem>
+<label>&dm.prop.base-uri;</label>
+<def>
+<!--
+<p>The value of the <emph role="infoset-property">base URI</emph>
+property. Note that the base URI property is always an absolute URI
+(if an absolute URI can be computed) though it may contain Unicode
+characters that are not allowed in URIs. These characters, if they
+occur, are present in the &dm.prop.base-uri; property and will have to
+be encoded and escaped by the application to obtain a URI suitable for
+retrieval, if retrieval is required.
+</p>
+-->
+<p>The value of the <emph role="infoset-property">base URI</emph>
+property, if available.
+Note that the base URI property, if available,
+is always an absolute URI
+(if an absolute URI can be computed) though it may contain Unicode
+characters that are not allowed in URIs. These characters, if they
+occur, are present in the &dm.prop.base-uri; property and will have to
+be encoded and escaped by the application to obtain a URI suitable for
+retrieval, if retrieval is required.
+</p>
+<p>In practice a <emph role="infoset-property">base URI</emph>
+is not always known. In this case the value of the
+&dm.prop.base-uri; property of the document node will be the empty
+sequence. This is not intrinsically an error, though it may cause some
+operations that depend on the base URI to fail.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.children;</label>
+<def>
+<p>The sequence of nodes constructed from the information
+items found in the <emph role="infoset-property">children</emph>
+property.</p>
+<p>For each element, processing instruction, and comment found in the
+<emph role="infoset-property">children</emph> property, a corresponding
+Element, Processing Instruction, or &commentNode; is constructed
+and that sequence of nodes is used as the value of the &dm.prop.children;
+property.</p>
+<p>If present among the
+<emph role="infoset-property">children</emph>, the
+<emph role="info-item">document type declaration information item</emph>
+is ignored.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><emph role='dm-node-property'>unparsed-entities</emph></label>
+<def>
+<p>If the <emph role="infoset-property">unparsed entities</emph> property is
+present and is not the empty set, the values of the
+<emph role="info-item">unparsed entity information items</emph> must be used
+to support the <function>unparsed-entity-system-id</function> and
+<function>unparsed-entity-public-id</function> accessors.</p>
+<p>The internal structure of the values of the
+<emph role='dm-node-property'>unparsed-entities</emph> property is implementation
+defined.</p>
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.string-value;</label>
+<def>
+<p>The concatenation of the string-values of all its &textNode; descendants in
+document order. If the document has no such descendants, the zero-length
+string.</p>
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.typed-value;</label>
+<def>
+<p>The <function>string-value</function> of the node as an
+<code>xs:untypedAtomic</code> value.</p>
+</def>
+</gitem>
+
+<gitem>
+<label><emph role='dm-node-property'>document-uri</emph></label>
+<def>
+<p>The <emph role='dm-node-property'>document-uri</emph> property
+holds the absolute URI for the resource from which the document node
+was constructed, if one is available and can be made absolute. For
+example, if a collection of documents is returned by the
+<function>fn:collection</function> function, the
+<emph role='dm-node-property'>document-uri</emph> property
+may serve to distinguish between them even though each has the same
+<emph role='dm-node-property'>base-uri</emph> property.</p>
+<p>If the <emph role='dm-node-property'>document-uri</emph> is not
+the empty sequence, then the following constraint must hold: the node returned
+by evaluating <code>fn:doc()</code> with the
+<emph role='dm-node-property'>document-uri</emph> as its argument must
+return the document node that provided the value of the 
+<emph role='dm-node-property'>document-uri</emph> property.</p>
+<p>In other words, for any &documentNode; <code>$arg</code>, either
+<code>fn:document-uri($arg)</code> must return the empty sequence or
+<code>fn:doc(fn:document-uri($arg))</code> must return <code>$arg</code>.
+</p>
+</def>
+</gitem>
+
+</glist>
+</div3>
+
+<div3 id="const-psvi-document">
+<head>Construction from a PSVI</head>
+<p>Construction from a PSVI is identical to construction
+from the Infoset.</p>
+</div3>
+
+<div3 id="infoset-mapping-document">
+<head>Infoset Mapping</head>
+
+<p>A &documentNode; maps to a
+<emph role="info-item">document information item</emph>. The mapping fails
+and produces no value if the &documentNode; contains &textNode; children
+that do not consist entirely of white space or if the &documentNode; contains
+more than one &elementNode; child.</p> 
+
+<p>The following properties are specified by this mapping:</p>
+
+<glist>
+<gitem>
+<label><emph role="infoset-property">children</emph></label>
+<def>
+<p>A list of information items obtained by processing each of the
+<function>children</function> in order and mapping each to
+the appropriate information item(s).
+</p>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">document element</emph></label>
+<def>
+<p>The <emph role="info-item">element information item</emph> that is among the
+<emph role="infoset-property">children</emph>.
+</p>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">unparsed entities</emph></label>
+<def>
+<p>An unordered set of <emph role="info-item">unparsed entity information item</emph>s
+constructed from the
+<emph role='dm-node-property'>unparsed-entities</emph>.
+</p>
+
+<p>Each unparsed entity maps to an <emph role="info-item">unparsed entity
+information item</emph>. The
+following properties are specified by this mapping:</p>
+
+<glist>
+<gitem>
+<label><emph role="infoset-property">name</emph></label>
+<def>
+<p>The name of the entity.</p>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">system identifier</emph></label>
+<def>
+<p>The system identifier of the entity.</p>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">public identifier</emph></label>
+<def>
+<p>The public identifier of the entity.</p>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">declaration base URI</emph></label>
+<def>
+<p>Implementation defined. In many cases, the 
+<emph role='dm-node-property'>document-uri</emph>
+is the correct answer and implementations <rfc2119>must</rfc2119>
+use this value if they have no better information. Implementations that
+keep track of the original
+<emph role="infoset-property">declaration base URI</emph>
+for entities should use that value.</p>
+</def>
+</gitem>
+</glist>
+
+<p>The following properties of the <emph role="info-item">unparsed entity
+information item</emph> have no value:
+<emph role="infoset-property">notation name</emph>,
+<emph role="infoset-property">notation</emph>.</p>
+
+</def>
+</gitem>
+</glist>
+
+<p>The following properties of the <emph role="info-item">document
+information item</emph> have no value:
+<emph role="infoset-property">notations</emph>
+<emph role="infoset-property">character encoding scheme</emph>
+<emph role="infoset-property">standalone</emph>
+<emph role="infoset-property">version</emph>
+<emph role="infoset-property">all declarations processed</emph>.</p>
+
+</div3>
+
+</div2>

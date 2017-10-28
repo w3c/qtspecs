@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding='utf-8'?>
+<project name="xqueryx" default="all" basedir=".">
+
+<!-- Import a bunch of global property definitions -->
+  <dirname property="etc.dir" file="../../etc/*"/>
+  <import file="${etc.dir}/build-constants.xml"/>
+
+<!-- Set properties for "this" document's build requirements -->
+  <property name="generic-shortname" value="xqueryx"/>
+  <property name="this-spec-version-code" value="30"/>
+
+  <property name="spec.code" value="XQX${this-spec-version-code}"/>
+  <property name="shortname" value="${generic-shortname}-${this-spec-version-code}"/>
+  <property name="spec.uri" value="${W3C.TR}/${shortname}/"/>
+  <property name="spec.xml" value="${src.dir}/${generic-shortname}.xml"/>
+
+  <!-- 2008-09-03, Jim: The following property has no meaning at present,     -->
+  <!--   because we do not build errata in the qtspecs tree. Maybe later...   -->
+<!--  <property name="errata.xml" value="${src.dir}/${generic-shortname}-errata.xml"/> -->
+
+  <property name="namespace-name" value="xqueryx"/>
+
+<!-- Import target, etc. definitions that work globally -->
+  <import file="${etc.dir}/build-impl.xml"/>
+
+<!-- Recall that any targets defined herein override targets of the same name -->
+<!--   that are defined in build-impl.xml.  If you cannot find a target of a  -->
+<!--   given name in this file, look in build-impl.xml.                       -->
+
+<!-- ======================================================================== -->
+
+  <!-- additional properties -->
+
+  <property name="assemble-spec-file" value="${local.style.dir}/assemble-xqueryx.xsl"/>
+
+  <!-- ====================================================================== -->
+
+  <!-- The "help" template displays on the message medium the names of the    -->
+  <!--   various targets in this project and their purposes.                  -->
+  <target name="help">
+    <echo message="This project to build ${shortname} includes a number of targets."/>
+    <echo message="To invoke any of these targets from the command line, use 'ant target-name'"/>
+    <echo message="  all -- the default target (target-name not required); builds 'everything'"/>
+    <echo message="  chk.spec -- determines whether the spec HTML must be created"/>
+    <echo message="  -style-spec -- transforms the document sources into near-pubrules-ready HTML (ordinary and diff docs)"/>
+    <echo message="  -copy-xml -- creates final XML source file from assembled source file"/>
+    <echo message="  namespacedoc -- Causes namespace doc to be created"/>
+    <echo message="  chk.namespacedoc -- checks whether the namespace document must be built"/>
+    <echo message="  style-namespacedoc -- transforms namespace document sources into XHTML and RDF namespace docs"/>
+    <echo message="The targets that are most likely to be desired from the command line are 'all', '-stylespec' and 'namespacedoc'."/>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <!-- Overrides global template -->
+  <target name="all"
+          depends="clean, spec, namespacedoc"
+          description="This is the default target. ">
+  </target>
+
+<!-- ======================================================================== -->
+
+  <!-- Overrides internal template -->
+  <target name="chk.spec" depends="init">
+<echo message="Target chk.spec starting"/>
+    <condition property="spec.exists">
+      <uptodate targetfile="${spec.html}">
+         <srcfiles file="${base.dir}/build.xml"/>
+         <srcfiles file="${etc.dir}/build-constants.xml"/>
+         <srcfiles file="${etc.dir}/build-impl.xml"/>
+         <srcfiles file="${etc.dir}/status-entities.dtd"/>
+         <srcfiles file="${etc.dir}/status-general.xml"/>
+         <srcfiles file="${etc.dir}/xsl-query-bibl.xml"/>
+         <srcfiles dir="${src.dir}" includes="**/*.xml"/>
+         <srcfiles dir="${src.dir}" includes="*.xsl"/>
+         <srcfiles dir="${src.dir}" includes="*.xsd"/>
+         <srcfiles file="${assemble-spec-file}"/>
+         <srcfiles file="${local.style.dir}/xqueryx-diff.xsl"/>
+         <srcfiles file="${shared.style.dir}/assemble-spec.xsl"/>
+         <srcfiles file="${shared.style.dir}/xsl-query.xsl"/>
+         <srcfiles file="${shared.style.dir}/xmlspec.xsl"/>
+         <srcfiles file="${shared.schema.dir}/xsl-query.dtd"/>
+         <srcfiles file="${shared.schema.dir}/xmlspec.dtd"/>
+         <srcfiles file="${shared.schema.dir}/elements.dtd"/>
+         <srcfiles file="${shared.schema.dir}/tree-diagram.dtd"/>
+      </uptodate>
+    </condition>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="-style-spec" depends="init,chk.spec,validate-spec"
+          if="build.spec" unless="spec.exists">
+<echo message="Building ${shortname} ..."/>
+
+    <!-- The assembly step is used to bring together all of the source files  -->
+    <!--   that are incorporated by using entity references, but also to      -->
+    <!--   transform grammar-related productions into XML elements that can   -->
+    <!--   be readily rendered into a form needed in the HTML document.       -->
+<echo message="Confirming that the CDATA versions of the xqueryx schema and stylesheet are well-formed"/>
+    <exec executable="perl" dir="${src.dir}/included-files">
+      <arg value="${local.style.dir}/RemoveCDATA.prl"/>
+      <arg value="xqueryx-CDATA.xsd.xml"/>
+      <arg value="${build.dir}/xqueryx-NOCDATA.xsd.xml"/>
+    </exec>
+    <xmlvalidate file="${build.dir}/xqueryx-NOCDATA.xsd.xml" 
+                 failonerror="yes" lenient="yes" warn="yes"/>
+    <exec executable="perl" dir="${src.dir}/included-files">
+      <arg value="${local.style.dir}/RemoveCDATA.prl"/>
+      <arg value="xqueryx-CDATA.xsl.xml"/>
+      <arg value="${build.dir}/xqueryx-NOCDATA.xsl.xml"/>
+    </exec>
+    <xmlvalidate file="${build.dir}//xqueryx-NOCDATA.xsl.xml" 
+                 failonerror="yes" lenient="yes" warn="yes"/>
+
+<echo message="Creating ${generic-shortname}-assembled.xml"/>
+    <xslt in="${spec.xml}" out="${build.dir}/${generic-shortname}-assembled.xml"
+          style="${assemble-spec-file}"
+          classpathref="saxon9.classpath" force="yes">
+      <param name="spec" expression="xqueryx"/>
+    </xslt>
+
+<echo message="Validating ${generic-shortname}-assembled.xml"/>
+    <xmlvalidate file="${build.dir}/${generic-shortname}-assembled.xml" 
+                 failonerror="yes" lenient="no" warn="yes"/>
+
+<echo message="Transforming ${generic-shortname}-assembled.xml"/>
+    <xslt in="${build.dir}/${generic-shortname}-assembled.xml"
+          out="${build.dir}/${generic-shortname}-html.html"
+          style="${spec.style}"
+          classpathref="saxon9.classpath" force="yes">
+      <param name="spec" expression="xqueryx"/>
+      <param name="kwFull" expression="brief"/>
+      <param name="kwSort" expression="cluster"/>
+    </xslt>
+
+<!-- 2009-11-25, Jim: Added param to pass DSTAMP and TSTAMP properties -->
+<echo message="Fixing up ${generic-shortname}.html"/>
+    <xslt in="${build.dir}/${generic-shortname}-html.html"
+          out="${spec.html}"
+          style="${shared.style.dir}/html-fix.xsl"
+          classpathref="saxon9.classpath" force="yes">
+      <param name="currentDateTime" expression="${DSTAMP} ${TSTAMP}"/>
+    </xslt>
+
+<echo message="Transforming ${generic-shortname}-assembled.xml with diffs"/>
+    <xslt in="${build.dir}/${generic-shortname}-assembled.xml"
+          out="${build.dir}/${generic-shortname}-html-diff.html"
+          style="${spec.style}"
+          classpathref="saxon9.classpath" force="yes">
+      <param name="spec" expression="${generic-shortname}"/>
+      <param name="kwFull" expression="brief"/>
+      <param name="kwSort" expression="cluster"/>
+      <param name="currentDateTime" expression="${DSTAMP} ${TSTAMP}"/>
+      <param name="show-markup" expression="1"/>
+    </xslt>
+
+<!-- 2009-11-25, Jim: Added param to pass DSTAMP and TSTAMP properties -->
+<echo message="Fixing up xqueryx-diffs.html"/>
+    <xslt in="${build.dir}/${generic-shortname}-html-diff.html"
+          out="${spec.diffs.html}"
+          style="${shared.style.dir}/html-fix.xsl"
+          classpathref="saxon9.classpath" force="yes">
+      <param name="currentDateTime" expression="${DSTAMP} ${TSTAMP}"/>
+    </xslt>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <!-- Overrides internal template -->
+  <target name="-copy-xml" depends="init,chk.spec"
+          if="build.spec" unless="spec.exists">
+    <echo message="Copying XML for ${shortname}..." />
+
+    <xslt in="${build.dir}/${generic-shortname}-assembled.xml"
+          out="${dist.dir}/${shortname}.xml"
+          style="${shared.style.dir}/identity.xsl" force="yes"
+          classpathref="saxon9.classpath"/>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="namespacedoc"
+          depends="style-namespacedoc,init"/>
+
+<!-- ======================================================================== -->
+
+  <target name="chk.namespacedoc">
+
+    <condition property="namespacedoc.exists">
+      <uptodate targetfile="${dist.dir}/ns-${namespace-name}.html">
+         <srcfiles file="${base.dir}/build.xml"/>
+         <srcfiles file="${etc.dir}/build-constants.xml"/>
+         <srcfiles file="${etc.dir}/build-impl.xml"/>
+         <srcfiles file="${etc.dir}/status-entities.dtd"/>
+         <srcfiles file="${etc.dir}/status-general.xml"/>
+         <srcfiles file="${src.dir}/ns-${namespace-name}.xml"/>
+         <srcfiles file="${shared.style.dir}/xsl-query.xsl"/>
+         <srcfiles file="${shared.style.dir}/xmlspec.xsl"/>
+         <srcfiles file="${shared.style.dir}/ns-blank.xsl"/>
+         <srcfiles file="${shared.schema.dir}/xsl-query.dtd"/>
+         <srcfiles file="${shared.schema.dir}/xmlspec.dtd"/>
+         <srcfiles file="${shared.schema.dir}/elements.dtd"/>
+         <srcfiles file="${shared.schema.dir}/tree-diagram.dtd"/>
+         <srcfiles file="${shared.schema.dir}/qtnamespaces.dtd"/>
+      </uptodate>
+    </condition>
+
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="style-namespacedoc"
+          depends="chk.namespacedoc,init"
+          unless="namespacedoc.exists">
+    <echo message="Building XQueryX 3.0 Namespace Doc ..." />
+
+    <echo message="Transforming namespace XML source to HTML with RDDL"/>
+    <xslt in="${src.dir}/ns-${namespace-name}.xml"
+	        out="${build.dir}/ns-${namespace-name}.html"
+	        style="${shared.style.dir}/ns-blank.xsl" force="yes"
+	        classpathref="saxon9.classpath"/>
+
+    <echo message="Generating RDF from HTML"/>
+    <xslt in="${build.dir}/ns-${namespace-name}.html"
+	        out="${dist.dir}/ns-${namespace-name}.rdf"
+	        style="${shared.style.dir}/qt-ns-grddl.xsl" force="yes"
+	        classpathref="saxon9.classpath">
+      <param name="doc" expression="http://www.w3.org/2005/XQueryX"/>
+    </xslt>
+
+    <echo message="Fixing up HTML namespace document by removing traces of RDDL"/>
+    <xslt in="${build.dir}/ns-${namespace-name}.html"
+	        out="${dist.dir}/ns-${namespace-name}.html"
+	        style="${shared.style.dir}/html-namespace-fixup.xsl" force="yes"
+	        classpathref="saxon9.classpath"/>
+
+    <echo message="Fixing up RDDL namespace document to add xhtml namespace"/>
+    <xslt in="${build.dir}/ns-${namespace-name}.html"
+	        out="${dist.dir}/ns-${namespace-name}.xhtml"
+	        style="${shared.style.dir}/rddl-namespace-fixup.xsl" force="yes"
+	        classpathref="saxon9.classpath"/>
+
+    <echo message="Tidy up the HTML file for pubrules"/>
+    <exec executable="tidy">
+      <arg value="--doctype"/>
+      <arg value="transitional"/>
+      <arg value="-utf8"/>
+      <arg value="-mnq"/>
+      <arg value="-asxml"/>
+      <arg value="${dist.dir}/ns-${namespace-name}.html"/>
+    </exec>
+
+  </target>
+
+</project>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE spec PUBLIC "-//W3C//DTD Specification V2.1//EN"
+               "http://www.w3.org/2002/xmlspec/dtd/2.2/xmlspec.dtd" [
+
+<!ENTITY doc.version "3.0">
+<!ENTITY doc.version-code "30">
+<!ENTITY doc.stage "WD">
+<!ENTITY doc.w3c-doctype "wd">
+<!ENTITY doc.w3c-doctype-full "Working Draft">
+<!ENTITY date.day "16">
+<!ENTITY date.DD "16">
+<!ENTITY date.month "June">
+<!ENTITY date.monthnum "01">
+<!ENTITY date.year "2011">
+<!ENTITY doc.date "&date.year;&date.monthnum;&date.DD;">
+
+<!ENTITY w3c.tr "http://www.w3.org/TR">
+<!ENTITY doc.parent.shortname "xquery-sx-&doc.version-code;">
+<!ENTITY doc.shortname "&doc.parent.shortname;-requirements">
+<!ENTITY doc.w3c-designation "&doc.stage;-&doc.shortname;">
+<!ENTITY doc.publoc "&w3c.tr;/&date.year;/&doc.w3c-designation;-&doc.date;/">
+<!ENTITY doc.latestloc "&w3c.tr;/&doc.shortname;/">
+<!ENTITY doc.parent.latestloc "&w3c.tr;/&doc.parent.shortname;/">
+<!ENTITY language "XQuery Scripting Extension &doc.version;">
+
+<!ENTITY req.status "<emph>Status:</emph>">
+<!ENTITY req.green "<graphic source='http://www.w3.org/Icons/green-ball.gif' alt='green status'/>">
+<!ENTITY req.yellow "<graphic source='http://www.w3.org/Icons/yellow-ball.gif' alt='yellow status'/>">
+<!ENTITY req.red "<graphic source='http://www.w3.org/Icons/red-ball.gif' alt='red status'/>">
+<!ENTITY req.yes "&req.green; &req.status; this requirement has been met.">
+<!ENTITY req.partial "&req.yellow; &req.status; this requirement has been partially met.">
+<!ENTITY req.no "&req.red; &req.status; this requirement has not been met.">
+
+<!ENTITY % status-entities SYSTEM "../../../etc/status-entities.dtd">
+%status-entities;
+
+<!ENTITY doc.WD-pubdate "16 September 2010">
+<!ENTITY doc.LC-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.LC-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.CR-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.CR-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.PR-expected "TO BE SPECIFIED">
+<!ENTITY doc.PR-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.PR-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.REC-pubdate "TO BE SPECIFIED">
+
+<!ENTITY doc.pubdate "&doc.WD-pubdate;">
+<!ENTITY doc.comments-due "$doc.WD-comments-due;">
+
+<!ENTITY status-section-id "status">
+<!ENTITY spec-devby    "&devby.xquery;">
+<!ENTITY changelog-id  "id-revisions-log">
+<!ENTITY changes-para  "&post.FPWD.changes;">
+<!ENTITY implementation-report-location "">
+<!ENTITY implementation-report-availability "">
+<!ENTITY implementation-report "&implementation-report-irrelevant;">
+<!ENTITY disclosure.one    "&disclosure.xquery;"> 
+<!ENTITY Bugzilla-key "SX30Req">
+<!ENTITY patent-policy-paragraph "&ppp-one;">
+<!ENTITY documents-and-relationships "&not-set-of-documents;">
+<!ENTITY advancement.statement "&advance.1WG.to-Note;">
+
+<!ENTITY doc-stability "&doc-stability-WD;">
+<!ENTITY PR-entrance-criteria '<p>The &XQWG; intends to submit
+this document for consideration as a W3C &ProposedRec;
+at the same time that &language; is submitted for the same consideration. </p>'>
+<!ENTITY features-at-risk-para "&no-features-at-risk;">
+<!ENTITY document-stage "&doc-stage-FPWD;">
+
+
+<!ENTITY customized-paragraph '
+<p>
+This document provides requirements and use cases for the <loc href="&doc.parent.latestloc;" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">&language;</loc>.  The requirements help identify what extensions will be needed to make XQuery functional as a scripting language. The use cases are designed to help verify that the extensions defined in 
+<loc href="&doc.parent.latestloc;" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">&language;</loc>
+satisfy these requirements.  Organizations and individuals should review this document to ensure that the requirements are sufficient and that the use cases cover the requirements.  
+</p>
+'>
+
+
+<!ENTITY status-section SYSTEM "../../../etc/status-general.xml">
+<!ENTITY requirements SYSTEM "requirements.xml">
+<!ENTITY use-cases SYSTEM "use-cases.xml">
+]>
+<spec id="spec-top" w3c-doctype="&doc.w3c-doctype;">
+  <header id="spec-header">
+    <title>&language; Requirements and Use Cases</title>
+    <w3c-designation>&doc.w3c-designation;</w3c-designation>
+    <w3c-doctype>W3C &doc.w3c-doctype-full;</w3c-doctype>
+    <pubdate>
+      <day>&date.day;</day>
+      <month>&date.month;</month>
+      <year>&date.year;</year>
+    </pubdate>
+
+    <publoc>
+      <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/2010/WD-xquery-sx-30-requirements-201009163" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://www.w3.org/TR/2010/WD-xquery-sx-30-requirements-20100916</loc>
+    </publoc>
+    <latestloc>
+      <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/xquery-sx-30-requirements" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://www.w3.org/TR/xquery-sx-30-requirements</loc>
+    </latestloc>
+    <!-- <prevlocs></prevlocs> -->
+    <authlist>
+      <author>
+	<name>Daniel Engovatov</name>
+	<affiliation>W3C invited expert</affiliation>
+      </author>
+      <author>
+	<name>Daniela Florescu</name>
+	<affiliation>Oracle Corporation</affiliation>
+	<email xmlns:xlink="http://www.w3.org/1999/xlink" href="mailto:dana.florescu@oracle.com" xlink:type="simple" xlink:show="new" xlink:actuate="onRequest">dana.florescu@oracle.com</email>
+      </author>
+      <author>
+	<name>Giorgio Ghelli</name>
+	<affiliation>Pisa University</affiliation>
+	<email xmlns:xlink="http://www.w3.org/1999/xlink" href="mailto:ghelli@di.unipi.it" xlink:type="simple" xlink:show="new" xlink:actuate="onRequest">ghelli@di.unipi.it</email>
+      </author>
+      <author>
+	<name>John Snelson</name>
+	<affiliation>MarkLogic</affiliation>
+	<email xmlns:xlink="http://www.w3.org/1999/xlink" href="mailto:john.snelson@marklogic.com" xlink:type="simple" xlink:show="new" xlink:actuate="onRequest">john.snelson@marklogic.com</email>
+      </author>
+    </authlist>
+
+    &status-section;
+    
+    <abstract>
+      <p>This document specifies requirements and use cases for the XQuery Scripting Extension.</p>
+    </abstract>
+    
+    <langusage>
+      <language id="en">English</language>
+    </langusage>
+    
+    <revisiondesc>
+      <p>First public Working Draft.</p>
+    </revisiondesc>
+  </header>
+
+  <body>
+    &requirements;
+    &use-cases;
+  </body>
+
+  <back>
+    <div1 id="references">
+      <head>References</head>
+      <blist>
+	<bibl xmlns:xlink="http://www.w3.org/1999/xlink" id="RFC2119" key="RFC 2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">
+	  S. Bradner. <emph>Key Words for use in RFCs to Indicate Requirement Levels.</emph> IETF
+	  RFC 2119.  See <loc href="http://www.ietf.org/rfc/rfc2119.txt" xlink:type="simple"
+	  xlink:show="replace" xlink:actuate="onRequest">http://www.ietf.org/rfc/rfc2119.txt</loc>.
+	</bibl>
+	<bibl xmlns:xlink="http://www.w3.org/1999/xlink" key="XQuery and XPath Data Model 3.0" id="datamodel-30" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">
+	  World Wide Web Consortium. <emph>XQuery and XPath Data Model 3.0</emph>.  W3C Working
+	  Draft, 16 September 2010.  See <loc href="http://www.w3.org/TR/xpath-datamodel-30/"
+	  xlink:type="simple" xlink:show="replace"
+	  xlink:actuate="onRequest">http://www.w3.org/TR/xpath-datamodel-30/</loc>.
+	</bibl>
+	<bibl xmlns:xlink="http://www.w3.org/1999/xlink" key="XQuery 3.0" id="xquery-30" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">
+	  World Wide Web Consortium. <emph>XQuery 3.0</emph>.  W3C Working Draft, 16 September 2010.
+	  See <loc href="http://www.w3.org/TR/xquery-30/" xlink:type="simple" xlink:show="replace"
+	  xlink:actuate="onRequest">http://www.w3.org/TR/xquery-30/</loc>.
+	</bibl>
+	<bibl xmlns:xlink="http://www.w3.org/1999/xlink" key="XQuery Update Facility 3.0" id="updatef-30" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">
+	  World Wide Web Consortium.  <emph>XQuery Update Facility 3.0 </emph>. W3C Working Draft,
+	  16 September 2010.  See <loc href="http://www.w3.org/TR/xqupdate-30/" xlink:type="simple"
+	  xlink:show="replace"
+	  xlink:actuate="onRequest">http://www.w3.org/TR/xquery-update-30/</loc>.
+	</bibl>
+	<bibl key="XML Query Use Cases" id="XQueryUseCases">
+	  World Wide Web Consortium. <emph>XML Query Use Cases</emph>. W3C Working Group Note, 23
+	  March 2007. See <loc
+	  href="http://www.w3.org/TR/xquery-use-cases/">http://www.w3.org/TR/xquery-use-cases/</loc>.
+	</bibl>
+      </blist>
+    </div1>
+  </back>
+</spec>

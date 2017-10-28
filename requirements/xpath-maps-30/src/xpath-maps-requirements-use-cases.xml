@@ -1,0 +1,2699 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE spec PUBLIC "-//W3C//DTD Specification V2.1//EN"
+               "http://www.w3.org/2002/xmlspec/dtd/2.2/xmlspec.dtd" [
+
+<!ENTITY doc.version "3.0">
+<!ENTITY doc.version-code "30">
+<!ENTITY doc.stage "WD">
+<!ENTITY doc.w3c-doctype "other">
+<!ENTITY doc.w3c-doctype-full "Exploratory SWAT Team Document">
+<!ENTITY date.day "2">
+<!ENTITY date.DD "02">
+<!ENTITY date.month "February">
+<!ENTITY date.monthnum "02">
+<!ENTITY date.year "2012">
+<!ENTITY doc.date "&date.year;&date.monthnum;&date.DD;">
+
+<!ENTITY w3c.tr "http://www.w3.org/TR">
+<!ENTITY doc.parent.shortname "xpath-maps-&doc.version-code;">
+<!ENTITY doc.shortname "&doc.parent.shortname;-requirements">
+<!ENTITY doc.w3c-designation "&doc.stage;-&doc.shortname;">
+<!ENTITY doc.publoc "&w3c.tr;/&date.year;/&doc.w3c-designation;-&doc.date;/">
+<!ENTITY doc.latestloc "&w3c.tr;/&doc.shortname;/">
+<!ENTITY doc.parent.latestloc "&w3c.tr;/&doc.parent.shortname;/">
+<!ENTITY language "Maps in XSLT and XQuery">
+
+<!ENTITY req.status "<emph>Status:</emph>">
+<!ENTITY req.green "<graphic source='http://www.w3.org/Icons/green-ball.gif' alt='green status'/>">
+<!ENTITY req.yellow "<graphic source='http://www.w3.org/Icons/yellow-ball.gif' alt='yellow status'/>">
+<!ENTITY req.red "<graphic source='http://www.w3.org/Icons/red-ball.gif' alt='red status'/>">
+<!ENTITY req.yes "&req.green; &req.status; this requirement has been met.">
+<!ENTITY req.partial "&req.yellow; &req.status; this requirement has been partially met.">
+<!ENTITY req.no "&req.red; &req.status; this requirement has not been met.">
+
+<!ENTITY % status-entities SYSTEM "../../../etc/status-entities.dtd">
+%status-entities;
+
+<!ENTITY doc.WD-pubdate "1 December 2011">
+<!ENTITY doc.LC-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.LC-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.CR-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.CR-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.PR-expected "TO BE SPECIFIED">
+<!ENTITY doc.PR-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.PR-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.REC-pubdate "TO BE SPECIFIED">
+
+<!ENTITY doc.pubdate "&doc.WD-pubdate;">
+<!ENTITY doc.comments-due "$doc.WD-comments-due;">
+
+<!ENTITY status-section-id "status">
+<!ENTITY spec-devby    "&devby.joint2;">
+<!ENTITY changelog-id  "id-revisions-log">
+<!ENTITY changes-para  "&post.FPWD.changes;">
+<!ENTITY implementation-report-location "">
+<!ENTITY implementation-report-availability "">
+<!ENTITY implementation-report "&implementation-report-irrelevant;">
+<!ENTITY disclosure.one    "&disclosure.xsl;">
+<!ENTITY Bugzilla-key "MAPS30Req">
+<!ENTITY patent-policy-paragraph "&ppp-one;">
+<!ENTITY documents-and-relationships "&not-set-of-documents;">
+<!ENTITY advancement.statement "&advance.1WG.to-Note;">
+
+<!ENTITY doc-stability "&doc-stability-WD;">
+<!ENTITY PR-entrance-criteria '<p>The &XSLWG; and &XQWG; intends to submit
+this document for consideration as a W3C &ProposedRec;
+at the same time that &language; is submitted for the same consideration. </p>'>
+<!ENTITY features-at-risk-para "&no-features-at-risk;">
+<!ENTITY document-stage "&doc-stage-FPWD;">
+
+
+<!ENTITY customized-paragraph '
+<p>The current Working Draft of XSLT 3.0 adds maps, and extends the syntax of XPath 3.0, the types of the XDM, and the functions of XPath Functions and Operators 3.0, documents jointly owned by the XML Query Working Group. These are not part of XQuery 3.0, and the XML Query Working Group has not yet achieved consensus on support for maps in future versions of XQuery. An alternate proposal for maps in XQuery has been proposed as part of JSONiq as part of a broader proposal to add support for JSON to XQuery.</p>
+
+<p>This document contains use cases designed to identify requirements for maps, to help the XSL and XML Query Working Groups determine requirements for maps in XSLT and XQuery, and identify the best approach for the two Working Groups in their common documents. Organizations and individuals should review this document to ensure that the requirements are sufficient and that the use cases cover the requirements. At present, the Working Groups have no concrete plans to publish this document.</p>
+'>
+
+<!ENTITY status-section SYSTEM "../../../etc/status-general.xml">
+]>
+<spec id="spec-top" w3c-doctype="&doc.w3c-doctype;">
+  <header id="spec-header">
+    <title>&language;: Candidate Requirements and Use Cases</title>
+    <w3c-designation>&doc.w3c-designation;</w3c-designation>
+    <w3c-doctype>W3C &doc.w3c-doctype-full;</w3c-doctype>
+    <pubdate>
+      <day>&date.day;</day>
+      <month>&date.month;</month>
+      <year>&date.year;</year>
+    </pubdate>
+
+    <publoc>
+      <loc href="http://www.w3.org/XML/Group/qtspecs/requirements/xpath-maps-30/html/Overview.html">http://www.w3.org/XML/Group/qtspecs/requirements/xpath-maps-30/html/Overview.html</loc>
+    </publoc>
+    <latestloc>
+      <loc href="http://www.w3.org/XML/Group/qtspecs/requirements/xpath-maps-30/html/Overview.html">http://www.w3.org/XML/Group/qtspecs/requirements/xpath-maps-30/html/Overview.html</loc>
+    </latestloc>
+    <!-- <prevlocs></prevlocs> -->
+    <authlist>
+      <author>
+	<name>John Snelson</name>
+	<affiliation>MarkLogic</affiliation>
+	<email href="mailto:john.snelson@marklogic.com">john.snelson@marklogic.com</email>
+      </author>
+      <author>
+	<name>Jonathan Robie</name>
+	<email href="mailto:jonathan.robie@gmail.com">jonathan.robie@gmail.com</email>
+      </author>
+      <author>
+        <name>Michael Kay</name>
+        <email href="mailto:mike@saxonica.com">mike@saxonica.com</email>
+      </author>
+    </authlist>
+
+    <!-- &status-section; -->
+    <status><p></p></status>
+
+    <abstract>
+      <p>This document specifies candidate requirements and use cases for &language; in XSLT and XQuery. It has not yet been reviewed or approved by either Working Group.</p>
+    </abstract>
+
+    <langusage>
+      <language id="en">English</language>
+    </langusage>
+
+    <revisiondesc>
+      <p>First publication for the SWAT team.</p>
+    </revisiondesc>
+  </header>
+
+  <body>
+<div1 id="requirements">
+<head>Requirements</head>
+
+  <div2 id="terminology">
+    <head>Terminology</head>
+    <p>In this specification the words
+    <!-- <rfc2119>must</rfc2119> -->
+    <loc href="#RFC2119">must</loc>,
+    <loc href="#RFC2119">must not</loc>,
+    <loc href="#RFC2119">should</loc>,
+    <loc href="#RFC2119">should not</loc>,
+    <loc href="#RFC2119">may</loc>
+    and
+    <loc href="#RFC2119">recommended</loc>, when
+    are to be interpreted as described in <bibref ref="RFC2119"/>.
+
+    When these words are used in this technical
+    sense, they occur as a hyperlink to <bibref ref="RFC2119"/>. These words will also be used with
+    their conventional English meaning, in which case there is no hyperlink.</p>
+  </div2>
+  
+  <div2 id="motivation">
+    <head>Motivation</head>
+    
+    <p>The XDM data model used in XSLT 2.0, XPath 2.0, and XQuery 1.0 has proved adequate for a wide range
+      of requirements. On occasions, however, its limitations make themselves felt; these arise particularly
+      when complex algorithms are needed, or when data structures need to be designed with particular
+      attention to efficiency. Over time, a number
+      of solutions to these requirements have been proposed: these include proposals for "nested sequences",
+      "node references", "tuples", and "maps".
+    </p>
+    <p>In the 3.0 family of specifications, functions become first-class objects in the data model, 
+      and this allows many of these limitations to be circumvented. However, the resulting solutions 
+      often lack usability.
+    </p>
+    <p>The purpose of this document is to analyze a representative sample of use cases where the 
+      limitations of the existing XDM model make themselves felt, and to abstract from these a set 
+      of requirements for extending the data model with new data types and corresponding functions and operators.
+    </p>
+    <p>Two particular motivations for undertaking this study were:
+    </p>
+    <olist>
+      <item><p>The XSLT work on streaming. When a large source document is processed in streaming mode, 
+        a processor only gets to see each piece of information in the document once, and if it wishes 
+        to make use of this information later, it needs to retain the information in working variables. 
+        Equivalently, a function that makes a single pass over an input document needs to return a complex 
+        result, in preference to calling multiple functions that return simple results. This creates a 
+        need for richer data structures to represent this working data.
+      </p></item>
+      <item><p>Work in both the XSLT and XQuery communities on support for JSON. JSON support can be 
+        seen as an important use case in its own right, and it can also be seen as an example of a more 
+        general requirement to support externally-defined data structures other than XML. While conversion 
+        of JSON to XML is not especially difficult, doing the conversion in a way that both retains all 
+        information in the original input and also generates XML that is easy to manipulate has proved 
+        challenging: most proposed solutions compromise one of these objectives to satisfy the other. 
+        The underlying cause of this problem is the limited expressive power of the XDM data model, and 
+        new data structures that more closely reflect JSON concepts such as arrays and "objects" 
+        (known in other languages as maps, dictionaries, or associative arrays) are seen as a potential solution.
+      </p></item>
+    </olist>
+    
+    <p>Clearly, integration of any new data structures into the existing model is a prerequisite, and a common
+      approach between XSLT and XQuery is highly desirable.
+      Existing functions and operators need to be reusable with any new data structures to the maximum extent possible. 
+      Integration with the existing processing models of XPath, XSLT, and XQuery is also necessary; 
+      and in this respect, the starting position is that we have a core set of languages that are declarative, 
+      with immutable values (though with a limited form of nondeterminism in that expression evaluation can
+      return a "new" node with unique identity); layered on top of this, we have XQuery Update and Scripting 
+      which provide mutable values and imperative functionality with side-effects. 
+  </p></div2>
+
+  <div2 id="general-requirements">
+    <head>Candidate Requirements</head>
+    <p>
+      These have been identified as candidate requirements by the SWAT team currently working on this document.
+      The Working Groups have made no decisions on requirements at this time.
+    </p>
+
+    <div3 id="req-dm">
+      <head>Data Model</head>
+      <glist role="req">
+	<gitem>
+	  <label>Multiple Results</label>
+	  <def>
+	    <p>
+	      It <loc href="#RFC2119">must</loc> be possible to return multiple sequences
+	      of XDM values from a function or template invocation. In particular, it <loc href="#RFC2119">
+	      must</loc> be possible to return multiple sequence results from the application of a
+	      streaming mode template in XSLT 3.0.
+	    </p>
+            <p><emph>Motivation:</emph> <specref ref="streaming-query1"/></p>
+	  </def>
+	</gitem>
+
+        <gitem>
+          <label>Compound Items</label>
+          <def>
+            <p>
+              It <loc href="#RFC2119">must</loc> be possible to use maps to represent
+              compound values or data structures, for example the value of a complex number or a sparse matrix,
+              consisting of multiple sequences of items.
+            </p>
+            <p><emph>Motivation:</emph> <specref ref="streaming-query1"/>, <specref ref="complex"/></p>
+          </def>
+        </gitem>
+
+        <gitem>
+          <label>No observable identity</label>
+          <def>
+            <p>
+              In a target language without side-effects, maps <loc href="#RFC2119">must</loc> have no observable identity.
+              <note><p>Currently the operations that can observe the identity of nodes are the <code>is</code>,
+              <code>&lt;&lt;</code>, <code>&gt;&gt;</code>, <code>union</code>, <code>intersect</code>, and
+              <code>except</code> operators, and any operation that exposes document order.
+              </p></note>
+            </p>
+          </def>
+        </gitem>
+
+        <gitem>
+          <label>Maps as Functions</label>
+          <def>
+            <p>
+              It <loc href="#RFC2119">may</loc> be possible to use maps as functions.
+            </p>
+            <p><emph>Motivation:</emph> <specref ref="parameter-query3"/>, <specref ref="parameter-query4"/></p>
+          </def>
+        </gitem>
+
+      </glist>
+    </div3>
+
+      <div3>
+	<head>Keys</head>	
+
+	<glist role="req">
+	  <gitem>
+	    <label>Atomic Values as Keys</label>
+	    <def>
+	      <p>
+		The map feature <loc href="#RFC2119">may</loc> allow any atomic value
+		to be used as a key.
+                <note><p>
+                  Specific types may be treated as exceptions; for instance, untypedAtomic may be treated as a string, NaN may be either disallowed or treated as equal to itself, etc. There may be issues related to transitivity, or reasons to restrict the types used in any one map.
+                </p></note>
+	      </p>
+	    </def>
+	  </gitem>
+
+	  <gitem>
+	    <label>String Values as Keys</label>
+	    <def>
+	      <p>
+		The map feature <loc href="#RFC2119">must</loc> allow any instance of <code>xs:string</code> or any instance of a type derived from <code>xs:string</code> to be used as a key.
+	      </p>
+              <p><emph>Motivation:</emph> <specref ref="json-query1"/></p>
+	    </def>
+	  </gitem>
+
+	  <gitem>
+	    <label>xs:untypedAtomics as Keys</label>
+	    <def>
+	      <p>
+		The map feature <loc href="#RFC2119">must</loc> allow an <code>xs:untypedAtomic</code> to be used as a key,
+	        but there is no requirement that an <code>xs:untypedAtomic</code> value be treated differently from an
+	        equivalent <code>xs:string</code>.
+	      </p>
+	    </def>
+	  </gitem>
+
+	  <gitem>
+	    <label>QNames as Keys</label>
+	    <def>
+	      <p>
+		The map feature <loc href="#RFC2119">must</loc> allow an <code>xs:QName</code> or any type derived from <code>xs:QName</code> to be used as a key.
+	      </p>
+              <p><emph>Motivation:</emph> <specref ref="parameter-query1"/></p>
+	    </def>
+	  </gitem>
+
+	  <gitem>
+	    <label>Numeric types as Keys</label>
+	    <def>
+	      <p>
+		The map feature <loc href="#RFC2119">must</loc> allow an <code>xs:decimal</code> or any type derived from <code>xs:decimal</code> to be used as a key.
+	      </p>
+              <p><emph>Motivation:</emph> <specref ref="json-query1"/></p>
+	    </def>
+	  </gitem>
+
+	  <gitem>
+	    <label>URIs as Keys</label>
+	    <def>
+	      <p>
+		The map feature <loc href="#RFC2119">must</loc> allow an <code>xs:anyURI</code> or any type derived from <code>xs:anyURI</code> to be used as a key.
+	      </p>
+	    </def>
+	  </gitem>
+
+	  <gitem>
+	    <label>Dates as Keys</label>
+	    <def>
+	      <p>
+		The map feature <loc href="#RFC2119">must</loc> allow an xs:date or any type derived from xs:date to be used as a key.
+	      </p>
+	    </def>
+	  </gitem>
+
+	  <gitem>
+	    <label>Times as Keys</label>
+	    <def>
+	      <p>
+                The map feature <loc href="#RFC2119">must</loc> allow an <code>xs:time</code> or any type derived from <code>xs:time</code> to be used as a key.
+	      </p>
+	    </def>
+	  </gitem>
+	  
+	  <gitem>
+	    <label>Collations for comparing Keys</label>
+	    <def>
+	      <p>
+	        The map feature <loc href="#RFC2119">may</loc> allow the comparison of string-valued keys to be controlled
+	        by a user-specified collation.
+	      </p>
+	    </def>
+	  </gitem>
+
+	  <gitem>
+	    <label>Heterogeneous Keys</label>
+	    <def>
+	      <p>
+		The map feature <loc href="#RFC2119">may</loc> allow a
+		map to exist in which different entries have keys of
+		different atomic types.
+	      </p>
+	    </def>
+	  </gitem>
+
+	</glist>
+      </div3>
+
+      <div3>
+	<head>Values</head>
+
+	<glist role="req">
+	  <gitem>
+	    <label>Any XDM Sequence</label>
+	    <def>
+	      <p>
+		The map feature <loc href="#RFC2119">must</loc> allow any XDM
+		sequence as the value part of a key/value association within a map.
+	      </p>
+              <p><emph>Motivation:</emph> <specref ref="parameter-query1"/></p>
+	    </def>
+	  </gitem>
+
+	  <gitem>
+	    <label>Nested Maps</label>
+	    <def>
+	      <p>
+		The map feature <loc href="#RFC2119">must</loc> allow any map as the value part of a key/value association; that is, maps can nest.
+	      </p>
+              <p><emph>Motivation:</emph> <specref ref="json-query1"/></p>
+	    </def>
+	  </gitem>
+
+	  <gitem>
+	    <label>Identity Preservation</label>
+	    <def>
+	      <p>
+		The map feature <loc href="#RFC2119">must</loc> retain the identity of XML nodes they contain.
+	      </p>
+              <p><emph>Motivation:</emph> <specref ref="parameter-query1"/></p>
+	    </def>
+	  </gitem>
+
+	  <gitem>
+	    <label>Function Items</label>
+	    <def>
+	      <p>
+		The map feature <loc href="#RFC2119">must</loc> be able to hold function items as sub-values.
+	      </p>
+              <p><emph>Motivation:</emph> <specref ref="interface"/>, <specref ref="parameter-query2"/></p>
+	    </def>
+	  </gitem>
+
+	  <gitem>
+	    <label>Heterogeneous Values</label>
+	    <def>
+	      <p>
+		The map feature <loc href="#RFC2119">should</loc> be able to contain heterogeneous values; that is, the value 
+	        associated with any key should be an arbitrary sequence of items, potentially of a different type
+	        from the values associated with other keys in the same map. In particular
+                they <loc href="#RFC2119">should</loc> be able to hold both function items and other data in
+                different entries (or the same entry) simultaneously.
+	      </p>
+              <p><emph>Motivation:</emph> <specref ref="interface"/></p>
+	    </def>
+	  </gitem>
+
+
+	</glist>
+      </div3>
+
+    <div3 id="req-operations">
+      <head>Operations</head>
+      <glist role="req">
+	  <gitem>
+	    <label>Construction</label>
+	    <def>
+	      <p>
+		The map feature <loc href="#RFC2119">must</loc> provide a convenient syntax for
+		constructing a new instance of the data structure.
+	      </p>
+	    </def>
+	  </gitem>
+
+
+	  <gitem>
+	    <label>Composability in Constructors</label>
+	    <def>
+	      <p>
+		The syntax of map constructors <loc href="#RFC2119">must</loc> allow an expression to occur anywhere that a value may occur.
+	      </p>
+              <p><emph>Motivation:</emph> <specref ref="indexes-query1"/></p>
+	    </def>
+	  </gitem>
+
+
+	  <gitem>
+	    <label>Modified Copies</label>
+	    <def>
+	      <p>
+		The map feature <loc href="#RFC2119">must</loc> provide a convenient syntax for creating modified copies of maps, for example by the addition and deletion of entries.
+	      </p>
+	      <p>
+		It <loc href="#RFC2119">must</loc> be possible to
+		identify changes to specific items in deeply nested
+		maps.
+	      </p>
+	    </def>
+	  </gitem>	  
+
+	  <gitem>
+	    <label>Serialization</label>
+	    <def>
+	      <p>
+		The map feature <loc href="#RFC2119">must</loc> define a JSON-compatible serialization 
+	        for those maps/arrays that are representable as JSON values.
+	      </p>
+	      <p>
+	        The map feature <loc href="#RFC2119">should</loc> 
+	        define a serialization for all maps.
+	      </p>
+	    </def>
+	  </gitem>
+	  
+	  <gitem>
+	    <label>Member Accessors</label>
+	    <def>
+	      <p>
+		The map feature <loc href="#RFC2119">must</loc> provide a convenient syntax for
+		accessing a member of a map by specifying its key.
+	      </p>
+	    </def>
+	  </gitem>
+
+	  <gitem>
+	    <label>Key/Value Access</label>
+	    <def>
+	      <p>
+                There <loc href="#RFC2119">must</loc> be a way to access the keys and values of all the entries in a map.
+	      </p>
+	    </def>
+	  </gitem>
+
+	  <gitem>
+	    <label>Enumerating content</label>
+	    <def>
+	      <p>
+		It  <loc href="#RFC2119">must</loc> be possible to enumerate the keys, and/or the key/value associations,
+		that are present in the map.
+	      </p>
+              <p><emph>Motivation:</emph> <specref ref="json-query1"/></p>
+	    </def>
+	  </gitem>
+	  
+	  <gitem>
+	    <label>Language Generalization</label>
+	    <def>
+	      <p>
+		 Existing functions and operators, and syntactic
+		 constructs such as FLWOR expressions,  <loc href="#RFC2119">should</loc>
+		 be generalized to work with any new data structures.
+	      </p>
+	    </def>
+	  </gitem>
+
+      </glist>
+    </div3>
+
+    <div3 id="req-json">
+      <head>JSON</head>
+      <glist role="req">
+	<gitem>
+	  <label>JSON</label>
+	  <def>
+	    <p>The XDM <loc href="#RFC2119">must</loc> be extended with maps and arrays in such a way as to allow
+	      importing and exporting JSON without loss of information.</p>
+	    
+            <p><emph>Motivation:</emph> <specref ref="json-query1"/></p>
+	  </def>
+	</gitem>
+
+	  <gitem>
+	    <label>Arrays</label>
+	    <def>
+	      <p>
+                It <loc href="#RFC2119">must</loc> be possible to process all the values within an array.
+              </p>
+              <p>
+                It <loc href="#RFC2119">must</loc> be possible to construct an arbitrary array.
+	      </p>
+              <p><emph>Motivation:</emph> <specref ref="json-query1"/>, <specref ref="json-query2"/></p>
+              <note>
+                <p>
+                  The Maps SWAT team believe that more in-depth work is needed on the requirements for arrays.
+                </p>
+              </note>
+	    </def>
+	  </gitem>
+
+	<gitem>
+	  <label>Converting among XML and JSON</label>
+	  <def>
+            <p>
+              The maps facility <loc href="#RFC2119">must</loc> be able to express queries that convert XML to JSON, or JSON to XML.
+            </p>
+            <p><emph>Motivation:</emph> <specref ref="json-query2"/></p>
+            <note><p>
+              There is a consensus that there is no signle definitive canonical mapping from XML to JSON that
+              satisfies all requirements that users have for such a mapping.
+            </p></note>
+          </def>
+	</gitem>
+
+      </glist>
+    </div3>
+
+    <div3 id="req-apps">
+      <head>Applications</head>
+      <glist role="req">
+        <gitem>
+          <label>Optional Parameters</label>
+          <def>
+            <p>
+              It <loc href="#RFC2119">must</loc> be possible to use maps to provide sparse options to
+              a function call, including options defined by a function item.
+            </p>
+            <p><emph>Motivation:</emph> <specref ref="parameter-query2"/></p>
+          </def>
+        </gitem>
+
+        <gitem>
+          <label>Indexes</label>
+          <def>
+            <p>
+              It <loc href="#RFC2119">may</loc> be possible to use maps to provide indexes
+              for manual optimization.
+            </p>
+            <p><emph>Motivation:</emph> <specref ref="indexes-query1"/></p>
+          </def>
+        </gitem>
+
+	  <gitem>
+	    <label>Representation of FLWOR Tuples</label>
+	    <def>
+	      <p>
+                The maps design <loc href="#RFC2119">should not</loc> preclude the use of maps to represent
+                the intermediate tuples in FLWOR expressions.
+	      </p>
+              <note>
+                <p>
+                  The Maps SWAT team did not reach consensus on this requirement.
+                </p>
+              </note>
+	    </def>
+	  </gitem>
+
+	  <gitem>
+	    <label>Representation of PULs</label>
+	    <def>
+	      <p>
+                The maps design <loc href="#RFC2119">should not</loc> preclude the use of maps to represent
+                pending update lists.
+	      </p>
+              <note>
+                <p>
+                  The Maps SWAT team did not reach consensus on this requirement.
+                </p>
+              </note>
+	    </def>
+	  </gitem>
+
+      </glist>
+    </div3>
+
+    <div3 id="req-updates">
+      <head>Updates</head>
+      <glist role="req">
+	  <gitem>
+	    <label>In-situ Updates</label>
+	    <def>
+              <p>
+                The maps facility in XQuery <loc href="#RFC2119">must not</loc> preclude providing update operations
+                that add, replace, or remove entries in maps in the XQuery Update facility.
+              </p>
+	      <p>
+		The XQuery Update Facility <loc
+		href="#RFC2119">must</loc> provide update operations
+		that add, replace, or remove entries in maps.
+	      </p>
+	    </def>
+	  </gitem>
+
+      </glist>
+    </div3>
+
+  </div2>
+
+</div1>
+
+<div1 id="use-cases">
+  <head>Use Cases</head>
+
+  <p>The solutions provided for the following Use Cases include solutions in the following languages:</p>
+
+  <ulist>
+    <item><p>XSLT Maps: the maps provided in the current Working Draft of XSLT. See <bibref ref="xslt-30"/>.</p></item>
+    <item><p>XQuery 3.0: the XQuery 3.0 language, without maps. See <bibref ref="xquery-30"/>.</p></item>
+    <item><p>JSONiq: the JSONiq proposal. See <bibref ref="JSONiq"/>.</p></item>
+  </ulist>
+
+  <!--**************************************************-->
+  <div2 id="streaming">
+    <head>Streaming</head>
+
+    <p>In a streaming application you only get one chance to look at each piece of data in the source file. Therefore, if the output is not a pure event-to-event function of the input, you have to selectively remember some of the things you have seen in the input for use later. This sometimes creates a need for data structures to hold working data in memory. This is an important motivating use case for maps in XSLT. Some of the motivating examples for XSLT can be solved in other ways in XQuery; because XQuery does not have a streaming facility, it's unclear whether maps would be the best solution for these examples in a streaming XQuery processor.</p>
+
+    <note><p>This is solved in XSLT 3.0 using the streaming facility.</p></note>
+
+<!--     <div3 id="streaming-data"> -->
+<!--       <head>Input Data</head> -->
+<!--       <p>The employees.xml document:</p> -->
+<!--       <eg role="data"><![CDATA[ -->
+<!-- ]]></eg> -->
+<!--     </div3> -->
+
+    <div3 id="streaming-query1">
+      <head>Simple Grouping</head>
+
+        <p>Find the highest earning employee in each department.</p>
+
+	<div4>
+	  <head>Solution in XQuery 3.0</head>
+	  <eg><![CDATA[for $e in doc("employees.xml")/employees/employee,
+    $d in $e/department
+group by $d
+return
+   <department name="{$d}">
+     {
+       let $max := max($e/salary)
+       return $e[salary=$max]
+     }
+   </department>]]></eg>
+
+	</div4>
+
+        <div4>
+          <head>Solution in XQuery 3.0 with XSLT Maps</head>
+        <eg><![CDATA[
+declare function local:search-employees(
+  $employees as element(employee)*,
+  $highest-earners as map(xs:string, element(employee))
+)
+{
+  if(empty($employees)) then $highest-earners else
+
+  let $this := head($employees)
+  let $existing := $highest-earners($this/department)
+  let $new-earners :=
+    if ($existing/salary gt $this/salary) then $highest-earners
+    else map:new(($highest-earners, map:entry($this/department, $this)))
+  return local:search-employees(tail($employees), $new-earners)
+};
+
+let $highest-earners := local:search-employees(doc("employees.xml")/*/employee, map:new())
+for $department in map:keys($highest-earners)
+return
+  <department name="{$department}">{ $highest-earners($department) }</department>
+]]></eg>
+
+
+        </div4>
+        <div4>
+          <head>Solution in XSLT 3.0</head>
+        <eg><![CDATA[
+<xsl:stream href="employees.xml">
+  <xsl:iterate select="*/employee">
+    <xsl:param name="highest-earners"
+               as="map(xs:string, element(employee))"
+               select="map:new()"/>
+    <xsl:variable name="this" select="copy-of(.)" as="element(employee)"/>
+    <xsl:next-iteration>
+      <xsl:with-param name="highest-earners"
+                      select="let $existing := $highest-earners($this/department)
+                              return if ($existing/salary gt $this/salary)
+                                then $highest-earners
+                                else map:new(($highest-earners,
+                                  map:entry($this/department, $this)))"/>
+    </xsl:next-iteration>
+    <xsl:on-completion>
+      <xsl:for-each select="map:keys($highest-earners)">
+        <department name="{.}">
+          <xsl:copy-of select="$highest-earners(.)"/>
+        </department>
+      </xsl:for-each>
+    </xsl:on-completion>
+  </xsl:iterate>
+</xsl:stream>
+]]></eg>
+      </div4>
+
+<!--       <div4> -->
+<!--         <head>Result</head> -->
+<!--           <eg role="result"><![CDATA[ -->
+<!-- ]]></eg> -->
+<!--       </div4> -->
+    </div3>
+
+    <div3 id="streaming-query2">
+      <head>Simultaneous Grouping</head>
+
+        <p>Find both the highest earning employee in each department, and the total number of employees to job-type across all departments.</p>
+
+	<div4>
+	  <head>Solution in XQuery 3.0</head>
+
+	  <eg><![CDATA[
+for $employee in doc("employees.xml")/*/employee
+let $salary := $employee/salary
+group by $department := $employee/department
+let $max-salary := max($salary)
+let $highest-earners := $employee[salary = $max-salary]
+return
+   <department name="{$department}">{ $highest-earners }</department>,
+
+for $employee in doc("employees.xml")/*/employee
+let $salary := $employee/salary
+group by $job-type := $employee/job-type
+let $totals := count($employee)
+return
+   <total-by-job-type type="{$job-type}">{ $totals }</total-by-job-type>
+]]>
+	  </eg>
+	</div4>
+
+        <div4>
+          <head>Solution in XQuery 3.0 with XSLT Maps</head>
+        <eg><![CDATA[
+declare function local:search-employees(
+  $employees as element(employee)*,
+  $highest-earners as map(xs:string, element(employee),
+  $totals as map(xs:string, xs:double))
+)
+{
+  if(empty($employees)) then ($highest-earners, $totals) else
+
+  let $this := head($employees)
+  let $existing := $highest-earners($this/department)
+  let $new-earners :=
+    if ($existing/salary gt $this/salary) then $highest-earners
+    else map:new(($highest-earners, map:entry($this/department, $this)))
+  let $job-type := $this/job-type/string()
+  let $new-totals := map:new(($totals, map { $job-type := $totals($job-type) + 1 }))
+  return local:search-employees(tail($employees), $new-earners, $new-totals)
+};
+
+let $results := local:search-employees(doc("employees.xml")/*/employee, map:new())
+let $highest-earners := $results[1]
+let $totals := results[2]
+return (
+  for $department in map:keys($highest-earners)
+  return
+    <department name="{$department}">{ $highest-earners($department) }</department>,
+  for $job-type in map:keys($totals)
+  return
+    <total-by-job-type type="{$job-type}">{ $totals($job-type) }</total-by-job-type>
+)
+]]></eg>
+
+        </div4>
+
+<!--       <div4> -->
+<!--         <head>Result</head> -->
+<!--           <eg role="result"><![CDATA[ -->
+<!-- ]]></eg> -->
+<!--       </div4> -->
+    </div3>
+
+    <div3 id="streaming-query3">
+      <head>Word Count by Lemma</head>
+      <p>Calculate the word count by lemma of the verbs in the following document.</p>
+
+      <div4 id="streaming-query3-data">
+        <head>Input Data</head>
+        <p>The XML document, gnt.xml.</p>
+        <eg role="data"><![CDATA[
+<gnt>
+<s>
+ <w pos="PP">I</w>
+ <w pos="V" lemma="go">go</w>
+ <pu>.</pu>
+</s>
+<s>
+ <w pos="PP">She</w>
+ <w pos="V" lemma="go">went</w>
+ <pu>.</pu>
+</s>
+<s>
+ <w pos="PP">He</w>
+ <w pos="V" lemma="go">goes</w>
+ <pu>.</pu>
+</s>
+<s>
+ <w pos="PP">I</w>
+ <w pos="V" lemma="see">see</w>
+ <pu>.</pu>
+</s>
+<s>
+ <w pos="PP">She</w>
+ <w pos="V" lemma="see">sees</w>
+ <pu>.</pu>
+</s>
+<s>
+ <w pos="PP">I</w>
+ <w pos="V" lemma="have">have</w>
+ <pu>.</pu>
+</s>
+<s>
+ <w pos="PP">She</w>
+ <w pos="V" lemma="have">has</w>
+ <pu>.</pu>
+</s>
+</gnt>
+]]></eg>
+      </div4>
+      <div4>
+        <head>Result</head>
+        <eg role="result"><![CDATA[
+<verb lemma="go" count="3"/>
+<verb lemma="see" count="2"/>
+<verb lemma="have" count="2"/>
+]]></eg>
+      </div4>
+
+      <div4>
+        <head>Solution in XQuery 3.0 with XSLT Maps:</head>
+        <eg><![CDATA[
+declare function local:word-count($words, $result)
+{
+  if(empty($words)) then $result else
+
+  let $word := head($words)
+  return local:word-count(tail($words),
+    map:new(($result, map { $word/@lemma := ($result($word/@lemma), 0)[1] + 1 })))
+};
+
+let $counts := local:word-count(doc("gnt.xml")//w[m:is-verb(.)], map{})
+for $lemma in map:keys($counts)
+let $count := $counts($lemma)
+order by $count
+return
+  <verb lemma="{ $lemma }" count="{ $count }"/>
+]]></eg>
+      </div4>
+      <div4>
+        <head>Alternative Solution in XQuery 3.0 with XSLT Maps:</head>
+        <eg><![CDATA[
+let $counts := fold-left(function($map, $word) {
+    map:new(($result, map { $word/@lemma := ($map($word/@lemma), 0)[1] + 1 }))
+  }, map{}, doc("gnt.xml")//w[m:is-verb(.)])
+for $lemma in map:keys($counts)
+let $count := $counts($lemma)
+order by $count
+return
+  <verb lemma="{ $lemma }" count="{ $count }"/>
+]]></eg>
+      </div4>
+      <div4>
+        <head>Solution Using Grouping in XQuery 3.0:</head>
+        <p>A solution just using grouping, without maps.</p>
+        <eg><![CDATA[
+for $word in doc("gnt.xml")//w
+let $lemma := $word/@lemma
+where m:is-verb($word)
+group by $lemma
+order by count($word) descending
+return
+  <verb lemma="{ $lemma }" count="{count($word)}" />
+]]></eg>
+      </div4>
+      <div4>
+        <head>Solution in XSLT 3.0:</head>
+        <eg><![CDATA[
+<xsl:iterate select="doc("gnt.xml")//w">
+  <xsl:param name="result" select="map{}"/>
+  <xsl:next-iteration>
+    <xsl:with-param name="result"
+      select="map:new(($map, map { $word := ($map($word), 0)[1] + 1 }))"/>
+  </xsl:next-iteration>
+  <xsl:on-completion>
+    <xsl:for-each select="map:keys($result)">
+      <xsl:sort select="$result(.)"/>
+      <verb lemma="{ . }" count="{ $result(.) }"/>
+    </xsl:for-each>
+  </xsl:on-completion>
+</xsl:iterate>
+]]></eg>
+      </div4>
+    </div3>
+
+  </div2>
+
+  <!--**************************************************-->
+  <div2 id="complex">
+    <head>Compound Values</head>
+
+    <div3 id="complex-query1">
+      <head>Complex Number Library</head>
+
+    <p>
+      Implement a complex number library for XQuery or XSLT 3.0. Complex numbers should be represented as a single item, so they
+      can themselves be manipulated like regular numbers by returning sequences of them etc.
+    </p>
+
+      <div4>
+        <head>Solution in XQuery 3.0 with XSLT Maps:</head>
+        <eg><![CDATA[
+declare function i:complex(
+  $real as xs:double,
+  $imaginary as xs:double
+) as map(xs:boolean, xs:double)
+{
+  map{ true() := $real, false() := $imaginary }
+};
+
+declare function i:real(
+  $complex as map(xs:boolean, xs:double)
+) as xs:double
+{
+  $complex(true())
+};
+
+declare function i:imaginary(
+  $complex as map(xs:boolean, xs:double)
+) as xs:double
+{
+  $complex(false())
+};
+
+declare function i:add(
+  $arg1 as map(xs:boolean, xs:double),
+  $arg2 as map(xs:boolean, xs:double)
+) as map(xs:boolean, xs:double)
+}
+  i:complex(i:real($arg1)+i:real($arg2),
+    i:imaginary($arg1)+i:imaginary($arg2))
+};
+
+declare function i:multiply(
+  $arg1 as map(xs:boolean, xs:double),
+  $arg2 as map(xs:boolean, xs:double)
+) as map(xs:boolean, xs:double)
+{
+  i:complex(
+    i:real($arg1)*i:real($arg2) - i:imaginary($arg1)*i:imaginary($arg2),
+    i:real($arg1)*i:imaginary($arg2) + i:imaginary($arg1)*i:real($arg2))
+};
+]]></eg>
+      </div4>
+      <div4>
+        <head>Solution in XSLT 3.0 (using type-alias proposal, still in discussion):</head>
+        <eg><![CDATA[
+<xsl:type-alias name="i:complex" as="map(xs:boolean, xs:double)"/>
+
+<xsl:function name="i:complex" as="i:complex">
+<xsl:param name="real" as="xs:double"/>
+<xsl:param name="imaginary" as="xs:double"/>
+<xsl:sequence select="map{ true() := $real, false() := $imaginary }"/>
+</xsl:function>
+
+<xsl:function name="i:real" as="xs:double">
+<xsl:param name="complex" as="i:complex"/>
+<xsl:sequence select="$complex(true())"/>
+</xsl:function>
+
+<xsl:function name="i:imaginary" as="xs:double">
+<xsl:param name="complex" as="i:complex"/>
+<xsl:sequence select="$complex(false())"/>
+</xsl:function>
+
+<xsl:function name="i:add" as="i:complex">
+<xsl:param name="arg1" as="i:complex"/>
+<xsl:param name="arg2" as="i:complex"/>
+<xsl:sequence select="i:complex(i:real($arg1)+i:real($arg2),
+  i:imaginary($arg1)+i:imaginary($arg2))"/>
+</xsl:function>
+
+<xsl:function name="i:multiply" as="i:complex">
+<xsl:param name="arg1" as="i:complex"/>
+<xsl:param name="arg2" as="i:complex"/>
+<xsl:sequence select="i:complex(
+       i:real($arg1)*i:real($arg2) - i:imaginary($arg1)*i:imaginary($arg2),
+       i:real($arg1)*i:imaginary($arg2) + i:imaginary($arg1)*i:real($arg2))"/>
+</xsl:function>
+]]></eg>
+      </div4>
+    </div3>
+
+  </div2>
+
+  <!--**************************************************-->
+  <div2 id="indexes">
+    <head>Manual Indexing</head>
+
+    <p>Build an index to manually optimize retrieval of books in a catalog by their ISBN number.</p>
+
+    <div3 id="indexes-query1">
+      <head>Simple Manual Join</head>
+      <p>Construct a list of all authors, and the books they have written.</p>
+
+    <div4 id="indexes-data">
+      <head>Input Data</head>
+      <p>Book elements of the form:</p>
+      <eg role="data"><![CDATA[
+<book>
+<isbn>0470192747</isbn>
+<publisher>Wiley</publisher>
+<title>XSLT 2.0 and XPath 2.0 Programmer's Reference</title>
+</book>
+]]></eg>
+      <p>Author elements of the form:</p>
+      <eg role="data"><![CDATA[
+<author>
+<author>Michael H. Kay</author>
+<isbn>0470192747</isbn>
+<isbn>...</isbn>
+</book>
+]]></eg>
+    </div4>
+
+      <div4>
+        <head>Solution in XQuery 3.0 with XSLT Maps:</head>
+        <eg><![CDATA[
+declare variable $index := map:new(//book ! map{isbn := .});
+
+<table>{
+  for $a in //author
+  return <tr>
+    <td>{ $a/name/string() }</td>
+    <td>{ string-join($a/isbn ! $index(.)/title/string(), ", ") }</td>
+  </tr>
+}</table>
+]]></eg>
+      </div4>
+      <div4>
+        <head>Solution in XSLT 3.0:</head>
+        <p>
+          XSLT has the xsl:key functionality, which is preferable. However, a straight forward translation
+          from the XQuery solution follows:
+        </p>
+        <eg><![CDATA[
+<xsl:variable name="index" select="map:new(//book ! map{isbn := .})"/>
+
+<table>
+  <xsl:for-each select="//author">
+    <tr>
+      <td><xsl:value-of select="name"/></td>
+      <td><xsl:value-of select="string-join(isbn ! $index(.)/title/string(), ', ')"/></td>
+    </tr>
+  </xsl:for-each>
+}</table>
+]]></eg>
+      </div4>
+    </div3>
+  </div2>
+
+  <!--**************************************************-->
+  <div2 id="interface">
+    <head>Interface / Implementation Pattern</head>
+
+    <p>As in Javascript, a map whose keys are strings and whose associated
+    values are function items can be used in a similar way to a class in
+    object-oriented programming languages.</p>
+
+    <div3 id="interface-query1">
+      <head>Data Variety</head>
+
+    <p>Suppose an application needs to handle customer order information that
+    may arrive in three different formats, with different hierarchic
+    arrangement.</p>
+
+      <p>An application can isolate itself from these differences by defining a
+      set of functions to navigate the relationships between customers,
+      orders, and products: orders-for-customer, orders-for-product,
+      customer-for-order, product-for-order. These functions can be
+      implemented in different ways for the three different input formats.</p>
+
+    <div4 id="interface-data1">
+      <head>Input Data</head>
+      <p>Flat structure:</p>
+      <eg role="data"><![CDATA[
+<customer id="c123">...</customer>
+<product id="p789">...</product>
+<order customer="c123" product="p789">...</order>
+]]></eg>
+      <p>Orders within customer elements:</p>
+      <eg role="data"><![CDATA[
+<customer id="c123">
+<order product="p789">...</order>
+</customer>
+<product id="p789">...</product>
+]]></eg>
+      <p>Orders within product elements:</p>
+      <eg role="data"><![CDATA[
+<customer id="c123">...</customer>
+<product id="p789">
+<order customer id="c123">...</order>
+</product>
+]]></eg>
+    </div4>
+
+      <div4>
+        <head>Solution in XQuery 3.0 with XSLT Maps:</head>
+        <p>For example, with the first format the implementation might be:</p>
+        <eg><![CDATA[
+let $flat-input-functions as map(xs:string, function(*))*
+return map {
+  'orders-for-customer' := function($c as element(customer)) as element(order)*
+    { $c/../order[@customer=$c/@id] },
+  'orders-for-product' := function($p as element(product)) as element(order)*
+    { $p/../order[@product=$p/@id] },
+  'customer-for-order' := function($o as element(order)) as element(customer)
+    { $o/../customer[@id=$o/@customer] },
+  'product-for-order' := function($o as element(order)) as element(product)
+    { $o/../product[@id=$o/@product] }
+}
+]]></eg>
+      </div4>
+      <div4>
+        <head>Solution in XSLT 3.0:</head>
+        <eg><![CDATA[
+<xsl:variable name="flat-input-functions" as="map(xs:string, function(*))*"
+   select="map {
+             'orders-for-customer' :=
+                  function($c as element(customer)) as element(order)*
+                     {$c/../order[@customer=$c/@id]},
+             'orders-for-product' :=
+                  function($p as element(product)) as element(order)*
+                     {$p/../order[@product=$p/@id]},
+             'customer-for-order' :=
+                  function($o as element(order)) as element(customer)
+                     {$o/../customer[@id=$o/@customer]},
+             'product-for-order' :=
+                  function($o as element(order)) as element(product)
+                     {$o/../product[@id=$o/@product]} }
+          "/>
+]]></eg>
+      </div4>
+    </div3>
+
+    <div3 id="interface-query2">
+      <head>Search and Snippeting</head>
+
+      <p>Create a general interface that takes as input some words, does a
+full-text search for them, and returns snippets of the top 10 results,  
+ordered
+by score, where the nodes to search, their structure, how to construct  
+snippets
+and how to score them differ for different data sets.</p>
+
+      <div4>
+        <head>Solution in XQuery Full Text 3.0 with XSLT Maps:</head>
+        <p>Create a template method and use a map of functions to define the
+implementation of the plug-in points.</p>
+        <eg><![CDATA[
+(: General interface module :)
+
+module namespace this="http://example.com/search-interface/";
+
+declare function this:search(
+    $words as xs:string*, $collection as map(xs:string, function(*)) )
+{
+    (for $d in $collection('select')[. contains text {$words} any word]
+     order by $collection('score', $d, $words)
+     return $collection('snippet', $d, $words))[position()<=10]
+};
+
+(: Specific implementation example :)
+
+import module namespace s="http://example.com/search-interface/";
+
+declare variable $twitter as map(xs:string, function(*)) :=
+    map {
+      'select' := function() as node()*
+          { collection("twitter") },
+      'score' := function($n as node(), $words as xs:string*) as xs:double
+          { let score $s1 := $n contains text {$words} any word
+            let score $s2 := $n contains text {$words} all words
+            return $s1 + $s2
+          },
+      'snippet' := function($node as node(), $words as xs:string*) as node()
+          { $node },
+    };
+
+declare variable $blog as map(xs:string, function(*)) :=
+    map {
+      'select' := function() as node()*
+          { collection("blogs")/body },
+      'score' := function($n as node(), $words as xs:string*) as xs:double
+          {
+            let $s1 :=
+              avg(
+                for $p score $s in $n/para[. contains text {$words} any  
+word]
+                return $s)
+            let $s2 :=
+              avg(
+                for $p score $s in
+                  $n/comment[. contains text {$words} weight 0.5 any word]
+                return $s)
+            let score $s3 := $n/title contains text {$words} weight 5.0 any  
+word
+            return $s1 + $s2 + $s3
+          },
+      'snippet' := function($node as node(), $words as xs:string*) as node()
+          { <result>{$node/title, $node/para[1], $node/comment[1]}</result>  
+},
+    };
+
+declare variable $books as map(xs:string, function(*)) :=
+    map {
+      'select' := function() as node()*
+          { collection()//chapter },
+      'score' := function($n as node(), $words as xs:string*) as xs:double
+          { let score $s1 := $n contains text {$words} any word
+            let score $s2 := $n/title contains text {$words} weight 5.0 any  
+word
+            return $s1 + $s2
+          },
+      'snippet' := function($node as node(), $words as xs:string*) as node()
+          { <result>{$node/title,
+            ((for $p score $s in $node/p[. contains text {$words} all words]
+              order by $s
+              return $p),
+             (for $p score $s in $node/p[. contains text {$words} any word]
+              order by $s
+              return $p))[1]
+            }</result> },
+    };
+
+(: Get top 10 from various sources :)
+s:search(("fire","earthquake"),$books),
+s:search(("fire","earthquake"),$twitter),
+s:search(("fire","earthquake"),$blog)
+]]></eg>
+      </div4>
+    </div3>
+
+    <div3 id="interface-query3">
+      <head>Abstracting Document Structure</head>
+
+      <p>Provide access to various pieces of metadata to application,  
+      insulating that application code from variations in document structure.</p>
+
+      <div4>
+        <head>Solution in XQuery 3.0 with XSLT Maps:</head>
+        <p>Define the metadata interface through a map of functions.</p>
+        <eg><![CDATA[
+(: Specific implementations :)
+declare namespace xh="http://www.w3.org/1999/xhtml";
+declare variable $xhtml as map(xs:string, function(*)) :=
+    map {
+      'title' := function($n as document-node()) as xs:string?
+          { $n/xh:head/xh:title },
+      'author' := function($n as document-node()) as xs:string?
+          { $n/xh:head/xh:meta[@name='author']/@content },
+      'pubdate' := function($n as document-node()) as xs:string?
+          { $n/xh:head/xh:meta[@name='created']/@content },
+      'publisher' := function($n as document-node()) as xs:string?
+          { () }
+    };
+
+declare variable $medline-citation as map(xs:string, function(*)) :=
+    map {
+      'title' := function($n as document-node()) as xs:string?
+          { $n/MedlineCitation/Article/ArticleTitle },
+      'author' := function($n as document-node()) as xs:string?
+          {
+            string-join(
+              for $a in $n/MedlineCitation//Author return
+              concat($a/LastName, ", ", $a/ForeName), "; ")
+          },
+      'pubdate' := function($n as document-node()) as xs:string?
+          {
+             let $d := $n/MedlineCitation/Article/PubDate
+             return string-join(($d/Day,$d/Month,$d/Year), " ")
+          },
+      'publisher' := function($n as document-node()) as xs:string?
+          {  $n/MedlineCitation/MedlineJournalIngo/MedlineTA }
+    };
+]]></eg>
+      </div4>
+    </div3>
+
+  </div2>
+
+  <!--**************************************************-->
+  <div2 id="parameter">
+    <head>Parameter Passing</head>
+
+    <p>Often library functions may have a large number of optional arguments, which are awkward or impossible to
+    provide using the existing mechanism of variable arity functions.</p>
+
+    <div3 id="parameter-query1">
+      <head>XSLT Stylesheet Parameters</head>
+      <p>Pass the list of parameter names and values to the xdmp:xslt-invoke() function, which invokes
+      an XSLT stylesheet.</p>
+      <div4>
+        <head>Solution in XQuery 3.0 with XSLT Maps:</head>
+        <eg><![CDATA[
+declare function xdmp:xslt-invoke($path as xs:string, $input as node(),
+  $params as map(xs:QName, item()*)) as document-node()* external;
+
+xdmp:xslt-invoke("my-stylesheet.xsl", doc("my-doc.xml"), map {
+  xs:QName("toc") := true(),
+  xs:QName("index") := doc("index_terms.xml")
+})
+]]></eg>
+      </div4>
+    </div3>
+
+    <div3 id="parameter-query2">
+      <head>Function Options</head>
+      <p>Provide a machanism to supply (otherwise defaulted) option values to the fn:doc() function, which control aspects of it's behaviour, including:
+      </p>
+      <ulist>
+        <item><p>Parsing of external entities</p></item>
+        <item><p>DTD validation</p></item>
+        <item><p>XML Schema validation</p></item>
+        <item><p>Lax (XML Schema) validation</p></item>
+        <item><p>Whitespace stripping</p></item>
+        <item><p>URI resolution</p></item>
+      </ulist>
+      <p>Using maps in this scenario brings benefits over using XML structure, including:</p>
+      <ulist>
+        <item><p>Nodes are not copied; identity is retained</p></item>
+        <item><p>Atomic items are not serialized, and retain their specific type</p></item>
+        <item><p>Functions can be passed in as options - the relevant example in this case being the URI resolver.</p></item>
+      </ulist>
+      <div4>
+        <head>Solution in XQuery 3.0 with XSLT Maps:</head>
+        <eg><![CDATA[
+declare function fn:doc($uri as xs:string, $options as map(xs:string, item()*)) as document-node()? external;
+
+(: Enable lax XML Schema validation :)
+doc("validate-me.xml", map {
+  "schema-validation" := true(),
+  "lax-validation" := true()
+}),
+
+(: Enable whitespace stripping, and a custom URI resolution :)
+doc("../relative-uri.xml", map {
+  "strip-whitespace" := true(),
+  "uri-resolver" := resolve-uri(?, base-uri())
+})
+]]></eg>
+      </div4>
+      <div4>
+        <head>Solution in XQuery 3.0 with XSLT Maps enhanced with stronger typing:</head>
+        <eg><![CDATA[
+declare function fn:doc(
+  $uri as xs:string,
+  $options as strong-map(
+    external-entities as xs:boolean?,
+    dtd-validation as xs:boolean?,
+    schema-validation as xs:boolean?,
+    lax-validation as xs:boolean?,
+    strip-whitespace as xs:boolean?,
+    uri-resolver as function(xs:string) as xs:string
+  )
+) as document-node()? external;
+
+(: Enable lax XML Schema validation :)
+doc("validate-me.xml", map {
+  xs:QName("schema-validation") := true(),
+  xs:QName("lax-validation") := true()
+}),
+
+(: Enable whitespace stripping, and a custom URI resolution :)
+doc("../relative-uri.xml", map {
+  xs:QName("strip-whitespace") := true(),
+  xs:QName("uri-resolver") := resolve-uri(?, base-uri())
+})
+]]></eg>
+      </div4>
+    </div3>
+
+    <div3 id="parameter-query3">
+      <head>Translation</head>
+      <p>Design a language-agnostic game (here just the core), which allows a translation function or map as a parameter.</p>
+      <div4>
+        <head>Solution in XQuery 3.0 with XSLT Maps:</head>
+        <eg><![CDATA[
+declare function local:play(
+  $secret-number as xs:integer,
+  $guessed-number as xs:integer,
+  $translator as function(xs:string) as xs:string)
+{
+  switch (true())
+  case $guessed-number eq $secret-number
+    return $translator("You won!")
+  case $guessed-number lt $secret-number
+    return $translator("The secret number is greater.")
+  default case (: $guessed-number gt $secret-number :)
+    return $translator("The secret number is lower.")
+};
+
+local:play(76, 86, function($x) { $x }), (: Keep English :)
+
+local:play(76, 86, map {
+  "You won!" := "Du hast gewonnen!",
+  "The secret number is greater." := "Die geheime Zahl ist groesser.",
+  "The secret number is lower." :=  Die geheime Zahl ist kleiner." }
+),
+
+local:play(76, 86, $automated-translator-based-on-natural-language-processing)
+]]></eg>
+      </div4>
+    </div3>
+
+    <div3 id="parameter-query4">
+      <head>Cipher Functions</head>
+      <p>Provide an encryption function which will encode some input according to a cipher that can be a codebook implemented as a map or an explicit algorithm.</p>
+      <div4>
+        <head>Solution in XQuery 3.0 with XSLT Maps:</head>
+        <eg><![CDATA[
+declare function local:encode(
+  $input as xs:string,
+  $cipher as function(xs:integer) as xs:integer)
+{
+  codepoints-to-string($cipher(string-to-codepoints($input)))
+};
+
+let $code := {
+  string-to-codepoints("a") := string-to-codepoints("z"),
+  string-to-codepoints("b") := string-to-codepoints("e"),
+  ...
+}
+return
+local:encode("Message", $code),
+
+local:encode("Message",
+  function($c) { $c + 3 (: Caesar's cipher :) })
+]]></eg>
+      </div4>
+    </div3>
+
+  </div2>
+
+  <!--**************************************************-->
+  <div2 id="json">
+    <head>JSON</head>
+
+    <p>JSON is becoming an important data format that many XQuery and XSLT users have to deal with.
+    Tasks performed can include importing JSON, processing it, and exporting JSON.</p>
+
+    <div3 id="json-query1">
+      <head>Information Retrieval</head>
+      <p>Import a JSON document and retrieve the mobile phone number from it.</p>
+      <p>
+        The fn:parse-json() function parses a JSON document into an XDM value as follows:
+      </p>
+      <olist>
+        <item><p>A JSON object is converted into a map of type map(xs:string, item()?).</p></item>
+        <item><p>A JSON array is converted into a map of type map(xs:integer, item()?).</p></item>
+        <item><p>A JSON string is converted into an xs:string atomic value.</p></item>
+        <item><p>A JSON number is converted into an xs:double atomic value.</p></item>
+        <item><p>A JSON boolean is converted into an xs:boolean atomic value.</p></item>
+        <item><p>A JSON null is converted into the empty sequence.</p></item>
+      </olist>
+      <div4 id="json-query1-data">
+        <head>Input Data</head>
+        <p>The JSON document, mildred.json:</p>
+        <eg role="data"><![CDATA[
+{
+     "firstname": "Mildred",
+     "lastname": "Moore",
+     "age": 32,
+     "address":
+     {
+         "street": "91 High Street",
+         "town": "Biscester",
+         "county": "Oxfordshire",
+         "postcode": "OX6 3PD"
+     },
+     "phone":
+     [
+         {
+           "type": "home",
+           "number": "01869 378073"
+         },
+         {
+           "type": "mobile",
+           "number": "07356 740756"
+         }
+     ]
+}]]></eg>
+      </div4>
+      <div4>
+        <head>Result</head>
+        <eg role="result"><![CDATA[
+"07356 740756"
+]]></eg>
+      </div4>
+      <div4>
+        <head>Solution in XQuery 3.0 with XSLT Maps:</head>
+        <!-- <ednote><name>John Snelson</name> -->
+        <!-- <edtext>This solution is overly complex - I think we need an easier way to iterate the values from -->
+        <!-- a JSON array.</edtext></ednote> -->
+        <eg><![CDATA[
+let $phoneArray := parse-json(unparsed-text("mildred.json"))("phone")
+for $n in map:keys($phoneArray)
+let $entry := $phoneArray($n)
+where $entry("type") = "mobile"
+return $entry("number")
+]]></eg>
+      </div4>
+      <div4>
+        <head>Alternative Solution in XQuery 3.0 with XSLT Maps:</head>
+        <eg><![CDATA[
+declare function map:entries($map as map(*)) as map(*)*
+{
+  for $k in map:keys($map)
+  return map { "key" := $k, "value" := $map($k) }
+};
+
+parse-json(unparsed-text("mildred.json"))
+  ("phone")!map:entries(.)[.("value")("type") = "mobile"]("number")
+]]></eg>
+      </div4>
+
+     <div4>
+        <head>Solution in JSONiq:</head>
+        <eg><![CDATA[
+	let $mildred := json("mildred.json")
+	let $phones := values($mildred("phone"))
+	return $phones[.("type") = "mobile"]("number")
+]]></eg>
+     </div4>
+    </div3>
+
+    <div3 id="json-query2">
+      <head>Converting JSON to XML</head>
+      <p>Convert a JSON data file to XML.</p>
+      <div4 id="json-query2-data">
+        <head>Input Data</head>
+        <p>The JSON document, employees.json:</p>
+        <eg role="data"><![CDATA[
+{ "accounting" : [
+      { "firstName" : "John",
+        "lastName"  : "Doe",
+        "age"       : 23 },
+
+      { "firstName" : "Mary",
+        "lastName"  : "Smith",
+        "age"       : 32 }
+                 ],
+  "sales"     : [
+      { "firstName" : "Sally",
+        "lastName"  : "Green",
+        "age"       : 27 },
+
+      { "firstName" : "Jim",
+        "lastName"  : "Galley",
+        "age"       : 41 }
+                  ]
+}]]></eg>
+      </div4>
+      <div4>
+        <head>Result</head>
+        <eg role="result"><![CDATA[
+<department name="accounting">
+  <employee>
+    <firstName>John</firstName>
+    <lastName>Doe</lastName>
+    <age>23</age>
+  </employee>
+  <employee>
+    <firstName>Mary</firstName>
+    <lastName>Smith</lastName>
+    <age>32</age>
+  </employee>
+</department>
+<department name="sales">
+  <employee>
+    <firstName>Sally</firstName>
+    <lastName>Green</lastName>
+    <age>27</age>
+  </employee>
+  <employee>
+    <firstName>Jim</firstName>
+    <lastName>Galley</lastName>
+    <age>41</age>
+  </employee>
+</department>
+]]></eg>
+      </div4>
+      <div4>
+        <head>Solution in XQuery 3.0 with XSLT Maps:</head>
+        <eg><![CDATA[
+let $input := parse-json(unparsed-text('employees.json'))
+for $k in map:keys($input)
+return
+  <department name="{$k}">{
+    let $array := $input($k)
+    for $i in map:keys($array)
+    let $emp := $array($i)
+    return
+      <employee>
+        <firstName>{ $emp('firstName') }</firstName>
+        <lastName>{ $emp('lastName') }</lastName>
+        <age>{ $emp('age') }</age>
+      </employee>
+  }</department>
+]]></eg>
+      </div4>
+
+      <div4>
+        <head>Solution in JSONiq:</head>
+        <eg><![CDATA[
+for $dept in pairs(json("employees.json"))
+return
+   <department name="{ name($dept) }"> {
+       for $employee in members(value($dept))
+       return
+         <employee>
+           <firstName>{ $employee('firstName') }</firstName>
+           <lastName>{ $employee('lastName') }</lastName>
+           <age>{ $employee('age') }</age>
+         </employee>
+   }</department>
+]]>     </eg>
+      </div4>
+      <div4>
+        <head>Solution in XSLT 3.0:</head>
+        <eg><![CDATA[
+<xsl:template name="main">
+  <xsl:variable name="input"
+                as="map(xs:string, map(xs:string, xs:anyAtomicType)*)"
+                select="parse-json(unparsed-text('employees.json'))"/>
+  <xsl:for-each select="map:keys($input)">
+    <department name="{.}">
+      <xsl:for-each select="$input(.)">
+        <employee>
+          <firstName><xsl:value-of select=".('firstName')"/></firstName>
+          <lastName><xsl:value-of select=".('lastName')"/></lastName>
+          <age><xsl:value-of select=".('age')"/></age>
+        </employee>
+      </xsl:for-each>
+    </department>
+  </xsl:for-each>
+</xsl:template>
+]]></eg>
+      </div4>
+    </div3>
+
+    <div3 id="json-query3">
+      <head>Update by Copying</head>
+      <p>Update the first name of the author "Dan Suciu" to "John" in the "bookinfo.json" document.</p>
+
+      <div4 id="json-query3-data">
+        <head>Input Data</head>
+        <p>The JSON document, bookinfo.json:</p>
+        <eg role="data"><![CDATA[
+{
+    "book": {
+        "title": "Data on the Web",
+        "year": 2000,
+        "author": [
+            {
+                "last": "Abiteboul",
+                "first": "Serge"
+            },
+            {
+                "last": "Buneman",
+                "first": "Peter"
+            },
+            {
+                "last": "Suciu",
+                "first": "Dan"
+            }
+        ],
+        "publisher": "Morgan Kaufmann Publishers",
+        "price": 39.95
+    }
+}]]></eg>
+      </div4>
+      <div4>
+        <head>Solution in XQuery 3.0 with XSLT Maps:</head>
+        <eg><![CDATA[
+declare function local:map-transform($map as map(*))
+{
+  typeswitch($arg)
+  case $map as map(*) return
+    map:new((
+      for $k in map:keys($map)
+      let $v := $map($k)
+      return map { $k := local:map-transform($v) },
+      if($map('last')='Suciu') then map { 'first' := "John" } else ()
+    ))
+  default $arg
+};
+
+local:map-transform(parse-json(unparsed-text("bookinfo.json")))
+]]></eg>
+      </div4>
+      <div4>
+        <head>Solution in XSLT 3.0:</head>
+        <p>Assuming a function map:entries() which returns the entries in a map
+        as a sequence of singleton maps.</p>
+        <!-- <ednote><name>John Snelson</name> -->
+        <!-- <edtext>This solution does not look correct to me.</edtext></ednote> -->
+        <eg><![CDATA[
+<xsl:template match="~map(*)" mode="john" as="map(*)">
+  <xsl:variable name="entries" as="map(*)*>
+    <xsl:apply-templates select="map:entries(.)" mode="john"/>
+  </xsl:variable>
+  <xsl:sequence select="map:new($entries)"/>
+</xsl:template>
+
+<xsl:template match="~map(*)[.('last')='Suciu']" mode="john">
+  <xsl:sequence select="map:new((., map{'first':='John'}))"/>
+</xsl:template>
+]]></eg>
+      </div4>
+    </div3>
+
+<!--
+#############################################################################
+#############################################################################
+#############################################################################
+-->
+
+        <div3 id="json.joins">
+          <head>Joins</head>
+
+      <div4>
+        <head>Input Data</head>
+          <p>The following queries are based on a social media site that allows users to interact with their friends. <code>collection("users")</code> contains data on users and their friends:</p>
+
+          <eg>{
+  "name" : "Sarah",
+  "age" : 13,
+  "gender" : "female",
+  "friends" : [ "Jim", "Mary", "Jennifer"]
+}
+
+{
+  "name" : "Jim",
+  "age" : 13,
+  "gender" : "male",
+  "friends" : [ "Sarah" ]
+}
+          </eg>
+      </div4>
+
+      <div4>
+        <head>Solution in JSONiq:</head>
+	  <p>The following query performs a join on Sarah's friend list to return the Object representing each of her friends:</p>
+
+          <eg>for $sarah in collection("users")
+    $friend in collection("users")
+where $sarah("name") = "Sarah"
+  and values($sarah("friends")) = $friend("name")
+return $friend </eg>
+
+          <p>The query can be simplified using a filter. In the following expression, <code>[.("name") = "Sarah"]</code> is a filter that restricts the set of users to the one named "Sarah":</p>
+
+          <eg>let $sarah := collection("users")[.("name") eq "Sarah"]
+for $friend in values($sarah("friends"))
+return collection("users")[.("name") eq $friend]
+          </eg>
+      </div4>
+          
+      <div4>
+        <head>Solution in XSLT 3.0:</head>
+          <p>Solution using the XSLT maps proposal: essentially the same as the above, assuming (a) the existence
+          of some mechanism similar to <code>collection()</code> to get a collection of JSON inputs and parse them using the
+          <code>parse-json()</code> function, and (b) the existence of a (potentially user-written) function
+          <code>values()</code> to extract the values of the map representing a JSON array. This function might be written:</p>
+          
+          <eg><![CDATA[
+<xsl:function name="values" as="item(*)">
+  <xsl:param name="array" as="map(xs:integer, item())"/>
+  <xsl:for-each select="map:keys($array)">
+    <xsl:sequence select="$array(.)"/>
+  </xsl:for-each>
+</xsl:function>]]></eg>
+      </div4>
+         
+
+        </div3>
+
+        <div3 id="jsongrouping">
+          <head>Grouping Queries for JSON</head>
+          
+          <note><p>These queries are based on similar queries in the XQuery 3.0 Use Cases.</p></note>
+
+      <div4>
+        <head>Input Data</head>
+          <p>The input is a sequence (whose order is of no concern) that contains the following sales data, 
+            represented here in JSON notation:</p>
+
+<eg>{ "product" : "broiler", "store number" : 1, "quantity" : 20  },
+{ "product" : "toaster", "store number" : 2, "quantity" : 100 },
+{ "product" : "toaster", "store number" : 2, "quantity" : 50 },
+{ "product" : "toaster", "store number" : 3, "quantity" : 50 },
+{ "product" : "blender", "store number" : 3, "quantity" : 100 },
+{ "product" : "blender", "store number" : 3, "quantity" : 150 },
+{ "product" : "socks", "store number" : 1, "quantity" : 500 },
+{ "product" : "socks", "store number" : 2, "quantity" : 10 },
+{ "product" : "shirt", "store number" : 3, "quantity" : 10 }
+</eg>
+
+        <p>We want to group sales by product, across stores.</p>
+      </div4>
+      <div4>
+        <head>Result</head>
+        <eg>{
+  "blender" : 250,
+  "broiler" : 20,
+  "shirt" : 10,
+  "socks" : 510,
+  "toaster" : 200
+  }       </eg>
+      </div4>
+          
+      <div4>
+        <head>Solution in JSONiq:</head>
+        <p>We assume a function collection("sales") that returns a sequence of items representing the rows in this table.</p>
+
+        <p>Query:</p>
+
+        <eg>{
+  for $sales in collection("sales")
+  let $pname := $sales("product")
+  group by $pname
+  return $pname : sum(for $s in $sales return $s("quantity"))
+}       </eg>
+
+      </div4>
+          
+      <div4>
+        <head>Solution in XSLT 3.0:</head>
+         <p>Solution using the XSLT maps proposal: assuming that collection("sales") delivers a sequence of unparsed JSON texts, and 
+           that the result is to be serialized as a JSON text:</p>
+
+<eg><![CDATA[
+  <xsl:variable name="entries" as="map(xs:string, xs:integer)">
+    <xsl:for-each-group select="collection('sales')!parse-json(.)" group-by=".('product')">
+      <xsl:sequence select="map{ current-grouping-key() := sum(current-group()('quantity')) }"/>
+    </xsl:for-each-group>
+  </xsl:variable>
+  <xsl:sequence select="serialize-json($entries)"/> 
+  ]]></eg>
+      </div4>
+        </div3>
+
+        <div3 id="jsongrouping2">
+          <head>More Complex Grouping Queries for JSON</head>
+        <p>Now let's do a more complex grouping query, showing sales by category within each state. We need further data to describe the categories of products and the location of stores.</p>
+
+      <div4>
+        <head>Input Data</head>
+        <p>collection("products") contains the following data:</p>
+
+        <eg>{ "name" : "broiler", "category" : "kitchen", "price" : 100, "cost" : 70 },
+{ "name" : "toaster", "category" : "kitchen", "price" : 30, "cost" : 10 },
+{ "name" : "blender", "category" : "kitchen", "price" : 50, "cost" : 25 },
+{ "name" : "socks", "category" : "clothes", "price" : 5, "cost" : 2 },
+{ "name" : "shirt", "category" : "clothes", "price" : 10, "cost" : 3 }</eg>
+
+        <p>collection("stores") contains the following data:</p>
+
+        <eg>{ "store number" : 1, "state" : CA },
+{ "store number" : 2, "state" : CA },
+{ "store number" : 3, "state" : MA },
+{ "store number" : 4, "state" : MA }
+        </eg>
+      </div4>
+      <div4>
+        <head>Result</head>
+
+          <eg>
+            [
+              { "CA" : 
+                [
+                  {"kitchen" : { "broiler" : 20, "toaster" : 150 }},
+                  {"clothes" : { "socks" : 510 }}
+                ]
+              },
+              { "MA" : 
+                [ 
+                  { "kitchen" : { "blender" : 250, "toaster" : 50 }},
+                  { "clothes" : { "shirt" : 10 }}
+                ]
+              }
+            ]
+        </eg>
+      </div4>
+
+      <div4>
+        <head>Solution in JSONiq:</head>
+        <p>The following query groups by state, then by category, then lists individual products and the sales associated with each.</p>
+
+        <p>Query:</p>
+
+        <eg>{
+  for $store in collection("stores")
+  let $state := $store("state")
+  group by $state
+  return
+     $state : {
+       for $product in collection("products")
+       let $category := $product("category")
+       group by $category
+       return
+         $category : {
+            for $sales in collection("sales")
+            where $sales("store number") = $store("store number")
+              and $sales("product") = $product("name")
+            let $pname := $sales("product")
+            group by $pname
+            return $pname : sum( for $s in $sales return $s("quantity") )
+         }
+      }
+}
+        </eg>
+          
+          
+
+      </div4>
+          
+      <div4>
+        <head>Solution in XSLT 3.0:</head>
+        <p>An equivalent XSLT solution is given below. This uses the syntax of the proposed maps facility in XSLT.</p>
+          <!-- example has been tested with Saxon 9.4 -->
+          
+        
+            
+          
+          <eg><![CDATA[
+<xsl:stylesheet version="3.0" 
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:map="http://www.w3.org/2005/xpath-functions/map"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    exclude-result-prefixes="map xs">
+    
+    <xsl:output method="text"/>
+    
+    <xsl:variable name="sales" as="map(*)*" select='
+        map{ "product" := "broiler", "store number" := 1, "quantity" := 20  },
+        map{ "product" := "toaster", "store number" := 2, "quantity" := 100 },
+        map{ "product" := "toaster", "store number" := 2, "quantity" := 50 },
+        map{ "product" := "toaster", "store number" := 3, "quantity" := 50 },
+        map{ "product" := "blender", "store number" := 3, "quantity" := 100 },
+        map{ "product" := "blender", "store number" := 3, "quantity" := 150 },
+        map{ "product" := "socks", "store number" := 1, "quantity" := 500 },
+        map{ "product" := "socks", "store number" := 2, "quantity" := 10 },
+        map{ "product" := "shirt", "store number" := 3, "quantity" := 10 }'/>
+    
+    <xsl:variable name="products" as="map(*)*" select='
+        map{ "name" := "broiler", "category" := "kitchen", "price" := 100, "cost" := 70 },
+        map{ "name" := "toaster", "category" := "kitchen", "price" := 30, "cost" := 10 },
+        map{ "name" := "blender", "category" := "kitchen", "price" := 50, "cost" := 25 },
+        map{ "name" := "socks", "category" := "clothes", "price" := 5, "cost" := 2 },
+        map{ "name" := "shirt", "category" := "clothes", "price" := 10, "cost" := 3 }'/>
+    
+    <xsl:variable name="stores" as="map(*)*" select='
+        map{ "store number" := 1, "state" := "CA" },
+        map{ "store number" := 2, "state" := "CA" },
+        map{ "store number" := 3, "state" := "MA" },
+        map{ "store number" := 4, "state" := "MA" }'/>
+    
+    <xsl:template name="main">
+        <xsl:variable name="state-maps" as="map(*)*">
+            <xsl:for-each-group select="$stores" group-by=".('state')">
+                <xsl:variable name="state" select="current-grouping-key()" 
+                                           as="xs:string"/>
+                <xsl:variable name="stores-in-state" select="current-group()!.('store number')" 
+                                                     as="xs:integer*"/>
+                <xsl:variable name="state-map-entry" as="map(*)*">
+                    <xsl:for-each-group select="$products" group-by=".('category')">
+                        <xsl:variable name="category" select="current-grouping-key()" as="xs:string"/>
+                        <xsl:variable name="products-in-category" select="current-group()" as="map(*)*"/>
+                        <xsl:variable name="totals-map" as="map(*)*">
+                            <xsl:variable name="totals-map-entries" as="map(*)*">
+                                <xsl:for-each select="$products-in-category">
+                                   <xsl:variable name="product-name" select=".('name')"/>
+                                   <xsl:variable name="product-sales" 
+                                       select="$sales[.('product') = $product-name and 
+                                                         .('store number') = $stores-in-state]"/>                      
+                                   <xsl:if test="exists($product-sales)">                      
+                                      <xsl:sequence select="map{ $product-name := 
+                                                                 sum($product-sales!.('quantity')) }"/>
+                                   </xsl:if>   
+                                </xsl:for-each>
+                            </xsl:variable>
+                            <xsl:sequence select="map:new($totals-map-entries)"/>
+                        </xsl:variable>
+                        <xsl:sequence select="map{ $category := $totals-map }"/>
+                    </xsl:for-each-group>
+                </xsl:variable>    
+                <xsl:sequence select=" map { $state := $state-map-entry }"/>
+            </xsl:for-each-group>
+        </xsl:variable>
+        <xsl:value-of select="serialize-json($state-maps, map{ 'indent' := true()} )"/>
+    </xsl:template>   
+    
+</xsl:stylesheet>
+]]></eg>
+          
+          <p>Note that this example appears to suffer badly from the lack of composability between the
+          XPath <code>map{}</code> construct and the XSLT <code>xsl:for-each-group</code> instruction.
+          For such use cases, an XSLT instruction to construct maps could be a better approach.</p>
+      </div4>
+    </div3>
+
+
+        <div3 id="json2json">
+          <head>JSON to JSON Transformations</head>
+
+
+        <p>The following query takes satellite data, and summarizes
+        which satellites are visible. The data for the query is a
+        simplified version of a Stellarium file that contains this
+        information.</p>
+
+      <div4>
+        <head>Input Data</head>
+
+<eg><![CDATA[{
+  "creator" : "Satellites plugin version 0.6.4",
+  "satellites" : {
+    "AAU CUBESAT" : {
+      "tle1" : "1 27846U 03031G 10322.04074654  .00000056  00000-0  45693-4 0  8768",
+      "visible" : false
+    },
+    "AJISAI (EGS)" : {
+      "tle1" : "1 16908U 86061A 10321.84797408 -.00000083  00000-0  10000-3 0  3696",
+      "visible" : true
+    },
+    "AKARI (ASTRO-F)" : {
+      "tle1" : "1 28939U 06005A 10321.96319841  .00000176  00000-0  48808-4 0  4294",
+      "visible" : true
+    }
+  }
+}]]></eg>
+
+        <p>We want to query this data to return a summary that looks like this.</p>
+
+      </div4>
+      <div4>
+        <head>Result</head>
+        <eg>{
+  "visible" : [
+     "AJISAI (EGS)",
+     "AKARI (ASTRO-F)"
+  ],
+  "invisible" : [
+     "AAU CUBESAT"
+  ]
+}       </eg>
+      </div4>
+
+      <div4>
+        <head>Solution in JSONiq:</head>
+        <p>The following is a JSONiq query that returns the desired result.</p>
+
+        <p><emph>Query:</emph></p>
+        <eg>let $sats := json("satellites.json")("satellites")
+return {
+  "visible" : [
+     for $sat in pairs($sats)
+     where $sat("visible")
+     return name($sat)
+  ],
+  "invisible" : [
+     for $sat in pairs($sats)
+     where not($sat)("visible"))
+     return name($sat)
+  ]
+  }</eg>
+      </div4>
+          
+      <div4>
+        <head>Solution in XSLT 3.0:</head>
+          <p>Equivalent using the XSLT maps proposal:</p>
+<eg><![CDATA[
+  <xsl:variable name="sats" select="parse-json(unparsed-text('satellites.json'))('satellites')"/>
+  <xsl:sequence select="map{
+     'visible' := array(map:keys($sats)[$sats(.)('visible')]),
+     'invisible' := array(map:keys($sats)[$sats(.)('invisible')])}"/>
+     ]]></eg>
+          
+    <p>This assumes the existence of a (potentially user-written) function array() that takes
+    a sequence and turns it into a map with consecutive integer keys:</p>
+          
+<eg><![CDATA[
+<xsl:function name="array" as="map(xs:integer, item())">
+  <xsl:param name="seq" as="item()*"/>
+  <xsl:sequence select="map:new(for $i in 1 to count($seq) return map{$i := $seq[$i]})"/>
+</xsl:function>]]></eg>          
+
+      </div4>
+        </div3>
+
+
+        <div3 id="wikipedia.example">
+          <head>Converting XML to JSON</head>
+
+          <p>JSON programmers frequently need to convert XML to JSON. The following query is based on a Wikipedia XML export format, using data from the category "Origami". Here is an excerpt of this data:</p>
+
+      <div4>
+        <head>Input Data</head>
+
+          <eg><![CDATA[<mediawiki>
+  <siteinfo>
+    <sitename>Wikipedia</sitename>
+
+    <page>
+      <title>Kawasaki's theorem</title>
+      <id>14511776</id>
+      <revision>
+        <id>435519187</id>
+        <timestamp>2011-06-21T20:08:56Z</timestamp>
+        <contributor>
+          <username>Some jerk on the Internet</username>
+          <id>6636894</id>
+        </contributor>
+
+!!! SNIP !!!
+
+    <page>
+      <title>Origami techniques</title>
+      <id>193590</id>
+      <revision>
+        <id>447687387</id>
+        <timestamp>2011-08-31T17:21:49Z</timestamp>
+        <contributor>
+          <username>Dmcq</username>
+          <id>3784322</id>
+        </contributor>
+
+!!! SNIP !!!
+
+    <page>
+      <title>Mathematics of paper folding</title>
+      <id>232840</id>
+      <revision>
+        <id>440970828</id>
+        <timestamp>2011-07-23T09:10:42Z</timestamp>
+        <contributor>
+          <username>Tabletop</username>
+          <id>173687</id>
+        </contributor>
+]]>       </eg>
+      </div4>
+      <div4>
+        <head>Result</head>
+
+          <eg>[
+ {
+  "title" : "Kawasaki's theorem",
+  "id" : "14511776",
+  "timestamp" : "2011-06-21T20:08:56Z",
+  "authors" : ["Some jerk on the Internet" ]
+ },
+ {
+  "title" : "Origami techniques",
+  "id" : "193590",
+  "timestamp" : "2011-08-31T17:21:49Z",
+  "authors" : ["Dmcq" ]
+ },
+ {
+  "title" : "Mathematics of paper folding",
+  "id" : "232840",
+  "timestamp" : "2011-07-23T09:10:42Z",
+  "authors" : ["Tabletop" ]
+ }
+]
+          </eg>
+      </div4>
+
+      <div4>
+        <head>Solution in JSONiq:</head>
+	  <p>The following query converts this data to JSON:</p>
+
+	  <p>Query:</p>
+
+          <eg>[
+ for $page in doc("Wikipedia-Origami.xml")//page
+ return {
+  "title": string($page/title),
+  "id" : string($page/id),
+  "last updated" : string($page/revision[1]/timestamp),
+  "authors" : [
+       for $a in $page/revision/contributor/username
+       return string($a)
+  ]
+ }
+]          </eg>
+
+      </div4>
+
+        </div3>
+
+
+        <div3 id="svg.example">
+          <head>Transforming JSON to SVG</head>
+          <p>Suppose a JavaScript implementation provides an interface for JSONiq queries, and a JavaScript program contains the following data <footnote><p>This example is based on an example on Stefan Goessner's JSONT site (<loc href="http://goessner.net/articles/jsont/">http://goessner.net/articles/jsont/</loc>).</p></footnote>:</p>
+
+      <div4>
+        <head>Input Data</head>
+          <eg>var data = {
+   "color" : "blue",
+   "closed" : true,
+   "points" : [[10,10], [20,10], [20,20], [10,20]]
+   };
+          </eg>
+      </div4>
+
+      <div4>
+        <head>Solution in JSONiq:</head>
+          <p>This data can be converted to SVG by placing the text of a query in a JavaScript variable and calling the appropriate JavaScript function to invoke the query:</p>
+
+          <eg><![CDATA[
+var query =
+ "declare variable stroke := attribute stroke { color };
+  declare variable points := attribute points { points };
+  if (closed) then
+    <svg><polygon>{ $stroke, $points }</polygon></svg>
+  else
+    <svg><polyline>{ $stroke, $points }</polyline></svg>" ]]></eg>
+
+          <p>This query can be invoked with a JavaScript API call:</p>
+
+          <eg>
+jsoniq(data, query)
+          </eg>
+
+        <p>Here is the result of the above query:</p>
+
+        <eg><![CDATA[<svg><polygon stroke="blue" points="10 10 20 10 20 20 10 20" /></svg>]]></eg>
+      </div4>
+
+        </div3>
+
+        <div3 id="html.example">
+          <head>Transforming Arrays to HTML Tables</head>
+          <p>The data in a JSON array is frequently displayed using HTML tables. The following query shows how to transform from the former to the latter.</p>
+
+      <div4>
+        <head>Input Data</head>
+          <p>The following Object contains the labels desired for columns and rows, as well as the data for the table.</p>
+          <eg>{
+  "col labels" : ["singular", "plural"],
+  "row labels" : ["1p", "2p", "3p"],
+  "data" :
+     [
+        ["spinne", "spinnen"],
+        ["spinnst", "spinnt"],
+        ["spinnt", "spinnen"]
+     ]
+}</eg>
+      </div4>
+
+      <div4>
+        <head>Solution in JSONiq:</head>
+          <p>The following query creates an HTML table, using the column headings and row labels as well as the data in the Object shown above.</p>
+
+          <eg><![CDATA[<html>
+  <body>
+
+    <table>
+      <tr> (: Column headings :)
+         {
+            <th> </th>,
+            for $th in values(json("table.json")("col labels"))
+            return <th>{ $th }</th>
+         }
+      </tr>
+      {  (: Data for each row :)
+         for $r at $i in values(json("table.json")("data"))
+         return
+            <tr>
+             {
+               <th>{ values(json("table.json")("row labels")[$i]) }</th>,
+               for $c in $r
+               return <td>{ $c }</td>
+             }
+            </tr>
+      }
+    </table>
+
+  </body>
+</html>]]>    </eg>
+      </div4>
+        </div3>
+
+
+	<div3 id="windowing.example">
+	  <head>Windowing Queries</head>
+
+	  <p>XQuery provides support for both sliding windows and
+	  tumbling windows, frequently used to analyze event streams
+	  or other sequential data. This simple windowing example
+	  converts a sequence of items to a table with three columns
+	  (using as many rows as necessary), and assigns a row number
+	  to each row.</p>
+
+      <div4>
+        <head>Input Data</head>
+
+	  <eg>[
+  { "color" : "Green" },
+  { "color" : "Pink" },
+  { "color" : "Lilac" },
+  { "color" : "Turquoise" },
+  { "color" : "Peach" },
+  { "color" : "Opal" },
+  { "color" : "Champagne" }
+}
+	  </eg>
+      </div4>
+      <div4>
+        <head>Result</head>
+	  <p>Result:</p>
+
+	  <eg><![CDATA[<table>
+  <tr>
+    <td>Green</td>
+    <td>Pink</td>
+    <td>Lilac</td>
+  </tr>
+  <tr>
+    <td>Turquoise</td>
+    <td>Peach</td>
+    <td>Opal</td>
+  </tr>
+  <tr>
+    <td>Champagne</td>
+  </tr>
+</table>]]>
+	  </eg>
+      </div4>
+
+      <div4>
+        <head>Solution in JSONiq:</head>
+	  <p>Query:</p>
+
+	  <eg><![CDATA[
+<table>{
+  for tumbling window $w in values(json("colors.json"))
+    start at $x when fn:true()
+    end at $y when $y - $x = 2
+  return
+    <tr>{
+      for $i in $w
+      return
+        <td>{ $i }</td>
+    }</tr>
+}</table>]]>
+	  </eg>
+
+      </div4>
+	</div3>
+
+      <div3 id="rdb.example">
+        <head>JSON views in middleware</head>
+        <p>This example assumes a middleware system that presents relational tables as JSON arrays. The following two tables are used as sample data.</p>
+
+      <div4>
+        <head>Input Data</head>
+        <table border="1">
+          <caption>Users</caption>
+            <thead>
+              <tr>
+                <td>userid</td>
+                <td>firstname</td>
+                <td>lastname</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>W0342</td>
+                <td>Walter</td>
+                <td>Denisovich</td>
+              </tr>
+              <tr>
+                <td>M0535</td>
+                <td>Mick</td>
+                <td>Goulish</td>
+              </tr>
+            </tbody>
+
+        </table>
+
+        <p>The JSON representation this particular implementation provides for the above table looks like this:</p>
+
+        <eg>[
+  { "userid" : "W0342", "firstname" : "Walter", "lastname" : "Denisovich" },
+  { "userid" : "M0535", "firstname" : "Mick", "lastname" : "Goulish" }
+]       </eg>
+
+        <table border="1">
+          <caption>Holdings</caption>
+            <thead>
+              <tr>
+                <td>userid</td>
+                <td>ticker</td>
+                <td>shares</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>W0342</td>
+                <td>DIS</td>
+                <td>153212312</td>
+              </tr>
+              <tr>
+                <td>M0535</td>
+                <td>DIS</td>
+                <td>10</td>
+              </tr>
+              <tr>
+                <td>M0535</td>
+                <td>AIG</td>
+                <td>23412</td>
+              </tr>
+            </tbody>
+        </table>
+
+        <p>The JSON representation this particular implementation provides for the above table looks like this:</p>
+
+        <eg>[
+  { "userid" : "W0342", "ticker" : "DIS", "shares" : 153212312 },
+  { "userid" : "M0535", "ticker" : "DIS", "shares" : 10 },
+  { "userid" : "M0535", "ticker" : "AIG", "shares" : 23412 }
+]       </eg>
+      </div4>
+
+      <div4>
+        <head>Solution in JSONiq:</head>
+        <p>The following query uses the fictitious vendor's <function>vendor:table()</function> function to retrieve the values from a table, and creates an Object for each user, with a list of the user's holdings in the value of that Object.</p>
+
+        <eg>[
+  for $u in vendor:table("Users")
+  order by $u("userid")
+  return {
+    "userid" : $u("userid"),
+    "first" :  $u("firstname"),
+    "last" :   $u("lastname"),
+    "holdings" : [
+         for $h in vendor:table("Holdings")
+         where $h("userid") = $u("userid")
+         order by $h("ticker")
+         return {
+            "ticker" : $u("ticker"),
+            "share" : $u("shares")
+         }
+    ]
+  }
+]       </eg>
+      </div4>
+
+      </div3>
+
+      <div3 id="update.example">
+        <head>In-Place Updates</head>
+
+        <p>The XQuery Update Facility allows XML data to be updated. JSONiq provides updating functions to allow JSON to be updated.</p>
+
+        <p>Suppose an application receives an order that contains a credit card number, and needs to put the user on probation.</p>
+
+      <div4>
+        <head>Input Data</head>
+        <p>Data for an order:</p>
+
+        <eg>{
+  "user" : "Deadbeat Jim",
+  "credit card" : VISA 4111 1111 1111 1111,
+  "product" : "lottery tickets",
+  "quantity" : 243
+}
+        </eg>
+
+        <p>collection("users") contains the data for each individual user:</p>
+
+        <eg>{
+  "name" : "Deadbeat Jim",
+  "address" : "1 E 161st St, Bronx, NY 10451",
+  "risk tolerance" : "high"
+}
+        </eg>
+      </div4>
+
+      <div4>
+        <head>Solution in JSONiq:</head>
+        <p>The following query adds  <code>"status" : "credit card declined"</code> to the user's record.</p>
+
+        <eg>let $dbj := collection("users")[ .("name") = "Deadbeat Jim" ]
+return json:insert-into($dbj, "status" : "credit card declined")
+        </eg>
+
+        <p>After the update is finished, the user's record looks like this:</p>
+
+        <eg>{
+  "name" : "Deadbeat Jim",
+  "address" : "1 E 161st St, Bronx, NY 10451",
+  "status" : "credit card declined",
+  "risk tolerance" : "high"
+}
+        </eg>
+      </div4>
+
+      </div3>
+
+      <div3>
+        <head>Data Transformations</head>
+
+        <p>Many applications need to modify data before forwarding it to another source. The XQuery Update Facility provides an expression called a tranform expression that can be used to create modified copies. The transform expression uses updating expressions to perform a transformation. JSONiq defines updating functions for JSON, which can be used in the XQuery transform expression.</p>
+
+      <div4>
+        <head>Input Data</head>
+        <p>Suppose an application make videos available using feeds from Youtube. The following data comes from one such feed:</p>
+
+        <eg><![CDATA[{
+    "encoding" : "UTF-8",
+    "feed" : {
+        "author" : [
+            {
+                "name" : {
+                    "$t" : "YouTube"
+                },
+                "uri" : {
+                    "$t" : "http://www.youtube.com/"
+                }
+            }
+        ],
+        "category" : [
+            {
+                "scheme" : "http://schemas.google.com/g/2005#kind",
+                "term" : "http://gdata.youtube.com/schemas/2007#video"
+            }
+        ],
+        "entry" : [
+            {
+                "app$control" : {
+                    "yt$state" : {
+                        "$t" : "Syndication of this video was restricted by its owner.",
+                        "name" : "restricted",
+                        "reasonCode" : "limitedSyndication"
+                    }
+                },
+                "author" : [
+                    {
+                        "name" : {
+                            "$t" : "beyonceVEVO"
+                        },
+                        "uri" : {
+                            "$t" : "http://gdata.youtube.com/feeds/api/users/beyoncevevo"
+                        }
+                    }
+                ]
+!!! SNIP !!! ]]>        </eg>
+      </div4>
+
+      <div4>
+        <head>Solution in JSONiq:</head>
+        <p>The following query creates a modified copy of the feed by removing all entries that restrict syndication.</p>
+
+        <eg>let $feed := json("incoming.json")
+return
+   copy $out := $feed
+   modify
+      for $entry in $out("feed")("entry")
+      where $entry("app$control")("yt$state")("name") = "restricted"
+      return json:delete($entry)
+   return $out</eg>
+      </div4>
+
+      </div3>
+
+<!--
+#############################################################################
+#############################################################################
+#############################################################################
+-->
+
+  </div2>
+
+  <!--**************************************************-->
+</div1>
+
+  </body>
+
+  <back>
+    <div1 id="references">
+      <head>References</head>
+      <blist>
+	<bibl id="RFC2119" key="RFC 2119">
+	  S. Bradner. <emph>Key Words for use in RFCs to Indicate Requirement Levels.</emph> IETF
+	  RFC 2119.  See <loc href="http://www.ietf.org/rfc/rfc2119.txt" xlink:type="simple"
+	  xlink:show="replace" xlink:actuate="onRequest">http://www.ietf.org/rfc/rfc2119.txt</loc>.
+	</bibl>
+	<bibl key="XQuery and XPath Data Model 3.0" id="datamodel-30">
+	  World Wide Web Consortium. <emph>XQuery and XPath Data Model 3.0</emph>.  W3C Working
+	  Draft, 16 September 2010.  See <loc href="http://www.w3.org/TR/xpath-datamodel-30/"
+	  xlink:type="simple" xlink:show="replace"
+	  xlink:actuate="onRequest">http://www.w3.org/TR/xpath-datamodel-30/</loc>.
+	</bibl>
+	<bibl key="XPath 3.0" id="xpath-30">
+	  World Wide Web Consortium. <emph>XPath 3.0</emph>.  W3C Working Draft, 14 June 2011.
+	  See <loc href="http://www.w3.org/TR/xpath-30/" xlink:type="simple" xlink:show="replace"
+	  xlink:actuate="onRequest">http://www.w3.org/TR/xpath-30/</loc>.
+	</bibl>
+	<bibl key="XQuery 3.0" id="xquery-30">
+	  World Wide Web Consortium. <emph>XPath 3.0</emph>.  W3C Working Draft, 14 June 2011.
+	  See <loc href="http://www.w3.org/TR/xquery-30/" xlink:type="simple" xlink:show="replace"
+	  xlink:actuate="onRequest">http://www.w3.org/TR/xquery-30/</loc>.
+	</bibl>
+	<bibl key="XSLT 3.0" id="xslt-30">
+	  World Wide Web Consortium. <emph>XSLT 3.0</emph>. W3C Working Draft 24 July 2011.
+	  See <loc href="http://www.w3.org/TR/2011/WD-xslt-21-20110724/">http://www.w3.org/TR/2011/WD-xslt-21-20110724/</loc>.
+	</bibl>
+	<bibl key="JSONiq" id="JSONiq">
+	  Jonathan Robie, Matthias Brantner, Daniela Florescu, Ghislain Fourny, Till Westmann. <emph>JSONiq: XQuery for JSON, JSON for XQuery</emph>. See
+	  <loc href="http://jsoniq.com/docs/spec/en-US/html/index.html">http://jsoniq.com/docs/spec/en-US/html/index.html</loc>.
+	</bibl>
+	<bibl key="JSONiq Use Cases" id="JSONiq-UseCases">
+	  Jonathan Robie, Matthias Brantner, Daniela Florescu, Ghislain Fourny, Till Westmann. <emph>JSONiq Use Cases</emph>. See
+          <loc href="http://jsoniq.com/docs/use-cases/en-US/html/index.html">http://jsoniq.com/docs/use-cases/en-US/html/index.html</loc>.
+	</bibl>
+      </blist>
+    </div1>
+  </back>
+</spec>

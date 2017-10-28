@@ -1,0 +1,632 @@
+<?xml version="1.0"?>
+<project name="etc" default="all">
+
+  <!-- This build.xml file doesn't know how to build tr.xml yet:
+         wget http://www.w3.org/2002/01/tr-automation/tr.rdf
+         transform it with ../style/tr-bibl.xsl
+  -->
+
+  <property name="stylesheet" value="../style/extract.xsl"/>
+
+  <path id="xalan.classpath">
+    <pathelement location="../lib/resolver.jar"/>
+    <pathelement location="../lib/xml-apis.jar"/>
+    <pathelement location="../lib/xercesImpl.jar"/>
+    <pathelement location="../lib/xalan.jar"/>
+  </path>
+
+  <path id="saxon9.classpath">
+    <pathelement location="../lib/resolver.jar"/>
+    <pathelement location="../lib/xml-apis.jar"/>
+    <pathelement location="../lib/xercesImpl.jar"/>
+    <pathelement location="../lib/saxon9he.jar"/>
+  </path> 
+
+  <target name="all"
+          depends="DM,XP,XQ,SE,FO,XT,XML,Names,XS1,XS2,XS1-1,XS1-2,XS11-1,XS11-2"
+          description="Build all the etc files">
+    <echo>Built etc files...</echo>
+  </target>
+
+  <!-- ====================================================================== -->
+  <!-- Data Model -->
+
+  <property name="DM-source" value="../specifications/xpath-datamodel-11/src/xpath-datamodel.xml"/>
+  <property name="DM-uri" value="http://www.w3.org/TR/xpath-datamodel-11/"/>
+
+  <target name="DM" depends="init,chk.DM" unless="DM.ok">
+    <java fork="true" classname="org.apache.xalan.xslt.Process">
+      <classpath refid="xalan.classpath"/>
+      <arg value="-IN"/>
+      <arg value="${DM-source}"/>
+      <arg value="-OUT"/>
+      <arg value="DM.xml"/>
+      <arg value="-XSL"/>
+      <arg value="${stylesheet}"/>
+      <arg value="-PARAM"/>
+      <arg value="specdoc"/>
+      <arg value="DM"/>
+      <arg value="-PARAM"/>
+      <arg value="uri"/>
+      <arg value="${DM-uri}"/>
+    </java>
+  </target>
+
+  <target name="chk.DM" depends="init">
+    <condition property="DM.ok">
+      <and>
+	<uptodate srcfile="${DM-source}"
+                  targetfile="DM.xml"/>
+	<uptodate srcfile="${stylesheet}"
+                  targetfile="DM.xml"/>
+      </and>
+    </condition>
+  </target>
+
+  <!-- ====================================================================== -->
+  <!-- XPath -->
+
+  <property name="XP-source" value="../specifications/xquery-11/build/xpath-assembled.xml"/>
+  <property name="XP-uri" value="http://www.w3.org/TR/xpath-21/"/>
+
+  <target name="XP" depends="init,chk.XP" unless="XP.ok">
+    <java fork="true" classname="org.apache.xalan.xslt.Process">
+      <classpath refid="xalan.classpath"/>
+      <arg value="-IN"/>
+      <arg value="${XP-source}"/>
+      <arg value="-OUT"/>
+      <arg value="XP.xml"/>
+      <arg value="-XSL"/>
+      <arg value="${stylesheet}"/>
+      <arg value="-PARAM"/>
+      <arg value="specdoc"/>
+      <arg value="XP"/>
+      <arg value="-PARAM"/>
+      <arg value="uri"/>
+      <arg value="${XP-uri}"/>
+    </java>
+  </target>
+
+  <target name="chk.XP" depends="init">
+    <condition property="XP.ok">
+      <and>
+	<uptodate srcfile="${XP-source}"
+                  targetfile="XP.xml"/>
+	<uptodate srcfile="${stylesheet}"
+                  targetfile="XP.xml"/>
+      </and>
+    </condition>
+  </target>
+
+  <!-- ====================================================================== -->
+  <!-- XQuery -->
+
+  <property name="XQ-source" value="../specifications/xquery-11/build/xquery-assembled.xml"/>
+  <property name="XQ-uri" value="http://www.w3.org/TR/xquery-11/"/>
+
+  <target name="XQ" depends="init,chk.XQ" unless="XQ.ok">
+    <java fork="true" classname="org.apache.xalan.xslt.Process">
+      <classpath refid="xalan.classpath"/>
+      <arg value="-IN"/>
+      <arg value="${XQ-source}"/>
+      <arg value="-OUT"/>
+      <arg value="XQ.xml"/>
+      <arg value="-XSL"/>
+      <arg value="${stylesheet}"/>
+      <arg value="-PARAM"/>
+      <arg value="specdoc"/>
+      <arg value="XQ"/>
+      <arg value="-PARAM"/>
+      <arg value="uri"/>
+      <arg value="${XQ-uri}"/>
+    </java>
+  </target>
+
+  <target name="chk.XQ" depends="init">
+    <condition property="XQ.ok">
+      <and>
+	<uptodate srcfile="${XQ-source}"
+                  targetfile="XQ.xml"/>
+	<uptodate srcfile="${stylesheet}"
+                  targetfile="XQ.xml"/>
+      </and>
+    </condition>
+  </target>
+
+  <!-- ====================================================================== -->
+  <!-- Serialization -->
+
+  <property name="SE-source" value="../specifications/xslt-xquery-serialization-11/src/xslt-xquery-serialization.xml"/>
+  <property name="SE-uri" value="http://www.w3.org/TR/xslt-xquery-serialization-11/"/>
+
+  <target name="SE" depends="init,chk.SE" unless="SE.ok">
+    <java fork="true" classname="org.apache.xalan.xslt.Process">
+      <classpath refid="xalan.classpath"/>
+      <arg value="-IN"/>
+      <arg value="${SE-source}"/>
+      <arg value="-OUT"/>
+      <arg value="SE.xml"/>
+      <arg value="-XSL"/>
+      <arg value="${stylesheet}"/>
+      <arg value="-PARAM"/>
+      <arg value="specdoc"/>
+      <arg value="SE"/>
+      <arg value="-PARAM"/>
+      <arg value="uri"/>
+      <arg value="${SE-uri}"/>
+    </java>
+  </target>
+
+  <target name="chk.SE" depends="init">
+    <condition property="SE.ok">
+      <and>
+	<uptodate srcfile="${SE-source}"
+                  targetfile="SE.xml"/>
+	<uptodate srcfile="${stylesheet}"
+                  targetfile="SE.xml"/>
+      </and>
+    </condition>
+  </target>
+
+  <!-- ====================================================================== -->
+  <!-- Functions and Operators -->
+
+  <property name="FO-source" value="../specifications/xpath-functions-11/src/xpath-functions.xml"/>
+  <property name="FO-uri" value="http://www.w3.org/TR/xpath-functions-11/"/>
+
+  <target name="FO" depends="init,chk.FO" unless="FO.ok">
+    <java fork="true" classname="org.apache.xalan.xslt.Process">
+      <classpath refid="xalan.classpath"/>
+      <arg value="-IN"/>
+      <arg value="${FO-source}"/>
+      <arg value="-OUT"/>
+      <arg value="FO.xml"/>
+      <arg value="-XSL"/>
+      <arg value="${stylesheet}"/>
+      <arg value="-PARAM"/>
+      <arg value="specdoc"/>
+      <arg value="FO"/>
+      <arg value="-PARAM"/>
+      <arg value="uri"/>
+      <arg value="${FO-uri}"/>
+    </java>
+  </target>
+
+  <target name="chk.FO" depends="init">
+    <condition property="FO.ok">
+      <and>
+	<uptodate srcfile="${FO-source}"
+                  targetfile="FO.xml"/>
+	<uptodate srcfile="${stylesheet}"
+                  targetfile="FO.xml"/>
+      </and>
+    </condition>
+  </target>
+
+  <!-- ====================================================================== -->
+  <!-- XSLT -->
+
+  <property name="XT-source" value="../specifications/xslt-21/src/xslt.xml"/>
+  <property name="XT-uri" value="http://www.w3.org/TR/xslt21/"/>
+
+  <target name="XT" depends="init,chk.XT" unless="XT.ok">
+    <java fork="true" classname="org.apache.xalan.xslt.Process">
+      <classpath refid="xalan.classpath"/>
+      <arg value="-IN"/>
+      <arg value="${XT-source}"/>
+      <arg value="-OUT"/>
+      <arg value="XT.xml"/>
+      <arg value="-XSL"/>
+      <arg value="${stylesheet}"/>
+      <arg value="-PARAM"/>
+      <arg value="specdoc"/>
+      <arg value="XT"/>
+      <arg value="-PARAM"/>
+      <arg value="uri"/>
+      <arg value="${XT-uri}"/>
+    </java>
+  </target>
+
+  <target name="chk.XT" depends="init">
+    <condition property="XT.ok">
+      <and>
+	<uptodate srcfile="${XT-source}"
+                  targetfile="XT.xml"/>
+	<uptodate srcfile="${stylesheet}"
+                  targetfile="XT.xml"/>
+      </and>
+    </condition>
+  </target>
+
+  <!-- ====================================================================== -->
+  <!-- Formal Semantics -->
+
+<!-- Norm: We're not carrying this forward, right? -->
+
+<!--
+  <property name="FS-source" value="
+  <property name="FS-uri" value="http://www.w3.org/TR/xquery-semantics/"/>
+
+  <target name="FS" depends="init,chk.FS" unless="FS.ok">
+    <java fork="true" classname="org.apache.xalan.xslt.Process">
+      <classpath refid="xalan.classpath"/>
+      <arg value="-IN"/>
+      <arg value="${FS-source}"/>
+      <arg value="-OUT"/>
+      <arg value="FS.xml"/>
+      <arg value="-XSL"/>
+      <arg value="${stylesheet}"/>
+      <arg value="-PARAM"/>
+      <arg value="specdoc"/>
+      <arg value="FS"/>
+      <arg value="-PARAM"/>
+      <arg value="uri"/>
+      <arg value="${FS-uri}"/>
+    </java>
+  </target>
+
+  <target name="chk.FS" depends="init">
+    <condition property="FS.ok">
+      <and>
+	<uptodate srcfile="${FS-source}"
+                  targetfile="FS.xml"/>
+	<uptodate srcfile="${stylesheet}"
+                  targetfile="FS.xml"/>
+      </and>
+    </condition>
+  </target>
+-->
+
+  <!-- ====================================================================== -->
+  <!-- XQueryX -->
+
+  <property name="XQX-source" value="../specifications/xqueryx-11/src/xqueryx.xml"/>
+  <property name="XQX-uri" value="http://www.w3.org/TR/xqueryx-11/"/>
+
+  <target name="XQX" depends="init,chk.XQX" unless="XQX.ok">
+    <java fork="true" classname="org.apache.xalan.xslt.Process">
+      <classpath refid="xalan.classpath"/>
+      <arg value="-IN"/>
+      <arg value="${XQX-source}"/>
+      <arg value="-OUT"/>
+      <arg value="XQX.xml"/>
+      <arg value="-XSL"/>
+      <arg value="${stylesheet}"/>
+      <arg value="-PARAM"/>
+      <arg value="specdoc"/>
+      <arg value="XQX"/>
+      <arg value="-PARAM"/>
+      <arg value="uri"/>
+      <arg value="${XQX-uri}"/>
+    </java>
+  </target>
+
+  <target name="chk.XQX" depends="init">
+    <condition property="XQX.ok">
+      <and>
+	<uptodate srcfile="${XQX-source}"
+                  targetfile="XQX.xml"/>
+	<uptodate srcfile="${stylesheet}"
+                  targetfile="XQX.xml"/>
+      </and>
+    </condition>
+  </target>
+
+  <!-- ====================================================================== -->
+  <!-- XQuery Update -->
+
+  <property name="XQU-source" value="../specifications/xquery-update-10/src/xquery-update.xml"/>
+  <property name="XQU-uri" value="http://www.w3.org/TR/xqupdate/"/>
+
+  <target name="XQU" depends="init,chk.XQU" unless="XQU.ok">
+    <java fork="true" classname="org.apache.xalan.xslt.Process">
+      <classpath refid="xalan.classpath"/>
+      <arg value="-IN"/>
+      <arg value="${XQU-source}"/>
+      <arg value="-OUT"/>
+      <arg value="XQU.xml"/>
+      <arg value="-XSL"/>
+      <arg value="${stylesheet}"/>
+      <arg value="-PARAM"/>
+      <arg value="specdoc"/>
+      <arg value="XQU"/>
+      <arg value="-PARAM"/>
+      <arg value="uri"/>
+      <arg value="${XQU-uri}"/>
+    </java>
+  </target>
+
+  <target name="chk.XQU" depends="init">
+    <condition property="XQU.ok">
+      <and>
+	<uptodate srcfile="${XQU-source}"
+                  targetfile="XQU.xml"/>
+	<uptodate srcfile="${stylesheet}"
+                  targetfile="XQU.xml"/>
+      </and>
+    </condition>
+  </target>
+
+  <!-- ====================================================================== -->
+  <!-- XQuery Requirements -->
+
+  <property name="XQR-source" value="../requirements/xquery-11/src/xquery-requirements.xml"/>
+  <property name="XQR-uri" value="http://www.w3.org/TR/xquery-11-requirements/"/>
+
+  <target name="XQR" depends="init,chk.XQR" unless="XQR.ok">
+    <java fork="true" classname="org.apache.xalan.xslt.Process">
+      <classpath refid="xalan.classpath"/>
+      <arg value="-IN"/>
+      <arg value="${XQR-source}"/>
+      <arg value="-OUT"/>
+      <arg value="XQR.xml"/>
+      <arg value="-XSL"/>
+      <arg value="${stylesheet}"/>
+      <arg value="-PARAM"/>
+      <arg value="specdoc"/>
+      <arg value="XQR"/>
+      <arg value="-PARAM"/>
+      <arg value="uri"/>
+      <arg value="${XQR-uri}"/>
+    </java>
+  </target>
+
+  <target name="chk.XQR" depends="init">
+    <condition property="XQR.ok">
+      <and>
+	<uptodate srcfile="${XQR-source}"
+                  targetfile="XQR.xml"/>
+	<uptodate srcfile="${stylesheet}"
+                  targetfile="XQR.xml"/>
+      </and>
+    </condition>
+  </target>
+
+  <!-- ====================================================================== -->
+  <!-- XML -->
+
+  <property name="XML-source" value="REC-xml-20001006.xml"/>
+  <property name="XML-uri" value="http://www.w3.org/TR/REC-xml"/>
+
+  <target name="XML" depends="init,chk.XML" unless="XML.ok">
+    <java fork="true" classname="org.apache.xalan.xslt.Process">
+      <classpath refid="xalan.classpath"/>
+      <arg value="-IN"/>
+      <arg value="${XML-source}"/>
+      <arg value="-OUT"/>
+      <arg value="XML.xml"/>
+      <arg value="-XSL"/>
+      <arg value="${stylesheet}"/>
+      <arg value="-PARAM"/>
+      <arg value="specdoc"/>
+      <arg value="XML"/>
+      <arg value="-PARAM"/>
+      <arg value="uri"/>
+      <arg value="${XML-uri}"/>
+    </java>
+  </target>
+
+  <target name="chk.XML" depends="init">
+    <condition property="XML.ok">
+      <and>
+	<uptodate srcfile="${XML-source}"
+                  targetfile="XML.xml"/>
+	<uptodate srcfile="${stylesheet}"
+                  targetfile="XML.xml"/>
+      </and>
+    </condition>
+  </target>
+
+  <!-- ====================================================================== -->
+  <!-- XML Namespaces -->
+
+  <property name="Names-source" value="REC-xml-names-19990114.xml"/>
+  <property name="Names-uri" value="http://www.w3.org/TR/REC-xml-names/"/>
+
+  <target name="Names" depends="init,chk.Names" unless="Names.ok">
+    <java fork="true" classname="org.apache.xalan.xslt.Process">
+      <classpath refid="xalan.classpath"/>
+      <arg value="-IN"/>
+      <arg value="${Names-source}"/>
+      <arg value="-OUT"/>
+      <arg value="Names.xml"/>
+      <arg value="-XSL"/>
+      <arg value="${stylesheet}"/>
+      <arg value="-PARAM"/>
+      <arg value="specdoc"/>
+      <arg value="Names"/>
+      <arg value="-PARAM"/>
+      <arg value="uri"/>
+      <arg value="${Names-uri}"/>
+    </java>
+  </target>
+
+  <target name="chk.Names" depends="init">
+    <condition property="Names.ok">
+      <and>
+	<uptodate srcfile="${Names-source}"
+                  targetfile="Names.xml"/>
+	<uptodate srcfile="${stylesheet}"
+                  targetfile="Names.xml"/>
+      </and>
+    </condition>
+  </target>
+
+  <!-- ====================================================================== -->
+  <!-- XML Schema -->
+
+  <property name="XS1-source" value="REC-xmlschema-1-20010502.xml"/>
+  <property name="XS1-uri" value="http://www.w3.org/TR/xmlschema-1/"/>
+
+  <property name="XS2-source" value="REC-xmlschema-2-20010502.xml"/>
+  <property name="XS2-uri" value="http://www.w3.org/TR/xmlschema-2/"/>
+
+  <target name="XS1" depends="init,chk.XS1" unless="XS1.ok">
+    <java fork="true" classname="org.apache.xalan.xslt.Process">
+      <classpath refid="xalan.classpath"/>
+      <arg value="-IN"/>
+      <arg value="${XS1-source}"/>
+      <arg value="-OUT"/>
+      <arg value="XS1.xml"/>
+      <arg value="-XSL"/>
+      <arg value="${stylesheet}"/>
+      <arg value="-PARAM"/>
+      <arg value="specdoc"/>
+      <arg value="XS1"/>
+      <arg value="-PARAM"/>
+      <arg value="uri"/>
+      <arg value="${XS1-uri}"/>
+    </java>
+  </target>
+
+  <target name="chk.XS1" depends="init">
+    <condition property="XS1.ok">
+      <and>
+	<uptodate srcfile="${XS1-source}"
+                  targetfile="XS1.xml"/>
+	<uptodate srcfile="${stylesheet}"
+                  targetfile="XS1.xml"/>
+      </and>
+    </condition>
+  </target>
+
+  <target name="XS2" depends="init,chk.XS2" unless="XS2.ok">
+    <java fork="true" classname="org.apache.xalan.xslt.Process">
+      <classpath refid="xalan.classpath"/>
+      <arg value="-IN"/>
+      <arg value="${XS2-source}"/>
+      <arg value="-OUT"/>
+      <arg value="XS2.xml"/>
+      <arg value="-XSL"/>
+      <arg value="${stylesheet}"/>
+      <arg value="-PARAM"/>
+      <arg value="specdoc"/>
+      <arg value="XS2"/>
+      <arg value="-PARAM"/>
+      <arg value="uri"/>
+      <arg value="${XS2-uri}"/>
+    </java>
+  </target>
+
+  <target name="chk.XS2" depends="init">
+    <condition property="XS2.ok">
+      <and>
+	<uptodate srcfile="${XS2-source}"
+                  targetfile="XS2.xml"/>
+	<uptodate srcfile="${stylesheet}"
+                  targetfile="XS2.xml"/>
+      </and>
+    </condition>
+  </target>
+
+  <!-- ====================================================================== -->
+  <!-- XML Schema (28 October 2004)-->
+
+  <property name="XS1-1-source" value="REC-xmlschema-1-20041028/structures.xml"/>
+  <property name="XS1-1-uri" value="http://www.w3.org/TR/xmlschema-1/"/>
+
+  <property name="XS1-2-source" value="REC-xmlschema-2-20041028/datatypes.xml"/>
+  <property name="XS1-2-uri" value="http://www.w3.org/TR/xmlschema-2/"/>
+
+  <target name="XS1-1" depends="init,chk.XS1-1" unless="XS1-1.ok">
+    <xslt in="${XS1-1-source}" out="XS1-1.xml" style="${stylesheet}">
+      <param name="specdoc" expression="XS1-1"/>
+      <param name="uri" expression="${XS1-1-uri}"/>  
+      <classpath refid="saxon9.classpath"/>
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+	<attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+    </xslt>
+  </target>
+
+  <target name="chk.XS1-1" depends="init">
+    <condition property="XS1-1.ok">
+      <and>
+	<uptodate srcfile="${XS1-1-source}"
+                  targetfile="XS1-1.xml"/>
+	<uptodate srcfile="${stylesheet}"
+                  targetfile="XS1-1.xml"/>
+      </and>
+    </condition>
+  </target>
+
+  <target name="XS1-2" depends="init,chk.XS1-2" unless="XS1-2.ok">
+    <xslt in="${XS1-2-source}" out="XS1-2.xml" style="${stylesheet}">
+      <param name="specdoc" expression="XS1-2"/>
+      <param name="uri" expression="${XS1-2-uri}"/>  
+      <classpath refid="saxon9.classpath"/>
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+    </xslt>
+  </target>
+
+  <target name="chk.XS1-2" depends="init">
+    <condition property="XS1-2.ok">
+      <and>
+	<uptodate srcfile="${XS1-2-source}"
+                  targetfile="XS1-2.xml"/>
+	<uptodate srcfile="${stylesheet}"
+                  targetfile="XS1-2.xml"/>
+      </and>
+    </condition>
+  </target>
+
+
+  <!-- ====================================================================== -->
+  <!-- XML Schema 1.1 -->
+
+  <property name="XS11-1-source" value="REC-xmlschema11-1-20120405/structures.xml"/>
+  <property name="XS11-1-uri" value="http://www.w3.org/TR/xmlschema11-1/"/>
+
+  <property name="XS11-2-source" value="REC-xmlschema11-2-20120405/datatypes.xml"/>
+  <property name="XS11-2-uri" value="http://www.w3.org/TR/xmlschema11-2/"/>
+
+  <target name="XS11-1" depends="init,chk.XS11-1" unless="XS11-1.ok">
+    <xslt in="${XS11-1-source}" out="XS11-1.xml" style="${stylesheet}">
+      <param name="specdoc" expression="XS11-1"/>
+      <param name="uri" expression="${XS11-1-uri}"/>  
+      <classpath refid="saxon9.classpath"/>
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+    </xslt>
+  </target>
+
+  <target name="chk.XS11-1" depends="init">
+    <condition property="XS11-1.ok">
+      <and>
+	<uptodate srcfile="${XS11-1-source}"
+                  targetfile="XS11-1.xml"/>
+	<uptodate srcfile="${stylesheet}"
+                  targetfile="XS11-1.xml"/>
+      </and>
+    </condition>
+  </target>
+
+  <target name="XS11-2" depends="init,chk.XS11-2" unless="XS11-2.ok">
+    <xslt in="${XS11-2-source}" out="XS11-2.xml" style="${stylesheet}">
+      <param name="specdoc" expression="XS11-2"/>
+      <param name="uri" expression="${XS11-2-uri}"/>  
+      <classpath refid="saxon9.classpath"/>
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+    </xslt>
+  </target>
+
+  <target name="chk.XS11-2" depends="init">
+    <condition property="XS11-2.ok">
+      <and>
+	<uptodate srcfile="${XS11-2-source}"
+                  targetfile="XS11-2.xml"/>
+	<uptodate srcfile="${stylesheet}"
+                  targetfile="XS11-2.xml"/>
+      </and>
+    </condition>
+  </target>
+
+  <!-- ====================================================================== -->
+
+  <target name="init"/>
+</project>

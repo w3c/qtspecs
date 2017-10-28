@@ -1,0 +1,88 @@
+This document outlines the layout of the files in these directories and
+some technical details of build process.
+
+Updated MHK 2012-06-18 to remove some obviously out-of-date information.
+
+Top level directories
+=====================
+etc ............ common data; bibliography, link summary, and common Ant scripts
+lib ............ jar files for the build process
+requirements ... QT requirements documents
+schema ......... Schemas and DTDs for the documents in this tree
+specifications . QT specification documents
+style .......... Stylesheets to build the documents in this tree
+test-suites .... QT test suites
+use-cases ...... QT use case documents
+
+Migration
+=========
+
+The migration from the old build tree to this new one is largely complete.
+An exception is the errata process, which has not yet been migrated.
+
+Build process
+=============
+
+These documents are all built with Ant[1] (version 1.7.0 at the time
+of this writing). 
+
+Build targets
+-------------
+
+The build script (build.xml) in each directory supports the following
+targets:
+
+"all" -- builds everything
+
+"spec" -- builds the document
+
+"errata" -- builds the errata
+
+"clean" -- deletes temporary files
+
+Some documents also support additional targets of the form "ns-*"
+where "*" is the name of some namespace; for example, the XPath
+Functions specification includes the target ns-xpath-functions to
+build the namespace document for the XPath Functions namespace.
+
+Technical details
+=================
+
+As much as practical, common code has been factored out of the build
+scripts in each directory.
+
+Each document's build.xml file includes two additional build scripts:
+
+  .../etc/build-constants.xml
+
+     This defines class paths and other constants
+
+  .../etc/build-impl.xml
+
+     This defines common targets
+
+To handle cross-spec linking, the build process for each specification constructs a document in /etc 
+which contains an index of all the link targets in that document. When building other documents, it is this
+index which is consulted, not the base document itself.
+
+--------
+
+Some of the build files use Ant tasks from the contributor library. See:
+    http://ant-contrib.sourceforge.net/
+
+To run these, use for example:
+    ant -lib ~/downloads/ant-contrib-1/ant-contrib-1.0b3.jar
+
+Equivalently, you could add
+    "-lib /path/to/ant-contrib-1.0b3.jar"
+to environment variable ANT_ARGS.
+
+Alternatively, you could put the ant-contrib-*.jar file in the 'lib' directory of your ant installation.
+
+--------
+
+Some of the build files may cause Ant to run out of PermGen memory. To avoid this, use for example:
+
+export ANT_OPTS="-Xms3000m -Xmx3000m -XX:PermSize=3000m -XX:MaxPermSize=3000m"
+
+

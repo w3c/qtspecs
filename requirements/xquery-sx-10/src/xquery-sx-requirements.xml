@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE spec PUBLIC "-//W3C//DTD Specification V2.0//EN" "../../../schema/xmlspec.dtd" [
+
+<!ENTITY doc.version "1.0">
+<!ENTITY doc.version-code "10">
+<!ENTITY doc.stage "NOTE">
+<!ENTITY doc.w3c-doctype "wgnote">
+<!ENTITY doc.w3c-doctype-full "Working Group Note">
+<!ENTITY date.day "20">
+<!ENTITY date.DD "20">
+<!ENTITY date.month "June">
+<!ENTITY date.monthnum "06">
+<!ENTITY date.year "2017">
+<!ENTITY doc.date "&date.year;&date.monthnum;&date.DD;">
+
+<!ENTITY w3c.tr "https://www.w3.org/TR">
+<!ENTITY doc.parent.shortname "xquery-sx-&doc.version-code;">
+<!ENTITY doc.shortname "&doc.parent.shortname;-requirements">
+<!ENTITY doc.w3c-designation "&doc.stage;-&doc.shortname;">
+<!ENTITY doc.publoc "&w3c.tr;/&date.year;/&doc.w3c-designation;-&doc.date;/">
+<!ENTITY doc.latestloc "&w3c.tr;/&doc.shortname;/">
+<!ENTITY doc.parent.latestloc "&w3c.tr;/&doc.parent.shortname;/">
+<!ENTITY language "XQuery Scripting Extension &doc.version;">
+
+<!ENTITY req.status "<emph>Status:</emph>">
+<!ENTITY req.green "<graphic source='http://www.w3.org/Icons/green-ball.gif' alt='green status'/>">
+<!ENTITY req.yellow "<graphic source='http://www.w3.org/Icons/yellow-ball.gif' alt='yellow status'/>">
+<!ENTITY req.red "<graphic source='http://www.w3.org/Icons/red-ball.gif' alt='red status'/>">
+<!ENTITY req.yes "&req.green; &req.status; this requirement has been met.">
+<!ENTITY req.partial "&req.yellow; &req.status; this requirement has been partially met.">
+<!ENTITY req.no "&req.red; &req.status; this requirement has not been met.">
+
+<!ENTITY % status-entities SYSTEM "../../../etc/status-entities.dtd">
+%status-entities;
+
+<!ENTITY doc.WD-pubdate "23 March 2007">
+<!ENTITY doc.LC-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.LC-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.CR-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.CR-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.PR-expected "TO BE SPECIFIED">
+<!ENTITY doc.PR-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.PR-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.REC-pubdate "20 June 2017">
+
+<!ENTITY doc.pubdate "&doc.REC-pubdate;">
+<!ENTITY doc.comments-due "$doc.WD-comments-due;">
+
+<!ENTITY status-section-id "status">
+<!ENTITY spec-devby    "&devby.xquery;">
+<!ENTITY changelog-id  "id-revisions-log">
+<!ENTITY changes-para  "&post.FPWD.changes;">
+<!ENTITY implementation-report-location "">
+<!ENTITY implementation-report-availability "">
+<!ENTITY implementation-report "&implementation-report-irrelevant;">
+<!ENTITY disclosure.one    "&disclosure.xquery;"> 
+<!ENTITY Bugzilla-key "SXReq">
+<!ENTITY patent-policy-paragraph "&ppp-one;">
+<!ENTITY documents-and-relationships "&not-set-of-documents;">
+<!ENTITY advancement.statement "">
+
+<!ENTITY doc-stability "&doc-stability-NOTE;">
+<!ENTITY PR-entrance-criteria '<p>The &XQWG; intends to submit
+this document for consideration as a W3C &ProposedRec;
+at the same time that &language; is submitted for the same consideration. </p>'>
+<!ENTITY features-at-risk-para "&no-features-at-risk;">
+<!ENTITY document-stage "&doc-stage-NOTE;">
+<!--ENTITY customized-paragraph '<p>These Requirements identify extensions to the
+<loc xmlns:xlink="http://www.w3.org/1999/xlink"
+     href="http://www.w3.org/TR/xquery/"
+     xlink:type="simple" xlink:show="replace"
+     xlink:actuate="onRequest">XQuery 1.0 Recommendation</loc> published 23 January 2007
+to make it functional as a scripting language. 
+That capability has been requested by WG participants and
+has been encouraged by members of the larger community
+who do not participate in the W3C activities. 
+The XML Query WG has reviewed these requirements and has
+reached a high level of agreement (but not necessarily unanimity) on
+the desirability of each of them.</p>' -->
+
+<!ENTITY customized-paragraph '<p>This &doc.w3c-doctype-full; has been published in order to
+document the work that the XML Query Working Group has done in the area of providing an
+imperative extension to XQuery.  The WG was unable to achieve consensus on several
+significant aspects of this technology and determined to terminate work on the project in mid-2014. </p>'>
+
+
+<!ENTITY status-section SYSTEM "../../../etc/status-general.xml">
+
+]>
+
+<spec id="spec-top" w3c-doctype="&doc.w3c-doctype;">
+<header id="spec-header">
+<title>&language; Requirements</title>
+<w3c-designation>&doc.w3c-designation;</w3c-designation>
+<w3c-doctype>W3C &doc.w3c-doctype-full;</w3c-doctype>
+<pubdate>
+  <day>&date.day;</day>
+  <month>&date.month;</month>
+  <year>&date.year;</year>
+</pubdate>
+
+<publoc>
+  <loc href="&doc.publoc;">&doc.publoc;</loc>
+</publoc>
+<latestloc>
+  <loc href="&doc.latestloc;">&doc.latestloc;</loc>
+</latestloc>
+		<prevlocs>
+		  <loc href="https://www.w3.org/TR/2007/WD-xquery-sx-10-requirements-20070323/">https://www.w3.org/TR/2007/WD-xquery-sx-10-requirements-20070323/</loc>
+		</prevlocs>
+
+		<authlist>
+			<author>
+				<name>Daniel Engovatov</name>
+				<affiliation>BEA</affiliation>
+				<email xmlns:xlink="http://www.w3.org/1999/xlink" href="mailto:dengovatov@bea.com" xlink:type="simple" xlink:show="new" xlink:actuate="onRequest">dengovatov@bea.com</email>
+			</author>
+			<author>
+				<name>Daniela Florescu</name>
+				<affiliation>Oracle Corporation</affiliation>
+				<email xmlns:xlink="http://www.w3.org/1999/xlink" href="mailto:dana.florescu@oracle.com" xlink:type="simple" xlink:show="new" xlink:actuate="onRequest">dana.florescu@oracle.com</email>
+			</author>
+			<author>
+				<name>Giorgio Ghelli</name>
+				<affiliation>Pisa University</affiliation>
+				<email xmlns:xlink="http://www.w3.org/1999/xlink" href="mailto:ghelli@di.unipi.it" xlink:type="simple" xlink:show="new" xlink:actuate="onRequest">ghelli@di.unipi.it</email>
+			</author>
+		</authlist>
+
+&status-section;
+
+		<abstract>
+			<p>This document specifies goals and requirements for the XQuery Scripting Extension.</p>
+		</abstract>
+
+		<langusage>
+			<language id="en">English</language>
+		</langusage>
+
+		<revisiondesc>
+			<p>First public Working Draft.</p>
+		</revisiondesc>
+	</header>
+
+	<body>
+		<div1 id="goals">
+			<head>Goals</head>
+			<p>This document describes the requirements for the XQuery Scripting
+Extensions.
+XQuery <bibref ref="xquery"/>
+is a functional language that is Turing-complete and well suited
+to write code that ranges from simple queries to complete
+applications. However, some categories of applications are more easily
+implemented by combining <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#xquery" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery</loc>
+capabilities with some imperative
+features, such as the ability to explicitly manage internal
+states. The same issue stands for <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#xquery" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery</loc>
+enriched with the <bibref ref="updatef"/>
+(hereafter,
+				<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-XQU" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery With Updates</loc>).
+
+The scripting extension is intended to overcome this problem, and allow
+programmers to write such applications without relying on embedding
+				<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#xquery" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery</loc> into an external language.</p>
+		</div1>
+
+		<div1 id="usage-scenarios">
+			<head>Usage Scenarios</head>
+			<p>The following usage scenarios describe ways in which the  
+XQuery Scripting Extension may be used in various environments, and
+represent a wide 
+range of activities and needs that illustrate the problem space to be
+addressed. They are intended to be used as design cases during the
+development of the XQuery Scripting Extension, and should be reviewed when
+critical decisions are made. These usage scenarios should also prove
+useful in helping non-members of the XML Query Working Group understand
+the intent and goals of the
+project.</p>
+			<p>While <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#xquery" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery</loc> is very well suited to
+perform the main tasks of XML exploration and transformation that are
+common to most of these cases, some limited extensions would make it
+easier to use <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#xquery" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery</loc> to write some complex
+applications that belong to the following usage scenarios.</p>
+			<glist role="req">
+				<gitem>
+					<label>Applications that perform complex manipulations on
+	  persistent XML data</label>
+					<def>
+						<p>Writing applications that modify persistent data,
+	    stored in files or in databases. Such applications may
+	    need to operate on data in stages, and may need to verify
+	    that the modified data meet some constraints.</p>
+					</def>
+				</gitem>
+				<gitem>
+					<label>Complex XML to XML transformations</label>
+					<def>
+						<p>Writing code that performs complex XML to XML transformations.</p>
+					</def>
+				</gitem>
+				<gitem>
+					<label>Implementation of web services</label>
+					<def>
+						<p>Writing code that implements a web service, with the
+	    ability to access and modify persistent XML data.</p>
+					</def>
+				</gitem>
+				<gitem>
+					<label>Processing RSS feeds</label>
+					<def>
+						<p>Writing code that generates or aggregates RSS feeds.</p>
+					</def>
+				</gitem>
+				<gitem>
+					<label>Web service message composition and orchestration</label>
+					<def>
+						<p>Writing code that orchestrates web services.</p>
+					</def>
+				</gitem>
+				<gitem>
+					<label>XML application integration</label>
+					<def>
+						<p>Writing scripting code that calls both
+							<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-XQU" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery
+							With
+							Updates</loc> and external
+	    functions, which may manipulate state and perform
+							<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#side-effects" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">side-effects</loc>.</p>
+					</def>
+				</gitem>
+				<gitem>
+					<label>XML data cleaning or normalization</label>
+					<def>
+						<p>Writing code that performs data cleaning
+          operations.</p>
+					</def>
+				</gitem>
+				<gitem>
+					<label>XML data integration</label>
+					<def>
+						<p>Writing code that accesses multiple data sources with
+            the ability of reflecting updates from the integrated data
+            to the data sources.</p>
+					</def>
+				</gitem>
+				<gitem>
+					<label>XML data verification</label>
+					<def>
+						<p>Expressing complex constraints on XML data.</p>
+					</def>
+				</gitem>
+			</glist>
+		</div1>
+
+		<div1 id="requirements">
+			<head>Requirements</head>
+			<div2 id="terminology">
+				<head>Terminology</head>
+				<p>In this specification the words
+					<!-- <rfc2119>must</rfc2119> -->
+					<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">must</loc>,
+					<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">must not</loc>,
+					<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">should</loc>,
+					<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">should not</loc>,
+					<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">may</loc>
+					and
+					<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">recommended</loc>, when 
+are to be interpreted as described in <bibref ref="RFC2119"/>.
+When these words
+					<!--<loc href="#terminology-should">SHOULD</loc>-->
+are used in this technical sense, they occur as a hyperlink to <bibref ref="RFC2119"/>. These words will also be used with their conventional English
+meaning, in which case there is no hyperlink.</p>
+				<!--
+<p>The following key words are used throughout the document to specify the extent to
+          which an item is a requirement for the work of the XML Query Working Group:</p>
+        <glist>
+          <gitem>
+            <label id="terminology-must">MUST</label>
+            <def>
+              <p>This word means that the item is an absolute requirement.</p>
+            </def>
+          </gitem>
+          <gitem>
+            <label id="terminology-should">SHOULD</label>
+            <def>
+              <p>This word means that there may exist valid reasons not to treat this
+                item as a requirement, but the full implications should be
+                understood and the case carefully weighed before discarding this
+                item.</p>
+            </def>
+          </gitem>
+          <gitem>
+            <label id="terminology-may">MAY</label>
+            <def>
+              <p>This word means that an item deserves attention, but further 
+                 study is
+                needed to determine whether the item should be treated as a
+                requirement.</p>
+            </def>
+          </gitem>
+        </glist>
+        <p>When the words <loc href="#terminology-must">MUST</loc>, <loc
+            href="#terminology-should">SHOULD</loc>, or <loc href="#terminology-may"
+          >MAY</loc> are used in this technical sense, they occur as a hyperlink to these
+          definitions. These words will also be used with their conventional English
+          meaning, in which case there is no hyperlink. For instance, the phrase "the full
+          implications should be understood" uses the word "should" in its conventional
+          English sense, and therefore occurs without the
+            hyperlink.</p>
+-->
+				<glist>
+					<gitem>
+						<label id="terminology-XQU">XQuery With Updates</label>
+						<def>
+							<p>This term identifies
+								<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#xquery" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery</loc>
+								extended with the
+								<bibref ref="updatef"/>.</p>
+						</def>
+					</gitem>
+					<gitem>
+						<label id="side-effects">Side-effects</label>
+						<def>
+							<p>We say that an expression has side-effects if its evaluation may affect the external environment or may affect the result of the subsequent evaluation of another expression.</p>
+						</def>
+					</gitem>
+				</glist>
+			</div2>
+
+			<div2 id="general-requiremens">
+				<head>General Requirements</head>
+				<glist role="req">
+					<gitem>
+						<label>Compatibility with other extensions</label>
+						<def>
+							<p>The XQuery Scripting Extension
+								<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">must
+								not</loc>
+								preclude the use of the 
+                 other XQuery extensions developed by the Working Group.</p>
+						</def>
+					</gitem>
+					<gitem>
+						<label>Protocol Independence</label>
+						<def>
+							<p>The XQuery Scripting Extension
+								<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">must</loc>
+								be defined independently
+            of any protocols with which it is used.</p>
+						</def>
+					</gitem>
+					<gitem>
+						<label>Language Syntax</label>
+						<def>
+							<p>The XQuery Scripting Extension <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">must</loc> have
+                more than one syntax binding. One syntax <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">must</loc> 
+				be convenient for humans to
+                read and write. One syntax <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">must</loc>
+                be expressed in XML in a way that reflects the underlying structure
+                of the operations.</p>
+						</def>
+					</gitem>
+					<gitem>
+						<label>Static Type Checking</label>
+						<def>
+							<p>The XQuery Scripting Extension
+								<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">should</loc>
+								provide an optional
+            static type checking feature.</p>
+						</def>
+					</gitem>
+					<gitem>
+						<label>Ease of programming</label>
+						<def>
+							<p>The XQuery Scripting Extension
+								<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">may</loc>
+								include syntactic
+            constructs to facilitate common programming tasks.</p>
+						</def>
+					</gitem>
+				</glist>
+			</div2>
+
+			<div2 id="relationship-to-xquery">
+				<head>Relationship to <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#xquery" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery</loc></head>
+				<glist role="req">
+					<gitem>
+						<label>Based on Data Model</label>
+						<def>
+							<p>The XQuery Scripting Extension <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">must</loc>
+                be defined on the <bibref ref="datamodel"/>.</p>
+						</def>
+					</gitem>
+					<gitem>
+						<label>Based on <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#xquery" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery</loc></label>
+						<def>
+							<p>The XQuery Scripting Extension <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">must</loc> be based on <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#xquery" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery</loc>. The Scripting Extension may constrain the evaluation order more than <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#xquery" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery</loc> evaluation model, but the evaluation of an expression that belongs to the syntax of <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#xquery" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery</loc> <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">must</loc> result in a value, or in an error, that is one of those allowed by
+								<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#xquery" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery</loc>
+								semantics.</p>
+						</def>
+					</gitem>
+					<gitem>
+						<label>Based on <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-XQU" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery With Updates</loc></label>
+						<def>
+							<p>The XQuery Scripting Extension
+								<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">should</loc> be based on
+								<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-XQU" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery With Updates</loc>.
+If it is based on <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-XQU" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery With Updates</loc>,
+it may constrain the evaluation order in ways that are not required by  
+								<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-XQU" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery With Updates</loc> evaluation model. However, 
+								 if both 
+								<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-XQU" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery With Updates</loc>
+								and the XQuery Scripting Extension specify a result value for a given expression, 
+								they <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">must</loc> specify the same result value. 
+                              <!--  Moreover, for any expression that raises an error according to the 
+								XQuery Scripting Extension 
+                                and that belongs to the syntax of
+								<loc href="#terminology-XQU">XQuery With Updates</loc>, the error raised must be 
+one of those allowed by the <loc href="#terminology-XQU">XQuery With Updates</loc>
+specification for the same expression.--></p>
+						</def>
+					</gitem>
+					<gitem>
+						<label>Optimization</label>
+						<def>
+							<p>The XQuery Scripting Extension <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">should</loc> be designed in such a way that the ability of a processor to optimize queries or parts of a query that make no use of the extension is not compromised.</p>
+						</def>
+					</gitem>
+				</glist>
+			</div2>
+
+			<div2 id="functionalities">
+				<head>Functionalities</head>
+				<glist role="req">
+					<gitem>
+						<label>Controlling the order of evaluation of functions
+and expressions that have <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#side-effects" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">side-effects</loc></label>
+						<def>
+							<p>It <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">must</loc> be possible for the
+programmer to control the evaluation order of expressions and function
+calls that perform <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#side-effects" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">side-effects</loc>.</p>
+						</def>
+					</gitem>
+					<gitem>
+						<label>Preserving state during computation</label>
+						<def>
+							<p>It <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">must</loc> be possible to write code where pieces of data are bound to
+variables which are passed to further stages of the computation, and it
+								<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">must</loc> be possible to modify the value associated to such variables.</p>
+						</def>
+					</gitem>
+					<gitem>
+						<label>Returning values from expressions that have <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#side-effects" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">side-effects</loc></label>
+						<def>
+							<p>It <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">must</loc> be possible to write code that has <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#side-effects" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">side-effects</loc> and returns a value.</p>
+						</def>
+					</gitem>
+					<gitem>
+						<label>Ability to see <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#side-effects" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">side-effects</loc> during computation</label>
+						<def>
+							<p>It <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">must</loc> 
+be possible for an expression to observe some <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#side-effects" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">side-effects</loc> caused by other expressions.</p>
+						</def>
+					</gitem>
+					<gitem>
+						<label>Error handling</label>
+						<def>
+							<p>It <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">must</loc> be possible to control
+error propagation and to perform 
+alternative actions when the evaluation of an expression raises an error.</p>
+						</def>
+					</gitem>
+					<gitem>
+						<label>Controlling the scope of snapshot, isolation, atomicity</label>
+						<def>
+							<p>The extension <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">may</loc> provide the
+ability to control the scope of snapshots.
+The extension <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">may</loc> provide the
+ability to identify pieces of code whose execution should be isolated
+from the outer environment. It
+								<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#RFC2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">may</loc> be possible
+to indicate that some pieces of code must be executed atomically, with
+respect to failures.</p>
+						</def>
+					</gitem>
+				</glist>
+			</div2>
+		</div1>
+	</body>
+
+	<back>
+		<div1 id="references">
+			<head>References</head>
+			<blist>
+				<bibl xmlns:xlink="http://www.w3.org/1999/xlink" id="RFC2119" key="RFC 2119" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">S. Bradner.
+					<emph>Key Words for use in
+					RFCs to Indicate Requirement
+					Levels.</emph> IETF RFC 2119. 
+          See <loc href="http://www.ietf.org/rfc/rfc2119.txt" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://www.ietf.org/rfc/rfc2119.txt</loc>.</bibl>
+		  <bibl xmlns:xlink="http://www.w3.org/1999/xlink" key="XQuery 1.0 and XPath 2.0 Data Model" id="datamodel" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">World Wide Web
+          Consortium. <emph>XQuery 1.0 and XPath 2.0 Data Model</emph>. 
+          W3C Recommendation, 23 January 2007. 
+          See <loc href="http://www.w3.org/TR/xpath-datamodel/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://www.w3.org/TR/xpath-datamodel/</loc>.</bibl>
+				<bibl xmlns:xlink="http://www.w3.org/1999/xlink" key="XQuery 1.0" id="xquery" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">World Wide Web Consortium. <emph>XQuery
+          1.0</emph>. 
+          W3C Recommendation, 23 January 2007. 
+          See <loc href="http://www.w3.org/TR/xquery/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://www.w3.org/TR/xquery/</loc>.</bibl>
+				<bibl xmlns:xlink="http://www.w3.org/1999/xlink" key="XQuery Update Facility 1.0" id="updatef" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">World Wide Web Consortium. 
+				<emph>XQuery Update Facility1.0 </emph>. W3C Candidate Recommendation, 14 March 2008. 
+				See <loc href="http://www.w3.org/TR/xqupdate/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://www.w3.org/TR/xquery-update-10/</loc>.</bibl>
+			</blist>
+		</div1>
+	</back>
+</spec>

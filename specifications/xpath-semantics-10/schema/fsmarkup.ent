@@ -1,0 +1,162 @@
+<!-- ............................................................... -->
+<!-- XQuery Formal Semantics Markup ................................ -->
+<!-- ............................................................... -->
+
+<!-- What follows are additions to the xmlspec markup used to produce -->
+<!-- the XQuery 1.0 and XPath 2.0 Formal Semantics - js - 08032003    -->
+
+<!-- ............................................................... -->
+<!-- Semantics Divisions............................................ -->
+<!-- ............................................................... -->
+
+<!-- These elements are analagous to divisions, but with a semantic  -->
+<!-- interpretation:                                                 -->
+<!--     smintro: introduction to a language feature.  should        -->
+<!--              contain grammar production rules, if appropriate   -->
+<!--              contains very brief description of feature.        -->
+<!--     smnorm:  contains the normalization or mapping rules for    -->
+<!--              this feature                                       -->
+<!--     smtype:  contains static type inference rules and discussio -->
+<!--              for this feature.                                  -->
+<!--     smeval:  contains dynamic evaluation rules and discussion   -->
+<!--              for this feature                                   -->
+<!--     smexample:  contains an illustrative example                -->
+<!--     smnote:  contains an extended discussion or theoretical     -->
+<!--              note or rationale that is not required to          -->
+<!--              implement the semantics, but may aid understanding -->
+<!--                                                                 -->
+<!-- The DTD allows any mixture of these features in any nesting,    -->
+<!-- because that is easiest to do, but the expected organization    -->
+<!-- is as follows:                                                  -->
+<!--                                                                 -->
+<!--    <!ELEMENT div* (smintro, smnorm?, (smtype, smeval)?) !>      -->
+<!--    <!ELEMENT smintro (%div.mix;|smexample|smnote)*!>            -->
+<!--    <!ELEMENT smnorm  (%div.mix;|smexample|smnote)*!>            -->
+<!--    <!ELEMENT smtype  (%div.mix;|smexample|smnote)*!>            -->
+<!--    <!ELEMENT smeval  (%div.mix;|smexample|smnote)*!>            -->
+<!--                                                                 -->
+<!-- The smtype and smeval sections should only be missing if the    -->
+<!-- effect of normalization is to map this language features        -->
+<!-- into completely different language features                     -->
+
+<!ELEMENT smintro (%div.mix;)*>
+<!ATTLIST smintro %common.att;>
+
+<!ELEMENT smnorm (%div.mix;)*>
+<!ATTLIST smnorm %common.att;>
+
+<!ELEMENT smtype (%div.mix;)*>
+<!ATTLIST smtype %common.att;>
+
+<!ELEMENT smerror (%div.mix;)*>
+<!ATTLIST smerror %common.att;>
+
+<!ELEMENT smnotation (%div.mix;)*>
+<!ATTLIST smnotation %common.att;>
+
+<!ELEMENT smcore (%div.mix;)*>
+<!ATTLIST smcore %common.att;>
+
+<!ELEMENT smcontext (%div.mix;)*>
+<!ATTLIST smcontext %common.att;>
+
+<!ELEMENT smdyncontext (%div.mix;)*>
+<!ATTLIST smdyncontext %common.att;>
+
+<!ELEMENT smeval (%div.mix;)*>
+<!ATTLIST smeval %common.att;>
+
+<!ELEMENT smexample (%div.mix;)*>
+<!ATTLIST smexample %common.att;>
+
+<!ELEMENT smexamples (%div.mix;)*>
+<!ATTLIST smexamples %common.att;>
+
+<!ELEMENT smnote (%div.mix;)*>
+<!ATTLIST smnote %common.att;>
+
+<!ELEMENT smrules (%div.mix;)*>
+<!ATTLIST smrules %common.att;>
+
+<!ELEMENT smschema (%div.mix;)*>
+<!ATTLIST smschema %common.att;>
+
+<!ELEMENT smschemanorm (%div.mix;)*>
+<!ATTLIST smschemanorm %common.att;>
+
+<!ELEMENT subscript (%p.pcd.mix;)*>
+<!ELEMENT symbol (#PCDATA)>
+<!ATTLIST symbol alt  CDATA #IMPLIED>
+<!ELEMENT big (#PCDATA)>
+
+<!-- Mapping Rules, added by *mff* -->
+
+<!ELEMENT mapping (xquery,core)>
+<!ATTLIST mapping %common.att;>
+
+<!ELEMENT xquery  (expression)>
+<!ATTLIST xquery   %common.att;>
+
+<!ELEMENT core    (expression)>
+<!ATTLIST core    %common.att;>
+
+<!-- Type Inference Rules, added by *funk*; modified by *mff* -->
+<!-- dd: I changed the "judge" name to "pre" and "post".      -->
+<!--     this makes it possible to play around with the       -->
+<!--     xsl more                                             -->
+
+<!ELEMENT infergr (infer*)>
+<!ATTLIST infergr %common.att;>
+
+<!ELEMENT infer (prejudge?, postjudge)>
+<!ATTLIST infer %common.att;>
+
+<!ELEMENT prejudge (clause* | multiclause*)>
+
+<!ELEMENT postjudge (clause* | multiclause*)>
+
+<!ELEMENT multiclause (clause*)>
+
+<!ELEMENT clause (environment?, expression)>
+
+<!ELEMENT environment (%p.pcd.mix;|%p.mix;)*>
+<!ATTLIST environment %common.att;>
+
+<!ELEMENT update (environment,expression+)>
+<!ELEMENT fullupdate (environment,expression+)>
+
+<!ELEMENT expression (%p.pcd.mix;|%p.mix;)*>
+<!ATTLIST expression %common.att;>
+
+<!ELEMENT display (%p.pcd.mix;|%p.mix;)*>
+<!ATTLIST display %common.att;>
+
+<!ELEMENT small (%p.pcd.mix;|%p.mix;)*>
+<!ATTLIST small %common.att;>
+
+<!ELEMENT schemaRepresentationEg (schemaRepresentation|schemaRepresentationNoAttribute|schemaRepresentationNoContent)>
+<!ATTLIST schemaRepresentationEg %common.att;>
+<!ELEMENT schemaRepresentation (name,schemaAttribute*,content)>
+<!ATTLIST schemaRepresentation %common.att;>
+<!ELEMENT schemaRepresentationNoAttribute (name,content)>
+<!ATTLIST schemaRepresentationNoAttribute %common.att;>
+<!ELEMENT schemaRepresentationNoContent (name,schemaAttribute*)>
+<!ATTLIST schemaRepresentationNoContent %common.att;>
+<!ELEMENT schemaAttribute (%p.pcd.mix;|%p.mix;)*>
+<!ATTLIST schemaAttribute %common.att;>
+<!ELEMENT content (%p.pcd.mix;|%p.mix;)*>
+<!ATTLIST content %common.att;>
+
+<!ELEMENT map (%p.pcd.mix;|%p.mix;)*>
+<!ATTLIST map %common.att;>
+
+<!ELEMENT sepr EMPTY>
+
+<!-- XPath Grammar, added by dd -->
+
+<!ELEMENT prodrefgroup (prodref*)>
+<!ATTLIST prodrefgroup %common.att;>
+
+<!ELEMENT prodref EMPTY>
+<!ATTLIST prodref 
+          name     CDATA    #REQUIRED>

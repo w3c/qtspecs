@@ -1,0 +1,82 @@
+<!-- Content model for XSLT element syntax notation -->
+
+<!ELEMENT e:element-syntax
+  (e:in-category*, e:attribute*, (e:empty|e:text|e:element|e:model|e:sequence|e:choice),
+   e:allowed-parents)
+>
+<!ATTLIST e:element-syntax
+  %common.att;
+  xmlns:e CDATA #FIXED "http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+  name NMTOKEN #REQUIRED
+>
+<!ELEMENT e:in-category EMPTY>
+<!ATTLIST
+  e:in-category name NMTOKEN #REQUIRED
+  xmlns:e CDATA #FIXED "http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+>
+<!ELEMENT e:attribute (e:attribute-value-template|(e:constant|e:data-type)+)>
+<!ATTLIST e:attribute
+  name NMTOKEN #REQUIRED
+  deprecated (yes|no) #IMPLIED
+  required (yes|no) #IMPLIED
+  xmlns:e CDATA #FIXED "http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+>
+<!ELEMENT e:attribute-value-template (e:constant|e:data-type)+>
+<!ATTLIST e:attribute-value-template
+  xmlns:e CDATA #FIXED "http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+>
+<!ELEMENT e:constant EMPTY>
+<!ATTLIST
+  e:constant value CDATA #REQUIRED
+  xmlns:e CDATA #FIXED "http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+>
+<!ELEMENT e:data-type EMPTY>
+<!ATTLIST e:data-type
+  name NMTOKEN #REQUIRED
+  xmlns:e CDATA #FIXED "http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+>
+<!ELEMENT e:empty EMPTY>
+<!ATTLIST e:empty
+  xmlns:e CDATA #FIXED "http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+>
+<!ELEMENT e:text EMPTY>
+<!ATTLIST e:text
+  xmlns:e CDATA #FIXED "http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+>
+<!ELEMENT e:element EMPTY>
+<!ATTLIST e:element
+  name NMTOKEN #REQUIRED
+  deprecated (yes|no) #IMPLIED
+  repeat (zero-or-one|zero-or-more|one-or-more) #IMPLIED
+  xmlns:e CDATA #FIXED "http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+>
+<!ELEMENT e:model EMPTY>
+<!ATTLIST e:model
+  name NMTOKEN #REQUIRED
+  repeat (zero-or-one|zero-or-more|one-or-more) #IMPLIED
+  xmlns:e CDATA #FIXED "http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+>
+<!ELEMENT e:sequence (e:element|e:model|e:choice)+>
+<!ATTLIST e:sequence
+  repeat (zero-or-one|zero-or-more|one-or-more) #IMPLIED
+  xmlns:e CDATA #FIXED "http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+>
+<!ELEMENT e:choice (e:element|e:model|e:sequence)+>
+<!ATTLIST e:choice
+  repeat (zero-or-one|zero-or-more|one-or-more) #IMPLIED
+  xmlns:e CDATA #FIXED "http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+>
+
+<!ELEMENT e:allowed-parents (e:parent | e:parent-category)*>
+
+<!ELEMENT e:parent EMPTY>
+<!ATTLIST e:parent
+  name NMTOKEN #REQUIRED
+  xmlns:e CDATA #FIXED "http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+>
+
+<!ELEMENT e:parent-category EMPTY>
+<!ATTLIST e:parent-category
+  name (sequence-constructor) #REQUIRED
+  xmlns:e CDATA #FIXED "http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+>

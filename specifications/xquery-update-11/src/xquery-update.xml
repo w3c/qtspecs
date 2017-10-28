@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE spec SYSTEM "../../xpath-semantics-10/schema/xquery-semantics.dtd"[
+<!ENTITY % ref-req.att "ref    CDATA    #REQUIRED">
+
+<!ENTITY XML "http://www.w3.org/TR/REC-xml">
+<!ENTITY XMLNames "http://www.w3.org/TR/REC-xml-names">
+
+<!ENTITY doc.version "1.1">
+<!ENTITY doc.version-code "11">
+<!ENTITY doc.stage "WD">
+<!ENTITY doc.w3c-doctype "wd">
+<!ENTITY doc.w3c-doctype-full "Working Draft">
+<!ENTITY date.day "09">
+<!ENTITY date.DD "09">
+<!ENTITY date.month "June">
+<!ENTITY date.monthnum "06">
+<!ENTITY date.year "2009">
+<!ENTITY doc.date "&date.year;&date.monthnum;&date.DD;">
+
+<!ENTITY w3c.tr "http://www.w3.org/TR">
+<!ENTITY doc.generic-shortname "xquery-update">
+<!ENTITY doc.shortname "&doc.generic-shortname;-&doc.version-code;">
+<!ENTITY doc.w3c-designation "&doc.stage;-&doc.shortname;">
+<!ENTITY doc.publoc "&w3c.tr;/&date.year;/&doc.w3c-designation;-&doc.date;/">
+<!ENTITY doc.latestloc "&w3c.tr;/&doc.shortname;/">
+<!ENTITY language "XQuery Update Facility &doc.version;">
+
+<!ENTITY ndash "&#45;">
+<!ENTITY version "<phrase role='spec-version'/>">
+<!ENTITY working-group "<phrase role='spec-wg'/>">
+<!ENTITY for-name "<phrase role='spec-for-name'/>">
+<!ENTITY query-expr "<phrase role='spec-query'/>">
+<!ENTITY xup-ebnf SYSTEM "xup-ebnf.xml">
+<!ENTITY xup-header SYSTEM "xup-header.xml">
+<!ENTITY xup-intro SYSTEM "xup-intro.xml">
+<!ENTITY xup-xq-extensions SYSTEM "xup-xq-extensions.xml">
+<!ENTITY xup-update-ops SYSTEM "xup-update-ops.xml">
+<!ENTITY xup-update-static SYSTEM "xup-update-static.xml">
+<!ENTITY xup-conformance SYSTEM "xup-conformance.xml">
+<!ENTITY xup-references SYSTEM "xup-references.xml">
+<!ENTITY xup-errors SYSTEM "xup-errors.xml">
+<!ENTITY xup-impl-defs SYSTEM "xup-impl-defs.xml">
+<!ENTITY xup-precedence-rationale SYSTEM "xup-precedence-rationale.xml">
+<!ENTITY xup-revision-log SYSTEM "xup-revision-log.xml">
+<!ENTITY xup-xqueryx SYSTEM "xup-xqueryx.xml">
+<!ENTITY xupx-schema SYSTEM "xupx-schema.xml">
+<!ENTITY xupx-redef-schema SYSTEM "xupx-redef-schema.xml">
+<!ENTITY xupx-stylesheet SYSTEM "xupx-stylesheet.xml">
+<!ENTITY xupx-example1a SYSTEM "xupx-example1a.xml">
+<!ENTITY xupx-example1b SYSTEM "xupx-example1b.xml">
+<!ENTITY xupx-example1c SYSTEM "xupx-example1c.xml">
+<!ENTITY eacute "&#233;">
+<!ENTITY ocirc "&#244;">
+<!ENTITY fsloc "http://www.w3.org/TR/2007/REC-xquery-semantics-20070123/">
+<!ENTITY xq_revalidation_mode_env  "&xq_stat_env;.<a href='#xq_revalidation_mode_env' class='env'>revalidationMode</a>">
+<!ENTITY gr_RevalidationMode      "<emph>RevalidationMode</emph>&nc;">
+<!ENTITY gr_RevalidationDecl     "<emph>RevalidationDecl</emph>&nc;">
+
+
+<!ENTITY % status-entities SYSTEM "../../../etc/status-entities.dtd">
+%status-entities;
+
+<!ENTITY doc.WD-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.LC-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.LC-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.CR-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.CR-repubdate "TO BE SPECIFIED">
+<!ENTITY doc.CR-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.PR-expected "TO BE SPECIFIED">
+<!ENTITY doc.PR-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.PR-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.REC-pubdate "TO BE SPECIFIED">
+
+<!ENTITY doc.pubdate "&doc.CR-pubdate;">
+<!ENTITY doc.comments-due "$doc.CR-comments-due;">
+
+<!ENTITY status-section-id "status">
+<!ENTITY spec-devby    "&devby.xquery;">
+<!ENTITY changelog-id  "id-revision-log">
+<!ENTITY changes-para  "&post.CR.changes;">
+<!ENTITY implementation-report-location "http://dev.w3.org/2010/xquery-update-11-test-suite/results/">
+<!ENTITY implementation-report-availability "&report-public;">
+<!ENTITY implementation-report '&prelim-implementation-report-exists;'>
+<!ENTITY test-suite-location "http://dev.w3.org/2010/xquery-update-11-test-suite/">
+<!ENTITY disclosure.one    "&disclosure.xquery;"> 
+<!ENTITY Bugzilla-key "UPD">
+<!ENTITY patent-policy-paragraph "&ppp-one;">
+<!ENTITY documents-and-relationships "&not-set-of-documents;">
+<!ENTITY advancement.statement "&advance.1WG;">
+<!ENTITY document-stage "&doc-stage-WD;">
+
+<!ENTITY doc-stability "&doc-stability-WD;">
+<!ENTITY PR-entrance-criteria '<p>The &XQWG; intends to submit
+this document for consideration as a W3C
+<loc href="http://www.w3.org/2004/02/Process-20040205/tr.html#RecsPR">Proposed Recommendation</loc>
+as soon as the following conditions are met:
+</p>
+<olist>
+<item><p>A test suite is available that tests each identified XQuery Update Facility feature,
+both required and optional.</p></item>
+<item><p>Minimal Conformance to this specification, as defined in
+      <specref ref="id-minimal-conformance"/>, has been demonstrated by at least 
+      two distinct implementations, at least one of which uses the XQuery human-readable 
+      syntax defined in this specification.</p></item>
+<item><p>The Working Group has responded formally to all issues raised during
+      the CR period against this document.</p></item>
+</olist>'>
+<!ENTITY features-at-risk-para "&multiple-features-at-risk;">
+<!ENTITY features-at-risk '<ulist>
+<item><p><loc href="#dt-revalidation-mode">Revalidation modes other than "skip"</loc></p></item>
+<item><p><loc href="#id-update-facility-static-typing-feature">the Update Facility Static Typing Feature</loc></p></item>
+<item><p><loc href="#id-xqueryx-update-conformance">XQueryX Conformance</loc></p></item>
+</ulist>'>
+<!ENTITY customized-paragraph '<p>This is an initial internal draft of a
+candidate XQuery Update Facility 1.1 document. </p>'>
+
+<!ENTITY status-section SYSTEM "../../../etc/status-general.xml">
+]>
+<spec id="spec-top" w3c-doctype="&doc.w3c-doctype;">
+<header>&xup-header;</header>
+<body>
+&xup-intro;
+&xup-xq-extensions;
+&xup-update-ops;
+&xup-update-static;
+&xup-conformance;
+</body>
+<back id="id-appendices">
+&xup-ebnf;
+&xup-impl-defs;
+&xup-references;
+&xup-errors;
+&xup-xqueryx;
+
+<inform-div1 id="id-glossary">
+<head>Glossary</head>
+<!-- This processing instruction automatically generates the glossary. -->
+<?glossary ?>
+</inform-div1>
+&xup-precedence-rationale;
+&xup-revision-log;
+
+</back>
+</spec>

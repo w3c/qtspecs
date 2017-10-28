@@ -1,0 +1,2409 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE spec PUBLIC "-//W3C//DTD Specification V2.0//EN" "../../../schema/xmlspec.dtd" [
+
+	<!ENTITY doc.version "3.0">
+	<!ENTITY doc.version-code "30">
+	<!ENTITY doc.stage "NOTE">
+	<!ENTITY doc.w3c-doctype "wgnote">
+	<!ENTITY doc.w3c-doctype-full "Working Group Note">
+
+	<!ENTITY date.day "08">
+	<!ENTITY date.DD "08">
+	<!ENTITY date.month "April">
+	<!ENTITY date.monthnum "04">
+	<!ENTITY date.year "2014">
+	<!ENTITY doc.date "&date.year;&date.monthnum;&date.DD;">
+
+	<!ENTITY w3c.tr "http://www.w3.org/TR">
+	<!ENTITY doc.parent.shortname "xquery-&doc.version-code;">
+	<!ENTITY doc.shortname "&doc.parent.shortname;-use-cases">
+	<!ENTITY doc.w3c-designation "&doc.stage;-&doc.shortname;">
+	<!ENTITY doc.publoc "&w3c.tr;/&date.year;/&doc.w3c-designation;-&doc.date;/">
+	<!ENTITY doc.latestloc "&w3c.tr;/&doc.shortname;/">
+	<!ENTITY doc.parent.latestloc "&w3c.tr;/&doc.parent.shortname;/">
+	<!ENTITY language "XQuery &doc.version;">
+
+	<!ENTITY % status-entities SYSTEM "../../../etc/status-entities.dtd">
+	%status-entities;
+
+	<!ENTITY doc.WD-pubdate "08 January 2013">
+	<!ENTITY doc.LC-pubdate "TO BE SPECIFIED">
+	<!ENTITY doc.LC-comments-due "TO BE SPECIFIED">
+	<!ENTITY doc.CR-pubdate "TO BE SPECIFIED">
+	<!ENTITY doc.CR-comments-due "TO BE SPECIFIED">
+	<!ENTITY doc.PR-expected "TO BE SPECIFIED">
+	<!ENTITY doc.PR-pubdate "TO BE SPECIFIED">
+	<!ENTITY doc.PR-comments-due "TO BE SPECIFIED">
+	<!ENTITY doc.REC-pubdate "08 April 2014">
+
+	<!ENTITY doc.pubdate "&doc.REC-pubdate;">
+	<!ENTITY doc.comments-due "&doc.REC-comments-due;">
+
+	<!ENTITY status-section-id "status">
+	<!ENTITY spec-devby "&devby.xquery;">
+	<!ENTITY changelog-id "ChangeLog">
+	<!ENTITY changes-para "&post.WD.changes;">
+	<!ENTITY implementation-report-location "">
+	<!ENTITY implementation-report-availability "">
+	<!ENTITY implementation-report "&implementation-report-irrelevant;">
+	<!ENTITY disclosure.one "&disclosure.xquery;">
+	<!ENTITY Bugzilla-key "XQuery30UC">
+	<!ENTITY patent-policy-paragraph "&ppp-one-NOTE;">
+	<!ENTITY documents-and-relationships "&not-set-of-documents;">
+	<!ENTITY advancement.statement "">
+	<!ENTITY doc-stability "&doc-stability-NOTE;">
+	<!ENTITY PR-entrance-criteria ''>
+	<!ENTITY features-at-risk-para "&no-features-at-risk;">
+	<!ENTITY document-stage "&doc-stage-NOTE;">
+	<!ENTITY customized-paragraph '<p>This document provides
+a number of use cases designed to evaluate &language;, the requirements for which
+are specified in <bibref ref="xquery-30-requirements"/>.</p>'>
+	<!ENTITY status-section SYSTEM "../../../etc/status-general.xml">
+
+    <!ENTITY BZ "http://www.w3.org/Bugs/Public/show_bug.cgi?id=">
+]>
+<!--
+
+1. Get rid of the "might add or delete use cases" stuff from status
+2. DONE: Use an updated Meltonesque status section
+3. Static typing
+
+-->
+<spec id="spec-top" w3c-doctype="&doc.w3c-doctype;">
+	<header id="spec-header">
+		<title>XQuery 3.0 Use Cases</title>
+		<w3c-designation>&doc.w3c-designation;</w3c-designation>
+		<w3c-doctype>W3C &doc.w3c-doctype-full;</w3c-doctype>
+		<pubdate>
+			<day>&date.day;</day>
+			<month>&date.month;</month>
+			<year>&date.year;</year>
+		</pubdate>
+		<publoc>
+			<loc href="&doc.publoc;">&doc.publoc;</loc>
+		</publoc>
+		<altlocs>
+			<loc href="&doc.shortname;.xml">XML</loc>
+		</altlocs>
+		<latestloc>
+			<loc href="&doc.latestloc;">&doc.latestloc;</loc>
+		</latestloc>
+		<prevlocs>
+			<loc href="http://www.w3.org/TR/2013/WD-xquery-30-use-cases-20130108/">http://www.w3.org/TR/2013/WD-xquery-30-use-cases-20130108/</loc>,
+			<loc href="http://www.w3.org/TR/2012/WD-xquery-30-use-cases-20120327/">http://www.w3.org/TR/2012/WD-xquery-30-use-cases-20120327/</loc>,
+      <loc href="http://www.w3.org/TR/2010/WD-xquery-30-use-cases-20101214/">http://www.w3.org/TR/2010/WD-xquery-30-use-cases-20101214/</loc>,
+      <loc href="http://www.w3.org/TR/2008/WD-xquery-11-use-cases-20081203/">http://www.w3.org/TR/2008/WD-xquery-11-use-cases-20081203/</loc>,
+      <loc href="http://www.w3.org/TR/2008/WD-xquery-11-use-cases-20080711/">http://www.w3.org/TR/2008/WD-xquery-11-use-cases-20080711/</loc>
+		</prevlocs>
+		<authlist>
+                        <author>
+                                <name>Jonathan Robie</name>
+                                <affiliation>EMC Corporation</affiliation>
+                                <email href="mailto:jonathan.robie@emc.com">jonathan.robie@emc.com</email>
+                        </author>
+
+			<author>
+				<name>Tim Kraska</name>
+				<affiliation>FLWOR Foundation</affiliation>
+				<email href="mailto:tim@flworfound.org">tim@flworfound.org</email>
+			</author>
+		</authlist>
+
+&status-section;
+
+		<abstract>
+			<p>This document specifies usage scenarios for XML Query (XQuery) 3.0.</p>
+		</abstract>
+		<langusage>
+			<language id="EN">English</language>
+		</langusage>
+		<revisiondesc>
+			<p>TK, 30 January 2008: Addes first group-by and windowing UC.</p>
+		</revisiondesc>
+	</header>
+	<body>
+		<div1 id="ucforxq30">
+			<head>Use Cases for XML Query 3.0</head>
+			<p>The use cases listed below were created by the XML Query Working Group to illustrate
+                important applications for the new features in XQuery 3.0. Each use case is focused on a
+                specific application area, and contains a XML Schema and example
+                input data. Each use case specifies a set of queries that might be applied to the
+                input data, and the expected results for each query. Since the English description
+                of each query is concise, the expected results form an important part of the
+                definition of each query, specifying the expected output format. </p>
+			<p>Most of the listed use cases are based on a simple shopping scenario described in section
+			    <loc href="#data">Schema and Data</loc>.
+          Use cases which require special data have a seperate subsection describing
+			    the XML Schema and input data.
+                All use cases assume that input is provided in the form of
+                one or more documents with specific names. For instance, the products in a document
+                may be accessed with expressions like this:</p>
+			<eg>doc("products.xml")//product</eg>
+			<p>Several implementors have asked us to make the queries from these use cases
+                available in a separate file in order to make it easier for them to test their parsers. These
+                queries may be found in <bibref ref="UseCaseQueries"/>
+			</p>
+			<!--                Also, the queries from the XQuery specification itself have been made available in <bibref ref="XQueryQueries"/>. -->
+			<p>To make output more readable, the output of queries has been formatted using
+                whitespace which may not be returned by a query processor. This whitespace should
+                not be considered normative for the correctness of results.</p>
+			<p>These queries were tested with a dynamic implementation of XQuery. Some queries may
+                require additional type declarations to be used with an implementation that
+                implements the Static Typing feature. </p>
+		</div1>
+		<div1 id="data">
+			<head>Shopping Scenario: Schema and Data</head>
+			<p>If not stated otherwise all use cases in this document are based on a simplified shopping scenario containing three documents. The first document, products.xml, contains a list of products, whereas stores.xml includes a list of stores, and sales-records.xml contains the list of sales.</p>
+			<div2 id="dtdproducts">
+				<head>Schema</head>
+				<p>The document product.xml uses the following XML Schema:</p>
+				<eg role="schema"><![CDATA[<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="products">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="product" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="name" type="xs:string"/>
+                            <xs:element name="category" type="xs:string"/>
+                            <xs:element name="price" type="xs:double"/>
+                            <xs:element name="cost" type="xs:double"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
+]]></eg>
+				<p>The sales-records.xml document follows this XML Schema:</p>
+				<eg role="schema"><![CDATA[<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="sales">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="record" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="product-name" type="xs:string"/>
+                            <xs:element name="store-number" type="xs:integer"/>
+                            <xs:element name="qty" type="xs:integer"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
+]]></eg>
+				<p>The stores.xml document is valid to this XML Schema:</p>
+				<eg role="schema"><![CDATA[<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="stores">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="store" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="store-number" type="xs:byte"/>
+                            <xs:element name="state" type="xs:string"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
+]]></eg>
+			</div2>
+			<div2 id="dataproducts">
+				<head>Sample Data</head>
+				<p>The content of the document products.xml is:</p>
+				<eg role="data"><![CDATA[<products>
+  <product>
+    <name>broiler</name>
+    <category>kitchen</category>
+    <price>100</price>
+    <cost>70</cost>
+  </product>
+  <product>
+    <name>toaster</name>
+    <category>kitchen</category>
+    <price>30</price>
+    <cost>10</cost>
+  </product>
+  <product>
+    <name>blender</name>
+    <category>kitchen</category>
+    <price>50</price>
+    <cost>25</cost>
+  </product>
+  <product>
+    <name>socks</name>
+    <category>clothes</category>
+    <price>5</price>
+    <cost>2</cost>
+  </product>
+  <product>
+    <name>shirt</name>
+    <category>clothes</category>
+    <price>10</price>
+    <cost>3</cost>
+  </product>
+</products>
+]]></eg>
+				<p>The content of sales-records.xml is:</p>
+				<eg role="data"><![CDATA[<sales>
+  <record>
+    <product-name>broiler</product-name>
+    <store-number>1</store-number>
+    <qty>20</qty>
+  </record>
+  <record>
+    <product-name>toaster</product-name>
+    <store-number>2</store-number>
+    <qty>100</qty>
+  </record>
+  <record>
+    <product-name>toaster</product-name>
+    <store-number>2</store-number>
+    <qty>50</qty>
+  </record>
+  <record>
+    <product-name>toaster</product-name>
+    <store-number>3</store-number>
+    <qty>50</qty>
+  </record>
+  <record>
+    <product-name>blender</product-name>
+    <store-number>3</store-number>
+    <qty>100</qty>
+  </record>
+  <record>
+    <product-name>blender</product-name>
+    <store-number>3</store-number>
+    <qty>150</qty>
+  </record>
+  <record>
+    <product-name>socks</product-name>
+    <store-number>1</store-number>
+    <qty>500</qty>
+  </record>
+  <record>
+    <product-name>socks</product-name>
+    <store-number>2</store-number>
+    <qty>10</qty>
+  </record>
+  <record>
+    <product-name>shirt</product-name>
+    <store-number>3</store-number>
+    <qty>10</qty>
+  </record>
+</sales>
+]]></eg>
+				<p>The content of stores.xml is:</p>
+				<eg role="data"><![CDATA[<stores>
+  <store>
+    <store-number>1</store-number>
+    <state>CA</state>
+  </store>
+  <store>
+    <store-number>2</store-number>
+    <state>CA</state>
+  </store>
+  <store>
+    <store-number>3</store-number>
+    <state>MA</state>
+  </store>
+  <store>
+    <store-number>4</store-number>
+    <state>WA</state>
+  </store>
+</stores>
+]]></eg>
+			</div2>
+		</div1>
+		<!-- QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ -->
+		<!--######################################    Simplified FLWOR       ################################ -->
+		<!-- QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ -->
+		<!-- ############################ UC windowing_Q3_transaction_time ################################## -->
+		<!-- Do we really want to have the Simplified FLWOR UC???
+		<div1 id="simplified-flwor-queries-results">
+				<head>Use Case "Simplified FLWOR"</head>
+				<p>This use cases demonstrate how the simplified FLWOR grammar can help to simplify queries and easier to write according to the requirements. </p>
+
+								<div2 id="simplified-flwor-2">
+					<head>Q1</head>
+					<p>Order all books according to their title and return only those which have more than one author. </p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[<result>{
+    for $book in doc("mydoc.xml")/bib/book
+    order by $book/title
+    let $number-authors := count($book/author)
+    where $number-authors > 1
+    return
+       <book name="{$book/title}" number-authors="{$number-authors}"/>
+}</result>]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<result>
+    <book name="Querying XML" number-authors="2"/>
+    <book name="SQL:1999" number-authors="2"/>
+    <book name="Understanding SQL and Java Together" number-authors="2"/>
+</result>
+					]]></eg>
+				</div2>
+			<div2 id="simplified-flwor-1">
+					<head>Q2</head>
+					<p>Show the turnover for every store and product. The solution demonstrates how the FLWOR syntax got simplified in regard to the clause order. </p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[<sales>{
+    for $sales in doc("sales-records.xml")/*/record
+    for $product in doc("products.xml")/*/product
+    where $product/name eq $sales/product-name
+    for $store in doc("stores.xml")/*/store
+    where $store/store-number eq $sales/store-number
+    let $sum := $product/price * $sales/qty
+    order by $product/name,$sum
+    return
+        <sale product="{$product/name}" store="{$store/state}" price="{$product/price}" qty="{$sales/qty}" turnover="{$sum}"/>
+}</sales>]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<sales>
+    <sale product="blender" store="MA" price="50" qty="100" turnover="5000"/>
+    <sale product="blender" store="MA" price="50" qty="150" turnover="7500"/>
+    <sale product="broiler" store="CA" price="100" qty="20" turnover="2000"/>
+    <sale product="shirt" store="MA" price="10" qty="10" turnover="100"/>
+    <sale product="socks" store="CA" price="5" qty="10" turnover="50"/>
+    <sale product="socks" store="CA" price="5" qty="500" turnover="2500"/>
+    <sale product="toaster" store="CA" price="30" qty="50" turnover="1500"/>
+    <sale product="toaster" store="MA" price="30" qty="50" turnover="1500"/>
+    <sale product="toaster" store="CA" price="30" qty="100" turnover="3000"/>
+</sales>]]></eg>
+				</div2>
+		</div1>
+-->
+		<!-- EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE -->
+		<!--######################################     Generalized FLWOR     ##################### -->
+		<!-- EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE -->
+		<div1 id="groupby">
+			<head>Use Case "Group By" - Queries which require value-based grouping</head>
+			<p>This use case contains several sample queries in which value based grouping is needed. </p>
+			<!--###################################### DATA books ############################ -->
+			<div2 id="update30-groupby-schema-and-sample-data">
+				<head>Schema and Sample Data</head>
+				<p>Queries 1-6 are based on a simplified shop scenario with products, sales records and different shop locations. The schema and data can be found in section <loc href="#data">Schema and Data</loc>. Queries 7 and 8 are based on a bibliography document shown below:</p>
+				<div3 id="dtdbooks">
+					<head>Schema Q7-Q8</head>
+					<p>Q7 and Q8 use an input document named "books.xml", with the following XML Schema:</p>
+					<eg role="schema"><![CDATA[<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="bib">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="book" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="author" type="xs:string" maxOccurs="unbounded"/>
+                            <xs:element name="title" type="xs:string"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
+]]></eg>
+				</div3>
+				<div3 id="databooks">
+					<head>Sample Data Q7-Q8</head>
+					<p>Here are the contents of books.xml:</p>
+					<eg role="data"><![CDATA[<bib>
+  <book>
+    <author>Jim Melton</author>
+    <author>Alan Simon</author>
+    <title>SQL:1999</title>
+  </book>
+  <book>
+    <author>Jim Melton</author>
+    <title>Advanced SQL:1999</title>
+  </book>
+  <book>
+    <author>Alan Simon</author>
+    <title>Strategic Database Technology</title>
+  </book>
+  <book>
+    <author>Jim Melton</author>
+    <author>Andrew Eisenberg</author>
+    <title>Understanding SQL and Java Together</title>
+  </book>
+  <book>
+    <author>Jim Melton</author>
+    <author>Stephen Buxton</author>
+    <title>Querying XML</title>
+  </book>
+</bib>
+]]></eg>
+				</div3>
+			</div2>
+			<!-- QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ -->
+			<!--######################################    DATA groupby     ################################ -->
+			<!-- QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ -->
+			<div2 id="groupby-queries-results">
+				<head>Queries and Results</head>
+				<!-- ############################ UC groupby_q1 ################################## -->
+				<div3 id="groupby_q1">
+					<head>Q1</head>
+					<p>Group sales by product, list name and total quantity of each product. </p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[<sales-qty-by-product>{
+  for $sales in doc("sales-records.xml")/*/record
+  let $pname := $sales/product-name
+  group by $pname
+  order by $pname
+  return
+    <product name="{$pname}">{
+      sum($sales/qty)
+    }</product>
+}</sales-qty-by-product> ]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<sales-qty-by-product>
+  <product name="blender">250</product>
+  <product name="broiler">20</product>
+  <product name="shirt">10</product>
+  <product name="socks">510</product>
+  <product name="toaster">200</product>
+</sales-qty-by-product>
+]]></eg>
+				</div3>
+				<!-- ############################ UC groupby_q2 ################################## -->
+				<div3 id="groupby_q2">
+					<head>Q2</head>
+					<p>Group sales by state (a property of the store) and category (a property
+of the product). Order groups by the grouping keys. For each group,
+show the total quantity sold. </p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[<result>{
+  for $sales in doc("sales-records.xml")/*/record
+  let $state := doc("stores.xml")/*/store[store-number = $sales/store-number]/state
+  let $category := doc("products.xml")/*/product[name = $sales/product-name]/category
+  group by $state, $category
+  order by $state, $category
+  return
+    <group>
+      <state>{$state}</state>
+      <category>{$category}</category>
+      <total-qty>{sum($sales/qty)}</total-qty>
+    </group>
+}</result>]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<result>
+  <group>
+    <state>CA</state>
+    <category>clothes</category>
+    <total-qty>510</total-qty>
+  </group>
+  <group>
+    <state>CA</state>
+    <category>kitchen</category>
+    <total-qty>170</total-qty>
+  </group>
+  <group>
+    <state>MA</state>
+    <category>clothes</category>
+    <total-qty>10</total-qty>
+  </group>
+  <group>
+    <state>MA</state>
+    <category>kitchen</category>
+    <total-qty>300</total-qty>
+  </group>
+</result>
+]]></eg>
+				</div3>
+				<!-- ############################ UC groupby_q3 ################################## -->
+				<div3 id="groupby_q3">
+					<head>Q3</head>
+					<p>Group sales by state (a property of the store) and category (a property
+of the product). Order groups by the grouping keys. For each group,
+show the total revenue (defined as sales/qty * product/price). </p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[<result>{
+  for $sales in doc("sales-records.xml")/*/record
+  let $state := doc("stores.xml")/*/store[store-number = $sales/store-number]/state,
+    $product := doc("products.xml")/*/product[name = $sales/product-name],
+    $category := $product/category,
+    $revenue := $sales/qty * $product/price
+  group by $state, $category
+  order by $state, $category
+  return
+    <group>
+      <state>{$state}</state>
+      <category>{$category}</category>
+      <total-revenue>{sum($revenue)}</total-revenue>
+    </group>
+}</result>]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<result>
+  <group>
+    <state>CA</state>
+    <category>clothes</category>
+    <total-revenue>2550</total-revenue>
+  </group>
+  <group>
+    <state>CA</state>
+    <category>kitchen</category>
+    <total-revenue>6500</total-revenue>
+  </group>
+  <group>
+    <state>MA</state>
+    <category>clothes</category>
+    <total-revenue>100</total-revenue>
+  </group>
+  <group>
+    <state>MA</state>
+    <category>kitchen</category>
+    <total-revenue>14000</total-revenue>
+  </group>
+</result>
+]]></eg>
+				</div3>
+				<!-- ############################ UC groupby_q4 ################################## -->
+				<div3 id="groupby_q4">
+					<head>Q4</head>
+					<p>Combine the input documents into a three-level hierarchy based on
+state, category, and product. At the product level, show the total
+quantity sold of each product. List items alphabetically at each
+level of the hierarchy. </p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[<result>{
+  for $store in doc("stores.xml")/*/store
+  let $state := $store/state
+  group by $state
+  order by $state
+  return
+    <state name="{$state}">{
+      for $product in doc("products.xml")/*/product
+      let $category := $product/category
+      group by $category
+      order by $category
+      return
+        <category name="{$category}">{
+          for $sales in doc("sales-records.xml")/*/record[store-number = $store/store-number
+            and product-name = $product/name]
+          let $pname := $sales/product-name
+          group by $pname
+          order by $pname
+          return
+            <product name="{$pname}" total-qty="{sum($sales/qty)}" />
+          }</category>
+    }</state>
+}</result>]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<result>
+  <state name="CA">
+    <category name="clothes">
+      <product name="socks" total-qty="510"/>
+    </category>
+    <category name="kitchen">
+      <product name="broiler" total-qty="20"/>
+      <product name="toaster" total-qty="150"/>
+    </category>
+  </state>
+  <state name="MA">
+    <category name="clothes">
+      <product name="shirt" total-qty="10"/>
+    </category>
+    <category name="kitchen">
+      <product name="blender" total-qty="250"/>
+      <product name="toaster" total-qty="50"/>
+    </category>
+  </state>
+</result>
+]]></eg>
+				</div3>
+				<!-- ############################ UC groupby_q5 ################################## -->
+				<div3 id="groupby_q5">
+					<head>Q5</head>
+					<p>List all stores in ascending order by store number. For each store, list
+the products sold in that store, in descending order by quantity sold.
+
+Illustrates ordering among and within groups. </p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[<result>{
+  for $sales in doc("sales-records.xml")/*/record
+  let $storeno := $sales/store-number
+  group by $storeno
+  order by $storeno
+  return
+    <store number = "{$storeno}">{
+      for $s in $sales
+      order by xs:int($s/qty) descending
+      return
+        <product name = "{$s/product-name}" qty = "{$s/qty}"/>
+    }</store>
+}</result>
+]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<result>
+  <store number="1">
+    <product name="socks" qty="500"/>
+    <product name="broiler" qty="20"/>
+  </store>
+  <store number="2">
+    <product name="toaster" qty="100"/>
+    <product name="toaster" qty="50"/>
+    <product name="socks" qty="10"/>
+  </store>
+  <store number="3">
+    <product name="blender" qty="150"/>
+    <product name="blender" qty="100"/>
+    <product name="toaster" qty="50"/>
+    <product name="shirt" qty="10"/>
+  </store>
+</result>
+]]></eg>
+				</div3>
+				<!-- ############################ UC groupby_q6 ################################## -->
+				<div3 id="groupby_q6">
+					<head>Q6</head>
+					<p>List all stores whose total profit is greater than 100,
+in descending order by total profit.
+Note: total profit for a store is the sum over all sales
+in that store, of the quantity sold times the difference
+between price and cost for the item sold.
+
+Illustrates cross-document computation, filtering of groups,
+ordering by a non-grouping key. </p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[<result>{
+  for $sales in doc("sales-records.xml")/*/record
+  let $storeno := $sales/store-number,
+    $product := doc("products.xml")/*/product[name = $sales/product-name],
+    $prd := $product,
+    $profit := $sales/qty * ($prd/price - $prd/cost)
+  group by $storeno
+  let $total-store-profit := sum($profit)
+  where $total-store-profit > 100
+  order by $total-store-profit descending
+  return
+    <store number = "{$storeno}" total-profit = "{$total-store-profit}"/>
+ }</result>]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<result>
+  <store number="3" total-profit="7320"/>
+  <store number="2" total-profit="3030"/>
+  <store number="1" total-profit="2100"/>
+</result>
+]]></eg>
+				</div3>
+				<!-- ############################ UC groupby_b1 ################################## -->
+				<div3 id="groupby_b1">
+					<head>Q7</head>
+					<p>Group books by author. Create a group for each individual author. A book with multiple authors should appear in the groups for each of its authors. Alphabetize the authors and the book titles within each author group. </p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[<result>{
+  for $book in doc("books.xml")/*/book
+  for $author in $book/author
+  group by $author
+  order by $author
+  return
+  <author name="{$author}">{
+    for $b in $book
+    order by $b/title
+    return
+      <title> {fn:data($b/title)} </title>
+  }</author>
+}</result>]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<result>
+  <author name="Alan Simon">
+    <title>SQL:1999</title>
+    <title>Strategic Database Technology</title>
+  </author>
+  <author name="Andrew Eisenberg">
+    <title>Understanding SQL and Java Together</title>
+  </author>
+  <author name="Jim Melton">
+    <title>Advanced SQL:1999</title>
+    <title>Querying XML</title>
+    <title>SQL:1999</title>
+    <title>Understanding SQL and Java Together</title>
+  </author>
+  <author name="Stephen Buxton">
+    <title>Querying XML</title>
+  </author>
+</result>
+]]></eg>
+				</div3>
+				<!-- ############################ UC groupby_b2 ################################## -->
+				<div3 id="groupby_b2">
+					<head>Q8</head>
+					<p>Group books by author. Create a group for each distinct ordered list of authors. Each book should be grouped with other books that have the same ordered list of authors. Alphabetize the book titles within each group. </p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[<result>{
+  for $book in doc("books.xml")/*/book
+  let $author-list := fn:string-join($book/author, ', ')
+  group by $author-list
+  order by $author-list
+  return
+    <author-list names="{$author-list}">{
+      for $b in $book
+      order by $b/title
+      return
+        <title> {fn:data($b/title)} </title>
+    }</author-list>
+}</result>]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<result>
+  <author-list names="Alan Simon">
+    <title>Strategic Database Technology</title>
+  </author-list>
+  <author-list names="Jim Melton">
+    <title>Advanced SQL:1999</title>
+  </author-list>
+  <author-list names="Jim Melton, Alan Simon">
+    <title>SQL:1999</title>
+  </author-list>
+  <author-list names="Jim Melton, Andrew Eisenberg">
+    <title>Understanding SQL and Java Together</title>
+  </author-list>
+  <author-list names="Jim Melton, Stephen Buxton">
+    <title>Querying XML</title>
+  </author-list>
+</result>
+]]></eg>
+				</div3>
+			</div2>
+		</div1>
+		<!-- EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE -->
+		<!--######################################    groupby     ################################ -->
+		<!-- EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE -->
+		<!--################################################################################### -->
+		<!--######################################    Windowing     ################################ -->
+		<!--################################################################################### -->
+		<div1 id="windowing">
+			<head>Use Case "Windowing" - Queries which require windowing</head>
+			<p>This use case covers queries that require windowing or positional grouping, which can be seen as a special form of windowing. Windowing means that the queries require selecting subsequences based on certain characterisics of an underlying sequence.
+</p>
+			<!--###################################### DATA arrange_rows ############################ -->
+			<div2 id="update30-windowing-schema-and-sample-data">
+				<head>Schema and Sample Data</head>
+				<p>Windowing is required in various scenarios from formatting up to streaming applications.  The listed queries try to cover different scenarios and require therefore also various types of input data. The following sections describe for every query the used data and the according schema.</p>
+			<div3 id="dtdarrange_rows">
+				<head>XML Schema for Q1</head>
+				<p>Q1 uses an input document named arrange_rows.xml, with the following XML Schema arrange_rows.xsd:</p>
+				<eg role="schema"><![CDATA[<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="doc">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="data" type="xs:string" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
+]]></eg>
+			</div3>
+			<div3 id="dataarrange_rows">
+				<head>Sample Data for Q1</head>
+				<p>The content of arrange_rows.xml is:</p>
+				<eg role="data"><![CDATA[<doc>
+  <data>Green</data>
+  <data>Pink</data>
+  <data>Lilac</data>
+  <data>Turquoise</data>
+  <data>Peach</data>
+  <data>Opal</data>
+  <data>Champagne</data>
+</doc>
+]]></eg>
+			</div3>
+			<!--###################################### DATA head_para ############################ -->
+			<div3 id="dtdhead_para">
+				<head>XML Schema for Q2</head>
+				<p>Q2 uses an input document named head_para.xml, with the following XML Schema named head_para.xsd:</p>
+				<eg role="schema"><![CDATA[<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="body">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:sequence maxOccurs="unbounded">
+                    <xs:element name="h2" type="xs:string"/>
+                    <xs:element name="p" type="xs:string" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
+]]></eg>
+			</div3>
+			<div3 id="datahead_para">
+				<head>Sample Data for Q2</head>
+				<p>The content of head_para.xml is:</p>
+				<eg role="data"><![CDATA[<body>
+  <h2>heading1</h2>
+  <p>para1</p>
+  <p>para2</p>
+  <h2>heading2</h2>
+  <p>para3</p>
+  <p>para4</p>
+  <p>para5</p>
+</body>
+]]></eg>
+			</div3>
+			<!--###################################### DATA term_def_list ############################ -->
+			<div3 id="dtdterm_def_list">
+				<head>XML Schema for Q3</head>
+				<p>Q3 uses an input document named term_def_list.xml, with the following XML Schema named term_def_list.xsd:</p>
+				<eg role="schema"><![CDATA[<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="doc">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:sequence maxOccurs="unbounded">
+                    <xs:element name="dt" type="xs:string" maxOccurs="unbounded"/>
+                    <xs:element name="dd" type="xs:string" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
+]]></eg>
+			</div3>
+			<div3 id="dataterm_def_list">
+				<head>Sample Data for Q3</head>
+				<p>The content of term_def_list.xml is:</p>
+				<eg role="data"><![CDATA[<doc>
+  <dt>XML</dt>
+  <dd>Extensible Markup Language</dd>
+  <dt>XSLT</dt>
+  <dt>XSL Transformations</dt>
+  <dd>A language for transforming XML</dd>
+  <dd>A specification produced by W3C</dd>
+</doc>
+]]></eg>
+			</div3>
+			<!--###################################### DATA delayed_events_day1 ############################ -->
+			<div3 id="dtddelayed_events_day1">
+				<head>XML Schema for Q4-Q6</head>
+				<p>Q4 - Q6 use an input document named temp_events.xml, with the following XML Schema named temp_events.xsd:</p>
+				<eg role="schema"><![CDATA[<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="stream">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="event" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:attribute name="time" type="xs:integer" use="required"/>
+                        <xs:attribute name="temp" type="xs:double" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
+]]></eg>
+			</div3>
+			<div3 id="datadelayed_events_day1">
+				<head>Sample Data for Q4-Q6</head>
+				<p>The content of temp_events.xml is:</p>
+				<eg role="data"><![CDATA[<stream>
+  <event temp="10" time="1"/>
+  <event temp="8" time="2"/>
+  <event temp="6" time="3"/>
+  <event temp="13" time="4"/>
+  <event temp="32" time="5"/>
+  <event temp="9" time="6"/>
+  <event temp="10" time="7"/>
+</stream>]]></eg>
+			</div3>
+			<!--###################################### DATA day1 ############################ -->
+			<div3 id="dtdday1">
+				<head>XML Schema for Q7-Q13</head>
+				<p>Q7 - Q13 use an input document named person_events.xml, with the following XML Schema named person_events.xsd:</p>
+				<eg role="schema"><![CDATA[<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="stream">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="event" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence minOccurs="0">
+                            <xs:element name="person" type="xs:string"/>
+                            <xs:element name="direction" type="xs:string"/>
+                        </xs:sequence>
+                        <xs:attribute name="time" type="xs:dateTime" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
+]]></eg>
+			</div3>
+			<div3 id="dataday1">
+				<head>Sample Data for Q7-Q13</head>
+				<p>The content of person_events.xml is:</p>
+				<eg role="data"><![CDATA[<stream>
+  <event time="2006-01-01T01:00:00-00:00"/>
+  <event time="2006-01-01T10:30:00-00:00">
+    <person>Anton</person>
+    <direction>in</direction>
+  </event>
+  <event time="2006-01-01T11:00:00-00:00">
+    <person>Barbara</person>
+    <direction>in</direction>
+  </event>
+  <event time="2006-01-01T11:15:00-00:00">
+    <person>Clara</person>
+    <direction>in</direction>
+  </event>
+  <event time="2006-01-01T12:15:00-00:00">
+    <person>Clara</person>
+    <direction>out</direction>
+  </event>
+  <event time="2006-01-01T14:00:00-00:00">
+    <person>Barbara</person>
+    <direction>out</direction>
+  </event>
+  <event time="2006-01-01T15:00:00-00:00">
+    <person>Anton</person>
+    <direction>out</direction>
+  </event>
+  <event time="2006-01-01T23:00:00-00:00"/>
+  <event time="2006-01-02T01:00:00-00:00"/>
+  <event time="2006-01-02T11:00:00-00:00">
+    <person>Anton</person>
+    <direction>in</direction>
+  </event>
+  <event time="2006-01-02T12:00:00-00:00">
+    <person>Clara</person>
+    <direction>in</direction>
+  </event>
+  <event time="2006-01-02T12:10:00-00:00">
+    <person>Clara</person>
+    <direction>out</direction>
+  </event>
+  <event time="2006-01-02T12:15:00-00:00">
+    <person>Clara</person>
+    <direction>in</direction>
+  </event>
+  <event time="2006-01-02T12:20:00-00:00">
+    <person>Clara</person>
+    <direction>out</direction>
+  </event>
+    <event time="2006-01-02T12:25:00-00:00">
+    <person>Clara</person>
+    <direction>in</direction>
+  </event>
+  <event time="2006-01-02T12:40:00-00:00">
+    <person>Clara</person>
+    <direction>out</direction>
+  </event>
+  <event time="2006-01-02T14:00:00-00:00">
+    <person>Clara</person>
+    <direction>in</direction>
+  </event>
+  <event time="2006-01-02T16:00:00-00:00">
+    <person>Anton</person>
+    <direction>out</direction>
+  </event>
+  <event time="2006-01-02T16:15:00-00:00">
+    <person>Clara</person>
+    <direction>out</direction>
+  </event>
+  <event time="2006-01-02T23:00:00-00:00"/>
+</stream>
+]]></eg>
+			</div3>
+			<!--###################################### DATA rss ############################ -->
+			<div3 id="dtdrss">
+				<head>XML Schema for Q14-Q16</head>
+				<p>Q14 - Q16 use as input document a slightly modified RSS document named rss.xml. It mainly differs from RSS 2.0 in the way dates are expressed in the data.  The XML Schema, rss.xsd, is as follows:</p>
+				<eg role="schema"><![CDATA[<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="rss">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="channel">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="title" type="xs:string"/>
+                            <xs:element name="link" type="xs:anyURI"/>
+                            <xs:element name="description" type="xs:string"/>
+                            <xs:element name="language" type="xs:string"/>
+                            <xs:element ref="item" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="item">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="title" type="xs:string"/>
+                <xs:element name="category" type="xs:string"/>
+                <xs:element name="author" type="xs:string"/>
+                <xs:element name="pubDate" type="xs:dateTime"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
+]]></eg>
+			</div3 >
+			<div3  id="datarss">
+				<head>Sample Data for Q14-Q16</head>
+				<p>The content of rss.xml is:</p>
+				<eg role="data"><![CDATA[<rss>
+  <channel>
+    <title>DBIS RSS</title>
+    <link>http://www.dbis.ethz.ch</link>
+    <description>The windowing dummy RSS.</description>
+    <language>en-us</language>
+    <item>
+      <title>Why use cases are important Part 1.</title>
+      <category>Workshop</category>
+      <author>rokas@e-mail.de</author>
+      <pubDate>2003-06-03T09:00:00</pubDate>
+    </item>
+    <item>
+      <title>Why use cases are important Part 2.</title>
+      <category>Workshop</category>
+      <author>rokas@e-mail.de</author>
+      <pubDate>2003-06-03T09:00:00</pubDate>
+    </item>
+    <item>
+      <title>Why use cases are important Part 3.</title>
+      <category>Workshop</category>
+      <author>rokas@e-mail.de</author>
+      <pubDate>2003-06-03T10:00:00</pubDate>
+    </item>
+    <item>
+      <title>Extending XQuery with Window Functions</title>
+      <category>Talk</category>
+      <author>tim@e-mail.de</author>
+      <pubDate>2003-06-03T11:00:00</pubDate>
+    </item>
+    <item>
+      <title>XQueryP: A new programming language is born</title>
+      <category>Talk</category>
+      <author>david@e-mail.de</author>
+      <pubDate>2003-06-03T12:00:00</pubDate>
+    </item>
+    <item>
+      <title>Why use cases are annoying to write.</title>
+      <category>Talk</category>
+      <author>rokas@e-mail.de</author>
+      <pubDate>2003-06-04T10:00:00</pubDate>
+    </item>
+  </channel>
+</rss>
+]]></eg>
+			</div3 >
+			<!--###################################### DATA cXML ############################ -->
+			<div3  id="dtdcXML">
+				<head>XML Schema for Q17-Q19</head>
+				<p>Q17-Q19 use an input document named cxml.xml. The structure of this document is inspired by the Commerce XML Resource standard (cXML). The document contains a sequence of events, where an event corresponds to a simplified message of the cXML standard or an timeclock event. The XML Schema with the file-name cxml.xsd is as follows:</p>
+				<eg role="schema"><![CDATA[<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="sequence">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:choice maxOccurs="unbounded">
+                    <xs:element name="time" type="TimeEvent"/>
+                    <xs:element name="OrderRequest" type="OrderRequest" maxOccurs="unbounded"/>
+                    <xs:element name="ConfirmationRequest" type="ConfirmationRequest"/>
+                    <xs:element name="ShipNotice" type="ShipNotice" maxOccurs="unbounded"/>
+                </xs:choice>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="TimeEvent">
+        <xs:attribute name="date" type="xs:dateTime" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="OrderRequest">
+        <xs:sequence>
+            <xs:element name="Item" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:attribute name="unitPrice" type="xs:byte" use="required"/>
+                    <xs:attribute name="quantity" type="xs:byte" use="required"/>
+                    <xs:attribute name="partID" type="xs:string" use="required"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="type" type="xs:string" use="required"/>
+        <xs:attribute name="total" type="xs:short" use="required"/>
+        <xs:attribute name="shipTo" type="xs:string"/>
+        <xs:attribute name="orderID" type="xs:string" use="required"/>
+        <xs:attribute name="date" type="xs:dateTime" use="required"/>
+        <xs:attribute name="billTo" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="ConfirmationRequest">
+        <xs:attribute name="status" type="xs:string" use="required"/>
+        <xs:attribute name="orderID" type="xs:string" use="required"/>
+        <xs:attribute name="date" type="xs:dateTime" use="required"/>
+        <xs:attribute name="confirmID" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="ShipNotice">
+        <xs:attribute name="orderID" type="xs:string" use="required"/>
+        <xs:attribute name="date" type="xs:dateTime" use="required"/>
+    </xs:complexType>
+</xs:schema>
+
+]]></eg>
+			</div3 >
+			<div3  id="datacXML">
+				<head>Sample Data for Q17-Q19</head>
+				<p>The content of cxml.xml is:</p>
+				<eg role="data"><![CDATA[<sequence>
+  <time date="2006-01-01T00:00:00-00:00"/>
+  <OrderRequest billTo="ACME1" date="2006-01-01T10:00:00-00:00"
+    orderID="OID01" shipTo="ACME1" total="1100" type="new">
+    <Item partID="ID1" quantity="10" unitPrice="100"/>
+    <Item partID="ID2" quantity="10" unitPrice="10"/>
+  </OrderRequest>
+  <OrderRequest billTo="ACME2" date="2006-01-01T11:00:00-00:00"
+    orderID="OID02" total="100" type="new">
+    <Item partID="ID2" quantity="10" unitPrice="10"/>
+  </OrderRequest>
+  <ConfirmationRequest confirmID="C1" date="2006-01-01T18:00:00-00:00"
+    orderID="OID02" status="reject"/>
+  <time date="2006-01-02T00:00:00-00:00"/>
+  <ConfirmationRequest confirmID="C1" date="2006-01-02T08:00:00-00:00"
+    orderID="OID01" status="accept"/>
+  <OrderRequest billTo="ACME1" date="2006-01-02T14:00:00-00:00"
+    orderID="OID03" shipTo="ACME1" total="10000" type="new">
+    <Item partID="ID3" quantity="100" unitPrice="100"/>
+  </OrderRequest>
+  <ConfirmationRequest confirmID="C1" date="2006-01-02T16:00:00-00:00"
+    orderID="OID03" status="accept"/>
+  <time date="2006-01-03T00:00:00-00:00"/>
+  <time date="2006-01-04T00:00:00-00:00"/>
+  <time date="2006-01-05T00:00:00-00:00"/>
+  <ShipNotice date="2006-01-05T08:00:00-00:00" orderID="OID01"/>
+  <ShipNotice date="2006-01-05T09:00:00-00:00" orderID="OID03"/>
+  <time date="2006-01-06T00:00:00-00:00"/>
+  <OrderRequest billTo="ACME2" date="2006-01-06T08:00:00-00:00"
+    orderID="OID04" total="100" type="new">
+    <Item partID="ID2" quantity="10" unitPrice="10"/>
+  </OrderRequest>
+  <time date="2006-01-07T00:00:00-00:00"/>
+</sequence>
+]]></eg>
+			</div3 >
+			</div2>
+			<!-- QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ -->
+			<!--######################################    DATA Windowing     ################################ -->
+			<!-- QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ -->
+			<div2 id="windowing-queries-results">
+				<head>Queries and Results</head>
+				<!-- ############################ UC windowing_arrange_rows ################################## -->
+				<div3 id="windowing_arrange_rows">
+					<head>Q1</head>
+					<p>Arrange a sequence of items as a table with three columns (using as many rows as necessary). </p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[declare variable $seq := fn:doc("arrange_rows.xml");
+
+<table>{
+  for tumbling window $w in $seq/doc/*
+    start at $x when fn:true()
+    end at $y when $y - $x = 2
+  return
+    <tr>{
+      for $i in $w
+      return
+        <td>{data($i)}</td>
+    }</tr>
+}</table>
+]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<table>
+  <tr>
+    <td>Green</td>
+    <td>Pink</td>
+    <td>Lilac</td>
+  </tr>
+  <tr>
+    <td>Turquoise</td>
+    <td>Peach</td>
+    <td>Opal</td>
+  </tr>
+  <tr>
+    <td>Champagne</td>
+  </tr>
+</table>
+]]></eg>
+				</div3>
+				<!-- ############################ UC windowing_head_para ################################## -->
+				<div3 id="windowing_head_para">
+					<head>Q2</head>
+					<p>Convert a structure with implicit sections to a structure with explicit sections.</p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[declare variable $seq := fn:doc("head_para.xml");
+
+<chapter>{
+  for tumbling window $w in $seq/body/*
+    start previous $s when $s[self::h2]
+    end next $e when $e[self::h2]
+  return
+    <section title="{data($s)}">{
+       for $x in $w
+       return
+         <para>{data($x)}</para>
+  }</section>
+}</chapter>]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<chapter>
+  <section title="heading1">
+    <para>para1</para>
+    <para>para2</para>
+  </section>
+  <section title="heading2">
+    <para>para3</para>
+    <para>para4</para>
+    <para>para5</para>
+  </section>
+</chapter>
+]]></eg>
+				</div3>
+				<!-- ############################ UC windowing_term_def_list ################################## -->
+				<div3 id="windowing_term_def_list">
+					<head>Q3</head>
+					<p>Within a glossary in HTML, a defined term &lt;dt&gt; can be followed by a definition &lt;dd&gt;. The task is to group these together within a &lt;term&gt; element, where a group can
+consist of one or more &lt;dt&gt; elements followed by one or more &lt;dd&gt; elements.</p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[declare variable $seq := fn:doc("term_def_list.xml");
+
+<doc>{
+for tumbling window $w in $seq/doc/*
+  start $x when $x[self::dt]
+  end $y next $z when $y[self::dd] and $z[self::dt]
+return
+  <term>{
+    $w
+  }</term>
+}</doc>
+]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<doc>
+  <term>
+    <dt>XML</dt>
+    <dd>Extensible Markup Language</dd>
+  </term>
+  <term>
+    <dt>XSLT</dt>
+    <dt>XSL Transformations</dt>
+    <dd>A language for transforming XML</dd>
+    <dd>A specification produced by W3C</dd>
+  </term>
+</doc>
+]]></eg>
+				</div3>
+				<!-- ############################ UC windowing_1moving_avarage_time ################################## -->
+				<!--
+ fn:doc("temp_events.xml");
+
+let $MAX_DIFF := 2
+for sliding window $w in $timesequence/stream/event
+  start  $s_curr at $s_pos previous $s_prev at $s_pos
+    when ($s_curr/@time ne $s_prev/@time) or (empty($s_prev))
+  force end next $e_next
+    when $e_next/@time - $s_curr/@time gt $MAX_DIFF
+return
+  avg( $w/@temp )
+-->
+				<div3 id="windowing_1moving_avarage_time">
+					<head>Q4</head>
+					<p>Calculate the moving average of temperature values for the 3 last seconds.</p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[declare variable $timesequence := fn:doc("temp_events.xml");
+
+let $MAX_DIFF := 2
+
+for sliding window $w in $timesequence/stream/event
+  start  $s_curr at $s_pos previous $s_prev
+    when ($s_curr/@time ne $s_prev/@time) or (empty($s_prev))
+  only end next $e_next
+    when $e_next/@time - $s_curr/@time gt $MAX_DIFF
+return
+  avg( $w/@temp )
+
+]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[8 9 17 18]]></eg>
+				</div3>
+				<!-- ############################ UC windowing_2exponential_smoothing_1 ################################## -->
+				<div3 id="windowing_2exponential_smoothing_1">
+					<head>Q5</head>
+					<p>Single exponential smoothing (3 last values and smoothing factor 0.2) </p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[declare variable $timesequence := fn:doc("temp_events.xml");
+let $SMOOTH_CONST := 0.2
+
+for sliding window $w in $timesequence/stream/event
+  start at $s_pos when true()
+  only end at $e_pos when $e_pos - $s_pos eq 2
+return
+  round-half-to-even($SMOOTH_CONST * data($w[3]/@temp) + (1 - $SMOOTH_CONST) *
+    ( $SMOOTH_CONST * data($w[2]/@temp) +
+      (1 - $SMOOTH_CONST) * data($w[1]/@temp) ), 2)
+]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[8.88 8.68 12.32 15.24 23.92]]></eg>
+				</div3>
+				<!-- ############################ UC windowing_3outlier_detection ################################## -->
+				<div3 id="windowing_3outlier_detection">
+					<head>Q6</head>
+					<p>Detect outliers (current value is two times higher (lower) than the average of the previous three values) in a sequence of temp values. </p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[declare variable $seq := fn:doc("temp_events.xml");
+
+for sliding window $w in $seq/stream/event
+  start  $s_curr when fn:true()
+  only end next $next when $next/@time > $s_curr/@time + 3
+return
+  let $avg := fn:avg($w/@temp)
+  where $avg * 2 lt xs:double($next/@temp) or $avg div 2 gt xs:double($next/@temp)
+  return <alarm>Outlier detected. Event id:{data($next/@time)}</alarm>
+
+]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<alarm>Outlier detected. Event id:5</alarm>
+]]></eg>
+				</div3>
+				<!-- ############################ UC windowing_1SEQ_A1h ################################## -->
+				<div3 id="windowing_1SEQ_A1h">
+					<head>Q7</head>
+					<p>Notify when Barbara enters the building within 1 hour after Anton </p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[declare variable $seq := fn:doc("person_events.xml");
+
+<result>{
+  for tumbling window $w in $seq/stream/event
+    start  $s when $s/person eq "Anton" and $s/direction eq "in"
+    only end $e next $n when  xs:dateTime($n/@time) - xs:dateTime($s/@time) gt
+      xs:dayTimeDuration("PT1H")
+      or  ($e/person eq "Barbara" and $e/direction eq "in")
+      or ($e/person eq "Anton" and $e/direction eq "out")
+  where $e/person eq "Barbara" and $e/direction eq "in"
+  return
+    <warning time="{ $e/@time }">Barbara: Anton arrived 1h ago</warning>
+}</result>
+]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<result>
+  <warning time="2006-01-01T11:00:00-00:00">Barbara: Anton arrived 1h ago</warning>
+</result>
+]]></eg>
+				</div3>
+				<!-- ############################ UC windowing_2SEQ_TimePerPerson ################################## -->
+				<div3 id="windowing_2SEQ_TimePerPerson">
+					<head>Q8</head>
+					<p>Measure the working time of each person</p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[declare variable $seq := fn:doc("person_events.xml");
+
+<result>{
+for sliding window $w in $seq/stream/event
+  start  $s when $s/direction eq "in"
+  only end  $e when $s/person eq $e/person and
+    $e/direction eq "out"
+return
+  <working-time>
+      {$s/person}
+      <time>{ xs:dateTime($e/@time) - xs:dateTime($s/@time)}</time>
+  </working-time>
+}</result>]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<result>
+	<working-time>
+		<person>Anton</person>
+		<time>PT4H30M</time>
+	</working-time>
+	<working-time>
+		<person>Barbara</person>
+		<time>PT3H</time>
+	</working-time>
+	<working-time>
+		<person>Clara</person>
+		<time>PT1H</time>
+	</working-time>
+	<working-time>
+		<person>Anton</person>
+		<time>PT5H</time>
+	</working-time>
+	<working-time>
+		<person>Clara</person>
+		<time>PT10M</time>
+	</working-time>
+	<working-time>
+		<person>Clara</person>
+		<time>PT5M</time>
+	</working-time>
+	<working-time>
+		<person>Clara</person>
+		<time>PT15M</time>
+	</working-time>
+	<working-time>
+		<person>Clara</person>
+		<time>PT2H15M</time>
+	</working-time>
+</result>
+]]></eg>
+				</div3>
+				<!-- ############################ UC windowing_2SEQ_TimePerPerson_overall ################################## -->
+				<div3 id="windowing_2SEQ_TimePerPerson_overall">
+					<head>Q9</head>
+					<p>Measure the overall working time for each person.</p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[declare variable $seq := fn:doc("person_events.xml");
+
+<result>{
+for sliding window $w in $seq/stream/event
+  start  $s when $s/direction eq "in"
+  only end  $e when $s/person eq $e/person and
+    $e/direction eq "out"
+let $person := $s/person
+let $workingTime := xs:dateTime($e/@time) - xs:dateTime($s/@time)
+group by $person
+order by $person
+return
+  <working-time>
+    <person>{ $person }</person>
+    <time>{ sum($workingTime) }</time>
+  </working-time>
+}</result>]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<result>
+  <working-time>
+    <person>Anton</person>
+    <time>PT9H30M</time>
+  </working-time>
+  <working-time>
+    <person>Barbara</person>
+    <time>PT3H</time>
+  </working-time>
+  <working-time>
+    <person>Clara</person>
+    <time>PT3H45M</time>
+  </working-time>
+</result>]]></eg>
+				</div3>
+				<!-- ############################ UC windowing_3Seq_Not_A ################################## -->
+				<div3 id="windowing_3Seq_Not_A">
+					<head>Q10</head>
+					<p>Display a warning if Barbara does not come to work.</p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[declare variable $seq := fn:doc("person_events.xml");
+
+<result>{
+  for tumbling window $w in $seq/stream/event[direction eq "in"]
+    start  $s when fn:true()
+    end next $e when xs:date( xs:dateTime($s/@time) ) ne xs:date( xs:dateTime($e/@time) )
+  let $date := xs:date(xs:dateTime($s/@time))
+  where not($w[person eq "Barbara"])
+  return <alert date="{ $date }">Barbara did not come to work</alert>
+}</result>
+]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<result>
+  <alert date="2006-01-02Z">Barbara did not come to work</alert>
+</result>
+]]></eg>
+				</div3>
+				<!-- ############################ UC windowing_4SEQ_yA ################################## -->
+				<div3 id="windowing_4SEQ_yA">
+					<head>Q11</head>
+					<p>Identify every person who enters the building before Clara withing a 15 minute timeframe (Clara's arrival time - 15 minutes).
+</p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[declare variable $seq := fn:doc("person_events.xml");
+
+<results>{
+  for tumbling window $w in $seq/stream/event[direction eq "in"]
+    start when true()
+    only end next $x when  $x/person eq "Clara"
+  return
+    <result time="{ $x/@time }">{
+      distinct-values(for $y in $w
+        where (xs:dateTime($y/@time) + xs:dayTimeDuration("PT15M") ) ge xs:dateTime($x/@time)
+        return $y/person)
+    }</result>
+}</results>
+]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<results>
+	<result time="2006-01-01T11:15:00-00:00">Barbara</result>
+	<result time="2006-01-02T12:00:00-00:00"/>
+	<result time="2006-01-02T12:15:00-00:00">Clara</result>
+	<result time="2006-01-02T12:25:00-00:00">Clara</result>
+	<result time="2006-01-02T14:00:00-00:00"/>
+</results>
+
+]]></eg>
+				</div3>
+				<!-- ############################ UC windowing_5NOSEQ_BothIn ################################## -->
+				<div3 id="windowing_5NOSEQ_BothIn">
+					<head>Q12</head>
+					<p>Notify when both Anton and Barbara enter the office within 30 minutes
+of one another.</p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[declare variable $seq := fn:doc("person_events.xml");
+
+<result>{
+	for tumbling window $w in $seq/stream/event[direction eq "in"]
+		start  $x when $x/person = ("Barbara", "Anton")
+		end next $y when xs:dateTime($y/@time) - xs:dateTime($x/@time) gt xs:dayTimeDuration("PT30M")
+	where $w[person eq "Anton"] and $w[person eq "Barbara"]
+	return
+		<alert time="{ xs:dateTime($y/@time) }">Anton and Barbara just arrived</alert>
+}</result>]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<result>
+        <alert time="2006-01-01T11:15:00Z">Anton and Barbara just arrived</alert>
+</result>]]></eg>
+				</div3>
+				<!-- ############################ UC windowing_6AGG_Enter_3X_1 ################################## -->
+				<div3 id="windowing_6AGG_Enter_3X_1">
+					<head>Q13</head>
+					<p>Inform when a person enters the building at least 3 times within 1 hour</p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[declare variable $seq := fn:doc("person_events.xml");
+
+<result>{
+  for sliding window $w in $seq/stream/event
+    start  $s when true()
+    end next $e when xs:dateTime($e/@time) - xs:dateTime($s/@time) gt
+      xs:dayTimeDuration("PT1H")
+  where count($w[person eq $s/person and direction eq "in"]) ge 3
+  return
+    <alert time="{ $e/@time }">{fn:data($s/person)} is suspicious</alert>
+}</result>]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<result>
+  <alert time="2006-01-02T14:00:00-00:00">Clara is suspicious</alert>
+</result>
+]]></eg>
+				</div3>
+				<!-- ############################ UC windowing_annoying_authors ################################## -->
+				<div3 id="windowing_annoying_authors">
+					<head>Q14</head>
+					<p>Find all annoying authors who have posted three consecutive items in the RSS feed.</p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[declare variable $rssfeed := fn:doc("rss.xml");
+
+<result>{
+  for tumbling window $w in $rssfeed/rss/channel/item
+    start  $first when fn:true()
+    end next $lookAhead when $first/author ne $lookAhead/author
+  where count($w) ge 3
+  return <annoying-author>{
+      $w[1]/author
+    }</annoying-author>
+}</result>]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<result>
+  <annoying-author>
+    <author>rokas@e-mail.de</author>
+  </annoying-author>
+</result>
+]]></eg>
+				</div3>
+				<!-- ############################ UC windowing_interesting_topics ################################## -->
+				<div3 id="windowing_interesting_topics">
+					<head>Q15</head>
+					<p>Every day, provide a list of interesting topics in the RSS feed. In our example, interesting means that the title of the item contains the specific word XQuery.</p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[declare variable $rssfeed := fn:doc("rss.xml");
+
+<result>{
+  for tumbling window $w in $rssfeed/rss/channel/item
+    start  $s_curr when true()
+    end next $e_next when
+      fn:day-from-dateTime(xs:dateTime($e_next/pubDate)) ne
+      fn:day-from-dateTime(xs:dateTime($s_curr/pubDate))
+  return
+    <item>
+        <date>{xs:date(xs:dateTime($s_curr/pubDate))}</date>
+        {  for $item in $w
+		   where fn:contains( xs:string($item/title), 'XQuery')
+		   return $item/title	}
+      </item>
+}</result>
+]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<result>
+  <item>
+    <date>2003-06-03</date>
+    <title>Extending XQuery with Window Functions</title>
+    <title>XQueryP: A new programming language is born</title>
+  </item>
+  <item>
+    <date>2003-06-04</date>
+  </item>
+</result>
+]]></eg>
+				</div3>
+				<!-- ############################ UC windowing_summary_by_authors ################################## -->
+				<div3 id="windowing_summary_by_authors">
+					<head>Q16</head>
+					<p>Every day, provide a summary of the RSS feed grouped by author.</p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[declare variable $rssfeed := fn:doc("rss.xml");
+
+<result>{
+  for tumbling window $w in $rssfeed/rss/channel/item
+    start  $s_curr when true()
+    end next $e_next when
+      fn:day-from-dateTime(xs:dateTime($e_next/pubDate)) ne
+      fn:day-from-dateTime(xs:dateTime($s_curr/pubDate))
+  return
+    <item>
+      <date>{xs:date(xs:dateTime($s_curr/pubDate))}</date>
+       {  for $a in fn:distinct-values($w/author)
+           return
+             <author name="{$a}">
+               <titles>
+                 { $w[author eq $a]/title }
+               </titles>
+			</author>
+	    }
+	  </item>
+}</result>]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<result>
+  <item>
+    <date>2003-06-03</date>
+    <author name="rokas@e-mail.de">
+      <titles>
+        <title>Why use cases are important Part 1.</title>
+        <title>Why use cases are important Part 2.</title>
+        <title>Why use cases are important Part 3.</title>
+      </titles>
+    </author>
+    <author name="tim@e-mail.de">
+      <titles>
+        <title>Extending XQuery with Window Functions</title>
+      </titles>
+    </author>
+    <author name="david@e-mail.de">
+      <titles>
+        <title>XQueryP: A new programming language is born</title>
+      </titles>
+    </author>
+  </item>
+  <item>
+    <date>2003-06-04</date>
+    <author name="rokas@e-mail.de">
+      <titles>
+        <title>Why use cases are annoying to write.</title>
+      </titles>
+    </author>
+  </item>
+</result>
+]]></eg>
+				</div3>
+				<!-- ############################ UC windowing_Q2_most_valuable_customer ################################## -->
+				<div3 id="windowing_Q2_most_valuable_customer">
+					<head>Q17</head>
+					<p>At the end of a day,
+list the most valuable customers.</p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[declare variable $seq := fn:doc("cxml.xml");
+
+<result>{
+for sliding window $w in $seq/sequence/*
+  start  $cur previous $prev
+   when day-from-dateTime($cur/@date) ne day-from-dateTime($prev/@date) or empty($prev)
+  end $end next $next
+   when day-from-dateTime(xs:dateTime($end/@date)) ne
+day-from-dateTime(xs:dateTime($next/@date))
+return
+  <mostValuableCustomer endOfDay="{xs:dateTime($cur/@date)}">{
+    let $companies :=	for $x in distinct-values($w/@billTo )
+                        return <amount company="{$x}">{sum($w[@billTo eq $x]/@total)}</amount>
+    let $max := max($companies)
+    for $company in $companies
+    where $company eq xs:untypedAtomic($max)
+    return $company
+  }</mostValuableCustomer>
+}</result>]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<result>
+  <mostValuableCustomer endOfDay="2006-01-01T00:00:00Z">
+    <amount company="ACME1">1100</amount>
+  </mostValuableCustomer>
+  <mostValuableCustomer endOfDay="2006-01-02T00:00:00Z">
+    <amount company="ACME1">10000</amount>
+  </mostValuableCustomer>
+  <mostValuableCustomer endOfDay="2006-01-03T00:00:00Z"/>
+  <mostValuableCustomer endOfDay="2006-01-04T00:00:00Z"/>
+  <mostValuableCustomer endOfDay="2006-01-05T00:00:00Z"/>
+  <mostValuableCustomer endOfDay="2006-01-06T00:00:00Z">
+    <amount company="ACME2">100</amount>
+  </mostValuableCustomer>
+  <mostValuableCustomer endOfDay="2006-01-07T00:00:00Z"/>
+</result>
+]]></eg>
+				</div3>
+				<!-- ############################ UC windowing_Q3_transaction_time ################################## -->
+				<div3 id="windowing_Q3_transaction_time">
+					<head>Q18</head>
+					<p>Calculate the time needed to process an order from the request up to the shipping. </p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[declare variable $seq := fn:doc("cxml.xml");
+
+<result>{
+  for sliding window $w in $seq/sequence/*
+    start $s when $s[self::OrderRequest]
+    end   $e when $e/@orderID eq  $s/@orderID
+             and ($e[self::ConfirmationRequest] and $e/@status eq "reject"
+                  or $e[self::ShipNotice])
+  where $e[self::ShipNotice]
+  return
+    <timeToShip orderID="{ $s/@orderID}">{xs:dateTime($e/@date) - xs:dateTime($s/@date) }</timeToShip>
+}</result>]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<result>
+  <timeToShip orderID="OID01">P3DT22H</timeToShip>
+  <timeToShip orderID="OID03">P2DT19H</timeToShip>
+</result>
+]]></eg>
+				</div3>
+				<!-- ############################ UC windowing_Q4_ship_together ################################## -->
+				<div3 id="windowing_Q4_ship_together">
+					<head>Q19</head>
+					<p>At the moment of the shipping notification, calculate if an open request exists that can be shipped to the same address. </p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[declare variable $seq := fn:doc("cxml.xml");
+
+<result>{
+  for sliding window $w in $seq/sequence/*
+    start previous $wSPrev when $wSPrev[self::OrderRequest]
+    end next $wENext when $wENext/@orderID eq  $wSPrev/@orderID
+        and ($wENext[self::ConfirmationRequest] and $wENext/@status eq "reject"
+	         or $wENext[self::ShipNotice])
+  where $wENext[self::ShipNotice]
+  return
+    <bundleWith orderId="{$wSPrev/@orderID}">{
+        for sliding window $bundle in $w
+          start  $bSCur
+            when $bSCur[self::OrderRequest] and $bSCur/@shipTo eq $wSPrev/@shipTo
+          end  $bECur next $bENext
+            when $bECur/@orderID eq  $bSCur/@orderID
+             and ($bECur[self::ConfirmationRequest] and $bECur/@status eq "reject"
+              or $bECur[self::ShipNotice])
+          where empty($bENext)
+          return $bSCur
+    }</bundleWith>
+}</result>]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<result>
+  <bundleWith orderId="OID01">
+    <OrderRequest billTo="ACME1" date="2006-01-02T14:00:00-00:00"
+      orderID="OID03" shipTo="ACME1" total="10000" type="new">
+      <Item partID="ID3" quantity="100" unitPrice="100"/>
+    </OrderRequest>
+  </bundleWith>
+  <bundleWith orderId="OID03"/>
+</result>
+]]></eg>
+				</div3>
+			</div2>
+		</div1>
+		<!-- EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE -->
+		<!--######################################    windowing     ################################ -->
+		<!-- EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE -->
+		<!-- QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ -->
+		<!--######################################    Count                             ################################ -->
+		<!-- QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ -->
+		<div1 id="count-use-cases">
+			<head>Use Case "Count" - Queries which require output numbering </head>
+			<p>The described queries in this section all require tuple numbering. The numbering is either required in the final result or might also be required at some point in the middle when the tuple stream gets generated. </p>
+						<div2 id="update30-count-schema-and-sample-data">
+				<head>Schema and Sample Data</head>
+				<p>The "Count" use cases are all based on the shopping scenario which can be found in the section <loc href="#data">Shopping Scenario Schema and Data</loc>.</p>
+			</div2>
+			<div2 id="update30-count-queries-and-results">
+				<head>Queries and Results</head>
+
+			<div3 id="count-numbering">
+				<head>Q1</head>
+				<p>List all products in alphabatical order with a continously increasing number. </p>
+				<p>
+					<emph>Solution in XQuery:</emph>
+				</p>
+				<eg role="xquery"><![CDATA[<products>{
+    for $product in doc("products.xml")/*/product
+    order by $product/name
+    count $number
+    return
+        <product number="{$number}">{$product/*}</product>
+}</products>]]></eg>
+				<p>
+					<emph>Expected Result:</emph>
+				</p>
+				<eg role="result"><![CDATA[<products>
+    <product number="1">
+        <name>blender</name>
+        <category>kitchen</category>
+        <price>50</price>
+        <cost>25</cost>
+    </product>
+    <product number="2">
+        <name>broiler</name>
+        <category>kitchen</category>
+        <price>100</price>
+        <cost>70</cost>
+    </product>
+    <product number="3">
+        <name>shirt</name>
+        <category>clothes</category>
+        <price>10</price>
+        <cost>3</cost>
+    </product>
+    <product number="4">
+        <name>socks</name>
+        <category>clothes</category>
+        <price>5</price>
+        <cost>2</cost>
+    </product>
+    <product number="5">
+        <name>toaster</name>
+        <category>kitchen</category>
+        <price>30</price>
+        <cost>10</cost>
+    </product>
+</products>]]></eg>
+			</div3>
+						<div3 id="count-windowing">
+				<head>Q2</head>
+				<p>Arrange a sequence of items as a table with three columns (using as many rows as necessary) like in <loc href="#windowing_arrange_rows">Q1</loc> from the windowing use cases.Additionally, number every row continuously.</p>
+				<p>
+					<emph>Solution in XQuery:</emph>
+				</p>
+				<eg role="xquery"><![CDATA[declare variable $seq := fn:doc("arrange_rows.xml");
+
+<table>{
+  for tumbling  window $w in $seq/doc/*
+    start at $x when fn:true()
+    end at $y when $y - $x = 2
+  count $rowNumber
+  return
+    <tr>
+      <td>{$rowNumber}</td>{
+      for $i in $w
+      return
+        <td>{data($i)}</td>
+    }</tr>
+}</table>
+]]></eg>
+				<p>
+					<emph>Expected Result:</emph>
+				</p>
+				<eg role="result"><![CDATA[<table>
+    <tr>
+        <td>1</td>
+        <td>Green</td>
+        <td>Pink</td>
+        <td>Lilac</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>Turquoise</td>
+        <td>Peach</td>
+        <td>Opal</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>Champagne</td>
+    </tr>
+</table>
+]]></eg>
+			</div3>
+
+			<div3 id="count-top-k">
+				<head>Q3</head>
+				<p>Top-K query: Return the three best-selling products (by quantity). </p>
+				<p>
+					<emph>Solution in XQuery:</emph>
+				</p>
+				<eg role="xquery"><![CDATA[<result>{
+    for $sales in doc("sales-records.xml")/*/record
+    let $name := $sales/product-name
+    group by $name
+    let $qty := sum($sales/qty)
+    order by $qty descending
+    count $count
+    where $count <= 3
+    return
+        <sale product="{$name}" qty="{$qty }"/>
+}</result>]]></eg>
+				<p>
+					<emph>Expected Result:</emph>
+				</p>
+				<eg role="result"><![CDATA[<result>
+    <sale product="socks" qty="510"/>
+    <sale product="blender" qty="250"/>
+    <sale product="toaster" qty="200"/>
+</result>
+]]></eg>
+			</div3>
+			</div2>
+		</div1>
+		<!-- EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE -->
+		<!--######################################    Count        ################################ -->
+		<!-- EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE -->
+		<!--######################################    Outer Join       ################################ -->
+		<!-- QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ -->
+		<!-- ############################ UC windowing_Q3_transaction_time ################################## -->
+		<div1 id="outer-join-uc">
+			<head>Use Case "Outer For" - Queries which require outer joins</head>
+			<p>This use case demonstrate how the new "outer for" clause can help to express outer joins in XQuery.</p>
+			<div2 id="update30-outer-join-uc-schema-and-sample-data">
+				<head>Schema and Sample Data</head>
+				<p>The "Outer For" use case is based on the shopping scenario which can be found in the section <loc href="#data">Shopping Scenario Schema and Data</loc>.</p>
+			</div2>
+			<div2 id="update30-outer-join-uc-queries-and-results">
+				<head>Queries and Results</head>
+			<div3 id="outer-join-1">
+				<head>Q1</head>
+				<p>Report all the store sales including stores which have not sold anything. </p>
+				<p>
+					<emph>Solution in XQuery:</emph>
+				</p>
+				<eg role="xquery"><![CDATA[<result>{
+    for $store in doc("stores.xml")/*/store
+    for $sale allowing empty in doc("sales-records.xml")/*/record[
+         store-number eq $store/store-number]
+    return
+      <store number="{$store/store-number}"
+         product="{$sale/product-name}"
+         state="{$store/state}"
+         sold="{$sale/qty}" />
+}</result>]]></eg>
+				<p>
+					<emph>Expected Result:</emph>
+				</p>
+				<eg role="result"><![CDATA[<result>
+    <store number="1" state="CA" product="broiler" sold="20"/>
+    <store number="1" state="CA" product="socks" sold="500"/>
+    <store number="2" state="CA" product="toaster" sold="100"/>
+    <store number="2" state="CA" product="toaster" sold="50"/>
+    <store number="2" state="CA" product="socks" sold="10"/>
+    <store number="3" state="MA" product="toaster" sold="50"/>
+    <store number="3" state="MA" product="blender" sold="100"/>
+    <store number="3" state="MA" product="blender" sold="150"/>
+    <store number="3" state="MA" product="shirt" sold="10"/>
+    <store number="4" state="WA" product="" sold=""/>
+</result>
+]]></eg>
+			</div3>
+			<div3 id="simplified-flwor-2">
+				<head>Q2</head>
+				<p>List all the sales records. Include also all the items which were not sold in a store.</p>
+				<p>
+					<emph>Solution in XQuery:</emph>
+				</p>
+				<eg role="xquery"><![CDATA[<result>{
+for $store in doc("stores.xml")/*/store
+for $product in doc("products.xml")/*/product
+for $sale allowing empty in doc("sales-records.xml")/*/record[
+     store-number eq $store/store-number and
+     product-name eq $product/name]
+return
+  <store number="{$store/store-number}"
+      state="{$store/state}"
+      product="{$sale/product-name}"
+      sold="{$sale/qty}" />
+}</result>]]></eg>
+				<p>
+					<emph>Expected Result:</emph>
+				</p>
+				<eg role="result"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<result>
+    <store number="1" state="CA" product="broiler" sold="20"/>
+    <store number="1" state="CA" product="toaster" sold=""/>
+    <store number="1" state="CA" product="blender" sold=""/>
+    <store number="1" state="CA" product="socks" sold="500"/>
+    <store number="1" state="CA" product="shirt" sold=""/>
+    <store number="2" state="CA" product="broiler" sold=""/>
+    <store number="2" state="CA" product="toaster" sold="100"/>
+    <store number="2" state="CA" product="toaster" sold="50"/>
+    <store number="2" state="CA" product="blender" sold=""/>
+    <store number="2" state="CA" product="socks" sold="10"/>
+    <store number="2" state="CA" product="shirt" sold=""/>
+    <store number="3" state="CA" product="broiler" sold=""/>
+    <store number="3" state="MA" product="toaster" sold="50"/>
+    <store number="3" state="MA" product="blender" sold="100"/>
+    <store number="3" state="MA" product="blender" sold="150"/>
+    <store number="3" state="MA" product="socks" sold=""/>
+    <store number="3" state="MA" product="shirt" sold="10"/>
+    <store number="4" state="MA" product="broiler" sold=""/>
+    <store number="4" state="MA" product="toaster" sold=""/>
+    <store number="4" state="MA" product="blender" sold=""/>
+    <store number="4" state="MA" product="socks" sold=""/>
+    <store number="4" state="MA" product="shirt" sold=""/>
+</result>
+
+]]></eg>
+</div3>
+			</div2>
+		</div1>
+		<!-- EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE -->
+		<!--######################################     Outer Join    ##################### -->
+		<!-- EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE -->
+		<!-- QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ -->
+		<!--######################################    Try/Catch                       ################################ -->
+		<!-- QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ -->
+		<div1 id="try-catch-use-cases">
+			<head>Use Case "Try-Catch" - Queries which require to recover from errors</head>
+			<p>This use case covers queries that require to recover from errors.</p>
+			<!--###################################### DATA products ############################ -->
+			<div2 id="dataerrorproducts">
+				<head>Sample Data</head>
+				<p>Q1 and Q2 are based on a errornous version of product.xml from <loc href="#data">Shopping Scenario Schema and Data</loc>, whereas Q3 does not require any input data.  Sample data for Q1 and Q2 named product-err.xml are shown below:</p>
+				<eg role="data"><![CDATA[<products>
+  <product>
+    <name>broiler</name>
+    <category>kitchen</category>
+    <price>100</price>
+    <cost>"70"</cost>
+  </product>
+  <product>
+    <name>toaster</name>
+    <category>kitchen</category>
+    <price>30</price>
+    <cost>10</cost>
+  </product>
+  <product>
+    <name>blender</name>
+    <category>kitchen</category>
+    <price>50</price>
+    <cost>25</cost>
+  </product>
+  <product>
+    <name>socks</name>
+    <category>clothes</category>
+    <price>5</price>
+    <cost>2</cost>
+  </product>
+  <product>
+    <name>shirt</name>
+    <category>clothes</category>
+    <price>10</price>
+    <cost>3</cost>
+  </product>
+</products>
+]]></eg>
+			</div2>
+			<div2 id="update30-trycatch-use-cases-queries-and-results">
+				<head>Queries and Results</head>
+				<div3 id="try-catch-1">
+					<head>Q1</head>
+					<p>Calculate the margin of every product. If an error occurs, report a user-friendly message.</p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[try {
+    <result>{
+        for $product in fn:doc("product-err.xml")//product
+        return
+            <product>{$product/name}
+            <margin>{$product/price - $product/cost}</margin>
+            </product>
+    }</result>
+} catch * {
+     "An error occured, please ask your consultant for help."
+}
+]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[An error occured, please ask your consultant for help.
+]]></eg>
+			    </div3>
+
+				<div3 id="try-catch-2">
+					<head>Q2</head>
+					<p>Report the margin in procent of every product. If an error occurs the failure should be listed, but the query should still continue to report the other values. </p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[<result>{
+    for $product in fn:doc("product-err.xml")//product
+    return
+         try {
+            <product>{$product/name}
+              <margin>{$product/price div $product/cost}</margin>
+            </product>
+        } catch * {
+            <product>{
+                ($product/name, "Error:", $err:code)
+            }</product>
+        }
+}</result>
+]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<result>
+    <product>
+        <name>broiler</name>
+        Error: FORG0001
+    </product>
+    <product>
+        <name>toaster</name>
+        <margin>3</margin>
+    </product>
+    <product>
+        <name>blender</name>
+        <margin>2</margin>
+    </product>
+    <product>
+        <name>socks</name>
+        <margin>2.5</margin>
+    </product>
+    <product>
+        <name>shirt</name>
+        <margin>3.3333333333333333</margin>
+    </product>
+</result>
+]]></eg>
+				</div3>
+								<div3 id="try-catch-3">
+					<head>Q3</head>
+					<p>For a sequence of inputs the n-th fibonacci number has to be calculated using a pre-defined function. The function is built to avoid long running times and therefore rejects high values by throwing a user-defined error. If such an error occurs during calculation, a warning should be displayed, but the processing should continue.  </p>
+					<p>
+						<emph>Solution in XQuery:</emph>
+					</p>
+					<eg role="xquery"><![CDATA[declare namespace foo='http://foo.com';
+declare function local:fib-recur($n as xs:integer) as xs:integer? {
+    if ($n <0) then ()
+    else if ($n > 100) then
+        fn:error(fn:QName('http://foo.com', 'ValueToBig'), 'Value too big')
+    else if ($n = 0)  then 0
+    else if ($n=1)   then 1
+    else local:fib-recur($n - 1)  + local:fib-recur($n - 2)
+};
+
+<result>{
+    for $x in (3,1,1030,5)
+    return
+        try{
+        <fib input="{$x}">{local:fib-recur($x)}</fib>
+        }catch foo:ValueToBig {
+          <fib input="{$x}">Number to big</fib>
+        }
+}</result>]]></eg>
+					<p>
+						<emph>Expected Result:</emph>
+					</p>
+					<eg role="result"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<result>
+    <fib input="3">2</fib>
+    <fib input="1">1</fib>
+    <fib input="1030">Number to big</fib>
+    <fib input="5">5</fib>
+</result>
+]]></eg>
+				</div3>
+			</div2>
+		</div1>
+		<!-- EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE -->
+		<!--######################################    Try/Catch   ################################ -->
+		<!-- EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE -->
+	</body>
+	<back>
+		<inform-div1 id="acknowledgements">
+			<head>Acknowledgements</head>
+			<p>The Working Group thanks the following individuals for their contributions:</p>
+			<table border="1">
+				<tbody>
+					<tr>
+						<td>Peter M. Fischer, Donald Kossmann, Rokas Tamosevicius</td>
+						<td>Use Case "windowing"</td>
+					</tr>
+				</tbody>
+			</table>
+<!--
+			<p>Use case "windowing" has been previously published in <bibref ref="Fischer2006"/>.</p>
+-->
+		</inform-div1>
+		<inform-div1 id="ChangeLog">
+			<head>Change Log</head>
+
+
+			<div2 id="id-2011-03-30">
+				<head>30 Mar 2011</head>
+                <ulist>
+                  <item><p>Removed <code>xsi</code> declaration and <code>xsi:noNamespaceSchemaLocation</code> attributes in input documents. Resolves <loc href="&BZ;11757">BZ 11757</loc>.</p></item>
+                  <item><p>Corrected input file name in Windowing Q7. Resolves <loc href="&BZ;11756">BZ 11756</loc>.</p></item>
+                  <item><p>Corrected Clara's working time in Windowing Q8. Resolves <loc href="&BZ;11758">BZ 11758</loc>.</p></item>
+                  <item><p>Added <code>order by $person</code> to Windowing Q9. Resolves <loc href="&BZ;11759">BZ 11759</loc>.</p></item>
+                  <item><p>Corrected Clara's working time in Windowing Q9. Resolves <loc href="&BZ;11853">BZ 11853</loc>.</p></item>
+                  <item><p>Corrected result of Windowing Q12. Resolves <loc href="&BZ;11761">BZ 11761</loc>.</p></item>
+                  <item><p>Added parentheses to correct solutions in Windowing Q18 and Q19. Resolves <loc href="&BZ;11762">BZ 11762</loc>.</p></item>
+                </ulist>
+            </div2>
+
+
+			<div2 id="id-2008-01-30">
+				<head>30 January 2008</head>
+				<ulist>
+					<item>
+						<p>Added group-by UC.</p>
+					</item>
+					<item>
+						<p>Added windowing UC.</p>
+					</item>
+				</ulist>
+			</div2>
+			<div2 id="id-2008-11-17">
+				<head>17 November 2008</head>
+				<ulist>
+					<item>
+						<p>Added try-catch UC.</p>
+					</item>
+					<item>
+						<p>Added outer-join UC.</p>
+					</item>
+					<item>
+						<p>Added output-numbering UC.</p>
+					</item>
+					<item>
+						<p>Changed all DTDs to XML Schema.</p>
+					</item>
+				</ulist>
+			</div2>
+		</inform-div1>
+		<inform-div1 id="references">
+			<head>References</head>
+			<p>The following references are some of the works considered by the WG in deriving its
+                use cases. </p>
+			<blist>
+<!--
+				<bibl id="Fischer2006" key="Windowing UC">
+					<titleref href="http://www.dbis.ethz.ch/research/publications/XQWindowsUseCases.pdf">Windows for XQuery - Use Cases</titleref>, Peter M. Fischer, Donald
+                    Kossmann, Tim Kraska and Rokas Tamosevicius, 2006, Technical Report, ETH Zurich</bibl>
+-->
+				<bibl id="xmlschema-0" key="XMLSchema0"/>
+				<bibl id="xmlschema-1" key="XMLSchema1"/>
+				<bibl id="xmlschema-2" key="XMLSchema2"/>
+				<bibl id="xquery-30" key="XQuery 3.0"/>
+				<bibl id="xquery-30-requirements" key="XQuery 3.0 Requirements"/>
+				<bibl id="xslt-30" key="XSL Transformations (XSLT) Version 3.0"/>
+				<bibl id="UseCaseQueries" key="Use Case Sample Queries">
+					<titleref href="http://www.w3.org/2013/01/xquery-30-use-cases/xquery-30-use-case-queries.txt">Queries from this document</titleref>, presented in a single file</bibl>
+			</blist>
+		</inform-div1>
+	</back>
+</spec>

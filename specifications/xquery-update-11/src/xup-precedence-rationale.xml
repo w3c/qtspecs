@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inform-div1 id="id-precedence-rationale">	
+<head>Rationale for Precedence of Update Primitives</head>	
+
+<p>In <specref ref="id-upd-apply-updates"/>, semantic rules specify the order in which the <termref def="dt-update-primitive">update primitives</termref> on a <termref def="dt-pending-update-list">pending update list</termref> are applied. The purpose of this ordering is to ensure that the result of applying the pending update list is deterministic. The order of application of the update primitives was derived from the following reasoning:</p>
+<ulist><item><p><code>insertAttribute</code>, <code>replaceValue</code>, and <code>rename</code> primitives do not conflict with any 
+other primitives other than <code>put</code>.</p></item><item><p><code>insertInto</code> primitives must be applied before <code>insertIntoAsFirst/Last</code> and 
+<code>insertBefore/After</code> primitives. Reason: if  an unpositioned insert were applied after a 
+positioned insert, it  might interfere with the position established by the earlier positioned insert. For example, suppose node A is inserted "before" node B. A later unpositioned insert into the common parent of A and B might intervene between A and B, which is not allowed by the semantics of "insert before."</p></item><item><p><code>insertBefore/After</code> primitives must be applied before <code>replaceNode</code> primitives. Reason: After a node 
+has been replaced, it no longer has a parent, so "before" and "after" the replaced node 
+are no longer defined.</p></item><item><p><code>insertIntoAsFirst/Last</code> primitives must be applied before <code>replaceElementContent</code> primitives. Reason: 
+this was a decision of the working group. The intent of this decision is that, if both of these primitives are applied to the same target node in a query, the effective result is determined by the   <code>replaceElementContent</code> primitive.</p></item><item><p><code>replaceNode</code> primitives must be applied before <code>replaceElementContent</code> primitives. Reason: if element 
+content that includes a node N has been replaced, then N no longer has a parent. In this case, 
+"replace node N" is undefined.</p></item><item><p><code>replaceNode</code> primitives must be applied before <code>delete</code> primitives. Reason: After a node has been 
+deleted, it no longer has a parent. Replacing a node that has no parent is undefined.</p></item><item><p><code>put</code> primitives must be applied after all other primitives in order that documents stored by a snapshot will reflect all update operations applied by the snapshot.</p></item></ulist></inform-div1>

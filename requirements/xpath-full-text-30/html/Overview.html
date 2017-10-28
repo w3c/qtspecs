@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?><!--XSLT Processor: Saxonica SAXON HE 9.6.0.7-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="EN" xml:lang="EN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><meta name="generator" content="HTML Tidy for Mac OS X (vers 31 October 2006 - Apple Inc. build 15.15), see www.w3.org" /><title>XQuery and XPath Full Text 3.0 Requirements and Use
+Cases</title><style type="text/css" xml:space="preserve">
+/**/
+/* from xsl:query.xsl (C) */          
+code           { font-family: monospace; }
+
+div.constraint,
+div.issue,
+div.note,
+div.notice     { margin-left: 2em; }
+
+div.issue
+p.title        { margin-left: -2em; }
+
+ol.enumar      { list-style-type: decimal; }
+ol.enumla      { list-style-type: lower-alpha; }
+ol.enumlr      { list-style-type: lower-roman; }
+ol.enumua      { list-style-type: upper-alpha; }
+ol.enumur      { list-style-type: upper-roman; }
+
+li p           { margin-top: 0.3em;
+                 margin-bottom: 0.3em; }
+
+sup small      { font-style: italic;
+                 color: #8F8F8F;
+               }
+    
+/* from xsl:query.xsl (D) */          
+div.exampleInner pre { margin-left: 1em;
+                       margin-top: 0em; margin-bottom: 0em}
+div.exampleOuter {border: 4px double gray;
+                  margin: 0em; padding: 0em}
+div.exampleInner { background-color: #d5dee3;
+                   border-top-width: 4px;
+                   border-top-style: double;
+                   border-top-color: #d3d3d3;
+                   border-bottom-width: 4px;
+                   border-bottom-style: double;
+                   border-bottom-color: #d3d3d3;
+                   padding: 4px; margin: 0em }
+div.exampleWrapper { margin: 4px }
+div.exampleHeader { font-weight: bold;
+                    margin: 4px}
+
+div.issue { border-bottom-color: black;
+            border-bottom-style: solid;
+            border-bottom-width: 1pt;
+            margin-bottom: 20pt;
+}
+
+th.issue-toc-head { border-bottom-color: black;
+                    border-bottom-style: solid;
+                    border-bottom-width: 1pt;
+}
+
+      
+/* from xsl-query.xsl (B) */    
+table.small                             { font-size: x-small; }
+a.judgment:visited, a.judgment:link     { font-family: sans-serif;
+                                          color: black; 
+                                          text-decoration: none }
+a.processing:visited, a.processing:link { color: black; 
+                                                text-decoration: none }
+a.env:visited, a.env:link               { color: black; 
+                                          text-decoration: none }
+/**/
+</style><link rel="stylesheet" type="text/css" href="//www.w3.org/StyleSheets/TR/W3C-NOTE.css" /></head><body><div class="head">
+<p><a href="http://www.w3.org/" shape="rect"><img src="http://www.w3.org/Icons/w3c_home" alt="W3C" height="48" width="72" /></a></p>
+<h1><a name="title" id="title" shape="rect"></a>XQuery and XPath Full Text 3.0
+Requirements and Use Cases</h1>
+<h2><a name="w3c-doctype" id="w3c-doctype" shape="rect"></a>W3C Working Group
+Note 10 December 2015</h2>
+<dl><dt>This version:</dt><dd><a href="http://www.w3.org/TR/2015/NOTE-xpath-full-text-30-requirements-use-cases-20151210/" shape="rect">
+http://www.w3.org/TR/2015/NOTE-xpath-full-text-30-requirements-use-cases-20151210/</a></dd><dt>Latest version:</dt><dd><a href="http://www.w3.org/TR/xpath-full-text-30-requirements-use-cases/" shape="rect">http://www.w3.org/TR/xpath-full-text-30-requirements-use-cases/</a></dd><dt>Previous versions:</dt><dd><a href="http://www.w3.org/TR/2015/WD-xpath-full-text-30-requirements-use-cases-20150312/" shape="rect">
+http://www.w3.org/TR/2015/WD-xpath-full-text-30-requirements-use-cases-20150312/</a><br />
+
+<a href="http://www.w3.org/TR/2012/WD-xpath-full-text-30-requirements-use-cases-20120327/" shape="rect">
+http://www.w3.org/TR/2012/WD-xpath-full-text-30-requirements-use-cases-20120327/</a></dd><dt>Editor:</dt><dd>Pat Case, Library of Congress</dd></dl>
+<p class="copyright"><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright" shape="rect">Copyright</a> © 2015 <a href="http://www.w3.org/" shape="rect"><acronym title="World Wide Web Consortium">W3C</acronym></a><sup>®</sup>
+(<a href="http://www.csail.mit.edu/" shape="rect"><acronym title="Massachusetts Institute of Technology">MIT</acronym></a>, <a href="http://www.ercim.eu/" shape="rect"><acronym title="European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>,
+<a href="http://www.keio.ac.jp/" shape="rect">Keio</a>, <a href="http://ev.buaa.edu.cn/" shape="rect">Beihang</a>). W3C <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer" shape="rect">liability</a>,
+<a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks" shape="rect">trademark</a>
+and <a href="http://www.w3.org/Consortium/Legal/copyright-documents" shape="rect">document
+use</a> rules apply.</p>
+</div><hr /><div>
+<h2><a name="abstract" id="abstract" shape="rect"></a>Abstract</h2>
+<p>This document specifies requirements and use cases for Full-Text
+Search for use in XQuery 3.0 <a href="#xquery-30" shape="rect">[XQuery 3.0: An
+XML Query Language]</a> and XPath 3.0 <a href="#xpath-30" shape="rect">[XML Path
+Language (XPath) 3.0]</a>.</p>
+</div><div>
+<h2><a name="status" id="status" shape="rect"></a>Status of this Document</h2>
+<p><em>This section describes the status of this document at the
+time of its publication. Other documents may supersede this
+document. A list of current W3C publications and the latest
+revision of this technical report can be found in the <a href="http://www.w3.org/TR/" shape="rect">W3C technical reports index</a> at
+http://www.w3.org/TR/.</em></p>
+<p>This document is governed by the <a xmlns:html="http://www.w3.org/1999/xhtml" href="http://www.w3.org/2005/10/Process-20051014/" id="w3c_process_revision">14 October 2005 W3C Process Document</a>.</p>
+<p>This is a <a href="http://www.w3.org/2005/10/Process-20051014/tr.html#tr-end" shape="rect">Working
+Group Note</a> as described in the <a href="http://www.w3.org/2005/10/Process-20051014/tr.html" shape="rect">Process
+Document</a>. It was jointly developed by the W3C <a href="http://www.w3.org/XML/Query/" shape="rect">XML Query Working Group</a> and the
+W3C <a href="http://www.w3.org/Style/XSL/" shape="rect">XSLT Working Group</a>,
+each of which is part of the <a href="http://www.w3.org/XML/Activity" shape="rect">XML Activity</a>. This document
+will eventually be published as a <a href="http://www.w3.org/2005/10/Process-20051014/tr.html#tr-end" shape="rect">Working
+Group Note</a> to persistently record the Requirements that guided
+the development of <a href="http://www.w3.org/TR/xpath-full-text-30/" shape="rect">XQuery and XPath Full
+Text 3.0</a> as a W3C Recommendation.</p>
+<p>Please report errors in this document using W3C's <a href="https://www.w3.org/Bugs/Public/" shape="rect">public Bugzilla system</a>
+(instructions can be found at <a href="http://www.w3.org/XML/2005/04/qt-bugzilla" shape="rect">http://www.w3.org/XML/2005/04/qt-bugzilla</a>).
+If access to that system is not feasible, you may send your
+comments to the W3C XSLT/XPath/XQuery public comments mailing list,
+<a href="mailto:public-qt-comments@w3.org" shape="rect">public-qt-comments@w3.org</a>.
+It will be very helpful if you include the string “[FT30req]” in
+the subject line of your report, whether made in Bugzilla or in
+email. Please use multiple Bugzilla entries (or, if necessary,
+multiple email messages) if you have more than one comment to make.
+Archives of the comments and responses are available at <a href="http://lists.w3.org/Archives/Public/public-qt-comments/" shape="rect">http://lists.w3.org/Archives/Public/public-qt-comments/</a>.</p>
+<p>Publication as a <a href="http://www.w3.org/2005/10/Process-20051014/tr.html#tr-end" shape="rect">Working
+Group Note</a> does not imply endorsement by the W3C Membership.
+This is a draft document and may be updated, replaced or obsoleted
+by other documents at any time. It is inappropriate to cite this
+document as other than work in progress.</p>
+<p>This document was produced by groups operating under the
+<a href="http://www.w3.org/Consortium/Patent-Policy-20040205/" shape="rect">5
+February 2004 W3C Patent Policy</a>. W3C maintains a <a href="http://www.w3.org/2004/01/pp-impl/18797/status#disclosures" shape="rect">public
+list of any patent disclosures</a> made in connection with the
+deliverables of the XML Query Working Group and also maintains a
+<a href="http://www.w3.org/2004/01/pp-impl/19552/status#disclosures" shape="rect">public
+list of any patent disclosures</a> made in connection with the
+deliverables of the XSL Working Group; those pages also include
+instructions for disclosing a patent. An individual who has actual
+knowledge of a patent which the individual believes contains
+<a href="http://www.w3.org/Consortium/Patent-Policy-20040205/#def-essential" shape="rect">
+Essential Claim(s)</a> must disclose the information in accordance
+with <a href="http://www.w3.org/Consortium/Patent-Policy-20040205/#sec-Disclosure" shape="rect">
+section 6 of the W3C Patent Policy</a>.</p>
+</div><div class="toc">
+<h2><a name="contents" id="contents" shape="rect"></a>Table of Contents</h2>
+<p class="toc">1 <a href="#goals" shape="rect">Goals</a><br />
+2 <a href="#Requirements" shape="rect">Requirements</a><br />
+    2.1 <a href="#Terminology" shape="rect">Terminology</a><br />
+    2.2 <a href="#general-requirements" shape="rect">General
+Requirements</a><br />
+        2.2.1 <a href="#backward-compatibility" shape="rect">Backward compatibility</a><br />
+        2.2.2 <a href="#extension-compatibility" shape="rect">Extension compatibility</a><br />
+    2.3 <a href="#full-text-search-functionality" shape="rect">Full Text Search
+Functionality</a><br />
+        2.3.1 <a href="#d3e303" shape="rect">Language Identifiers</a><br />
+    2.4 <a href="#editorial-changes" shape="rect">Editorial
+Changes</a><br />
+        2.4.1 <a href="#d3e332" shape="rect">Irrevocable Stop Words</a><br />
+3 <a href="#UseCases" shape="rect">Use Cases</a><br /></p>
+<h3><a name="appendices" id="appendices" shape="rect"></a>Appendix</h3>
+<p class="toc">A <a href="#biblio" shape="rect">References</a><br />
+    A.1 <a href="#non-normative-biblio" shape="rect">Non-Normative</a><br /></p>
+</div><hr /><div class="body">
+<div class="div1">
+<h2><a name="goals" id="goals" shape="rect"></a>1 Goals</h2>
+<p>The goal of XQuery and XPath Full Text 3.0 is to extend XQuery
+and XPath Full Text 1.0 with additional functionality in response
+to requests from users and implementors.</p>
+</div>
+<div class="div1">
+<h2><a name="Requirements" id="Requirements" shape="rect"></a>2
+Requirements</h2>
+<div class="div2">
+<h3><a name="Terminology" id="Terminology" shape="rect"></a>2.1 Terminology</h3>
+<p>The following key words are used throughout the document to
+specify the extent to which an item is a requirement for the work
+of the XML Query Working Group:</p>
+<dl><dt class="label"><a name="terminology-must" id="terminology-must" shape="rect"></a>MUST</dt><dd>
+<p>This word means that the item is an absolute requirement.</p>
+</dd><dt class="label"><a name="terminology-should" id="terminology-should" shape="rect"></a>SHOULD</dt><dd>
+<p>This word means that there may exist valid reasons not to treat
+this item as a requirement, but the full implications should be
+understood and the case carefully weighed before discarding this
+item.</p>
+</dd><dt class="label"><a name="terminology-may" id="terminology-may" shape="rect"></a>MAY</dt><dd>
+<p>This word means that an item deserves attention, but further
+study is needed to determine whether the item should be treated as
+a requirement.</p>
+</dd></dl>
+<p>When the words <a href="#terminology-must" shape="rect">MUST</a>, <a href="#terminology-should" shape="rect">SHOULD</a>, or <a href="#terminology-may" shape="rect">MAY</a> are used in this technical sense, they
+occur as a hyperlink to these definitions. These words will also be
+used with their conventional English meaning, in which case there
+is no hyperlink. For instance, the phrase "the full implications
+should be understood" uses the word "should" in its conventional
+English sense, and therefore occurs without the hyperlink.</p>
+<p id="req-status">Each requirement also includes a status section,
+indicating its current situation in the XML-Query family of
+specifications. Three status levels are available:</p>
+<dl><dt class="label">"Green" status</dt><dd>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt="green status" /> This indicates that the requirement, according to
+its original formulation, has been completely met. Optional
+clarificatory text may follow.</p>
+</dd><dt class="label">"Yellow" status</dt><dd>
+<p><img src="http://www.w3.org/Icons/yellow-ball.gif" alt="yellow status" /> This indicates that the requirement has been
+partially met according to its original formulation. When this
+happens, explanatory text is provided to better clarify the current
+scope of the requirement.</p>
+</dd><dt class="label">"Red" status</dt><dd>
+<p><img src="http://www.w3.org/Icons/red-ball.gif" alt="red status" /> This indicates that the requirement, according to
+its original formulation, has not been met. If this is the case,
+explanatory text is provided.</p>
+</dd></dl>
+</div>
+<div class="div2">
+<h3><a name="general-requirements" id="general-requirements" shape="rect"></a>2.2 General Requirements</h3>
+<div class="div3">
+<h4><a name="backward-compatibility" id="backward-compatibility" shape="rect"></a>2.2.1 Backward compatibility</h4>
+<dl><dd>
+<p>XQuery and XPath Full Text 3.0 <a href="#terminology-must" shape="rect">MUST</a> be backward compatible.</p>
+<p>Every valid XQuery and XPath Full Text 1.0 expression <a href="#terminology-must" shape="rect">MUST</a> be valid in XQuery and XPath Full Text
+3.0 and it <a href="#terminology-must" shape="rect">MUST</a> evaluate to the
+same result.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt="green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd></dl>
+</div>
+<div class="div3">
+<h4><a name="extension-compatibility" id="extension-compatibility" shape="rect"></a>2.2.2 Extension compatibility</h4>
+<dl><dd>
+<p>XQuery and XPath Full Text 3.0 <a href="#terminology-must" shape="rect">MUST</a> be compatible with XQuery and XPath
+3.0 extensions developed by the <a href="http://www.w3.org/XML/Query/" shape="rect">XML Query Working Group</a> and the
+<a href="http://www.w3.org/Style/XSL/" shape="rect">XSL Working Group</a>.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt="green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd></dl>
+</div>
+</div>
+<div class="div2">
+<h3><a name="full-text-search-functionality" id="full-text-search-functionality" shape="rect"></a>2.3 Full Text Search
+Functionality</h3>
+<div class="div3">
+<h4><a name="d3e303" id="d3e303" shape="rect"></a>2.3.1 Language
+Identifiers</h4>
+<dl><dd>
+<p>XQuery and XPath Full Text 3.0 <a href="#terminology-must" shape="rect">MUST</a> specify in the Language Option how to
+handle multiple language identifiers for the same language,
+including languages represented by both two- and three- letter
+identifiers.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt="green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd></dl>
+</div>
+</div>
+<div class="div2">
+<h3><a name="editorial-changes" id="editorial-changes" shape="rect"></a>2.4
+Editorial Changes</h3>
+<div class="div3">
+<h4><a name="d3e332" id="d3e332" shape="rect"></a>2.4.1 Irrevocable Stop
+Words</h4>
+<dl><dd>
+<p>XQuery and XPath Full Text 3.0 <a href="#terminology-must" shape="rect">MUST</a> specify in the Stop Word Option that
+implementations may apply stop word lists during indexing and be
+unable to comply with query-time requests to not apply those stop
+words.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt="green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd></dl>
+</div>
+</div>
+</div>
+<div class="div1">
+<h2><a name="UseCases" id="UseCases" shape="rect"></a>3 Use Cases</h2>
+<p>There are no use cases provided in this edition of the
+Requirements and Use Cases document.</p>
+</div>
+</div><div class="back">
+<div class="div1">
+<h2><a name="biblio" id="biblio" shape="rect"></a>A References</h2>
+<div class="div2">
+<h3><a name="non-normative-biblio" id="non-normative-biblio" shape="rect"></a>A.1 Non-Normative</h3>
+<dl><dt class="label"><span><a name="xpath-datamodel-30" id="xpath-datamodel-30" shape="rect"></a>XQuery and XPath Data Model (XDM)
+3.0</span></dt><dd>
+<div><a href="http://www.w3.org/TR/xpath-datamodel-30/" shape="rect"><cite>XQuery and XPath
+Data Model (XDM) 3.0</cite></a>, Norman Walsh, Anders Berglund,
+John Snelson, Editors. World Wide Web Consortium, 08 April 2014.
+This version is
+http://www.w3.org/TR/2014/REC-xpath-datamodel-30-20140408/. The
+<a href="http://www.w3.org/TR/xpath-datamodel-30/" shape="rect">latest
+version</a> is available at
+http://www.w3.org/TR/xpath-datamodel-30/.</div>
+</dd><dt class="label"><span><a name="xquery-30" id="xquery-30" shape="rect"></a>XQuery 3.0: An XML Query Language</span></dt><dd>
+<div><a href="http://www.w3.org/TR/xquery-30/" shape="rect"><cite>XQuery 3.0: An
+XML Query Language</cite></a>, Jonathan Robie, Don Chamberlin,
+Michael Dyck, John Snelson, Editors. World Wide Web Consortium, 08
+April 2014. This version is
+http://www.w3.org/TR/2014/REC-xquery-30-20140408/. The <a href="http://www.w3.org/TR/xquery-30/" shape="rect">latest version</a> is available
+at http://www.w3.org/TR/xquery-30/.</div>
+</dd><dt class="label"><span><a name="xpath-30" id="xpath-30" shape="rect"></a>XML
+Path Language (XPath) 3.0</span></dt><dd>
+<div><a href="http://www.w3.org/TR/xpath-30/" shape="rect"><cite>XML Path
+Language (XPath) 3.0</cite></a>, Jonathan Robie, Don Chamberlin,
+Michael Dyck, John Snelson, Editors. World Wide Web Consortium, 08
+April 2014. This version is
+http://www.w3.org/TR/2014/REC-xpath-30-20140408/. The <a href="http://www.w3.org/TR/xpath-30/" shape="rect">latest version</a> is available at
+http://www.w3.org/TR/xpath-30/.</div>
+</dd><dt class="label"><span><a name="xquery-30-requirements" id="xquery-30-requirements" shape="rect"></a>XQuery 3.0 Requirements</span></dt><dd>
+<div><a href="http://www.w3.org/TR/xquery-30-requirements/" shape="rect"><cite>XQuery 3.0
+Requirements</cite></a>, Daniel Engovatov, Jonathan Robie, Editors.
+World Wide Web Consortium, 08 April 2014. This version is
+http://www.w3.org/TR/2014/NOTE-xquery-30-requirements-20140408/.
+The <a href="http://www.w3.org/TR/xquery-30-requirements/" shape="rect">latest
+version</a> is available at
+http://www.w3.org/TR/xquery-30-requirements/.</div>
+</dd><dt class="label"><span><a name="SQLMMFT" id="SQLMMFT" shape="rect"></a>SQL/MM
+Full-Text</span></dt><dd>
+<div>ISO/IEC 13249-2:2000, Information technology — Database
+languages — SQL Multimedia and Application Packages — Part 2:
+Full-Text, International Organization For Standardization, 2000,
+referenced in e.g. <a href="http://www.acm.org/sigmod/record/issues/0112/standards.pdf" shape="rect">"SQL
+Multimedia and Application Packages (SQL/MM)"</a> (See
+http://www.acm.org/sigmod/record/issues/0112/standards.pdf)</div>
+</dd></dl>
+</div>
+</div>
+</div></body></html>

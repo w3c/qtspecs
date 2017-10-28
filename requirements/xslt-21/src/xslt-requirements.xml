@@ -1,0 +1,984 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE spec SYSTEM "../../../schema/xsl-query.dtd" [
+<!ENTITY date.year "2003">
+<!ENTITY date.month "Aug">
+<!ENTITY date.MM "08">
+<!ENTITY date.day "22">
+<!ENTITY date.DD "&date.day;">
+<!ENTITY doc.date "&date.year;&date.MM;&date.DD;">
+<!ENTITY doc.prefix "WD-xpath-datamodel">
+<!ENTITY url.group "http://www.w3.org/XML/Group/">
+<!ENTITY url.group.ql "&url.group;xmlquery/">
+<!ENTITY url.publoc "&url.group;&date.year;/&date.MM;/&doc.prefix;-&doc.date;.html">
+<!ENTITY url.internal "http://www.w3.org/Style/XSL/Group/xpath2-tf/&doc.prefix;-&doc.date;.html">
+<!ENTITY url.external "http://www.w3.org/TR/&date.year;/&doc.prefix;-&doc.date;/">
+<!ENTITY url.this "&url.external;">
+]>
+<?xml-stylesheet type="text/xsl" href="D:\MyDocuments\W3C-XSL\DraftO\xsltspec.xsl"?>
+<spec>
+	<header>
+		<title>[Editor's Draft] XSL Transformations (XSLT) Requirements</title>
+
+  <version/>
+  <w3c-designation>&doc.prefix;-&doc.date;</w3c-designation>
+  <w3c-doctype>W3C Working Draft</w3c-doctype>
+  <pubdate>
+    <day>&date.day;</day>
+    <month>&date.month;</month>
+    <year>&date.year;</year>
+  </pubdate>
+
+		<publoc>
+			<!-- this gets completed by the stylesheet -->
+                        <loc href="&url.this;">&url.this;</loc>
+		</publoc>
+  <altlocs>
+    <loc href="&url.this;xslt20req.xml">XML</loc>
+  </altlocs>
+  <latestloc>
+    <loc href="http://www.w3.org/TR/xslt20req">http://www.w3.org/TR/xslt20req</loc>
+  </latestloc>
+
+		<prevlocs>
+			<loc href="http://www.w3.org/TR/2001/WD-xslt20req-20010214"/>
+		</prevlocs>
+		<authlist>
+			<author>
+				<name>Mark Scardina</name>
+				<affiliation>Oracle Corporation</affiliation>
+				<email href="mailto:mark.scardina@oracle.com">Mark.Scardina@oracle.com</email>
+			</author>
+		</authlist>
+		<status>
+			<p>This is an internal draft for WG review.</p>
+			<p>This document is a working draft of XSLT 2.0 Requirements. It is published in order to provide the XSLT user community with the requirements and proposed plans for this evolving language specification and the disposition of those requirements.</p>
+			<p>This remains a draft document and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use W3C Working Drafts as reference material or to cite them as other than <quote>work in progress</quote>. While prototype implementations are encouraged, users and vendors are advised that this working draft cannot be regarded as a stable specification.</p>
+			<p>XSLT 2.0 is a revised version of the XSLT 1.0 Recommendation <bibref ref="XSLT10"/> published on 16 November 1999. The requirements in this document are intended to be met for XSLT 2.0 described in <bibref ref="XSLT20"/>.</p>
+			<p>XSLT 2.0 is designed to be used together with XPath 2.0, which has been developed by the W3C XSL Working Group in collaboration with the XML Query Working Group. The current specification of XPath 2.0 can be found in <bibref ref="XPATH20"/>.</p>
+			<p>The XSLT 2.0 Requyirements are designed to complement and be used with those described in the XPath 2.0 Requirements specification desribed in <bibref ref="XPATH20REQ"/>
+			</p>
+			<p>Comments on this specification may be sent to <loc href="mailto:public-qt-comments@w3.org">public-qt-comments@w3.org</loc>; <loc href="http://lists.w3.org/Archives/Public/public-qt-comments/">archives</loc> of the comments are available. Archives of comments
+on earlier versions of the specification can be found at <loc href="http://lists.w3.org/Archives/Public/xsl-editors/"/>.</p>
+			<p>Public discussion of XSL, including XSL Transformations, takes place on the <loc href="http://www.mulberrytech.com/xsl/xsl-list/index.html">XSL-List</loc> mailing list.</p>
+			<p>The English version of this specification is the only normative version. However, for translations of this document, see <loc href="http://www.w3.org/Style/XSL/translations.html">http://www.w3.org/Style/XSL/translations.html</loc>.</p>
+			<p>A list of current W3C Recommendations and other technical documents can be found at <loc href="http://www.w3.org/TR/">http://www.w3.org/TR/</loc>.</p>
+			<p>This specification has been produced as part of the <loc href="http://www.w3.org/Style/Activity">W3C Style activity</loc>.</p>
+			<p>Patent disclosures relevant to this specification may be found on the XSL Working Group's patent disclosure page at
+<loc href="http://www.w3.org/Style/XSL/Disclosures.html"/>.</p>
+		</status>
+		<abstract/>
+		<langusage>
+<language id="en">English</language>
+		</langusage>
+		<revisiondesc>
+			<p/>
+		</revisiondesc>
+	</header>
+	<body>
+		<div1 id="goals">
+			<head>Goals</head>
+			<p>XSLT 2.0 has the following goals:</p>
+			<ulist>
+				<item>
+					<p>Simplify  manipulation of XML Schema-typed content</p>
+				</item>
+				<item>
+					<p>Simplify manipulation of string content</p>
+				</item>
+				<item>
+					<p>Support related XML standards</p>
+				</item>
+				<item>
+					<p>Improve ease of use</p>
+				</item>
+				<item>
+					<p>Improve interoperability</p>
+				</item>
+				<item>
+					<p>Improve i18n support</p>
+				</item>
+				<item>
+					<p>Maintain backward compatibility</p>
+				</item>
+				<item>
+					<p>Enable improved processor efficiency</p>
+				</item>
+			</ulist>
+			<p>In addition, the following are explicitly <emph>not</emph> goals:</p>
+			<ulist>
+				<item>
+					<p>Simplifying the ability to parse unstructured information to produce structured results.</p>
+				</item>
+				<item>
+					<p>Turning XSLT  into a general-purpose programming language</p>
+				</item>
+			</ulist>
+		</div1>
+		<div1 id="requirements">
+			<head>Requirements</head>
+			<div2>
+				<head>MUST Support the XML "Family" of Standards</head>
+				<p>As part of the evolving family of XML standards, XSLT 2.0 MUST support the W3C XML architecture by integrating well with other standards in the family.</p>
+				<div3>
+					<head>MUST Maintain Backwards Compatibility with XSLT 1.0</head>
+					<p>Any stylesheet whose behavior is fully defined in XSLT 1.0 and which generates no errors will produce the same result tree under XSLT 2.0 </p>
+				</div3>
+				<div3>
+					<head>MUST Match Elements with Null Values</head>
+					<p>A stylesheet SHOULD be able to match elements and attributes whose value is explicitly <code>null</code>. </p>
+					<ednote>
+						<edtext>
+							<emph>Just</emph> matching <code>@xsi:null="true"</code> would find elements with this attribute even if the element actually had content like: <code>&lt;foo xsi:null="true"&gt;SomeValue&lt;/foo&gt;</code> or used the xsi:null when the element did not allow its content to be nullable, both of which are invalid. </edtext>
+					</ednote>
+				</div3>
+				<div3>
+					<head>MUST Support XML:Base</head>
+					<p>Section 3.2 of the XSLT 1.0 specification,Base URI, describes how the base URI is derived for every node in the data model. The specification must be updated to reflect how the base URI is derived in the presence of an xml:base attribute in scope.</p>
+				</div3>
+				<div3>
+					<head>SHOULD Allow Included Documents to "Encapsulate" Local Stylesheets</head>
+					<p>XSLT 2.0 SHOULD define a mechanism to allow the templates in a stylesheet associated with a <emph>secondary</emph> source document, to be imported and used to format the included fragment, taking precedence over any applicable templates in the current stylesheet. </p>
+					<div4>
+						<head>Use Case</head>
+						<p>When a MATHML document is included in the current source document that MATHML fragment could already contain its own &lt;?xml-stylesheet?&gt; indicating appropriate templates to properly style the Math.</p>
+					</div4>
+				</div3>
+				<div3>
+					<head>COULD Support Accessing Infoset Items for XML Declaration</head>
+					<p>A stylesheet COULD be able to access information like the version and encoding from the XML declaration of a document.</p>
+					<div4>
+						<head>Use Case</head>
+						<p>A stylesheet should be able to set the output encoding to use the same encoding as the input document.</p>
+					</div4>
+				</div3>
+				<div3>
+					<head>COULD Provide QName Aware String Functions</head>
+					<p>Users manipulating documents (e.g. stylesheets, schemas) that have QName-valued element or attribute content need functions that take a string containing a QName as their argument, convert it to an expanded name using either the namespace declarations in scope at that point in the stylesheet, or the namespace declarations in scope for a specific source node, and return properties of the expanded name such as its namespace URI and local name.</p>
+				</div3>
+				<div3>
+					<head>COULD Enable Constructing a Namespace with Computed Name</head>
+					<p>Provide an <code>&lt;xsl:namespace&gt;</code> analog to <code>&lt;xsl:element&gt;</code> for constructing a namespace node with a computed prefix and URI.</p>
+				</div3>
+				<div3>
+					<head>Could Simplify Resolving Prefix Conflicts in QName-Valued Attributes</head>
+					<p>XSLT 2.0 COULD simplify the renaming of conflicting namespace prefixes in result tree fragments, particularly for attributes declared in a schema as being QNames. Once the processor knows an attribute value is a QName, an XSLT processor should be able to rename prefixes and generate namespace declarations to preserve the semantics of that attribute value, just as it does for attribute names.</p>
+				</div3>
+				<div3>
+					<head>COULD Support XHTML Output Method</head>
+					<p>Complementing the existing output methods for <code>html</code>, <code>xml</code>, and <code>text</code>, an xhtml output method could be provided to simplify transformations which target XHTML output. </p>
+				</div3>
+			</div2>
+			<div2>
+				<head>Must Improve Ease of Use</head>
+				<p>XSLT 2.0 MUST address frequently requested enhancements to make using XPath even more straightfoward for handling common use cases. </p>
+				<div3>
+					<head>MUST Allow Matching on Default Namespace Without Explicit Prefix</head>
+					<example>
+						<p>Many users stumble trying to match an element with a default namespace. They expect to be able to do something like:</p>
+						<eg><![CDATA[	
+<code><xsl:stylesheet version="1.0"> </code>
+<code>xmlns:xsl="http://www.w3.org/1999/XSL/Transform"</code>
+<code>xmlns="urn:myuri">
+<!-- Expect this matches &lt;foo&gt; in default namespace -->
+<xsl:template match="foo">
+				  ]]></eg>
+						<p>thinking that leaving off the prefix from the foo element name, that it will match &lt;foo&gt; elements in the default namespace with the URI of urn:myuri. Instead, they are required to assign a non-null prefix name to their namespace URI and then match on "someprefix:foo" instead, which has proven to be far from obvious. XSLT 2.0 SHOULD provide an explicit way to handle this scenario to avoid further user confusion</p>
+					</example>
+				</div3>
+				<div3>
+					<head>MUST Add Date Formatting Functions</head>
+					<p>One of the more frequent requests from XSLT 1.0 users is the ability to format date information with similar control to XSLT's format-number(). XML Schema introduces several kinds of date and time datatypes which will further increase the demand for date formatting during transformations. Functionality similar to that provided by <loc href="http://java.sun.com/products/jdk/1.1/docs/api/java.text.SimpleDateFormat.html">java.text.SimpleDateFormat</loc>. A date analog of XSLT's named xsl:decimal-format may be required to handle locale-specific date formatting issues. </p>
+					<example>
+						<p>Use Case</p>
+						<p>Given an XML element like:</p>
+						<eg>&lt;Period start="2000-05-07" end="2000-05-13"/&gt;</eg>
+						<p> Format it as:</p>
+						<eg>Invoice: 7 May 2000 - 13 May 2000</eg>
+						<p>Given the same element above, format it according to the current locale as:</p>
+						<eg>Fattura: 7 Maggio 2000 - 13 Maggio 2000</eg>
+					</example>
+				</div3>
+				<div3>
+					<head>MUST Simplify Accessing Id's and Key's in Other Documents</head>
+					<p>Currently it is cumbersome to lookup nodes by <code>id()</code> or <code>key()</code> in documents other than the source document. Users must first use an <code>xsl:for-each</code> instruction, selecting the desired <code>document()</code> to make it 
+the current node, then relative XPath expressions within the scope of the <code>xsl:for-each</code> can refer to <code>id()</code> or <code>key()</code> as desired.</p>
+				</div3>
+				<div3>
+					<head>MUST Remove the Distinction Between Node-Sets and Result Tree Fragments</head>
+					<p>Many XSLT processors have introduced built-in extension functions to convert result tree fragments to node-sets so that they can be further processed, effectively eliminating the restrictions described above for the result tree fragments. The restrictions on the operations permitted on result tree fragments were designed in a forward-thinking way to allow relaxation of the restrictions in a future release, allowing the distinction between node-sets and result tree fragments to disappear without breaking upward compatbility. By eliminating this distinction in XSLT 2.0, the need for a result tree fragment to node-set conversion function is eliminated and cross-processor portability is improved.</p>
+				</div3>
+				<div3>
+					<head>SHOULD Provide Function to Absolutize Relative URIs</head>
+					<p>There SHOULD be a way in XSLT 2.0 to create an absolute URI. The functionality should allow passing a node-set and return a string value representing the absolute URI resolved with respect to the base URI of the current node.</p>
+				</div3>
+				<div3>
+					<head>SHOULD Include Unparsed Text from an External Resource</head>
+					<p>Frequently stylesheets must import text from external resources. Today users have to resort to extension functions to accomplish this because XSLT 1.0 only provides the <code>document()</code> function which, while useful, can only read external resources that are well-formed XML documents.</p>
+					<example>
+						<p>Use Case</p>
+						<p>Given an XML document like:</p>
+						<eg><![CDATA[
+<section>
+	<para>The code for the example looks like this:</para>
+	<example>
+		<external-file href="ParseXML.java"/>
+	</example>
+</section>
+				]]></eg>
+						<p>Format the section and include the source of the sample code from the external file in the output.</p>
+					</example>
+				</div3>
+				<div3>
+					<head>SHOULD Allow Authoring Extension Functions in XSLT</head>
+					<p>Users should be able to author XSLT extension functions in XSLT itself was deferred for reconsideration in XSLT 2.0. This would allow the functions in an extension namespace to be implemented in "pure" XSLT, without resulting to external programming languages.</p>
+				</div3>
+				<div3>
+					<head>SHOULD Output Character Entity References Instead of Numeric Character Entities</head>
+					<p>Users have frequently requested the ability to have the output of their transformation use (named) character references instead of the numeric character entity. The ability to control this preference as the level of the whole document is sufficient. For example, rather than seeing <code>&amp;#160;</code> in the output, the user could request to see the equivalent <code>&amp;nbsp;</code> instead.</p>
+				</div3>
+				<div3>
+					<head>SHOULD Construct Entity Reference by Name</head>
+					<p>Analogous to the ability to create elements and attributes, users have expressed a desire to construct named entity references. </p>
+					<ednote>
+						<edtext>Does this require a change to the data model? </edtext>
+					</ednote>
+				</div3>
+				<div3>
+					<head>SHOULD Support for Unicode String Normalization</head>
+					<p>For reliable string comparison of Unicode strings, users need the ability to apply Unicode normalization before comparing the strings.</p>
+				</div3>
+				<div3>
+					<head>SHOULD Standardize Extension Function Language Bindings</head>
+					<p>For XSLT 2.0 extension function language bindings SHOULD be standardized.</p>
+				</div3>
+				<div3>
+					<head>SHOULD Standardize Extension Element Language Bindings</head>
+					<p>For XSLT 2.0, language bindings for extension elements SHOULD be standardized.</p>
+				</div3>
+				<div3>
+					<head>COULD Improve Efficiency of Transformations on Large Documents</head>
+					<p>Many useful transformations take place on large documents consisting of thousands of repeating "sub-documents". Today transformations over these documents are impractical due to the need to have the entire source tree in memory. Enabling "progressive" transformations, where the processor is able to produce progressively more output as more input is received, is tantamount to avoiding the need for XSLT processors to have random access to the entire source document. This might be accomplished by: </p>
+					<ulist>
+						<item>
+							<p>Identifying a core subset of XPath that does not require random access to the source tree, or</p>
+						</item>
+						<item>
+							<p>Consider a "transform all subtrees" mode where the stylesheet says, "Apply the transformation implied by this stylesheet to each node that matches <code>XXX</code>, considered as the root of a separate tree, and copy all the results of these mini-transformations as separate subtrees on to the final result tree."</p>
+						</item>
+					</ulist>
+					<example>
+						<p>Use Case</p>
+						<p>Transforming an XML document representing the daily closing prices of NASDAQ stocks for 1999 like the example below (over 1.3 millon <code>&lt;ClosingQuote&gt;</code> sub-elements) to produce a comma-separated list of Ticker, Date, and Closing Price. </p>
+						<eg><![CDATA[
+<YearOfNasdaqCloses Year="1999" TotalSecurities="5207">
+	<ClosingQuote Ticker="AAABB">
+		<Date>01/01/1999</Date>
+		<Price>6.25</Price>
+		<Percent>0.5</Percent>
+	</ClosingQuote>
+	<!-- 1,353,818 Additional Entries Removed -->
+	<ClosingQuote Ticker="ZVXI">
+		<Date>12/31/1999</Date>
+		<Price>16.10</Price>
+		<Percent>-1.05</Percent>
+	</ClosingQuote>
+</YearOfNasdaqCloses>
+						]]></eg>
+					</example>
+				</div3>
+				<div3>
+					<head>COULD Support for Reverse IDREF attributes</head>
+					<p>Given a particular value of an <code>ID</code>, produce a list of all elements that have an <code>IDREF</code> or <code>IDREFS</code> attribute which refers to this ID.</p>
+					<ednote>
+						<edtext>This functionality can be accomplished using the current <code>&lt;xsl:key&gt;</code> and <code>key()</code> mechanism.</edtext>
+					</ednote>
+				</div3>
+				<div3>
+					<head>COULD Support for Case-Insensitive Comparisons</head>
+					<p> XSLT 2.0 could expand its comparison functionality to include support for case-insensitive string comparison.</p>
+				</div3>
+				<div3>
+					<head>COULD Support Lexigraphic String Comparisons</head>
+					<p>We don't let users compare strings like <code>$x &gt; 'a'</code>. </p>
+					<ednote>
+						<edtext>i18n issues.</edtext>
+					</ednote>
+				</div3>
+				<div3>
+					<head>COULD Allow Comparing Nodes Based on Document Order</head>
+					<p>Support the ability to test whether one node comes before another in document order.</p>
+					<ednote>
+						<edtext>Need a Use Case for this. </edtext>
+					</ednote>
+				</div3>
+				<div3>
+					<head>COULD Improve Support for Unparsed Entities</head>
+					<p>In XSLT 1.0 there is an asymmetry in support for unparsed entities. They can be handled on input but not on output. In particular, there is no way to do an identity transformation that preserves them. At a minimum we need the ability to retrieve the Public ID of an unparsed entity. </p>
+				</div3>
+				<div3>
+					<head>COULD Allow Processing a Node with the "Next Best Matching" Template</head>
+					<p>In the construction of large stylesheets for complex documents, it is often necessary to construct templates that implement special behavior for a particular instance of an element, and then apply the normal styling for that element. Currently this is not possible because <code>&lt;xsl:apply-templates/&gt;</code> specifies that for any given node only a single template will be selected 
+        and instantiated. </p>
+					<p>Currently the processor determines a list of matching templates and then discards all but the one with the highest priority. In order to support this requirement, the processor would retain the list of matching templates sorted in priority order. A new instruction, for example <code>&lt;xsl:next-match/&gt;</code>, in a template would simply trigger the next template in the list of matching templates. This "next best match" recursion naturally bottoms out at the builtin template which can be seen as the lowest priority matching template for every match pattern. </p>
+					<example>
+						<p>Use Case</p>
+						<p>Consider a large, complex stylesheet for a particular document type. In order to support a new application, the schema designer for that document type adds a new global attribute, that is an attribute allowed on every element in the schema. For example, consider the addition of a global attribute named <code>diff</code> for marking changes made between one version of a document and another. You          must now augment your stylesheet to support this new behavior. </p>
+						<p>One would like to add a single new template, or a small number of templates, that would implement the new functionality for the entire doctype. Something like this: </p>
+						<eg><![CDATA[
+<xsl:template match="*[@diff='new']">
+	<div class="new">
+		<!-- do whatever you would have done for this element -->
+	</div>
+</xsl:template>
+
+<xsl:template match="para">
+	<p>
+	<xsl:apply-templates/>
+	</p>
+</xsl:template>
+						]]></eg>
+						<p>When passed a document that contains <code>&lt;p diff='new'&gt;...&lt;/p&gt;</code>, it would produce: </p>
+						<eg><![CDATA[
+<div class="new">
+	<p>...</p>
+</div>
+						]]></eg>
+					</example>
+				</div3>
+				<div3>
+					<head>COULD Make Coercions Symmetric By Allowing Scalar to Nodeset Conversion</head>
+					<p>Presently, no datatype can be coerced or cast to a node-set. By allowing a string value to convert to a node-set, some user "gotchas" could be avoided due. </p>
+				</div3>
+			</div2>
+			<div2>
+				<head>MUST Support XML Schema</head>
+				<p>
+					<loc href="http://www.w3.org/TR/xmlschema-1/">XML Schema: Structures</loc> and <loc href="http://www.w3.org/TR/xmlschema-2/">XML Schema: Datatypes</loc> enable users to define and use both simple and structured types and associate them to elements and attributes in a schema. XSLT 2.0 MUST provide support for the common operations needed for matching and construction of transformed documents based on a source document containing these typed elements and attributes. </p>
+				<div3>
+					<head>MUST Simplify Constructing and Copying Typed Content</head>
+					<p>It MUST be possible to construct XML Schema-typed elements and attributes. In addition, when copying an element or an attribute to the result, it should be possible to preserve the type during the process. </p>
+					<ednote>
+						<edtext>Use Case needs work. </edtext>
+					</ednote>
+					<example>
+						<p>Use Case</p>
+						<ulist>
+							<item>
+								<p>
+									&lt;href xsi:type="urireference"&gt;foo.xml&lt;/href&gt;
+								</p>
+							</item>
+							<item>
+								<p>
+									&lt;href xsl:type="urireference"&gt;&lt;xsl:value-of select="$foo"/&gt;&lt;/href&gt;
+								</p>
+							</item>
+							<item>
+								<p>
+									&lt;href&gt;&lt;xsl:typed-value-of select="$foo"/&gt;&lt;/href&gt;
+								</p>
+							</item>
+						</ulist>
+					</example>
+				</div3>
+				<div3>
+					<head>MUST Support Sorting Nodes Based on XML Schema Type</head>
+					<p>XSLT 1.0 supports sorting based on <code>string</code>-valued and <code>number</code>-valued expressions. <loc href="http://www.w3.org/TR/xmlschema-2/">XML Schema: Datatypes</loc> introduces new scalar types (for example, <code>date</code>) with well-known sort orders. It MUST be possible to sort based on these extended set of scalar data types. Since <loc href="http://www.w3.org/TR/xmlschema-2/">XML Schema: Datatypes</loc> does not define an ordering for complex types, this sorting support should only be considered for simple types. </p>
+					<ednote>
+						<edtext>Should be consistent with whatever we define for the matrix of conversion and comparisons. </edtext>
+					</ednote>
+				</div3>
+				<div3>
+					<head>COULD Support Scientific Notation in Number Formatting</head>
+					<p>Several users have requested the ability to have the existing <code>format-number()</code> function extended to format numbers using Scientific Notation. </p>
+				</div3>
+				<div3>
+					<head>COULD Provide Ability to Detect Whether "Rich" Schema Information is Available</head>
+					<p>A stylesheet that requires XML Schema type-related functionality COULD be able to test whether a "rich" Post-Schema-Validated Infoset is available from the XML Schema processor, so that the stylesheet can provide fallback behavior or choose to exit with <code>&lt;xsl:message abort="yes"/&gt;</code>.</p>
+				</div3>
+			</div2>
+			<div2>
+				<head>MUST Simplify Grouping</head>
+				<p>Grouping is complicated in XSLT 1.0. It MUST be possible for users to group nodes in a document based on </p>
+				<ulist>
+					<item>
+						<p>common string-values </p>
+					</item>
+					<item>
+						<p>common names </p>
+					</item>
+					<item>
+						<p>common values for any other expression </p>
+					</item>
+				</ulist>
+				<p>In addition XSLT must allow grouping based on sequential position, e.g. selecting groups of adjacent <code>&lt;P&gt;</code> elements. Ideally it should also make it easier to do fixed-size grouping as well, e.g. groups of three adjacent nodes, for laying out data in multiple columns. For each group of nodes identified, it must be possible to instantiate a template for the group. Grouping must be "nestable" to multiple levels so that groups of distinct nodes can be identified, then from among the distinct groups selected, further sub-grouping of distinct node in the current group can be done. </p>
+				<p> Often users express this requirement in different words, asking for a way to easily select the distinct values of an XPath expression relative to a nodeset. For example, many users using keys have requested a function like <code>distinct-keys('</code>
+					<emph>keyname</emph>
+					<code>')</code> to return a node-set containing, for each value of the named key that is present in the current document, the first node in document order that has that key value. Others have suggested adding a <code>select-distinct="</code>
+					<emph>XpathExpression</emph>
+					<code>"</code> to places where XSLT currently allows a <code>select</code> attribute. </p>
+				<example>
+					<p>Use Cases</p>
+					<p> Group by common values, groups unsorted, with group totals</p>
+					<p>Given XML document:</p>
+					<eg><![CDATA[
+<cities>
+	<city name="milan"country="italy" pop="5"/>
+	<city name="paris"country="france"pop="7"/>
+	<city name="munich" country="germany" pop="4"/>
+	<city name="lyon" country="france"pop="2"/>
+	<city name="venice" country="italy" pop="1"/>
+</cities>
+								]]></eg>
+					<p>Produce a 3-column table listing each distinct country in the first column, an alphabetical list of the city names for each                   country in the 2nd column, and the sum of the population for the cities in each country in the third column: </p>
+					<eg><![CDATA[
+<table>
+   	<tr>
+         <th>Country</th>
+         <th>City List</th>
+         <th>Population</th>
+    </tr>
+    <tr>
+	    <td>italy</td>
+         <td>milan, venice</td>
+         <td>6</td>
+    </tr>
+    <tr>
+        <td>france</td>
+        <td>lyon, paris</td>
+        <td>9</td>
+    </tr>
+    <tr>
+        <td>germany</td>
+        <td>munich</td>
+        <td>4</td>
+        </tr>
+ </table> 
+]]></eg>
+					<p>Group by common values, sorting the groups, with group totals</p>
+					<p>Given same XML document as in use case 1 above, produce a 3-column table listing each distinct country in the first column (sorted in alphabetical order), an alphabetical list of the city names for each country in the 2nd column, and the sum of the population                 for the cities in each country in the third column: </p>
+					<eg><![CDATA[
+<table>
+	<tr>
+		<th>Country</th>
+          <th>City List</th>
+          <th>Population</th>
+    </tr>
+    <tr>
+          <td>france</td>
+          <td>lyon, paris</td>
+          <td>9</td>
+    </tr>
+    <tr>
+    		<td>germany</td>
+          <td>munich</td>
+          <td>4</td>
+    </tr>
+    <tr>
+          <td>italy</td>
+          <td>milan, venice</td>
+          <td>6</td>
+    </tr>
+</table> 					
+					]]></eg>
+					<p>Group by common values, sorting the groups by a group total</p>
+					<p>Given same XML document as in use case 1 above, produce a 3-column table listing each distinct country in the first column (sorted in order of decreasing total population), a list of the city names for each country in the 2nd column (sorted in order of                   decreasing population), and the sum of the population for the cities in each country in the third column: </p>
+					<eg><![CDATA[
+<table>
+	 <tr>
+ 		<th>Country</th>
+ 		<th>City List</th>
+ 		<th>Population</th>
+	 </tr>
+ 	<tr>
+ 		<td>france</td>
+ 		<td>paris, lyon</td>
+ 		<td>9</td>
+ 	</tr>
+ 	<tr>
+ 		<td>italy</td>
+ 		<td>milan, venice</td>
+ 		<td>6</td>
+ 	</tr>
+ 	<tr>
+ 		<td>germany</td>
+ 		<td>munich</td>
+ 		<td>4</td>
+ 	</tr>
+ </table> 
+			]]></eg>
+					<p>Group by result of an expression (e.g. initial letter, with a count for each group)</p>
+					<p>Given the input XML document above, produce the table below which groups by the initial letter of the city name, sorts these first-letters alphabetically, then produces a list of cities whose names begin with that letter. The heading contains a count of entries: </p>
+					<eg><![CDATA[
+<h2>L (1)</h2><p>lyon</p>
+<h2>M (2)</h2><p>milan</p><p>munich</p>
+<h2>P (1)</h2><p>paris</p>
+<h2>V (1)</h2><p>venice</p> 
+						]]></eg>
+					<p>Group by patterns of elements in a sequence</p>
+					<p>Given the input:</p>
+					<eg><![CDATA[
+<body>
+ 	<h2>heading1</h2>
+ 		<p>para1</p>
+ 		<p>para2</p>
+ 	<h2>heading2</h2>
+ 		<p>para3</p>
+ 		<p>para4</p>
+ 		<p>para5</p>
+</body>
+					]]></eg>
+					<p>Produce the following output:</p>
+					<eg><![CDATA[
+<chapter>
+	<section title="heading1">
+		<para>para1</para>
+		<para>para2</para>
+	</section> 
+	<section title="heading2">
+		<para>para3</para>
+		<para>para4</para>
+		<para>para5</para>
+	</section>
+</chapter> 
+		]]></eg>
+					<p>Produce Hierarchical Nested Output from Flat Structure</p>
+					<p>Given a source document like:</p>
+					<eg><![CDATA[
+<doc>
+	<group1>
+		<tag>value</tag>
+	</group1>
+	<group2>
+		<tag>value</tag>
+	</group2>
+	<group2>
+		<tag>value</tag>
+	</group2>
+	<group3>
+		<tag>value</tag>
+	</group3>
+</doc>						
+						]]></eg>
+					<p>produce the output:</p>
+					<eg><![CDATA[
+<doc>
+	<group1>
+		<tag>value</tag>
+		<group2>
+			<tag>value</tag>
+		</group2>
+
+		<group2>
+			<tag>value</tag>
+			<group3>
+				<tag>value</tag>
+			</group3>
+		</group2>
+	</group1>
+</doc> 				
+					
+					]]></eg>
+					<p>Formatting HTML Term Definition Lists (Case 1)</p>
+					<p>Given a source document like:</p>
+					<eg><![CDATA[
+<DL>
+	<!-- Handle the case with no DD or DT -->
+	<DT>One</DT>
+	<DD>One Def</DD>
+	<DT>Two</DT>
+	<DD>Two Def</DD>
+	<DT>Three</DT>
+</DL> 
+						]]></eg>
+					<p>produce the output:</p>
+					<eg><![CDATA[
+<OL>
+	<LI><B>One<B> - <I>One Def</I></LI>
+	<LI><B>Two<B> - <I>Two Def</I></LI>
+	<LI><B>Three<B> - <I>(No definition provided)</I></LI>
+</OL> 
+						]]></eg>
+					<p>Formatting HTML Term Definition Lists (Case 2)</p>
+					<p>A slightly more compliated version of the HTML term definition list involved multiple terms with a single definition or multiple definitions for a single term. Given the source </p>
+					<eg><![CDATA[
+<DL>
+	<DT>One</DT>
+	<DT>Two</DT>
+	<DD>One and Two Def</DD>
+</DL> 						
+						]]></eg>
+					<p>produce the output</p>
+					<eg><![CDATA[
+<OL>
+<LI><B>One, Two</B> - <I>One and Two Def</I></LI>
+</OL> 
+						]]></eg>
+					<p>For the other varation, given the source:</p>
+					<eg><![CDATA[
+<DL>
+	<DT>One</DT>
+	<DD>One Def</DD>
+	<DD>Another One Def</DD>
+</DL> 						
+						]]></eg>
+					<p>produce the output:</p>
+					<eg><![CDATA[
+<UL>
+	<LI>
+		<B>One</B>
+		<OL>
+			<LI>One Def</LI>
+			<LI>Another One Def</LI>
+		</OL>
+	</LI>
+</UL>
+					]]></eg>
+					<p>Transform Inline &lt;para&gt; Elements to Block &lt;para&gt; Elements</p>
+					<p>Transform from a DTD that allows para elements to have nested block-level elements to a DTD that requires para elements to have only inline elements, e.g. transform: </p>
+					<eg><![CDATA[
+<p>Do <em>not</em>:
+<ul>
+<li>talk,</li>
+<li>eat, or</li>
+<li>use your mobile telephone</li>
+</ul>
+while you are in the cinema.</p>
+						]]></eg>
+					<p>into:</p>
+					<eg><![CDATA[
+<p>Do <em>not</em>:</p>
+<ul>
+<li>talk,</li>
+<li>eat, or</li>
+<li>use your mobile telephone</li>
+</ul>
+<p>while you are in the cinema.</p> 						
+						]]></eg>
+					<p>Arrange into Fixed-Sized Groups (Across/Down)</p>
+					<p>Given the input from use case number 1 above, produce a two-column list of all city names, sorted alphabetically, in "Across/Down" format. The result should correctly format the "left over" cells when the number of items is not a multiple of the number of                   items in the group. </p>
+					<eg><![CDATA[
+<table>
+	<!-- Alphabetized Across each row -->
+	<tr>
+		<td>lyon</td>
+		<td>milan</td>
+	</tr>
+	<tr>
+		<td>munich</td>
+		<td>paris</td>
+	</tr>
+	<tr>
+		<td>venice</td>
+		<td>&amp;nbsp;</td>
+	</tr>
+</table>
+						]]></eg>
+					<p>Arrange into Fixed-Sized Groups (Down/Across)</p>
+					<p>Given the input from use case number 1 above, produce a two-column list of all city names, sorted alphabetically, in "Down/Across" format. The result should correctly format the "left over" cells when the number of items is not a multiple of the number of                   items in the group. </p>
+					<eg><![CDATA[
+<table>
+	<!-- Alphabetized Down each column -->
+	<tr><td>lyon</td><td>paris</td></tr>
+	<tr><td>milan</td><td>venice</td></tr>
+	<tr><td>munich</td><td>&amp;nbsp;</td></tr>
+</table>						
+						]]></eg>
+					<p>Multi-level Grouping</p>
+					<p>Given the XML list of software bugs assigned to developers on different teams...</p>
+					<eg><![CDATA[
+<bugs>
+	 <bug dev="ace" team="ui">
+ 		<desc>Border shows white when it should be grey</desc>
+ 	</bug>
+	<bug dev="tom" team="core">
+ 		<desc>Incorrectly handling nulls on entry</desc>
+	</bug>
+ 	<bug dev="gary" team="ui">
+ 		<desc>Preferences dialog has two Cancel buttons</desc>
+ 	</bug>
+ 	<bug dev="ace" team="ui">
+ 		<desc>Drag and drop cursor never changes back</desc>
+ 	</bug>
+ 	<bug dev="tim" team="core">
+ 		<desc>Infinite loop in validation code</desc>
+ 	</bug>
+ 	<bug dev="gary" team="ui">
+ 		<desc>Resizing dialog doesn't resize text box</desc>
+ 	</bug>
+ 	<bug dev="ace" team="ui">
+ 		<desc>German text is truncated</desc>
+	</bug>
+ 	<bug dev="tim" team="core">
+ 		<desc>Data inserted twice</desc>
+ 	</bug>
+ </bugs>
+						]]></eg>
+					<p>Produce an HTML page that includes:</p>
+					<ulist>
+						<item>
+							<p>The total number of open bugs in the title </p>
+						</item>
+						<item>
+							<p>A column for each team of developers, with a per-team bug count. The teams should be ordered left to right by descreasing number of open bugs assigned to the team. </p>
+						</item>
+						<item>
+							<p>A vertical list (separated by &lt;br/&gt; tags) of developers on each team, with their bug count. Developers should be listed top down in order of descreasing individual bug count. </p>
+						</item>
+					</ulist>
+					<p> The result is a nested, grouped output giving development managers a bird's-eye view of which teams and which developers are in the most "bug trouble": </p>
+					<eg><![CDATA[
+<html>
+	<body>
+		<h2>Bug Summary (8)</h2>
+	<table>
+		<tr>
+			<th>ui (5)</th>
+			<th>core (3)</th>
+		</tr>
+		<tr>
+			<td>
+				ace (3)<br/>
+				gary (2)
+			</td>
+			<td>
+				tim (2)<br/>
+				tom (1)
+			</td>
+		</tr>
+	</table>
+	</body>
+</html>						
+						]]></eg>
+					<p>List all the different element names in a document, and for each one list all the attributes used, and for each attribute                   list the distinct values used in the document.</p>
+					<p> For example, given the document: </p>
+					<eg><![CDATA[
+<foo baz="Q">
+	<bar baz="3" bop="T"/>
+	<foo baz="1">
+		<bar bop="S" bip="4" baz="5"/>
+	</foo>
+</foo>
+						]]></eg>
+					<p>Produce the result:</p>
+					<eg><![CDATA[
+<inventory>
+	<element name="bar">
+		<attribute name="baz">
+			<value>3</value>
+			<value>5</value>
+		</attribute>
+		<attribute name="bip">
+			<value>4</value>
+		</attribute>
+		<attribute name="bop">
+			<value>S</value>
+			<value>T</value>
+		</attribute>
+	</element>
+	<element name="foo">
+		<attribute name="baz">
+			<value>1</value>
+			<value>Q</value>
+	</attribute>
+</element>
+</inventory>						
+						
+						]]></eg>
+				</example>
+			</div2>
+			<div2>
+				<head>MUST Support Producing Multiple Output Documents</head>
+				<p>Using the document() function, it is possible in XSLT 1.0 to process multiple input documents as part of a transformation. However, frequently it is also convenient for a transformation to produce multiple output documents as well. As a simple example, consider the process of transforming the XML source of a technical manual. It may be desirable to produce the transformed output which separates each chapter into its own HTML document.  XSLT 1.0 provides an &lt;xsl:output&gt; element that allows a stylesheet developer         to control various aspects of how the result tree will be serialized, however it only supports the result tree being serialized to a single      document. </p>
+				<div3>
+					<head>MUST be Possible to Specify the Destination URI</head>
+					<p>In XSLT 2.0 it must be possible to specify the destination URI (e.g. file name) of each output document </p>
+				</div3>
+				<div3>
+					<head>MUST be Possible to Dynamically Assign the Name of the Destination URI</head>
+					<p>In XSLT 2.0 it must be possible to assign the name of the destination URI dynamically. </p>
+				</div3>
+				<div3>
+					<head>MUST be Possible to Control Serialization of each Output Document</head>
+					<p>In XSLT 2.0 it must be possible to control serialization of each output document using the same facilities as <code>&lt;xsl:output&gt;</code>
+					</p>
+				</div3>
+			</div2>
+			<div2>
+				<head>MUST Provide Portable Extension Functions</head>
+				<p>XSLT 1.0 defines the facilities to unambiguously identify extension functions from built-in functions by requiring that extension functions be referenced using namespace-qualified names, e.g. myprefix:myfunction(). It provides the function-available() function to test for the availability of a particular function by name. The XSLT 1.1 specification will define the additional specifics necessary to enable the creation and use of extension functions across processors with the following requirements: </p>
+				<div3>
+					<head>MUST Work Like Built-in Functions</head>
+					<p>In XSLT 2.0 extension functions must work like built-in functions. </p>
+				</div3>
+				<div3>
+					<head>MUST Provide Language-Neutral Interfaces</head>
+					<p>In XSLT 2.0 language-neutral interfaces for language binding implementations must be provided. </p>
+				</div3>
+				<div3>
+					<head>MUST Provide Language bindings for Java and ECMAScript</head>
+					<p>In XSLT 2.0 language bindings must be provided for Java and ECMAScript.</p>
+				</div3>
+				<div3>
+					<head>MUST Require Processor Conformance for Java and ECMAScript</head>
+					<p>In XSLT 2.0 a processor that implements extension functions for any language whose binding is provided by the XSLT specification must conform for those languages. </p>
+				</div3>
+				<div3>
+					<head>MUST Allow Support for Inline and External Extension Functions</head>
+					<p>Extension function implementations must be allowed both inline as well as externally. </p>
+				</div3>
+				<div3>
+					<head>MUST Support All XPath Datatypes as Arguments</head>
+					<p>In XSLT 2.0 it must be possible to pass arguments of all XPath datatypes to extension functions.</p>
+				</div3>
+				<div3>
+					<head>MUST Support All XPath Datatypes as Results</head>
+					<p>In XSLT 2.0 it must be possible for extension functions to return all XPath datatypes as a result.</p>
+				</div3>
+				<div3>
+					<head>MUST Support Constructing and Returning XML Fragment Node-sets</head>
+					<p>In XSLT 2.0 extension functions must be able to construct and return node-sets of XML fragments</p>
+				</div3>
+				<div3>
+					<head>MUST Support Includes and Imports</head>
+					<p>In XSLT 2.0 it must be possible to include or import extension functions from another stylesheet.</p>
+				</div3>
+				<div3>
+					<head>SHOULD Provide Function to Absolutize Relative URIs</head>
+					<p>There SHOULD be a way in XSLT 2.0 to create an absolute URI. The functionality should allow passing a node-set and return a string value representing the absolute URI resolved with respect to the base URI of the current node. </p>
+				</div3>
+				<div3>
+					<head>SHOULD Not Require Specific Language Bindings</head>
+					<p>In XSLT 2.0 a processor should NOT be required to implement the portable extension function binding for any particular language.</p>
+				</div3>
+				<div3>
+					<head>SHOULD Fail With Error on Ambigupus Implementation Selection</head>
+					<p>In XSLT 2.0 a processor should fail with error if the selection of the extension function implementation is ambiguous.</p>
+				</div3>
+				<div3>
+					<head>SHOULD Convert Arguments Consistently</head>
+					<p>In XSLT 2.0 a processor should convert arguments in a way consistent with the built-in functions.</p>
+				</div3>
+				<div3>
+					<head>SHOULD Support Returning Host-Language Types</head>
+					<p>In XSLT 2.0 it should be possible to return an object of any host-language type from the extension function.</p>
+				</div3>
+				<div3>
+					<head>SHOULD Support Passing Arugments of Host-Language Types</head>
+					<p>In XSLT 2.0 it should be possible to pass an object of any host-language type to an extension function. </p>
+				</div3>
+				<div3>
+					<head>SHOULD Support Invoking Overloaded Functions in Java</head>
+					<p>In XSLT 2.0 it should be possible to support invoking overloaded functions in Java. </p>
+				</div3>
+			</div2>
+		</div1>
+	</body>
+	<back>
+		<div1 id="references">
+			<head>References</head>
+			<div2>
+				<head>Normative References</head>
+				<blist>
+					<bibl id="DATAMODEL" key="Data Model">World Wide Web Consortium. 
+<emph>XQuery 1.0 and XPath 2.0 Data Model</emph> W3C Working Draft. 
+See <loc href="http://www.w3.org/TR/query-datamodel/"/>
+					</bibl>
+					<bibl id="FANDO" key="Functions and Operators">World Wide Web Consortium. 
+<emph>XQuery 1.0 and XPath 2.0 Functions and Operators.</emph>
+W3C Working Draft. 
+See <loc href="http://www.w3.org/TR/xquery-operators/"/>
+					</bibl>
+					<bibl id="DOM2" key="DOM2" diff="add">World Wide Web Consortium. <emph>Document
+Object Model (DOM) Level 2 Core Specification.</emph> W3C Recommendation. 
+See <loc href="http://www.w3.org/TR/DOM-Level-2-Core/"/>
+					</bibl>
+					<bibl id="INFOSET" key="XML Information Set">World Wide Web Consortium. 
+					<emph>XML Information Set.</emph> W3C Recommendation. See ***TBA***
+                    </bibl>
+					<bibl id="UNICODE-NORMALIZATION" key="Unicode Normalization">Unicode Consortium.
+					<emph>Unicode Normalization Forms</emph>. Unicode Standard Annex #15.
+					See <loc href="http://www.unicode.org/unicode/reports/tr15/"/>
+					</bibl>
+					<bibl id="XHTML10" key="XHTML 1.0">World Wide Web Consortium. <emph>XHTML
+1.0: The Extensible HyperText Markup Language.</emph> W3C Recommendation. 
+See <loc href="http://www.w3.org/TR/xhtml1/"/>. Note: a second edition of this
+specification is in preparation.</bibl>
+					<bibl id="XHTML11" key="XHTML 1.1">World Wide Web Consortium. <emph>XHTML
+1.1: Module-Based XHTML.</emph> W3C Recommendation. 
+See <loc href="http://www.w3.org/TR/xhtml11/"/>
+					</bibl>
+					<bibl id="XML" key="XML">World Wide Web Consortium. <emph>Extensible
+Markup Language (XML) 1.0 (Second Edition)</emph> W3C Recommendation. 
+See <loc href="http://www.w3.org/TR/2000/REC-xml-20001006"/>
+					</bibl>
+					<bibl id="XMLBASE" key="XMLBASE" diff="add">World Wide Web
+Consortium. <emph>XML Base.</emph> W3C Recommendation. See
+<loc href="http://www.w3.org/TR/xmlbase/"/>
+					</bibl>
+					<bibl id="XMLNAMES" key="XML Names">World Wide Web
+Consortium. <emph>Namespaces in XML.</emph> W3C Recommendation. See
+<loc href="http://www.w3.org/TR/REC-xml-names/"/>
+					</bibl>
+					<bibl id="XMLSCHEMA" key="XML Schema">World Wide Web Consortium. 
+<emph>XML Schema Part 1: Structures</emph> and 
+and <emph>XML Schema Part 2: Data Types</emph>. W3C Recommendation.
+See <loc href="http://www.w3.org/TR/xmlschema-1/"/> and
+<loc href="http://www.w3.org/TR/xmlschema-2/"/>
+					</bibl>
+					<bibl id="XPATH20" key="XPath 2.0">World Wide Web Consortium. <emph>XML Path
+Language Version 2.0</emph> W3C Working Draft.
+See <loc href="http://www.w3.org/TR/xpath20/"/>
+					</bibl>
+					<bibl id="XPATH-FS" key="Formal Semantics">World Wide Web Consortium. 
+<emph>XQuery 1.0 Formal Semantics</emph> W3C Working Draft.
+See <loc href="http://www.w3.org/TR/query-semantics/"/>
+					</bibl>
+				</blist>
+			</div2>
+			<div2>
+				<head>Other References</head>
+				<blist>
+					<bibl id="HTML" key="HTML">World Wide Web Consortium. <emph>HTML 4.01
+specification</emph>. W3C Recommendation. 
+See <loc href="http://www.w3.org/TR/html4/"/>
+					</bibl>
+					<bibl id="UNICODE-TR10" key="UNICODE TR10">Unicode Consortium.
+<emph>Unicode Technical Standard #10. Unicode Collation
+Algorithm</emph>.  Unicode Technical Report.  
+See <loc href="http://www.unicode.org/unicode/reports/tr10/"/>.</bibl>
+					<bibl id="XINCLUDE" key="XInclude">World Wide Web
+Consortium. <emph>XML Inclusions (XInclude)</emph>
+W3C Recommendation. 
+See <loc href="http://www.w3.org/TR/xinclude/"/>
+					</bibl>
+					<bibl id="XMLSTYLE" key="XML Stylesheet">World Wide Web
+Consortium. <emph>Associating Style Sheets with XML documents.</emph>
+W3C Recommendation. 
+See <loc href="http://www.w3.org/TR/xml-stylesheet/"/>
+					</bibl>
+					<bibl id="XPOINTER" key="XPointer">World Wide Web Consortium. <emph>XML Pointer
+Language (XPointer) Version 1.0</emph> W3C Candidate Recommendation.
+See <loc href="http://www.w3.org/TR/xptr/"/>
+					</bibl>
+					<bibl id="XSLFO" key="XSL Formatting Objects">World Wide Web Consortium.  
+<emph>Extensible Stylesheet Language (XSL).</emph>  W3C Recommendation.  
+See <loc href="http://www.w3.org/TR/xsl/"/>
+					</bibl>
+					<bibl id="XSLT10" key="XSLT 1.0">World Wide Web Consortium. 
+<emph>XSL Transformations (XSLT) Version 1.0</emph> W3C Recommendation. 
+See <loc href="http://www.w3.org/TR/xslt"/>
+					</bibl>
+					<bibl id="XSLT20" key="XSLT 2.0">World Wide Web
+Consortium. <emph>XSLT Version 2.0</emph>
+W3C Working Draft. See <loc href="http://www.w3.org/TR/xslt20"/>
+					</bibl>
+					<bibl id="XPATH20REQ" key="XPath 2.0 Requirements">World Wide Web
+Consortium. <emph>XPath Requirements Version 2.0</emph>
+W3C Working Draft. See <loc href="http://www.w3.org/TR/xpath20req"/>
+					</bibl>
+				</blist>
+			</div2>
+		</div1>
+	</back>
+</spec>

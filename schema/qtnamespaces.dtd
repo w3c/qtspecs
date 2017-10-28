@@ -1,0 +1,53 @@
+<!-- =============================================================== -->
+<!-- qtnamespaces.dtd == DTD describing the various namespace.xml    -->
+<!--   documents used for namespaces defined by documents developed  -->
+<!--   in the qtspecs CVS tree                                       -->
+<!-- =============================================================== -->
+
+<!-- =============================================================== -->
+<!-- Define local.p.class (which augments p.class) to include        -->
+<!--   everything that xsl-query.dtd defined it to include, plus     -->
+<!--   rddl-resource.                                                -->
+<!-- =============================================================== -->
+<!ENTITY % local.p.class  "|change|error|error-list|imp-def-feature|imp-dep-feature|rddl:resource">
+
+<!-- =============================================================== -->
+<!-- Define local.bibl.pcd.mix (which augments bibl.pcd.class) to    -->
+<!--   include rddl-resource.                                        -->
+<!-- =============================================================== -->
+<!ENTITY % local.bibl.pcd.mix "|rddl:resource">
+
+
+<!ATTLIST div1
+  class  CDATA #IMPLIED
+>
+
+<!ATTLIST bibl
+  class  CDATA #IMPLIED
+>
+
+
+<!-- =============================================================== -->
+<!-- Now, incorporate xsl-query.dtd                                  -->
+<!-- =============================================================== -->
+<!ENTITY % xsl-query-spec SYSTEM "xsl-query.dtd">
+%xsl-query-spec;
+
+<!-- =============================================================== -->
+<!-- Define rddl-resource with (only) the attributes we need         -->
+<!-- =============================================================== -->
+<!ELEMENT rddl:resource (#PCDATA | p)*>
+<!ATTLIST rddl:resource
+  id            ID       #IMPLIED
+  xml:lang      NMTOKEN  #IMPLIED
+  xml:base      CDATA    #IMPLIED
+  xmlns:rddl    CDATA    #FIXED   "http://www.rddl.org/"
+  xmlns:xlink   CDATA    #FIXED   "http://www.w3.org/1999/xlink"
+  xlink:type    (simple) #FIXED   "simple"
+  xlink:arcrole CDATA    #IMPLIED
+  xlink:role    CDATA             "http://www.rddl.org/#resource"
+  xlink:href    CDATA    #IMPLIED
+  xlink:title   CDATA    #IMPLIED
+  xlink:embed   CDATA    #FIXED   "none"
+  xlink:actuate CDATA    #FIXED   "none"
+  >

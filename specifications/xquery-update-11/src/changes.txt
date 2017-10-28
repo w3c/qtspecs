@@ -1,0 +1,136 @@
+
+Status of XQuery Update Specification
+(Records changes since Last Call Working Draft of 8/28/07)
+
+Updated 2010-05-10
+
+
+--------------------------------------------------
+The following item is pending on 2010-05-10
+--------------------------------------------------
+
+* Replace use of keyword "updating" in function declaration
+with "updating" | Annotation
+
+
+--------------------------------------------------
+The following post-CR changes have been checked in:
+--------------------------------------------------
+
+(1) Update Bug 5699:
+Agreed to suggested changes. Variable initializing expressions must
+be simple expressions. Decided at telcon 369, 6/3/08.
+
+(2) Update Bug 5629:
+Involves changes to semantics of "rename" when the new name has no prefix.
+Working group agreed to modify the rule in Section 2.4.4 clause 2b as 
+suggested by M.Kay, and also to add the following new rule to Section 3.1.11 
+(upd:rename) following rule 1b: "If $newname has no prefix and no namespace URI, 
+the namespaces property of $target is modified by removing the binding (if any) 
+for the empty prefix."  Decided at telcon 367, 5/20/08.
+
+(3) Update Bug 5632:
+Working group agreed to make the changes proposed by M.Kay. Changes errors
+XUDY0020 and XUDY0024 to be more closely associated with a specific
+expression (may benefit try/catch). Decided at telcon 367, 5/20/08.
+
+(4) Update Bug 5701:
+Agreed to suggested changes. Move the subsection on function declarations
+from its current location to "Extensions to Prolog". Decided at 
+telcon 369, 6/3/08.
+
+(5) Update Bug 5700:
+Agreed to suggested changes. Update spec (static typing section)
+should add all updating expressions to the list of expressions that
+can return nothing without raising a static error. 
+Decided at telcon 369, 6/3/08.
+
+(6) Update Bug 5646 (decisions made in telcon 368 and 369, 5/27/08 and 6/3/08):
+(a) Is fn:put() an updating expression? Agreed: YES
+(b) Does fn:put() operate on its operand node before updates have been
+applied, or after? Agreed: After. If somebody wants to invoke put() on a 
+pre-updated node, he should make a copy of it.
+(c) Should the semantics of fn:put() be to add a primitive to the PUL?
+The new primitive operates on a nodeid with implementation-defined
+semantics. This will be helpful to try/catch and scripting. Agreed: YES.
+Also agreed: It is an error (caught by upd:mergeUpdates) if two 
+invocations of fn:put() in the same snapshot operate on the same URI.
+(d) Should fn:put() always be a static error because it returns nothing?
+Agreed: NO (see also Bug 5700).
+
+(7) Updated the Revision Log.
+
+
+---------------------------------------------------
+The following changes were committed April 27th
+---------------------------------------------------
+
+* [UPD] Parent property in transform copy modify
+  http://www.w3.org/Bugs/Public/show_bug.cgi?id=6383 
+
+* [UPD] rename and namespace inheritance
+  http://lists.w3.org/Archives/Member/w3c-xml-query-wg/2008Jul/0014.html
+
+* [UPD] transform modify clause
+  http://www.w3.org/Bugs/Public/show_bug.cgi?id=6221
+
+* [UPD] Deleting a parentless node should be well-defined
+  http://www.w3.org/Bugs/Public/show_bug.cgi?id=5702
+  Deleting a parentless node is a no-op, and never raises
+  an error. Decided 16 Sept 08. 
+
+* [UPD] 2.4.5 Transform: syntax error in example
+  http://www.w3.org/Bugs/Public/show_bug.cgi?id=6801
+
+* Conformance now requires support for all functions defined in [XQuery 1.0 and XPath 2.0 	 
+  Functions and Operators] except fn:element-with-id()
+
+  Because the version of F&O we refer to does not include this, I added the "except" part
+  in a NOTE.
+
+* [UPD] Clarification of upd:insertAttributes
+  http://www.w3.org/Bugs/Public/show_bug.cgi?id=5874
+
+* [UPD] setToUntyped() and xml:id
+  http://www.w3.org/Bugs/Public/show_bug.cgi?id=6482
+
+* [UPD] upd:replaceNode() and upd:setToUntyped()
+  http://www.w3.org/Bugs/Public/show_bug.cgi?id=6483
+
+* Definition of Vacuous Expression
+  http://www.w3.org/Bugs/Public/show_bug.cgi?id=5332
+
+* Errors in deleted subtrees
+  http://www.w3.org/Bugs/Public/show_bug.cgi?id=6495
+
+* Duplication statement of restriction on variable declaration:
+  http://www.w3.org/Bugs/Public/show_bug.cgi?id=6222
+
+* [UPD] rename and namespace inheritance
+  http://www.w3.org/Bugs/Public/show_bug.cgi?id=5631
+
+* Hyperlinking to referenced functions:
+  http://www.w3.org/Bugs/Public/show_bug.cgi?id=5873
+
+
+
+-----------------------------------------
+The following changes are on my work list:
+-----------------------------------------
+
+EDITORIAL:
+
+####### Change log
+
+---------------------------------------------------------
+The following changes are waiting for something to happen:
+---------------------------------------------------------
+
+---------------------------------------------------------
+REMEMBER
+---------------------------------------------------------
+
+
+REMEMBER: Root file is now xquery-update.xml.
+Old file xquery-update-facility.xml is now obsolete (done by Jim).
+

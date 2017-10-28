@@ -1,0 +1,166 @@
+<div1 id="id-xqft-xqueryx">
+<head>XML Syntax (XQueryX) for &language;</head>
+
+<p>
+<bibref ref="xqueryx-31"/> defines an XML representation of <bibref ref="xquery-31"/>. 
+<bibref ref="xpath-full-text-31-requirements-use-cases"/>, section 5.4, XML Syntax, states
+"XQuery and XPath Full Text MAY have more than one syntax binding. 
+One query language syntax MUST be expressed in XML in a way that
+reflects the underlying structure of the query. See XML Query Requirements."
+This appendix specifies XML Schemas that together define the
+XML representation of &language; by representing the abstract syntax
+found in <specref ref="id-grammar"/>.  Because &language;
+integrates seamlessly with XQuery <phrase diff="chg">3.1</phrase>,
+it follows that the XML Syntax for &language; must integrate well
+with the XML Syntax for XQuery <phrase diff="chg">3.1</phrase>. 
+</p>
+
+<p>
+The XML Schema specified in this appendix accomplishes integration by importing
+the XML Schema defined for XQueryX in <xspecref spec="XQX31" ref="Schema"/>,
+incorporating all of its type and element definitions. 
+It then extends that schema by adding definitions of new types and elements
+in a namespace belonging to the full-text specification. 
+</p>
+
+<p>
+The semantics of a Full Text XQueryX document are determined by the
+semantics of the XQuery Full Text expression that
+results from transforming the XQueryX document into XQuery Full Text
+syntax using the XSLT stylesheet that appears in
+section <specref ref="id-xqft-full-text-stylesheet"/>. 
+The "correctness" of that transformation is determined by
+asking the following the question:
+Can some Full Text XQueryX processor QX process some
+Full Text XQueryX document D1 to produce results R1,
+after which the stylesheet is used to translate D1 into an
+XQuery Full Text expression E1 that, when processed by some
+XQuery Full Text processor Q, produces results R2 that are equivalent
+(under some meaningful definition of "equivalent") to results R1?
+</p>
+
+
+<div2 id="id-xqft-full-text-schema">
+<head>XQueryX representation of &language;</head>
+
+<p>
+The XML Schema that defines the complex types and elements
+for XQueryX in support of &language;, including the ftContainsExpr,
+incorporates a second XML Schema that defines
+types and elements to support the ftMatchOption. 
+Both XML Schemas are defined in this section. 
+</p>
+
+<eg>
+&xqftxqx-schema;
+</eg>
+
+<eg>
+&xqftxqx-options-schema;
+</eg>
+
+</div2>
+
+
+<div2 id="id-xqft-full-text-stylesheet">
+<head>XQueryX stylesheet for &language;</head>
+
+<p>
+The XSLT stylesheet that defines the semantics of XQueryX
+in support of &language; integrates seamlessly with the
+XQueryX XSLT stylesheet defined in <xspecref spec="XQX31" ref="Stylesheet"/>
+by importing the XQueryX XSLT stylesheet. 
+It provides additional templates that
+define the semantics of the XQueryX representation of &language;
+by transforming that XQueryX representation into
+the human readable syntax of &language;. 
+</p>
+
+<eg>
+&xqftxqx-stylesheet;
+</eg>
+
+</div2>
+
+
+<div2 id="id-xqft-full-text-examples">
+<head>XQueryX for &language; example</head>
+
+<!-- Jim, 2007-08-11 - Bug #4735 -->
+<p>
+The following example is based on the data and queries of one of the use cases
+in <bibref ref="xpath-full-text-31-requirements-use-cases"/>. 
+In this example, we show the English description of the query,
+the XQuery Full Text solution given in <bibref ref="xpath-full-text-31-requirements-use-cases"/>,
+a Full Text XQueryX solution, and the XQuery Full Text query
+that results from applying the Full Text XQueryX-to-XQuery Full Text transformation
+defined by the stylesheet in <specref ref="id-xqft-full-text-stylesheet"/>
+to the Full Text XQueryX solution.
+The latter XQuery Full Text expression is presented only as a sanity-check &mdash;
+the intent of the stylesheet is not to create the identical
+XQuery Full Text expression given in <bibref ref="xpath-full-text-31-requirements-use-cases"/>,
+but to produce <emph>a</emph> valid
+XQuery Full Text expression with the same semantics. 
+</p>
+
+<p>Comparison of the results of the Full Text XQueryX-to-XQuery Full Text
+transformation given in this document with the XQuery Full Text solutions
+in the <bibref ref="xpath-full-text-31-requirements-use-cases"/> may be helpful in evaluating
+the correctness of the Full Text XQueryX solution in the example. </p>
+
+<p>The XQuery Full Text Use Cases solution given for the
+example is provided only to assist readers of this
+document in understanding the Full Text XQueryX solution. 
+There is no intent to imply that this
+document specifies a "compilation" or "transformation" of
+XQuery Full Text syntax into Full Text XQueryX syntax. 
+</p>
+
+<p>In the following example, note that path expressions are expanded to show their
+structure. Also, note that the prefix syntax for binary operators like "and" makes the
+precedence explicit. In general, humans find it easier to read an XML representation
+that does not expand path expressions, but it is less convenient for programmatic
+representation and manipulation.  XQueryX is designed as a language that is convenient
+for production and modification by software, and not as a convenient syntax for humans to
+read and write. </p>
+
+<p>Finally, please note that white space, including new lines, have been added to
+some of the Full Text XQueryX documents and XQuery Full Text expressions for readability. 
+That additional white space is not necessarily produced by the
+Full Text XQueryX-to-XQuery Full Text transformation. </p>
+
+      <div3 id="Example1">
+        <head>Example</head>
+
+        <p>Here is Q4 from the <bibref ref="xpath-full-text-31-requirements-use-cases"/>,
+    use case SCORE: Find all books with parts about "usability testing".</p>
+
+        <div4 id="Example1-XQuery-Full-Text">
+          <head>XQuery solution in XQuery and XPath Full Text <phrase diff="chg">3.1</phrase> Use Cases:</head>
+
+          <eg role="xquery">&ftxqxexmpl1xqft;</eg>
+
+        </div4>
+
+        <div4 id="Example1-Full-Text-XQueryX">
+          <head>A Solution in Full Text XQueryX:</head>
+
+          <eg>&ftxqxexmpl1ftxqx;</eg>
+
+        </div4>
+
+        <div4 id="Example1-Full-Text-Transformation">
+          <head>Transformation of Full Text XQueryX Solution into XQuery Full Text</head>
+
+          <p>Application of the stylesheet in <specref ref="id-xqft-full-text-stylesheet"/>
+          to the Full Text XQueryX solution results in:</p>
+
+          <eg role="xquery">&ftxqxexmpl1ftxqx2xqft;</eg>
+
+        </div4>
+
+    </div3>
+
+</div2>
+
+</div1>

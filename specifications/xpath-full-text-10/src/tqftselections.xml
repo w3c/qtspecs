@@ -1,0 +1,2142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<div1 id="ftselections">
+	<head>Full-Text Selections</head>
+
+<p>This section describes the
+full-text selections which contain the full-text
+operators in a <termref def="dt-ftcontains">full-text contains
+expression</termref>  
+(<nt def="FTContainsExpr">FTContainsExpr</nt>), as 
+well as the match options which modify the matching semantics of the 
+full-text selections. In the following, the syntax for each type of
+full-text selection is given together with an informal statement of
+its meaning.</p>
+
+<p><termdef id="ftselection" term="full-text selection">A 
+<term>full-text selection</term> specifies the conditions of a full-text search.
+</termdef></p>
+
+<scrap>
+<head></head>
+<prodrecap ref="FTSelection" id="FTSelection"/>
+</scrap>
+
+<p>As shown in the grammar, a full-text selection consists of search 
+conditions possibly involving logical operators (<nt def="FTOr">FTOr</nt>), followed by an 
+arbitrary number of positional filters (<nt def="FTPosFilter">FTPosFilter</nt>).
+</p>
+
+<p>The syntax and semantics of the individual full-text selection
+operators follow.</p>
+
+
+<p>This XML document
+is the source document for examples in this section. </p>
+
+<eg><![CDATA[
+<books>
+  <book number="1">
+    <title shortTitle="Improving Web Site Usability">Improving  
+        the Usability of a Web Site Through Expert Reviews and
+        Usability Testing</title>
+    <author>Millicent Marigold</author>
+    <author>Montana Marigold</author>
+    <editor>Véra Tudor-Medina</editor>
+    <content>
+      <p>The usability of a Web site is how well the  
+          site supports the users in achieving specified  
+          goals. A Web site should facilitate learning,  
+          and enable efficient and effective task  
+          completion, while propagating few errors.
+      </p>
+      <note>This book has been approved by the Web Site  
+          Users Association.
+      </note>
+    </content>
+  </book>
+</books>
+]]></eg>
+
+<p>Tokenization is &ref-implementation-defined;. A sample tokenization is
+used for the examples in this section. 
+This sample tokenization uses white space, punctuation and XML tags as word-breakers<phrase diff="add">, periods followed by a space as sentence boundaries,</phrase> and 
+<code>&lt;p&gt;</code> for paragraph boundaries. <phrase diff="add">The first sentence and paragraph start at the beginning of the document, and the last sentence and paragraph end at the end of the document.</phrase>
+The results may be different
+for other tokenizations.</p>  
+ <p>The first five tokens in this example using the sample tokenization would be "Improving", "the", "usability", "of", and "a".</p>
+
+<p>Unless stated otherwise, the results
+assume a case-insensitive match.</p>
+
+<div2 id="ftprimary">
+	<head>Primary Full-Text Selections</head>
+
+<scrap>
+<head></head>
+<prodrecap ref="FTPrimary" id="FTPrimary"/>
+</scrap>
+
+<p><termdef id="dt-ftprimary" term="primary full-text selection">A 
+<term>primary full-text selection</term> is the basic form of a 
+full-text selection. It specifies tokens and phrases as search 
+conditions (<nt def="FTWords">FTWords</nt>), optionally followed by a cardinality constraint 
+(<nt def="FTTimes">FTTimes</nt>). An <nt def="FTSelection">FTSelection</nt> 
+in parentheses and the <nt def="FTExtensionSelection">FTExtensionSelection</nt>
+are also a primary full-text selections.</termdef>
+</p>
+
+<div3 id="ftweight">
+<head>Weights</head>
+
+<scrap><head></head>
+	<prodrecap ref="FTPrimaryWithOptions"/>
+	<prodrecap ref="FTWeight" id="FTWeight"/>
+</scrap>
+
+<p>As shown in the grammar, a full-text primary selection
+may be optionally followed by match options (which are discussed in
+<specref ref="ftmatchoptions"/>) and
+by a "weight" value that is specified using an expression enclosed in braces.
+The Expr is evaluated as if it were an argument to a function 
+with an expected type <code>xs:double</code>.
+The weight <termref def="must">MUST</termref> have an absolute value between 0.0 and 1000.0 inclusive.
+If the absolute value of the weight is greater than 1000.0, an
+error is raised: <errorref class="DY" code="0016"/>. 
+</p>
+
+<note><p diff="add">As a consequence of the flexibility given to implementations 
+under <xspecref spec="XQ" ref="id-errors-and-opt"/>, it is possible that 
+evaluation 
+of weight declarations in an FTContainsExpr for which no scores are evaluated
+may be skipped by the implementation and errors with them may go unreported.
+</p></note>
+
+</div3>
+</div2>
+
+
+<div2 id="ftwords">
+	<head>Search Tokens and Phrases</head>
+
+<scrap>
+<head></head>
+<prodrecap ref="FTWords" id="FTWords"/>
+<prodrecap ref="FTWordsValue" id="FTWordsValue"/> 
+<prodrecap ref="FTAnyallOption" id="FTAnyallOption"/>
+</scrap>
+
+<p><nt def="FTWords">FTWords</nt> finds matches that contain the specified 
+tokens and phrases.</p>
+
+<p>FTWords consists of two parts: a mandatory <nt def="FTWordsValue">
+FTWordsValue</nt> part and an optional <nt def="FTAnyallOption">
+FTAnyallOption</nt> part. <nt def="FTWordsValue">FTWordsValue</nt> specifies the tokens and phrases
+that must be contained in the matches. <nt def="FTAnyallOption">FTAnyallOption</nt> specifies how 
+containment is checked. </p>
+
+<p>In general, the tokens and phrases in <nt def="FTWordsValue">
+FTWordsValue</nt> are specified using a nested XQuery expression. 
+To simplify notation, the enclosing braces may be omitted if <nt
+def="FTWordsValue">FTWordsValue</nt> consists of a single <phrase diff="add">string</phrase> literal.
+</p>
+
+<p>The following rules specify how an <nt def="FTWordsValue">FTWordsValue</nt>
+matches tokens and phrases. First, the 
+<nt def="FTWordsValue">FTWordsValue</nt> is converted to a sequence of
+strings as though it were an argument to a function with the expected
+type of <code>xs:string*</code>.
+If the sequence is empty, the FTWords yields no matches.
+Otherwise, each of those strings is tokenized into a
+sequence of tokens as 
+described in <loc href="#TokenizationSec">Section 4.1 Tokenization</loc>.
+Then, <nt def="FTAnyallOption">FTAnyallOption</nt> is checked.</p>
+
+<p>If <nt def="FTAnyallOption">FTAnyallOption</nt> is "any", the sequence of tokens for each string is
+considered as a phrase.
+If the sequence of tokens is empty,
+then the phrase contributes nothing to the set of matches for the FTWords.
+Otherwise, a match is found in the tokenized form of 
+the text being searched, whenever that form contains a subsequence of tokens
+that corresponds to the sequence of query tokens in an implementation-defined
+way and that subsequence of tokens covers consecutive token positions in 
+the tokenized text. If the value of the FTWordsValue contains more 
+than one string, 
+the different strings are considered to be alternatives, i.e., the search context
+must contain at least one of the generated phrases.
+Each resulting match will contain exactly one such phrase.</p>
+
+<p>If <nt def="FTAnyallOption">FTAnyallOption</nt> is "all", the sequence of tokens for each string is
+considered as a phrase.
+If any such sequence of tokens is empty, the FTWords yields no matches.
+The resulting matches must contain all of the 
+generated phrases.</p>
+
+<p>If <nt def="FTAnyallOption">FTAnyallOption</nt> is "phrase", the tokens from all the strings are
+concatenated in a single sequence, which is considered as a phrase.
+If the sequence of tokens is empty, the FTWords yields no matches.
+The
+resulting matches must contain the generated phrase.</p>
+
+<p>If <nt def="FTAnyallOption">FTAnyallOption</nt> is "any word", the tokens from all the strings are
+combined into a single set.
+If the set is empty, the FTWords yields no matches.
+The search context must contain at least
+one of the tokens in the set.
+Each resulting match will contain exactly one such token.</p>
+
+<p>If <nt def="FTAnyallOption">FTAnyallOption</nt> is "all words", the tokens from all the strings are
+combined into a single set.
+If the set is empty, the FTWords yields no matches.
+The resulting matches must contain all
+of the tokens in the set.</p>
+
+<p>If the <nt def="FTWordsValue">FTWordsValue</nt> evaluates to
+a single string, the use of "any", "all", and "phrase" in
+<nt def="FTAnyallOption">FTAnyallOption</nt> produces the same
+results.</p>
+
+<p>If <nt def="FTAnyallOption">FTAnyallOption</nt> is omitted, "any" is 
+the default.</p>
+
+<p>The following expression returns the sample <code>book</code> element,
+because its <code>title</code>
+element contains the token "Expert":</p>
+<eg role="xpath">//book[./title contains text "Expert"]</eg>
+
+<p>The following expression returns the sample <code>book</code> element,
+because its <code>title</code>
+element contains the phrase "Expert Reviews":</p>
+<eg role="xpath">//book[./title contains text "Expert Reviews"]</eg>
+
+<p>The following expression returns the sample <code>book</code> element, 
+because its <code>title</code> 
+element contains the two tokens "Expert" and "Reviews":</p>
+<eg role="xpath">//book[./title contains text {"Expert", "Reviews"} all]</eg>
+
+<p>The following expression returns false for our sample document, because 
+the <code>p</code> element doesn't
+contain the phrase "Web Site Usability" although it contains all of the tokens
+in the phrase:</p>
+<eg role="xpath">//book//p contains text "Web Site Usability"</eg> 
+
+<p>The following expression returns book numbers of <code>book</code> elements by
+"Marigold" with a title about "Web Site Usability", sorting them in descending
+score order: </p> 
+<eg role="xquery">for $book in /books/book[.//author contains text "Marigold"] 
+let score $score := $book/title/@shortTitle contains text "Web Site Usability" 
+where $score &gt; 0.8 
+order by $score descending
+return $book/@number</eg> 
+
+</div2>
+
+<div2 id="fttimes">
+	<head>Cardinality Selection</head>
+
+<scrap><head></head>
+			<prodrecap ref="FTTimes" id="FTTimes"/>
+</scrap>
+
+<p><termdef id="dt-cardinality-selection" term="cardinality selection">A
+<term>cardinality selection</term> consist of an 
+<nt def="FTWords">FTWords</nt> followed
+by the <nt def="FTTimes">FTTimes</nt> postfix operator.</termdef>
+A cardinality selection selects matches for which the operand 
+<nt def="FTWords">FTWords</nt> is matched a specified number of
+times. </p>
+
+<p>A cardinality selection limits the number of different
+matches of <nt def="FTWords">FTWords</nt> within the
+specified range. The semantics of FTRange are described in 
+<specref ref="ftdistance"/>. </p>
+
+<p>In the document fragment "very very big":</p>
+
+<olist>
+
+<item>
+<p>
+The <nt def="FTWords">FTWords</nt> <code>"very big"</code> has 1
+match consisting of the second "very" and "big".
+</p>
+</item>
+
+<item>
+<p>
+The <nt def="FTWords">FTWords</nt> <code>{"very", "big"} all</code>
+has 2 matches; one consisting of the first "very" and "big", and
+the other containing the second "very" and "big".
+</p>
+</item>
+
+<item>
+<p>
+The <nt def="FTWords">FTWords</nt> <code>{"very", "big"} any</code> 
+has 3 matches. 
+</p>
+</item>
+
+</olist>
+
+<p>The following expression returns the example <code>book</code> element's 
+number, because the <code>book</code> element contains 2 or more occurrences 
+of "usability":</p>
+
+<eg role="xpath">//book[. contains text "usability" occurs at least 2 times]/@number</eg>
+
+<p>The following expression returns the empty sequence, because there are 
+3 occurrences of <code>{"usability", "testing"} any</code> in the designated 
+<code>title</code>:</p>
+
+<eg role="xpath">//book[@number="1" and title contains text {"usability", 
+"testing"} any occurs at most 2 times] </eg>
+
+
+</div2>
+
+
+<div2 id="ftmatchoptions">
+	<head>Match Options</head>
+
+
+<p>Full-text match options modify the matching behaviour of 
+the <termref def="dt-ftprimary">primary full-text selection</termref> to which 
+they are applied. </p> 
+
+<scrap><head></head>
+	<prodrecap ref="FTPrimaryWithOptions" id="FTPrimaryWithOptions"/>
+	<prodrecap ref="FTMatchOptions" id="FTMatchOptions"/>
+	<prodrecap ref="FTMatchOption" id="FTMatchOption"/>
+</scrap>
+
+<p><termdef id="dt-match-options" term="match option"><term>Match options</term> modify the set of tokens
+      in the query, or how they are matched against tokens in the
+      text.</termdef> 
+</p>
+<p><termdef id="dt-match-option-group" term="match option group">
+Each of the <phrase diff="del">seven</phrase> alternatives of production 
+<nt def="FTMatchOption">FTMatchOption</nt>
+<phrase diff="add">other than <nt def="FTExtensionOption">FTExtensionOption</nt></phrase>
+corresponds to one <term>match option group</term>. </termdef>
+The match options from any given group are mutually exclusive, i.e., 
+only one of these settings can be in effect, whereas match options of
+different groups can be combined freely.</p>
+
+<p>
+It is a static error
+<errorref class="ST" code="0019"/> 
+if, within a single <nt def="FTMatchOptions">FTMatchOptions</nt>,
+there is more than one match option of any given 
+<termref def="dt-match-option-group">match option group</termref>.
+For example, if the <nt def="FTCaseOption">FTCaseOption</nt> "lowercase" 
+is specified, then "uppercase" cannot also be specified as part of the same 
+<nt def="FTMatchOptions">FTMatchOptions</nt>.
+</p>
+
+<p>Although match options only take effect in the application of 
+<nt def="FTWords">FTWords</nt>, the syntax also allows to specify 
+match options that modify the non-primitive full-text selection 
+<code>"(" FTSelection ")"</code>. Such a higher-level match option
+provides a default for the respective match option group for any
+embedded <nt def="FTPrimary">FTPrimary</nt>, just as
+<nt def="FTOptionDecl">match option declarations</nt>
+in the <nt def="Prolog">Prolog</nt>
+provide default match options for the whole query. 
+</p>
+
+<p>
+Match options are propagated through the query via the static context.
+For each of the seven match option groups,
+the static context has a component
+that contains one option from that group.
+The seven settings are initialized by the implementation
+in accordance with the table in 
+Appendix <specref ref="id-xqft-static-context-components"/>,
+and are modified
+by any <nt def="FTOptionDecl">FTOptionDecl</nt>s
+in the <nt def="Prolog">Prolog</nt>.
+The resulting settings are then propagated unchanged
+to every <nt def="FTContainsExpr">FTContainsExpr</nt> in the module
+(including those in <code>VarDecl</code>s and <code>FunctionDecl</code>s,
+and including any that happen to be nested within
+another <code>FTContainsExpr</code>).
+At any given <code>FTContainsExpr</code>,
+the settings from the static context
+are copied to the <code>FTContainsExpr</code>'s inner settings,
+which are then propagated down the syntax tree.
+At each <nt def="FTPrimaryWithOptions">FTPrimaryWithOptions</nt>,
+the locally specified match options (if any)
+overwrite the corresponding inner setting(s).
+At each <nt def="FTWords">FTWords</nt>,
+the inner settings are used
+as the effective match options
+for tokenizing the query strings
+and matching them against the tokens in the text.
+(These inner settings could be seen
+as a parallel set of components in the static context,
+but Section <specref ref="tq-semantics"/> models them
+as structures that get passed as parameters
+to various semantic functions.)
+</p>
+
+<p>
+Thus, when a match option appears in an <nt def='FTSelection'>FTSelection</nt>,
+it applies to the associated <nt def='FTPrimary'>FTPrimary</nt>,
+but not to any <code>FTContainsExpr</code>s
+that happen to be embedded within that <code>FTPrimary</code>.
+Instead, for a nested <code>FTContainsExpr</code>,
+the default match options are those declared in the <code>Prolog</code>
+or, if not declared in the <code>Prolog</code>,
+then supplied by the implementation's initial values. 
+</p>
+
+<p>
+An <nt def='FTMatchOption'>FTMatchOption</nt>
+applies to the <nt def='FTPrimary'>FTPrimary</nt> that immediately precedes it.
+That FTPrimary is either
+an <nt def='FTWords'>FTWords</nt> (possibly qualified by an <nt def='FTTimes'>FTTimes</nt>),
+an <nt def='FTExtensionSelection'>FTExtensionSelection</nt>, or
+a parenthesized <nt def='FTSelection'>FTSelection</nt>.
+</p>
+
+<p>
+<termdef id="dt-match-option-order" term="match option application order">
+The order in which effective match options for an 
+<nt def="FTWords">FTWords</nt> are applied 
+ is called the <term>match option application order</term>.</termdef>
+This order is significant
+because match options are not always commutative.
+For example,
+    synonym(stem(word))
+is not always the same as
+    stem(synonym(word)).
+</p>
+
+<p>
+The match option application order is subject to some constraints:
+<olist>
+<item><p>The Language Option must be applied first</p></item>
+<item><p>The Stemming Option must be applied before the Case Option and the
+Diacritics Option</p></item>
+</olist>
+Aside from these constraints, the full order of the application of match
+options is &ref-implementation-defined;.
+</p>
+
+<p>
+ More information on
+their semantics is given in <specref ref="FTMatchOptionsSec"/>.</p>
+
+<p>If no match options declarations are present in the prolog and the
+implementation does not define any overwriting of the static context
+components for the match options, the query:</p> 
+
+<eg role="xpath">/books/book/title contains text "usability" </eg>
+
+<p>is, assuming "de" is the &ref-implementation-defined; default language,
+equivalent to the query:</p>
+
+<eg role="xpath">/books/book/title contains text "usability" 
+    using language "de"
+    using no wildcards
+    using no thesaurus
+    using no stemming
+    using case insensitive 
+    using diacritics insensitive 
+    using no stop words</eg>
+
+
+<p> We describe each match option group in more detail in the following
+sections.</p>
+
+
+<div3 id="ftlanguageoption">
+	<head>Language Option</head>
+
+<scrap><head></head>
+	<prodrecap ref="FTLanguageOption" id="FTLanguageOption"/>
+</scrap>
+
+<p><termdef id="dt-ftlanguageoption" term="language option">A 
+<term>language option</term> 
+modifies token matching by specifying the language of search tokens and 
+phrases.</termdef></p>
+
+<p>The StringLiteral following the keyword <code>language</code>
+designates one language. It must be castable to <code>xs:language</code>; otherwise, an
+error is raised: <xerrorref spec="XP" class="TY" code="0004" type="type"/>. </p> 
+
+<p>The "language" option influences tokenization, stemming, and stop
+words in an &ref-implementation-defined; way. The "language" option <termref def="may">MAY</termref> influence the behavior of other match options in an &ref-implementation-defined; way.</p>
+
+<p>The set of standardized language identifiers is defined in <bibref ref="BCP47"/>.
+The set of valid language identifiers among the standardized set is &ref-implementation-defined;. 
+An implementation <termref def="may">MAY</termref> choose to use private extensions introduced by a
+singleton 'x' for additional language identifiers, or other singletons
+for registered extensions as described in sec. 2.2.6 of <bibref ref="BCP47"/>.
+It is &ref-implementation-defined; what additional language identifiers, if any, are valid. 
+If an invalid language identifier is specified, then the behavior is &ref-implementation-defined;. 
+If the implementation chooses to raise an error in that case,
+it must raise <errorref class="ST" code="0009"/>.
+</p>
+
+<p>The default language is specified in the static context. </p>
+
+<!-- 2007-01-19 Jim: make effect of conflicting languages implementation-defined -->
+<p>When an XQuery and XPath Full Text processor evaluates text in a document
+that is governed by an xml:lang attribute and
+the portion of the full-text query doing that evaluation contains an FTLanguageOption that
+specifies a different language from the language specified by the governing xml:lang attribute,
+the language-related behavior of that full-text query is &ref-implementation-defined;. </p>
+
+<p>This is an example where
+the language option is used to select the appropriate stop word list: </p>
+<eg role="xpath">//book[@number="1"]/content//p contains text "salon de thé"
+using stop words default using language "fr"</eg> 
+
+</div3>
+
+
+<div3 id="ftwildcardoption">
+	<head>Wildcard Option</head>
+
+<scrap><head></head>
+	<prodrecap ref="FTWildCardOption" id="FTWildCardOption"/>
+</scrap>
+
+<p><termdef id="dt-ftwildcardoption" term="wildcard option">A 
+<term>wildcard option</term>
+modifies token and phrase matching by specifying whether or not
+wildcards are recognized in query strings.</termdef></p>
+
+<p>When the "wildcards" option is used,
+wildcard syntax may be included within query strings.
+A wildcard consists of
+an indicator (a period or full stop, "."),
+optionally followed by a qualifier.
+Each wildcard in a query token will match zero or more characters
+within a token in the text being searched, as described below.
+The number of characters that can be matched depends on the qualifier.
+The forms of wildcard syntax specified by this document are:
+</p>
+ 
+<olist>
+
+<item> 
+<p>
+A single period, without any qualifiers:
+Matches a single arbitrary character.
+</p>
+</item> 
+ 
+<item> 
+<p>
+A period immediately followed by a single question mark, "?":
+Matches either no characters or one character.
+</p>
+</item> 
+
+ 
+<item> 
+<p>
+A period immediately followed by a single asterisk, "*":
+Matches zero or more characters.
+</p>
+</item> 
+
+ 
+<item> 
+<p>
+A period immediately followed by a single plus sign, "+":
+Matches one or more characters.
+</p>
+</item> 
+ 
+ 
+<item> 
+<p>
+A period immediately followed by a sequence of characters
+that matches the regular expression <code>{[0-9]+,[0-9]+}</code>:
+Matches a number of characters, where the number is
+no less than
+the number represented by the series of digits before the comma,
+and
+no greater than
+the number represented by the series of digits following the comma.
+</p>
+<p>
+If a period in the query string
+is immediately followed by a left curly brace,
+but the subsequent characters
+do not conform to the given regular expression,
+then an error is raised: 
+<errorref class="DY" code="0020"/>. 
+</p>
+</item> 
+
+</olist>
+
+<p>
+A question mark, asterisk, plus sign, or left curly brace
+that is not immediately preceded by a period
+is not treated as a qualifier.
+For example, using the sample tokenization and "wildcards",
+the query string "wil+"
+does not match the search text "will" or "willlllll",
+but only matches the search text "wil".
+(The sample tokenization treats the plus sign as punctuation.)
+</p>
+
+<p>
+When "wildcards" is used,
+any character in a query string
+can be "escaped" by immediately preceding it with a backslash, "\".
+That is,
+a backslash immediately followed by any character
+represents that character literally,
+preventing any special interpretation
+that the "wildcards" option might otherwise attach to it.
+In particular:
+</p>
+
+<olist>
+
+<item>
+<p>
+Escaping a period prevents its interpretation as a wildcard.
+</p>
+</item>
+
+<item>
+<p>
+Escaping a question mark, asterisk, plus sign, or left curly brace
+ensures that it is not interpreted as a qualifier.
+</p>
+</item>
+
+<item>
+<p>
+An escaped backslash ("\\") represents a literal backslash.
+</p>
+</item>
+
+<item>
+<p>
+If a query string is terminated by an unescaped backslash,
+an error is raised:
+<errorref class="DY" code="0020"/>. 
+</p>
+</item>
+
+</olist>
+
+<note>
+<p>
+A query string of the form <code>"abc\"xyz"</code>
+does <emph>not</emph> represent
+the three characters "abc"
+followed by a literal double-quote
+followed by the three characters "xyz".
+Instead, this is a malformed StringLiteral,
+and the processor will report a syntax error
+<xerrorref spec="XP" code="0003" class="ST" type="static"/>.
+</p>
+</note>
+
+<p>
+When the "no wildcards" option is used,
+no wildcards are recognized in query strings.
+Periods, question marks, asterisks, plus signs, left curly braces,
+and backslashes
+are always recognized as ordinary text characters.
+</p>
+
+<p>The default is "no wildcards".</p>
+
+<!-- ================== -->
+
+<p>The following expression returns true, because the <code>p</code> element
+contains "well":</p>
+<eg role="xpath">//book[@number="1"]/p contains text "w.ll" using wildcards</eg> 
+
+<p>The following expression returns true, because the <code>title</code> element
+contains "site":</p>
+<eg role="xpath">//book[@number="1"]/title contains text ".?site" using wildcards</eg>
+
+<p>The following expression returns true, because the <code>title</code> element
+contains "improving":</p>
+<eg role="xpath">//book[@number="1"]/title contains text "improv.*" using wildcards</eg>
+
+<p>The following expression raises error <errorref class="DY" code="0020"/>,
+because the query string uses incorrect syntax:</p>
+<eg role="xpath">//book[@number="1"]/p contains text "wi.{5,7]" using wildcards</eg>
+
+<p>The following expression returns true,
+because the title contains "site":</p>
+<eg role="xpath">//book[@number="1"]/title contains text "\s\i\t\e" using wildcards</eg>
+
+<p>The following expression returns true,
+because the title contains "Usability":</p>
+<eg role="xpath">//book[@number="1"]/title contains text "Usab.+\\" using wildcards</eg>
+<p>
+(Note that "\\" represents a literal backslash,
+which the sample tokenization treats as punctuation.)
+</p>
+
+<p>The following expression raises error <errorref class="DY" code="0020"/>,
+because the query string ends with an unescaped backslash:</p>
+<eg role="xpath">//book[@number="1"]/p contains text "will\" using wildcards</eg>
+
+<p>The following expression returns false, because the <code>p</code> element
+does not contain the phrase "w ll":</p>
+<eg role="xpath">//book[@number="1"]/p contains text "w.ll" using no wildcards</eg> 
+<p>
+(Note that, without wildcards, the sample tokenization
+will treat the period in "w.ll" as punctuation,
+thus producing "w" and "ll" as separate tokens.)
+</p>
+
+</div3>
+
+
+<div3 id="ftthesaurusoption">
+	<head>Thesaurus Option</head>
+
+<scrap><head></head>
+	<prodrecap ref="FTThesaurusOption" id="FTThesaurusOption"/>
+	<prodrecap ref="FTThesaurusID" id="FTThesaurusID"/>
+	<prodrecap ref="URILiteral" id="URILiteral"/>
+	<prodrecap ref="FTLiteralRange" id="FTLiteralRange"/>
+</scrap>
+
+<p><termdef id="dt-ftthesaurusoption" term="thesaurus option">A 
+<term>thesaurus option</term>
+modifies token and phrase matching by specifying whether a thesaurus is used or
+not.</termdef>
+If thesauri are used, the thesaurus option specifies information to locate 
+the thesauri either by default or through a URI
+reference. It also states the relationship to be applied and how many
+levels within the thesaurus to be traversed.</p>
+<p diff="add">If the thesaurus option specifies a thesaurus with a relative URI,
+that relative URI is resolved to an absolute URI using the base URI in 
+the static context and that absolute URI is used to identify the thesaurus.
+</p>
+<p>
+If the URI specifies a thesaurus that is not found in the statically
+known thesauri, an error is raised <errorref class="ST" code="0018"/>. 
+</p>
+<p>Thesauri add related tokens and phrases to the query or change query tokens.  
+Thus, the
+user may narrow, broaden, or otherwise modify the query using
+synonyms, hypernyms (more generic terms), etc. The search is performed
+as though the user has specified all related query tokens and phrases
+in a disjunction (FTOr). </p>
+
+<note><p>A thesaurus may be standards-based or locally-defined. It may be a
+traditional thesaurus, or a taxonomy, soundex, ontology, or topic
+map. How the thesaurus is represented is &ref-implementation-dependent;.</p>
+</note> 
+
+<p>
+<phrase diff="chg" at="2011-02-28">
+An FTThesaurusID may optionally contain a StringLiteral to specify
+</phrase>
+the relationship sought between
+tokens and phrases written in the query
+and terms in the thesaurus.
+Relationships include, but are not limited to, the relationships
+and their abbreviations presented in <bibref ref="iso-2788"/> and
+their equivalents in other languages. The set of relationships supported by an
+implementation is &ref-implementation-defined;, but
+implementations <termref def="should">SHOULD</termref> support the relationships
+defined in <bibref ref="iso-2788"/>. The following list of terms have the
+meanings 
+defined in <bibref ref="iso-2788"/>. If a query specifies thesaurus
+relationships <phrase diff="del">or levels</phrase> not supported by the thesaurus, or does not specify a
+relationship, 
+the behavior is &ref-implementation-defined;.
+</p>
+<olist>
+<item><p> <emph>equivalence relationships (synonyms):</emph> PREFERRED TERM (USE), 
+NONPREFERRED USED FOR TERM (UF);</p></item>
+<item><p> <emph>hierarchical relationships:</emph> BROADER TERM (BT), 
+NARROWER TERM (NT),  BROADER TERM GENERIC (BTG), NARROWER TERM GENERIC (NTG), 
+BROADER TERM PARTITIVE (BTP), NARROWER TERM PARTITIVE (NTP), 
+TOP Terms (TT); and</p></item> 
+<item><p> <emph>associative relationships:</emph> RELATED TERM (RT).</p></item>
+</olist>
+
+<p>
+<phrase diff="chg" at="2011-02-28">
+An FTThesaurusID may also optionally include an FTLiteralRange to specify
+the number of levels to be queried in hierarchical relationships.
+</phrase>
+<phrase diff="add" at="2011-02-28">
+An FTLiteralRange is a constrained form of <nt def="FTRange">FTRange</nt>,
+and specifies a (possibly empty) range of integer values according to the same rules.
+</phrase>
+</p>
+
+<note diff="add"><p>
+For historical reasons,
+an implementation <termref def="may">MAY</termref> allow an FTLiteralRange
+to have subexpressions more general than IntegerLiterals,
+and <termref def="may">MAY</termref> even allow
+its subexpressions to be dynamically evaluated.
+</p></note>
+
+<p diff="chg">
+<phrase diff="add" at="2011-02-28">
+The effect of specifying a particular range of levels in an FTThesaurusID
+is &ref-implementation-defined;.
+This includes cases involving empty ranges, negative levels, or
+</phrase>
+levels not supported by the thesaurus.
+</p>
+<p>
+If no levels are specified,
+the default is to query all levels in hierarchical relationships
+<phrase diff="add">or to query an &ref-implementation-defined; number of levels
+in hierarchical relationships</phrase>.
+</p>
+
+<p>The "thesaurus" option specifies that string matches include
+tokens that can be found in one of the specified thesauri.
+When "default" is used in place of a FTThesaurusID, the thesauri
+specified in the static context are used, which are either given by the 
+prolog declaration for the thesaurus option, or, if no such
+declaration exists a system-defined default thesaurus with a 
+system-defined relationship. The
+default thesaurus may be used in combination with other explicitly
+specified thesauri.</p>
+
+<p>The "no thesaurus" option specifies that no thesaurus will be
+used. </p>
+
+<p>The default is "no thesaurus". </p>
+
+<p>The following expression returns true, because it finds a <code>content</code>
+element containing "task" which the thesaurus identified as a synonym for
+"duty":</p>
+
+<eg role="xpath">.//book/content contains text "duty" using
+thesaurus at "http://bstore1.example.com/UsabilityThesaurus.xml"
+relationship "UF"</eg>
+
+<p>The following expression returns a <code>book</code> element, because it finds a
+<code>content</code> element containing "users", which is a
+narrower term of "people":</p>
+
+<eg role="xpath">doc("http://bstore1.example.com/full-text.xml")
+/books/book[./content contains text "people" using
+thesaurus at "http://bstore1.example.com/UsabilityThesaurus.xml"
+relationship "NT" at most 2 levels]</eg>
+
+<p>Assuming the thesaurus available at URL 
+"http://bstore1.example.com/UsabilitySoundex.xml" 
+contains soundex capabilities, the following query
+returns a <code>book</code> element containing "Marigold" which
+sounds like "Merrygould":</p>
+
+<eg role="xpath">doc("http://bstore1.example.com/full-text.xml")
+/books/book[. contains text "Merrygould" using thesaurus at
+"http://bstore1.example.com/UsabilitySoundex.xml" relationship
+"sounds like"]</eg>
+
+<!--
+<p>The following expression returns the true if "Synonyms" is a thesaurus for synonyms 
+in the English language:</p>
+<eg role="xpath">/books/book[@number="1"]//p contains text "buttress" using
+thesaurus "Synonyms"</eg>
+-->
+
+
+</div3>
+
+<div3 id="ftstemoption">
+	<head>Stemming Option</head>
+
+<scrap><head></head>
+			<prodrecap ref="FTStemOption" id="FTStemOption"/>
+</scrap>
+
+<p><termdef id="dt-ftstemoption" term="stemming option">A <term>stemming option</term>
+modifies token and
+phrase matching by specifying whether stemming is applied or not.
+</termdef></p>
+
+<p>The "stemming" option specifies that matches may contain tokens
+that have the same stem as the tokens and phrases written in the
+query. It is &ref-implementation-defined; what a stem of a token is. </p>
+
+<p>The "no stemming" option specifies that the tokens and
+phrases are not stemmed. </p>
+
+<p>It is &ref-implementation-defined; whether the stemming is based on an
+algorithm, dictionary, or mixed approach. </p>
+
+<p>The default is "no stemming". </p>
+
+
+<p>The following expression returns true, because the <code>title</code> of the specified
+<code>book</code> contains "improving" which has the same stem as
+"improve":</p>
+
+<eg role="xpath">/books/book[@number="1"]/title contains text "improve" using stemming </eg>
+
+
+</div3>
+
+
+<div3 id="ftcaseoption">
+	<head>Case Option</head>
+
+<scrap><head></head>
+			<prodrecap ref="FTCaseOption" id="FTCaseOption"/>
+</scrap>
+
+<p><termdef id="dt-ftcaseoption" term="case option">A <term>case option</term>
+modifies the matching of tokens and phrases by specifying how uppercase and 
+lowercase characters are considered.</termdef>
+</p>
+
+
+<p>There are four possible character case options:</p>
+
+<olist>
+<item><p> Using the option "case insensitive", tokens and phrases are matched,
+regardless of the case of characters of the query tokens and phrases.</p></item>
+
+<item><p> Using the option "case sensitive", tokens and phrases are matched,
+if and only if the case of their characters is the same as written in the
+query.</p></item>
+
+<item><p> Using the option "lowercase", tokens and phrases are matched, if
+and only if they match the query without regard to character case, but contain 
+only lowercase characters.</p></item>
+
+<item><p> Using the option "uppercase", tokens and phrases are matched, if
+and only if they match the query without regard to character case, but contain 
+only uppercase characters.</p></item>
+
+</olist>
+
+<p>The default is "case insensitive". </p>
+
+<p>The effect of the case options is also influenced by the query's 
+default collation 
+(see <xspecref spec="XQ" ref="static_context"/> and
+ <xspecref spec="XQ" ref="id-default-collation-declaration"/>).
+The following table summarizes how these interact.</p>
+
+<p>
+ <table border="1" summary="Case Matrix">
+      <caption>Case Matrix</caption>
+      <thead>
+       <tr>
+        <th>Case option \ Default collation</th>
+        <th>UCC (Unicode Codepoint Collation)</th>
+        <th>CCS (some generic case-sensitive collation)</th>
+        <th>CCI (some generic case-insensitive collation) </th>
+       </tr>
+      </thead>
+      <tbody>
+       <tr>
+        <th>case insensitive</th>
+        <td>compare as if both lower</td>
+        <td>case-insensitive variant of CCS if it exists, else error</td>
+        <td>CCI</td>
+       </tr>
+       <tr>
+        <th>case sensitive</th>
+        <td>UCC</td>
+        <td>CCS</td>
+        <td>case-sensitive variant of CCI if it exists, else error</td>
+       </tr>
+       <tr>
+        <th>lowercase</th>
+        <td>compare using UCC after applying fn:lower-case() to the query 
+           string
+        </td>
+        <td>compare using CCS after applying fn:lower-case() to the query 
+           string</td>
+        <td>CCI</td>
+       </tr>
+       <tr>
+        <th>uppercase</th>
+        <td>compare using UCC after applying fn:upper-case() to the query 
+           string</td>
+        <td>compare using CCS after applying fn:upper-case() to the query 
+           string</td>
+        <td>CCI</td>
+       </tr>
+      </tbody>
+     </table>
+</p>
+
+<note><p>In this table, "else error" means "Otherwise, an error
+is raised: <xerrorref spec="FO" class="CH" code="0002" type="dynamic"/>". 
+The phrase "if it exists" is used, because
+the case-sensitive collation CCS does not always have a
+case-insensitive variant (and, even if one exists, it may not be
+possible to determine it algorithmically), and because the
+case-insensitive collation CCI does not always have a case-sensitive
+variant (and, even if one exists, it may not be possible to determine
+it algorithmically).</p></note>
+
+<p>The following expression returns false, because the <code>title</code> element
+doesn't contain "usability" in lower-case characters:</p>
+
+<eg role="xpath">//book[@number="1"]/title contains text "Usability" using lowercase </eg>
+
+<p>The following expression returns true, because the character case is not
+considered:</p>
+
+<eg role="xpath">//book[@number="1"]/title contains text "usability" using case insensitive</eg>
+
+
+</div3>
+
+<div3 id="ftdiacriticsoption">
+	<head>Diacritics Option</head>
+
+<scrap><head></head>
+	<prodrecap ref="FTDiacriticsOption" id="FTDiacriticsOption"/>
+</scrap>
+
+<p><termdef id="dt-ftdiacriticsoption" term="diacritics option">A 
+<term>diacritics option</term>
+modifies token and phrase matching by specifying how diacritics are considered.
+</termdef></p>
+
+<p>There are two possible diacritics options:</p>
+
+<olist>
+<item><p>The option "diacritics" "insensitive" matches tokens and
+phrases with and without diacritics. Whether diacritics are written in
+the query or not is not considered.</p></item>
+
+<item><p>The option "diacritics" "sensitive" matches tokens and phrases only
+if they contain the diacritics as they are written in the query.</p></item>
+
+</olist>
+
+<p>The default is "diacritics insensitive". </p>
+
+<p>The effect of the diacritics options is also influenced by the query's 
+default collation 
+(see <xspecref spec="XQ" ref="static_context"/> and
+ <xspecref spec="XQ" ref="id-default-collation-declaration"/>).
+The following table summarizes how these interact.</p>
+
+<p>
+    <table border="1" summary="Diacritics Matrix">
+      <caption>Diacritics Matrix</caption>
+      <thead>
+       <tr>
+        <th>Diacritics option \ Default collation</th>
+        <th>UCC (Unicode Codepoint Collation)</th>
+        <th>CDS (some generic diacritics-sensitive collation)</th>
+        <th>CDI (some generic diacritics-insensitive collation) </th>
+       </tr>
+      </thead>
+      <tbody>
+       <tr>
+        <th>diacritics insensitive</th>
+        <td>UCC comparison, but without considering diacritics</td>
+        <td>diacritics-insensitive variant of CDS
+                                  if it exists, else error</td>
+        <td>CDI</td>
+       </tr>
+       <tr>
+        <th>diacritics sensitive</th>
+        <td>UCC</td>
+        <td>CDS</td>
+        <td>diacritics-sensitive variant of CDI if it exists, else error</td>
+       </tr>
+      </tbody>
+     </table>
+</p>
+
+<note><p>In this table, "else error" means "Otherwise, an error
+is raised: <xerrorref spec="FO" class="CH" code="0002" type="dynamic"/>". 
+The phrase "if it exists" is used, because
+the diacritics-sensitive collation CDS does not always have a
+diacritics-insensitive variant (and, even if one exists, it may not be
+possible to determine it algorithmically), and because the
+diacritics-insensitive collation CDI does not always have a
+diacritics-sensitive variant (and, even if one exists, it may not be
+possible to determine it algorithmically).</p></note>
+
+<p>The following expression returns true, because the token "Véra" in the
+<code>editor</code> element is matched, as the acute accent is not 
+considered in the comparison:</p>
+
+<eg role="xpath">//book[@number="1"]//editor contains text "Vera" using diacritics insensitive</eg>
+
+<p>This returns false, because the <code>editor</code> element does not
+contain the token "Vera" in this exact form, i.e. without any diacritics:</p>
+
+<eg role="xpath">//book[@number="1"]/editors contains text "Vera" using diacritics sensitive</eg>
+
+
+</div3>
+<!--<div3 id="ftspecialcharoption">
+	<head>FTSpecialCharOption</head>
+
+<scrap><head></head>
+			<prodrecap ref="FTSpecialcharOption"/>
+</scrap>
+
+<p><nt def="FTSpecialCharOption">FTSpecialCharOption</nt>
+specifies whether special characters such as punctuation should or
+should not be ignored. </p>
+
+<p>Influences the way <nt def="FTWords">FTWords</nt> is
+applied. </p>
+
+<p>The option "with special characters" specifies that special
+characters such as punctuation must also be matched. The option
+"without special characters" specifies that special characters such as
+punctuation need not be matched.
+</p>
+
+<p>The default is "without special characters". </p>
+
+
+<eg role="xpath">//book[@number="1"]//editor contains text "Tudor Medina" with 
+special characters </eg> 
+
+<p>returns true.</p>
+
+<eg role="xpath">//book[@number="1"]/editors contains text "Tudor-Medina" without
+special characters </eg> 
+
+<p>returns false.</p>
+
+
+</div3>
+-->
+
+<div3 id="ftstopwordoption">
+	<head>Stop Word Option</head>
+
+<scrap><head></head>
+	<prodrecap ref="FTStopWordOption" id="FTStopWordOption"/>
+	<prodrecap ref="FTStopWords" id="FTStopWords"/>
+	<prodrecap ref="FTStopWordsInclExcl" id="FTStopWordsInclExcl"/>
+</scrap>
+
+<p><termdef id="dt-ftstopwordoption" term="stop word option">A 
+<term>stop word option</term>
+controls matching of <phrase diff="chg">tokens</phrase> by specifying whether stop words are used or not. 
+Stop words are tokens in the query that match any token in the text being
+searched. 
+</termdef>
+<phrase diff="add">More precisely,
+a stop word option defines a collection of stop words according to the rules below.
+Then, in every FTWords to which the stop word option applies, 
+each query token is checked:
+if it appears
+(using an &ref-implementation-defined; comparison)
+in the specified collection of stop words,
+it is considered a stop word.</phrase>
+</p>
+
+<p>
+Normally a stop word matches 
+exactly one token, but there may be &ref-implementation-defined; conditions, under
+which a stop word may match a different number of tokens.</p>
+
+<p diff="add">
+Tokens matched by stop words
+retain their position numbers
+and are counted by
+<nt def="FTDistance">FTDistance</nt>
+and
+<nt def="FTWindow">FTWindow</nt> filters.</p>
+
+
+<p><nt def="FTStopWords">FTStopWords</nt> specifies the list
+of stop words either explicitly as a comma-separated list of string
+literals, or by the keyword <code>at</code> followed by a literal URI.
+If the URI specifies a list of stop words that is not found in the statically
+known stop word lists, an error is raised <errorref class="ST" code="0008"/>. 
+Whether the stop word
+list is resolved from the statically known stop word lists or given explicitly,
+no tokenization is performed on the stop words: they are used as they occur  
+in the list.
+</p>
+<p diff="chg">
+If the stop words option specifies a stop word list with a relative URI,
+that relative URI is resolved to an absolute URI using the base URI in 
+the static context and that absolute URI is used to identify the stop word list.
+</p>
+
+<p>Multiple stop word lists may be combined using "union" or "except".
+The keywords "union" and "except" are applied from left to right. If "union" is specified, every string occurring in the lists  
+specified by the left-hand side or the right-hand side is a stop 
+word. If "except" is specified, only strings occurring in the list  
+specified by the left-hand side but not in the list specified
+by the right-hand side are stop words. </p>
+
+<p>The <phrase diff="chg">"stop words default"</phrase> option specifies that an
+&ref-implementation-defined; collection of stop words is used. </p>
+
+<p>The "no stop words" option specifies that no stop words are
+used. This is equivalent to specifying an empty list of stop
+words.</p>
+
+<p>The default is "no stop words". </p>
+
+<note>
+<p>
+Some implementations may apply stop word lists during indexing and be
+unable to comply with query-time requests to not apply those stop words. An
+implementation may still support stop-word options (and therefore not raise
+<errorref class="ST" code="0006"/>)
+by applying any additional stop words specified in the query.
+Pre-application of irrevocable stop word lists falls under
+implementation-defined tokenization behavior in this case, and a query that
+specifies "no stop words" may still have some words ignored.
+</p>
+</note>
+
+<p>The following expression returns true, because the document contains the phrase
+"propagating few errors":</p>
+
+<eg role="xpath">/books/book[@number="1"]//p contains text "propagating of errors"
+using stop words ("a", "the", "of") </eg>
+
+<p>Note the asymmetry in the stop word semantics: the property of
+being a stop word is only relevant to query terms, not to document
+terms. Hence, it is irrelevant for the above-mentioned match whether
+"few" is a stop word or not, and on the other hand we do not want the
+query above to match "propagating" followed by 2 stop words, or even a
+sequence of 3 stop words in the document.</p>
+
+<p>The following expression returns false. In this case specifying "few" as 
+a stop word has no effect, since "few" does not appear in the query.
+Although the words "propagating" and "errors" appear in the text being
+searched, the phrase  
+"propagating errors" cannot be matched, since that phrase does not occur.</p>
+
+<eg role="xpath">/books/book[@number="1"]//p contains text "propagating errors" 
+using stop words ("few")</eg> 
+
+<p>The following expression returns false, because "of" is not in the <code>p</code>
+element between "propagating" and "errors":</p>
+
+<eg role="xpath">/books/book[@number="1"]//p contains text "propagating of errors" 
+using no stop words</eg> 
+
+<p>The following expression uses the stop words list specified at the
+URL. Assuming that the specified stop word list contains the word
+"then", this query
+is reduced to a query on the phrase "planning X conducting", allowing any
+token as a substitute for X.  It returns a <code>book</code> element,
+because its <code>content</code> element contains "planning then
+conducting". It would also return the <code>book</code> if the
+phrases "planning and conducting" and "planning before conducting"
+had been in its <code>content</code>:</p>
+
+<eg role="xpath">
+doc("http://bstore1.example.com/full-text.xml")
+/books/book[.//content contains text "planning then 
+conducting" using stop words at 
+"http://bstore1.example.com/StopWordList.xml"]
+</eg>
+
+<p>The following expression returns <code>book</code>s containing "planning then
+conducting", but not does not return <code>book</code>s containing "planning
+and conducting", since it is exempting "then" from being a stop word: </p>
+
+<eg role="xpath">
+doc("http://bstore1.example.com/full-text.xml")
+/books/book[.//content contains text "planning then conducting"
+using stop words at "http://bstore1.example.com/StopWordList.xml"
+except ("the", "then")]
+</eg>
+
+</div3>
+
+
+
+<div3 id="ftextensionoption">
+<head>Extension Option</head>
+
+<p><termdef id="dt-ftextensionoption" term="extension option">An
+<term>extension option</term> is a match option that acts in an
+&ref-implementation-defined; way.
+</termdef>
+</p>
+
+<scrap>
+<head></head>
+    <prodrecap ref="FTExtensionOption" id="FTExtensionOption"/>
+</scrap>
+
+<p>An extension option consists of an identifying QName and a StringLiteral.
+Typically, a particular option will be recognized by some implementations and
+not by others. The syntax is designed so that option declarations can be
+successfully parsed by all implementations.
+</p> 
+
+<p>The QName of an extension option must resolve to a namespace URI
+and local name, using 
+the statically known namespaces.</p>
+
+<note><p>There is no default namespace for options.</p></note>
+
+<p>Each implementation recognizes an 
+&ref-implementation-defined;
+set of namespace
+URIs used to denote extension options.</p>
+
+<p>If the namespace part of the QName is not a namespace recognized by the
+implementation as one used to denote extension option, then the extension option
+is ignored.</p>
+
+<p>Otherwise, the effect of the extension option, including its error behavior,
+is &ref-implementation-defined;.
+For example, if the local part of the QName is
+not recognized, or if the StringLiteral does not conform to the rules
+defined by the implementation for the particular extension option, the implementation may choose
+whether to report an error, ignore the extension option, or take some
+other action.</p>
+
+<p>Implementations may impose rules on where particular extension options may
+appear relative to other match options, and the
+interpretation of an option declaration may depend on its position.</p>
+
+<p>An extension option must not be used to change the syntax accepted by the
+processor, or to suppress the detection of static errors. However, it may be
+used without restriction to modify the set of tokens in the query or how they
+are matched against tokens in the text being searched. 
+An extension option has the same scope as other match options.
+</p>
+
+<p>The following examples illustrate several possible uses for extension
+options:</p>
+<p>This extension option is set as part of the static context of all 
+full-text expressions in the module and might be used to ensure that 
+queries are insensitive to Arabic short-vowels.
+</p>
+<eg>
+declare namespace exq = "http://example.org/XQueryImplementation";
+
+declare ft-option using option exq:diacritics "short-vowel insensitive";
+</eg>
+<p>This extension option applies only to the matching in the full-text
+selection in which it is found and might be used to specify how compound words
+should be matched.
+</p>
+<eg role="xquery">
+declare namespace exq = "http://example.org/XQueryImplementation";
+
+//para[. contains text
+         ("Kinder" ftand "Platz" distance exactly 1 words)
+         using stemming
+	 using option exq:compounds "distance=1" ]
+</eg>
+
+</div3>
+</div2>
+
+
+
+<div2 id="logical_ftoperators">
+      <head>Logical Full-Text Operators</head>
+      
+<p>
+Full-text selections can be combined with the logical connectives
+<code>ftor</code> (full-text or), <code>ftand</code> (full-text and), <code>not in</code> (mild not),
+and <code>ftnot</code> (unary full-text not).</p>
+
+<scrap><head></head>
+<prodrecap ref="FTOr" id="FTOr"/>
+<prodrecap ref="FTAnd" id="FTAnd"/>
+<prodrecap ref="FTMildNot" id="FTMildNot"/>
+<prodrecap ref="FTUnaryNot" id="FTUnaryNot"/>
+</scrap>
+ 
+<div3 id="sec-ftor">
+<head>Or-Selection</head>
+<p><termdef id="dt-or-selection" term="or-selection">An
+<term>or-selection</term> combines two full-text selections using the 
+<code>ftor</code> operator.</termdef>
+</p>
+       
+<p>An or-selection finds all matches that satisfy at least
+one of the operand full-text selections. </p>
+
+<p>The following expression returns the <code>book</code> element written by
+"Millicent":</p> 
+	
+<eg role="xpath">//book[.//author contains text "Millicent" ftor "Voltaire"]</eg>
+</div3>
+
+<div3 id="sec-ftand">
+<head>And-Selection</head>
+<p><termdef id="dt-and-selection" term="and-selection">An
+<term>and-selection</term> combines two full-text selections using the 
+<code>ftand</code> operator.</termdef>
+</p>
+       
+<p>An and-selection finds matches that satisfy all of the operand full-text 
+selections simultaneously. A match of an and-selection is formed by combining
+matches for each of the operand full-text selections as described in
+<specref ref="tq-ft-fs-FTAnd"/>. </p>
+
+<p>For example, <code>"usability" ftand "testing"</code> will find two 
+matches
+in <code>//book[@number="1"]/title</code>: each of the two matches for the
+FTWords selection <code>"usability"</code> (the two occurrences of 
+ "usability" in the string value of the title element) is combined 
+with the single match for the FTWords <code>"testing"</code> (only one 
+occurrence of "testing" in the title).
+Since the above and-selection has at least one match, the following
+expression will return "true". </p>
+
+<eg role="xpath">//book[@number="1"]/title contains text ("usability" ftand "testing")</eg>
+
+<p>The following expression returns false, because "Millicent" and "Montana" are not
+contained by the same <code>author</code> element in any <code>book</code>
+element:</p>
+
+<eg role="xpath">//book/author contains text "Millicent" ftand "Montana"</eg>
+
+<p>No <code>author</code> element in any <code>book</code> element 
+contains both "Millicent" and "Montana". Therefore, for any such 
+<code>author</code> element, there are either one match for the 
+FTWords <code>"Millicent"</code> and zero matches for the FTWords 
+<code>"Montana"</code>, or vice versa, or no matches for both
+of them. In any of these cases, the and-selection will have zero 
+matches.</p>
+</div3>
+
+<div3 id="sec-ftmildnot">
+<head>Mild-Not Selection</head>
+<p><termdef id="dt-mild-not-selection" term="mild-not selection">A
+<term>mild-not selection</term> combines two full-text selections 
+using the <code>not in</code> operator.</termdef>
+</p>
+
+<p>The <code>not in</code> operator is a milder form of the operator combination
+<code>ftand ftnot</code>. The selection <code>A not in B</code> matches a token
+sequence that matches <code>A</code>, but not when it is a part of a 
+match of <code>B</code>. 
+In contrast, <code>A ftand ftnot B</code> only finds matches when the token 
+sequence contains <code>A</code> and does not contain <code>B</code>.</p>
+
+<p>
+As an example, consider a search for <code>"Mexico" not in "New Mexico"</code>.
+This may return, among others, a document
+which is all about "Mexico" but mentions at the end that "New Mexico
+was named after Mexico". The occurrence of "Mexico" in "New Mexico" is not 
+considered, but other occurrences of "Mexico" are matched. Note that this
+document would not be matched by the full-text selection 
+<code>"Mexico" ftand ftnot "New Mexico"</code>.</p>
+
+<p> A match to a mild-not selection must
+contain at least one token that satisfies the first
+condition and does not satisfy the second condition. If it contains a
+token that satisfies both the first and the second
+condition, the token is not considered as a match.</p>
+
+<p>The following expression returns true, because "usability" appears in the
+<code>title</code> and the <code>p</code> elements and the token within
+the phrase "Usability Testing" in the <code>title</code> element is not
+considered:</p>
+
+<eg role="xpath">/books/book contains text "usability" not in "usability testing"</eg>
+
+<p>If either operand of a mild-not selection
+yields an &AllMatches; that contains a &Match; that contains a &StringExclude;,
+then a dynamic error <errorref class="DY" code="0017"/> is raised.
+</p>
+
+<note>
+<p>
+This situation can arise if the operand contains 
+a not-selection
+or
+a cardinality constraint (<nt def="FTTimes">FTTimes</nt>) involving
+<code>exactly</code>,
+<code>at most</code>, or
+<code>from ... to</code>.
+</p>
+</note>
+
+</div3>
+
+<div3 id="sec-ftnot">
+<head>Not-Selection</head>
+<p><termdef id="dt-unary-not-selection" term="not-selection">A
+<term>not-selection</term> is a full-text selection starting with the prefix 
+operator <code>ftnot</code>.</termdef></p>
+
+<p>A not-selection selects matches that do not
+satisfy the operand full-text selection.
+Details about how such matches are constructed are given in <specref ref="tq-ft-fs-FTUnaryNot"/>.
+</p>
+
+<p>The following expression returns the empty sequence, because all <code>book</code>
+elements contain "usability":</p>
+
+<eg role="xpath">//book[. contains text ftnot "usability"]</eg>
+
+<p>The following expression returns true, because <code>book</code> elements contain
+"improving" and "usability" but not "improving usability":</p>
+
+<eg role="xpath">//book contains text "improving" ftand
+"usability" ftand ftnot "improving usability"</eg>
+
+<p>The following expression returns <code>book</code> elements containing "web site
+usability" but not "usability testing":</p>
+
+<eg role="xpath">//book[title/@shortTitle contains text "web site usability" ftand 
+ftnot "usability testing"]</eg>
+</div3>
+
+</div2>
+
+<div2 id="ftposfilter">
+        <head>Positional Filters</head>
+
+<scrap><head></head>
+	<prodrecap ref="FTPosFilter" id="FTPosFilter"/>
+</scrap>
+
+
+<p><termdef id="dt-ftposfilter" term="positional filter">
+<term>Positional filters</term> are postfix operators that serve to
+filter matches based on various constraints on their positional
+information.</termdef></p>
+
+<p>
+Recall that the grammar rule for <nt def="FTSelection">FTSelection</nt>
+allows an arbitrary number of positional filters to follow an
+<nt def="FTOr">FTOr</nt>.  <phrase diff="chg">In a group of multiple adjacent positional filters,
+<nt def="FTOrder">FTOrder</nt> filters are applied first, and then the other
+positional filters are applied from left to right, skipping the 
+<nt def="FTOrder">FTOrder</nt> filters.
+That is, the first filter is applied to the</phrase>
+result of the <nt def="FTOr">FTOr</nt>, the second is applied to the
+result of that first application, and so on.
+</p>
+
+<p>
+An <nt def='FTOr'>FTOr</nt> consists of
+one or more <nt def='FTAnd'>FTAnd</nt>s (separated by <code>ftor</code>),
+each of which could be
+an <nt def='FTPosFilter'>FTPosFilter</nt> applied to an embedded FTOr, enclosed in parentheses.
+</p>
+
+<div3 id="ftorder">
+	<head>Ordered Selection</head>
+
+<scrap><head></head>
+<prodrecap ref="FTOrder" id="FTOrder"/>
+</scrap>
+
+<p><termdef id="dt-ordered-selection" term="ordered selection">An
+<term>ordered selection</term> consists of a full-text selection followed by 
+the postfix operator "ordered".</termdef>
+
+An ordered selection constrains the order of tokens and
+phrases to be the same as the order in which they are written in the
+operand selection.
+</p>
+
+<p> The default is unordered. Unordered is in effect when ordered is
+not specified in the query. Unordered cannot be written explicitly in
+the query.  </p>
+
+<p>An ordered selection selects matches which satisfy the operand full-text
+selection and which also satisfy the following constraint: the order
+that the matching tokens or phrases have in the text being searched
+is the same order that the corresponding query tokens or phrases have in the
+operand selection. In both cases, the ordering is determined from the minimum
+start positions of the constituent tokens.
+</p>
+
+<p>The following expression returns true, because titles of <code>book</code> elements
+contain "web site" and "usability" in the order in which they are written in
+the query, i.e., "web site" must precede "usability":</p>
+
+<eg role="xpath">//book/title contains text ("web site" ftand "usability") ordered</eg>
+
+<p>The following expression returns false, because although "Montana" and "Millicent"
+both appear in the <code>book</code> element, they do not appear in the order they
+are written in the query:</p>
+
+<eg role="xpath">//book[@number="1"] contains text ("Montana" ftand "Millicent") ordered</eg>
+
+
+</div3>
+
+<div3 id="ftwindow">
+	<head>Window Selection</head>
+
+<scrap><head></head>
+	<prodrecap ref="FTWindow" id="FTWindow"/>
+        <prodrecap ref="FTUnit" id="FTUnit"/>
+</scrap>
+
+<p><termdef id="dt-window-selection" term="window selection">A
+<term>window selection</term> consists of a full-text selection followed
+by one of the (complex) postfix operators derived from <nt
+def="FTWindow">FTWindow</nt>.</termdef> 
+A window selection selects matches which satisfy the operand full-text
+selection and for which the matched tokens and phrases, more precisely the 
+individual StringIncludes of that match, are found
+within a number of <nt def="FTUnit">FTUnit</nt>s (words, sentences, and paragraphs). 
+The number of <nt def="FTUnit">FTUnit</nt>s is
+specified by an AdditiveExpr that is converted as though it were an argument to a
+function with the expected type of <code>xs:integer</code>.</p>
+
+<p>A window selection may cross element
+boundaries. The size of the window is not affected by the presence or
+absence of element boundaries. Stop words are included in the
+computation of the window size whether they are ignored by the query or not.</p>
+
+
+<p>
+A window selection examines the matches generated by the preceding
+portion of the <nt def="FTSelection">FTSelection</nt>, and selects those for
+which the matched 
+tokens and phrases (more precisely, the individual StringIncludes of
+that match) are all found within a window whose size is a specified
+number of FTUnits (words, sentences, or paragraphs); for each such
+window, the window selection then generates a match containing the
+merge of those StringIncludes, plus any StringExcludes that fall
+within the window.
+</p>
+
+<p>The following expression returns true, because "web", "site", and "usability" are
+within a window of 5 tokens in the <code>title</code> element:</p>
+
+<eg role="xpath">/books/book/title contains text "web" ftand "site"
+ftand "usability" window 5 words</eg>
+
+<p>The following expression returns true, because "web" and "site" in the order they are
+written in the query and either "usability" or "testing" are within a
+window of at most 10 tokens:</p>
+
+<eg role="xpath">/books/book contains text ("web" ftand "site" ordered)
+ftand ("usability" ftor "testing") window 10 words</eg>
+
+<p>The following expression returns false, because the
+instances of "web site" and "usability" in the <code>title</code> element are
+not within a window of 3.  The phrase "Web Site Usability" in the attribute
+does not apply because the attribute is not part of the string value of the node.
+A similar query with a window of 5 would return true.
+</p>
+<eg role="xpath">/books/book//title contains text "web site" ftand
+"usability" window 3 words</eg>
+
+<p>The following expression returns the sample <code>book</code> element, 
+because its <code>number</code> attribute is 1 and it contains a
+window of 2 words which contains an occurrence of "efficient"
+but not an occurrence of "and". There is just one such matching window
+in the sample text and it contains "enable efficient".</p>
+
+<eg role="xpath">/books/book[@number="1" and . contains text "efficient" 
+ftand ftnot "and" window 2 words]</eg>
+
+<p>The following expression returns the empty sequence, because in the selected
+<code>book</code> element, there is no occurrence of "efficient"
+within a window of 3 tokens which would not also contain an occurrence
+of "and":</p>
+
+<eg role="xpath">/books/book[@number="1" and . contains text "efficient" 
+ftand ftnot "and" window 3 words]</eg>
+
+<p>
+In order to allow meaningful results for nested positional filters,
+e.g., a window selection embedded inside a distance selection, the
+resulting matches for window selections are formed from the input matches
+that satisfy the window constraint as follows. All StringIncludes of
+such a match are coerced into a single StringInclude that spans all
+token positions from the smallest to the largest position of any input
+StringIncludes. This is explained in more detail in Section <specref ref="ftdistance"/>.
+</p>
+</div3>
+
+<div3 id="ftdistance">
+	<head>Distance Selection</head>
+
+<scrap><head></head>
+<prodrecap ref="FTDistance" id="FTDistance"/>
+<prodrecap ref="FTRange" id="FTRange"/>
+</scrap>
+
+<p><termdef id="dt-distance-selection" term="distance selection">A
+<term>distance selection</term> consists of a full-text selection followed
+by one of the (complex) postfix operators derived from <nt
+def="FTDistance">FTDistance</nt>.</termdef> </p>
+
+<p>A distance selection selects matches which satisfy the operand full-text
+selection and for which the matched tokens and phrases satisfy the
+specified distance conditions.</p>
+
+<p>Distances in the search context are measured in units of
+tokens, sentences, or paragraphs.
+Roughly speaking, the distance between two matches
+is the number of intervening units,
+so a distance of zero tokens (sentences, paragraphs) means
+no intervening tokens (sentences, paragraphs).
+More precisely,
+given two matches,
+we first determine their order
+by sorting on starting position and if necessary on ending position.
+Let M1 be the "earlier" and M2 be the "later".
+(If there are overlapping tokens involved,
+the designations "earlier" and "later" may not be intuitively obvious.)
+Then the distance between the two is
+M2's starting position minus M1's ending position, minus 1.
+</p>
+
+<p>
+When computing distances
+in the search context,
+a distance selection
+may cross element boundaries;
+they affect the distance computed
+only to the extent that they affect the tokenization of the search context.
+Stop words are counted in those computations whether they are ignored
+or not.
+</p>
+
+<p>
+When a distance selection applies a distance condition to more than two matches,
+the distance condition is required to hold on each successive pair of matches.
+</p>
+
+<p>
+An <nt def="FTDistance">FTDistance</nt> expresses a distance condition in terms of
+an <nt def="FTUnit">FTUnit</nt> and an <nt def="FTRange">FTRange</nt>.
+An <nt def="FTUnit">FTUnit</nt> can be
+<code>words</code>, <code>sentences</code>, or <code>paragraphs</code>,
+where <code>words</code> refers to a distance measured in tokens.
+</p>
+
+<!-- How FTRange specifies a (possibly open) range of integers. -->
+
+<p>
+An <nt def="FTRange">FTRange</nt> specifies a range of integer values
+by providing a minimum and/or maximum value for some integer quantity.
+(Here, where the FTRange appears in an FTDistance, that quantity is a distance.
+When it appears in an FTTimes, the quantity is a number of occurrences.)
+Each one of the AdditiveExpr
+specified in an <nt def="FTRange">FTRange</nt> is converted as though it were an
+argument to a function with the expected parameter type of
+<code>xs:integer</code>.</p>
+
+<p>Let the value of the first (or only) operand be M.  If "from" is
+specified, let the value of the second operand be N. 
+</p>
+
+<p>If "exactly" is specified, then the range is the closed interval [M, 
+M].  If "at least" is specified, then the range is the half-closed interval 
+[M, unbounded).  If "at most" is specified, then the range is the half-closed 
+interval (unbounded, M].  If "from-to" is specified, then the range is the closed 
+interval [M, N]. Note: If M is greater than N, the range is empty. </p>
+
+<p>Here are some examples of  <nt def="FTRange">FTRange</nt>s:</p>
+
+<olist><item><p>'exactly 0' specifies the range [0, 0].</p></item>
+    <item><p>'at least 1' specifies the range [1,unbounded).</p></item> 
+    <item><p>'at most 1' specifies the range (unbounded, 1]. </p></item>
+    <item><p>'from 5 to 10' specifies the range [5, 10].</p></item>
+</olist>
+
+<!-- Examples -->
+
+<p>The following expression returns false, because "completion" and "errors" are
+less than 11 tokens apart:</p>
+
+<eg role="xpath">/books/book contains text ("completion" ftand "errors" 
+distance at least 11 words)</eg>
+
+<p>The following expression returns true:</p>
+
+<eg role="xpath">/books/book contains text "web" ftand "site" ftand
+"usability" distance at most 2 words</eg>
+
+<p>
+The search context contains two occurrences of the phrase
+"the usability of a web site"
+(once in the &lt;title&gt; and once in the &lt;content&gt;).
+In this phrase, 
+the tokens "usability" and "web" have a distance of 2 words,
+and the tokens "web" and "site" have a distance of 0 words,
+both of which satisfy the constraint <code>distance at most 2 words</code>.
+(The tokens "usability" and "site" have a distance of 3 words,
+but this does not cause the distance filter to fail,
+because these are not successive matches.)
+Thus, the full-text selection yields two matches,
+and the whole expression yields true.
+(The phrase "Improving Web Site Usability" would also satisfy the given full-text selection,
+but in the sample document it occurs in an attribute value,
+and so does not contribute to the string value or the tokenization of the book element.)
+</p>
+
+<p>The following expression returns the empty sequence, because 
+between any token "usability" and the token in any occurrence of the phrase 
+"web site" that is the nearest to the token "usability" there is always more 
+than one intervening token: </p>
+
+<eg role="xpath">/books/book[.//p contains text "web site"
+ftand "usability" distance at most 1 words] </eg>
+
+<p>The following expression returns the <code>book</code> title, because for 
+the occurrences of the tokens "web" and "users" in the <code>note</code> 
+element only one intervening token appears: </p>
+
+<eg role="xpath">/books/book[. contains text "web"
+ftand "users" distance at most 1 words]/title </eg>
+
+<!-- JD, 2005-08-17: need to revise the foll. 2 examples;
+<p>The following expression returns the
+<code>title</code> element, because the token "learning" not appears
+within 15 tokens of the tokens "web site" and "completion":</p>
+
+<eg role="xpath">/books/book[@number="1" and . contains text ("web site"
+ftand "completion" ftand ftnot  "learning") distance
+exactly 15 words]/title
+</eg>
+
+<p>The following expression returns the <code>title</code>
+element if the tokens "web site" and "completion" appear within 15
+tokens of each other and in the same paragraph:</p>
+<eg role="xpath">/books/book[@number="1" and . contains text "web site"
+ftand "completion" distance exactly 15 words same
+paragraph]/title </eg>
+
+-->
+<p>
+In order to allow meaningful results for nested positional filters,
+e.g., a distance selection embedded inside another distance selection, the
+resulting matches for distance selections are formed from the input matches
+that satisfy the distance constraint as follows. All StringIncludes of
+such a match are coerced into a single StringInclude that spans all
+token positions from the smallest to the largest position of any input
+StringIncludes. Thus, a distance selection that embeds a window or a
+distance selection takes the result of the embedded selection as a
+single unit.
+</p>
+
+<p>
+The following gives an example of nested distance selections:
+</p>
+
+<eg role="xpath">/books/book contains text ((("richard" ftand "nixon") distance at most 2 words) 
+                   ftand 
+                   (("george" ftand "bush") distance at most 2 words) 
+                  distance at least 20 words)</eg>
+
+<p>
+This expression allows to find <code>book</code> elements that contain, for instance, 
+"Richard M. Nixon"  and "George W. Bush" at least 20 words apart. The
+matches for the inner distance selections are treated as single units
+(represented by StringIncludes) by the outer distance
+selection. Suppose such phrases are present in 
+the search context, then the outer distance selection
+enforces a constraint on the number of intervening tokens ("at least
+20") between the
+last token of "Richard M. Nixon" and the first token of "George
+W. Bush".
+</p>
+
+
+</div3>
+
+<div3 id="ftscope">
+	<head>Scope Selection</head>
+
+<scrap><head></head>
+<prodrecap ref="FTScope" id="FTScope"/>
+<prodrecap ref="FTBigUnit" id="FTBigUnit"/>
+</scrap>
+
+<p><termdef id="dt-scope-selection" term="scope selection">A
+<term>scope selection</term> consists of a full-text selection followed
+by one of the (complex) postfix operators derived from <nt
+def="FTScope">FTScope</nt>.</termdef> </p>
+
+<p>A scope selection selects matches which satisfy the operand full-text
+selection and for which the matched tokens and phrases are
+contained in the same scope or in different scopes. </p>
+
+<p> Possible scopes are sentences and paragraphs. </p>
+
+<p> By default, there are no restrictions on the scope of the
+matches. </p>
+
+<p>The following expression returns false, because the tokens "usability" and "Marigold"
+are not contained within the same sentence:</p>
+
+<eg role="xpath">//book contains text "usability" ftand "Marigold" same sentence</eg>
+
+<p>The following expression returns true, because the tokens "usability" and "Marigold"
+are contained within different sentences: </p>
+
+<eg role="xpath">//book contains text "usability" ftand "Marigold" different sentence</eg>
+
+<p>The following expression returns a <code>book</code> element, because it contains
+"usability" and "testing" in the same paragraph:</p>
+
+<eg role="xpath">//book[. contains text "usability" ftand "testing" same paragraph] </eg>
+
+<p>The following expression returns a <code>book</code> element, because "site" and
+"errors" appear in the same sentence:</p>
+
+<eg role="xpath">//book[. contains text "site" ftand "errors" same sentence] </eg>
+
+
+<p>It is possible that both "same sentence" and "different sentence" conditions are
+simultaneously safisfied for several tokens and/or phrases within the same 
+document fragment. This can be observed if there are occurrences of the tokens
+and/or phrases both within the same sentence and within difference sentences. For
+example, consider the following document fragment. </p>
+
+<eg><![CDATA[
+<introduction>
+... The usability of a Web site is how well the site supports the user in
+achieving specified goals. ... Expert reviews and usability testing are methods of
+identifying problems in layout, terminology, and navigation. ...
+</introduction>
+]]></eg>
+
+<p>This sample will satisfy both conditions <code>("usability" ftand "reviews")
+different sentence</code> and <code>("usability" ftand "reviews") same
+sentence</code>. The tokens "usability" and "reviews" occur both in different sentences
+(the first and second shown sentences) and in the same sentence (the second shown
+sentences.) </p>
+
+<p>The above observation also holds for the "same paragraph" and "different paragraph"
+conditions.</p>
+
+
+</div3>
+
+<div3 id="ftcontent">
+	<head>Anchoring Selection</head>
+
+<scrap><head></head>
+			<prodrecap ref="FTContent" id="FTContent"/>
+</scrap>
+ 
+<p><termdef id="dt-anchoring-selection" term="anchoring selection">An
+<term>anchoring selection</term> consists of a full-text selection followed
+by one of the postfix operators "at start", "at end", or "entire content".</termdef> </p>
+
+<p>An anchoring selection selects matches which satisfy the operand full-text
+selection and for which the matched tokens and phrases are
+the first, last, or all tokens in the tokenized form of the items being searched.
+</p>
+
+<ulist>
+<item>
+<p> Using the "at start" operator, tokens or phrases are matched, if they 
+cover the first token position in the tokenized string value 
+of the item being searched.</p></item>
+
+<item>
+<p> Using the "at end" operator, tokens or phrases are matched, if they
+cover the last token position in the tokenized string value of the
+item being searched.</p></item>
+ 
+<item>
+<p>Using the "entire content" operator, tokens or phrases are matched, if they
+cover all token positions of the tokenized string value of the 
+item being searched.</p></item>
+</ulist>
+ 
+<p>The following expression returns each <code>title</code> element starting with the
+phrase "improving the usability of a web site":</p>
+<eg role="xpath">/books//title[. contains text "improving the usability
+of a web site" at start]</eg> 
+
+<p>The following expression returns the <code>p</code> element of the sample, 
+because it ends with the phrase
+"propagating few errors":</p>
+ 
+<eg role="xpath">/books//p[. contains text "propagat.*" using wildcards ftand "few
+errors" distance at most 2 words at end]</eg>
+
+<p>Since the distance operator doesn't imply an ordering, the last example 
+would also yield a match if the <code>p</code> element ended with, say, 
+"few errors are propagated".
+</p>
+
+<p>The following expression returns each <code>note</code> element whose entire content
+is "this book has been approved by the web site users association":</p>
+
+<eg role="xpath">/books//note[. contains text "this book has been
+approved by the web site users association" entire content]</eg>
+
+<p>The following example returns true because
+both the <code>content</code> and the <code>note</code> elements match:</p>
+
+<eg role="xpath">/books//* contains text "Association" at end</eg> 
+</div3>
+
+
+</div2>
+
+
+<div2 id="ftignoreoption">
+        <head>Ignore Option</head>
+
+<scrap><head></head>
+                        <prodrecap ref="FTIgnoreOption" id="FTIgnoreOption"/>
+                </scrap>
+
+<p>The <term>ignore option</term> specifies a set of
+nodes whose contents are ignored. It is applicable only to a top-level
+<nt def="FTSelection">FTSelection</nt> 
+(see <nt def="FTContainsExpr">FTContainsExpr</nt>). 
+<termdef id="IgnoredNodesDef" term="IgnoredNodes"><term>Ignored nodes</term> are the set of nodes whose content are 
+    ignored.</termdef> Ignored nodes are identified
+by the XQuery expression UnionExpr.
+The value of the UnionExpr must be a sequence of zero or more nodes;
+otherwise a type error is raised 
+<xerrorref spec="XP" class="TY" code="0004" type="type"/>.
+</p>
+<p>Let <code>I1, I2, ..., In</code>
+be the sequence of items of the search context and let
+<code>N1, N2, ..., Nk</code> be the sequence of nodes that
+UnionExpr evaluates to. For each <code>Ij (j=1..n)</code> a copy is
+made that omits each node <code>Ni (i=1..k)</code>.
+Those copies form the new search context. If
+UnionExpr evaluates to an empty sequence no nodes are omitted.</p>
+
+<p>In the following fragment, if <code>$x//annotation</code> is ignored,
+"Web Usability" will be found 2 times: once in the <code>title</code>
+element and once in the <code>editor</code> element. The 2 occurrences
+in the 2 <code>annotation</code> elements are ignored. On the other
+hand, "expert" will not be found, as it appears only in an
+<code>annotation</code> element.</p> 
+
+
+ <eg><![CDATA[let $x := <book>
+   <title>Web Usability and Practice</title>
+   <author>Montana <annotation> this author is
+       an expert in Web Usability</annotation> Marigold
+   </author>
+   <editor>Véra Tudor-Medina on Web <annotation> best
+       editor on Web Usability</annotation> Usability
+   </editor>
+ </book>
+ ]]></eg>
+
+<p>By default, no element content is ignored. </p>
+
+<note><p>Nodes <termref def="may">MAY</termref> be ignored during
+indexing and during query processing. The ignore option applies only
+to query processing. Whether and how indexing ignores nodes is  
+out of scope for this specification.</p></note>
+
+</div2>
+
+<div2 id="id-extension-selections">
+
+<head>Extension Selections</head>
+
+<p><termdef id="dt-extension-selection" term="extension selection">An <term>extension selection</term> is a full-text selection whose semantics are
+&ref-implementation-defined;.</termdef> 
+Typically, a particular extension will be recognized
+by some implementations and not by others. The syntax is designed so that
+extension selections can be successfully parsed by all implementations, and
+so that fallback behavior can be defined for implementations that do not
+recognize a particular extension.</p>
+
+<scrap>
+<head></head> 
+<prodrecap id="FTExtensionSelection" ref="FTExtensionSelection"/>
+<prodrecap id="Pragma" ref="Pragma"/>
+<prodrecap id="PragmaContents" ref="PragmaContents"/>
+</scrap>
+
+<p>An extension selection consists of one or more pragmas followed by a full-text selection enclosed in curly braces. See
+<xspecref spec="XQ" ref="id-extension-expressions"/> for information on 
+pragmas in general.
+A pragma is denoted by the delimiters <code>(#</code> and <code>#)</code>, and
+consists of an identifying QName followed by &ref-implementation-defined;
+content.
+The content of a pragma may consist of any string of characters that does not contain the ending delimiter <code>#)</code>.  The QName of a 
+pragma must resolve to a namespace URI and local name, using the statically known namespaces.</p>
+<note><p>Since there is no default namespace for
+pragmas, a pragma QName must include a namespace prefix.</p></note>
+<p>Each implementation recognizes an
+&ref-implementation-defined; set of namespace
+URIs used to denote pragmas.</p>
+<p>If the namespace part of a pragma QName is not recognized by the
+implementation as a pragma namespace, then the pragma
+is ignored. If all the pragmas in an <nt def="FTExtensionSelection">FTExtensionSelection</nt> are ignored, then full-text extension selection is just
+the full-text selection enclosed in curly braces; if this full-text selection is absent, then a static error is
+raised <xerrorref spec="XQ" class="ST" code="0079" type="static"/>.</p>
+<p>If an implementation recognizes the namespace of one or more pragmas in an <nt def="FTExtensionSelection">FTExtensionSelection</nt>, then the value
+of the <nt def="FTExtensionSelection">FTExtensionSelection</nt>, including its error behavior, is &ref-implementation-defined;. For example, an implementation that recognizes the namespace of
+a pragma QName, but does not recognize the local part of the QName, might choose
+either to raise an error or to ignore the pragma.</p>
+<p>It is a  static error <xerrorref spec="XQ" code="0013" class="ST" type="static"/> 
+if an implementation recognizes a pragma but
+determines that its content is invalid.</p>
+<p>If an implementation recognizes a pragma, it must report any static
+errors in the following full-text selection even if it will not apply that
+selection.</p>
+<p>The following examples illustrate three ways in which extension selections might be
+used.</p>
+<p>A pragma can be used to furnish a hint for how to evaluate the
+following full-text selection, without actually changing the result.
+For example:</p>
+<eg role="xquery">
+declare namespace exq = "http://example.org/XQueryImplementation";
+
+/books/book/author[name contains text (# exq:use-index #) {'Berners-Lee'}]
+</eg>
+<p>An implementation that recognizes the <code>exq:use-index</code> pragma might use an
+index to evaluate the full-text selection that follows. An implementation that
+does not recognize this pragma would evaluate the full-text selection in its normal 
+way.</p>
+<p>A pragma might be used to modify the semantics of the following
+full-text selection in ways that would not (in the absence of the pragma) be
+conformant with this specification.  For example, a pragma might be used to 
+change distance counting so that adjacent words are at a distance of 1 
+(otherwise they would be at a distance of 0):
+<eg role="xquery">
+declare namespace exq = "http://example.org/XQueryImplementation";
+
+/books/book[.//p contains text (# exq:distance #) { "web site"
+ftand "usability" distance at most 1 words }]
+</eg>
+</p>
+<p>
+Such changes to the language
+semantics must be scoped to the expression contained within the curly
+braces following the pragma.</p>
+<p>A pragma might contain syntactic constructs that are
+evaluated in place of the following full-text selection. In this case, the
+following selection itself (if it is present) provides a fallback for use by
+implementations that do not recognize the pragma. For example:</p>
+<eg role="xquery">
+declare namespace exq = "http://example.org/XQueryImplementation";
+
+//city[. contains text (# exq:classifier with class 'Animals' #) 
+       {"animal" using thesaurus at "http://example.org/thesaurus.xml" 
+        relationship "RT"}]
+</eg><p>Here an implementation that recognizes the pragma will return the result of
+evaluating the proprietary syntax <code>with class 'animals'</code>,
+while an implementation that does not recognize the pragma will instead
+return the result of the thesaurus option. 
+If no fallback expression is required, or
+if none is feasible, then the expression between the curly braces may be
+omitted, in which case implementations that do not recognize the pragma will
+raise a static error.</p>
+</div2>
+
+</div1>

@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<project name="xquery-scripting-requirements" default="all" >
+
+  <dirname property="etc.dir" file="../../etc/*"/>
+  <import file="${etc.dir}/build-constants.xml"/>
+
+  <property name="generic-shortname" value="xquery-sx"/>
+  <property name="this-spec-version-code" value="10"/>
+  <property name="shortname" value="${generic-shortname}-${this-spec-version-code}-requirements"/>
+  <property name="spec.uri" value="${W3C.TR}/${shortname}/"/>
+  <property name="spec.xml" value="${src.dir}/${generic-shortname}-requirements.xml"/>
+  <property name="spec.code" value="SXR"/>
+<!-- By defining property 'spec.style' here, we override the definition -->
+<!--   within build-impl.xml (<${shared.style.dir}/xsl-query.xsl) -->
+  <property name="spec.style" value="${shared.style.dir}/xquery-requirements.xsl"/>
+  <property name="skiptidy" value="true"/>
+
+  <import file="${etc.dir}/build-impl.xml"/>
+
+  <target name="all"
+          depends="spec"
+          description="This is the default target."/>
+
+	<target name="-style-spec" depends="init, chk.spec, validate-spec"
+	          if="build.spec" unless="spec.exists">
+	    <echo message="Building ${shortname} ..."/>
+	
+	    <xslt in="${spec.xml}" out="${build.dir}/${generic-shortname}.xml"
+	          style="${spec.style}"
+	          classpathref="saxon9.classpath" force="yes">
+	      <factory name="net.sf.saxon.TransformerFactoryImpl">
+	        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+	      </factory>
+	      <param name="spec" expression="xquery-31"/>
+	    </xslt>
+
+	    <echo message="Converting ${shortname} to HTML5 ..."/>
+
+	    <antcall target="xml-to-html5">
+	      <param name="xml-to-html5.input" value="${build.dir}/${generic-shortname}.xml"/>
+	      <param name="xml-to-html5.output" value="${spec.html}"/>
+	    </antcall>
+		
+	</target>
+	
+</project>

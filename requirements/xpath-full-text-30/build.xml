@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<project name="xpath-full-text-requirements" default="all" >
+
+  <dirname property="etc.dir" file="../../etc/*"/>
+  <import file="${etc.dir}/build-constants.xml"/>
+    
+  <property name="generic-shortname" value="xpath-full-text"/>
+  <property name="this-spec-version-code" value="30"/>
+  <property name="shortname" value="${generic-shortname}-${this-spec-version-code}-requirements-use-cases"/>
+  <property name="spec.uri" value="${W3C.TR}/${shortname}/"/>
+  <property name="spec.xml" value="${src.dir}/${generic-shortname}-requirements-use-cases.xml"/>
+  <property name="spec.code" value="FT30RU"/>
+<!-- By defining property 'spec.style' here, we override the definition -->
+<!--   within build-impl.xml (<${shared.style.dir}/xsl-query.xsl) -->
+  <property name="spec.style" value="${shared.style.dir}/xquery-requirements.xsl"/>
+
+  <import file="${etc.dir}/build-impl.xml"/>
+
+  <target name="all"
+          depends="spec"
+          description="This is the default target."/>
+
+  <target name="help">
+    <echo message="This project to build ${shortname} includes a number of targets."/>
+    <echo message="To invoke any of these targets from the command line, use 'ant target-name'"/>
+    <echo message="  all -- the default target (target-name not required); builds 'everything'"/>
+    <echo message="  stage -- stages the contents of the .../html/ directory for publication"/>
+    <echo message="The target that is most likely to be desired from the command line is 'all'."/>
+  </target>
+
+<!-- **************************************************************************************
+The following <target>s are all concerned with staging documents for publication. 
+     ************************************************************************************** -->
+
+<!-- **************************************************************************************
+     MAIN DOCUMENT STAGING
+     ************************************************************************************** -->
+
+<!-- **************************************************************************************
+THE FOLLOWING <target> MUST BE MANUALLY EDITED:
+  There must be one <copy> task for each of the files (NON-binary and BINARY) to be placed
+    into the staging directory. 
+  The <property name="nonbinary-files"> task must contain the exact list of the names of
+    the NON-binary files that have been placed into the staging directory.  The list is
+    permitted to use wildcards such as *.html. 
+  The <property name="binary-files"> task must contain the exact list of the names of
+    the BINARY files that have been placed into the staging directory.  The list is
+    permitted to use wildcards such as *.jpg. 
+  Please note that the value of each <property> list MUST NOT BE EMPTY!  If there are
+    NO NON-binary or NO BINARY files to include, there MUST be a filename for which
+    there is no actual file (e.g., x.x)!
+     ************************************************************************************** -->
+  <target name="stage-copy">
+    <copy file="${dist.dir}/Overview.html"
+          tofile="${staging.directory}/Overview.html"/>
+    <copy file="${dist.dir}/${shortname}.xml"
+          tofile="${staging.directory}/${shortname}.xml"/>
+
+    <antcall target="checkin.staged.stuff">
+      <param name="staging.directory"
+             value="${staging.directory}/"/>
+      <param name="staging.localdirname"
+             value="${staging.localdirname}/"/>
+      <param name="nonbinary-files" value="Overview.html
+${shortname}.xml"/>
+      <param name="binary-files" value="x.x"/>
+    </antcall>
+  </target>
+
+<!-- **************************************************************************************
+The preceding <target>s are all concerned with staging documents for publication. 
+     ************************************************************************************** -->
+
+</project>

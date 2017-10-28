@@ -1,0 +1,1768 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--XSLT Processor: SAXON 9.1.0.5 from Saxonica SAXON 9.1.0.5-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:xs="http://www.w3.org/2001/XMLSchema" lang="en" xmlns=
+"http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta name="generator" content=
+"HTML Tidy for Mac OS X (vers 31 October 2006 - Apple Inc. build 15.6), see www.w3.org" />
+<title>XQuery Scripting Extension 3.0 Requirements and Use
+Cases</title>
+
+<style type="text/css">
+/*<![CDATA[*/
+code           { font-family: monospace; }
+
+div.constraint,
+div.issue,
+div.note,
+div.notice     { margin-left: 2em; }
+
+div.issue
+p.title        { margin-left: -2em; }
+
+ol.enumar      { list-style-type: decimal; }
+ol.enumla      { list-style-type: lower-alpha; }
+ol.enumlr      { list-style-type: lower-roman; }
+ol.enumua      { list-style-type: upper-alpha; }
+ol.enumur      { list-style-type: upper-roman; }
+
+li p           { margin-top: 0.3em;
+                 margin-bottom: 0.3em; }
+
+sup small      { font-style: italic;
+                 color: #8F8F8F;
+               }
+    
+div.exampleInner pre { margin-left: 1em;
+                       margin-top: 0em; margin-bottom: 0em}
+div.exampleOuter {border: 4px double gray;
+                  margin: 0em; padding: 0em}
+div.exampleInner { background-color: #d5dee3;
+                   border-top-width: 4px;
+                   border-top-style: double;
+                   border-top-color: #d3d3d3;
+                   border-bottom-width: 4px;
+                   border-bottom-style: double;
+                   border-bottom-color: #d3d3d3;
+                   padding: 4px; margin: 0em }
+div.exampleWrapper { margin: 4px }
+div.exampleHeader { font-weight: bold;
+                    margin: 4px}
+
+div.issue { border-bottom-color: black;
+            border-bottom-style: solid;
+            border-bottom-width: 1pt;
+            margin-bottom: 20pt;
+}
+
+th.issue-toc-head { border-bottom-color: black;
+                    border-bottom-style: solid;
+                    border-bottom-width: 1pt;
+}
+
+      
+table.small                             { font-size: x-small; }
+a.judgment:visited, a.judgment:link     { font-family: sans-serif;
+                                          color: black; 
+                                          text-decoration: none }
+a.processing:visited, a.processing:link { color: black; 
+                                                text-decoration: none }
+a.env:visited, a.env:link               { color: black; 
+                                          text-decoration: none }
+/*]]>*/
+</style>
+<link rel="stylesheet" type="text/css" href=
+"http://www.w3.org/StyleSheets/TR/W3C-WD.css" />
+</head>
+<body>
+<div class="head">
+<p><a href="http://www.w3.org/"><img src=
+"http://www.w3.org/Icons/w3c_home" alt="W3C" height="48" width=
+"72" /></a></p>
+<h1><a name="title" id="title"></a>XQuery Scripting Extension 3.0
+Requirements and Use Cases</h1>
+<h2><a name="w3c-doctype" id="w3c-doctype"></a>W3C Working Draft 16
+June 2011</h2>
+<dl>
+<dt>This version:</dt>
+<dd><a href=
+"http://www.w3.org/TR/2010/WD-xquery-sx-30-requirements-201009163">http://www.w3.org/TR/2010/WD-xquery-sx-30-requirements-20100916</a></dd>
+<dt>Latest version:</dt>
+<dd><a href=
+"http://www.w3.org/TR/xquery-sx-30-requirements">http://www.w3.org/TR/xquery-sx-30-requirements</a></dd>
+<dt>Editors:</dt>
+<dd>Daniel Engovatov, W3C invited expert</dd>
+<dd>Daniela Florescu, Oracle Corporation <a href=
+"mailto:dana.florescu@oracle.com">&lt;dana.florescu@oracle.com&gt;</a></dd>
+<dd>Giorgio Ghelli, Pisa University <a href=
+"mailto:ghelli@di.unipi.it">&lt;ghelli@di.unipi.it&gt;</a></dd>
+<dd>John Snelson, MarkLogic <a href=
+"mailto:john.snelson@marklogic.com">&lt;john.snelson@marklogic.com&gt;</a></dd>
+</dl>
+<p class="copyright"><a href=
+"http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a>&#160;©&#160;2011&#160;<a href="http://www.w3.org/"><acronym title="World Wide Web Consortium">W3C</acronym></a><sup>®</sup>
+(<a href="http://www.csail.mit.edu/"><acronym title=
+"Massachusetts Institute of Technology">MIT</acronym></a>, <a href=
+"http://www.ercim.eu/"><acronym title=
+"European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>,
+<a href="http://www.keio.ac.jp/">Keio</a>), All Rights Reserved.
+W3C <a href=
+"http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>,
+<a href=
+"http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a>
+and <a href=
+"http://www.w3.org/Consortium/Legal/copyright-documents">document
+use</a> rules apply.</p>
+</div>
+<hr />
+<div>
+<h2><a name="abstract" id="abstract"></a>Abstract</h2>
+<p>This document specifies requirements and use cases for the
+XQuery Scripting Extension.</p>
+</div>
+<div>
+<h2><a name="status" id="status"></a>Status of this Document</h2>
+<p><em>This section describes the status of this document at the
+time of its publication. Other documents may supersede this
+document. A list of current W3C publications and the latest
+revision of this technical report can be found in the <a href=
+"http://www.w3.org/TR/">W3C technical reports index</a> at
+http://www.w3.org/TR/.</em></p>
+<p>This is a <a href=
+"http://www.w3.org/2005/10/Process-20051014/tr.html#first-wd">First
+Public Working Draft</a> as described in the <a href=
+"http://www.w3.org/2005/10/Process-20051014/tr.html">Process
+Document</a>. It was developed by the W3C <a href=
+"http://www.w3.org/XML/Query/">XML Query Working Group</a>, which
+is part of the <a href="http://www.w3.org/XML/Activity">XML
+Activity</a>. The Working Group expects to eventually publish this
+document as a Working Group Note.</p>
+<p>This document provides requirements and use cases for the
+<a href="http://www.w3.org/TR/xquery-sx-30/">XQuery Scripting
+Extension 3.0</a>. The requirements help identify what extensions
+will be needed to make XQuery functional as a scripting language.
+The use cases are designed to help verify that the extensions
+defined in <a href="http://www.w3.org/TR/xquery-sx-30/">XQuery
+Scripting Extension 3.0</a> satisfy these requirements.
+Organizations and individuals should review this document to ensure
+that the requirements are sufficient and that the use cases cover
+the requirements.</p>
+<p>Please report errors in this document using W3C's <a href=
+"http://www.w3.org/Bugs/Public/">public Bugzilla system</a>
+(instructions can be found at <a href=
+"http://www.w3.org/XML/2005/04/qt-bugzilla">http://www.w3.org/XML/2005/04/qt-bugzilla</a>).
+If access to that system is not feasible, you may send your
+comments to the W3C XSLT/XPath/XQuery public comments mailing list,
+<a href=
+"mailto:public-qt-comments@w3.org">public-qt-comments@w3.org</a>.
+It will be very helpful if you include the string “[SX30Req]” in
+the subject line of your report, whether made in Bugzilla or in
+email. Please use multiple Bugzilla entries (or, if necessary,
+multiple email messages) if you have more than one comment to make.
+Archives of the comments and responses are available at <a href=
+"http://lists.w3.org/Archives/Public/public-qt-comments/">http://lists.w3.org/Archives/Public/public-qt-comments/</a>.</p>
+<p>Publication as a Working Draft does not imply endorsement by the
+W3C Membership. This is a draft document and may be updated,
+replaced or obsoleted by other documents at any time. It is
+inappropriate to cite this document as other than work in
+progress.</p>
+<p>This document was produced by a group operating under the
+<a href="http://www.w3.org/Consortium/Patent-Policy-20040205/">5
+February 2004 W3C Patent Policy</a>. W3C maintains a <a href=
+"http://www.w3.org/2004/01/pp-impl/18797/status#disclosures">public
+list of any patent disclosures</a> made in connection with the
+deliverables of the group; that page also includes instructions for
+disclosing a patent. An individual who has actual knowledge of a
+patent which the individual believes contains <a href=
+"http://www.w3.org/Consortium/Patent-Policy-20040205/#def-essential">
+Essential Claim(s)</a> must disclose the information in accordance
+with <a href=
+"http://www.w3.org/Consortium/Patent-Policy-20040205/#sec-Disclosure">
+section 6 of the W3C Patent Policy</a>.</p>
+</div>
+<div class="toc">
+<h2><a name="contents" id="contents"></a>Table of Contents</h2>
+<p class="toc">1 <a href="#requirements">Requirements</a><br />
+&#160;&#160;&#160;&#160;1.1 <a href="#goals">Goals</a><br />
+&#160;&#160;&#160;&#160;1.2 <a href="#usage-scenarios">Usage
+Scenarios</a><br />
+&#160;&#160;&#160;&#160;1.3 <a href=
+"#terminology">Terminology</a><br />
+&#160;&#160;&#160;&#160;1.4 <a href="#general-requiremens">General
+Requirements</a><br />
+&#160;&#160;&#160;&#160;1.5 <a href=
+"#relationship-to-xquery">Relationship to XQuery 3.0</a><br />
+&#160;&#160;&#160;&#160;1.6 <a href=
+"#functionalities">Functionalities</a><br />
+2 <a href="#use-cases-for-xquery-sx">Use Cases</a><br />
+&#160;&#160;&#160;&#160;2.1 <a href="#rdb">Use Case "R" - Scripting
+Relational Data</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.1.1 <a href=
+"#rdb-dtd">Document Type Definition (DTD)</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.1.1.1
+<a href="#dtd-for-usres.xml">DTD for users.xml</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.1.1.2
+<a href="#dtd-for-items.xml">DTD for items.xml</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.1.1.3
+<a href="#dtd-for-bids.xml">DTD for bids.xml</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.1.2 <a href=
+"#rdb-data">Input Data</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.1.3 <a href=
+"#rdb-sx-results">Queries and Results</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.1.3.1
+<a href="#rdb-sx-results-q1">Q1</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.1.3.2
+<a href="#rdb-sx-results-q2">Q2</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.1.3.3
+<a href="#rdb-sx-results-q3">Q3</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.1.3.4
+<a href="#rdb-sx-results-q4">Q4</a><br />
+&#160;&#160;&#160;&#160;2.2 <a href="#xhtml">Use Case "XHTML" -
+AJAX Scripting with XHTML</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.2.1 <a href=
+"#xhtml-data">Input Data</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.2.2 <a href=
+"#xhtml-sx-results">Queries and Results</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.2.2.1
+<a href="#xhtml-sx-results-q1">Q1</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.2.2.2
+<a href="#xhtml-sx-results-q2">Q2</a><br />
+&#160;&#160;&#160;&#160;2.3 <a href="#webservice">Use Case "WS" -
+XQuery for Web Services</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.1 <a href=
+"#webservice-data">Input Data</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.2 <a href=
+"#webservice-sx-results">Queries and Results</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.2.1
+<a href="#webservice-sx-results-q1">Q1</a><br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2.3.2.2
+<a href="#webservice-sx-results-q2">Q2</a><br /></p>
+<h3><a name="appendices" id="appendices"></a>Appendix</h3>
+<p class="toc">A <a href="#references">References</a><br /></p>
+</div>
+<hr />
+<div class="body">
+<div class="div1">
+<h2><a name="requirements" id="requirements"></a>1
+Requirements</h2>
+<div class="div2">
+<h3><a name="goals" id="goals"></a>1.1 Goals</h3>
+<p>This document describes the requirements for the XQuery
+Scripting Extensions. XQuery 3.0 <a href="#xquery-30">[XQuery
+3.0]</a> is a functional language that is Turing-complete and well
+suited to write code that ranges from simple queries to complete
+applications. However, some categories of applications are more
+easily implemented by combining <a href="#xquery-30">XQuery 3.0</a>
+capabilities with some imperative features, such as the ability to
+explicitly manage internal states. The same issue stands for
+<a href="#xquery-30">XQuery 3.0</a> enriched with the <a href=
+"#updatef-30">[XQuery Update Facility 3.0]</a>. The scripting
+extension is intended to overcome this problem, and allow
+programmers to write such applications without relying on embedding
+<a href="#xquery-30">XQuery 3.0</a> into an external language.</p>
+</div>
+<div class="div2">
+<h3><a name="usage-scenarios" id="usage-scenarios"></a>1.2 Usage
+Scenarios</h3>
+<p>The following usage scenarios describe ways in which the XQuery
+Scripting Extension may be used in various environments, and
+represent a wide range of activities and needs that illustrate the
+problem space to be addressed. They are intended to be used as
+design cases during the development of the XQuery Scripting
+Extension, and should be reviewed when critical decisions are made.
+These usage scenarios should also prove useful in helping
+non-members of the XML Query Working Group understand the intent
+and goals of the project.</p>
+<p>While <a href="#xquery-30">XQuery 3.0</a> is very well suited to
+perform the main tasks of XML exploration and transformation that
+are common to most of these cases, some limited extensions would
+make it easier to use <a href="#xquery-30">XQuery 3.0</a> to write
+some complex applications that belong to the following usage
+scenarios.</p>
+<dl>
+<dt class="label">1.2.1 Applications that perform complex
+manipulations on persistent XML data</dt>
+<dd>
+<p>Writing applications that modify persistent data, stored in
+files or in databases. Such applications may need to operate on
+data in stages, and may need to verify that the modified data meet
+some constraints.</p>
+</dd>
+<dt class="label">1.2.2 Complex XML to XML transformations</dt>
+<dd>
+<p>Writing code that performs complex XML to XML
+transformations.</p>
+</dd>
+<dt class="label">1.2.3 Implementation of web services</dt>
+<dd>
+<p>Writing code that implements a web service, with the ability to
+access and modify persistent XML data.</p>
+</dd>
+<dt class="label">1.2.4 Processing RSS feeds</dt>
+<dd>
+<p>Writing code that generates or aggregates RSS feeds.</p>
+</dd>
+<dt class="label">1.2.5 Web service message composition and
+orchestration</dt>
+<dd>
+<p>Writing code that orchestrates web services.</p>
+</dd>
+<dt class="label">1.2.6 XML application integration</dt>
+<dd>
+<p>Writing scripting code that calls both <a href=
+"#updatef-30">updating expressions</a> and external functions,
+which may manipulate state and cause <a href=
+"#side-effects">side-effects</a>.</p>
+</dd>
+<dt class="label">1.2.7 XML data cleaning or normalization</dt>
+<dd>
+<p>Writing code that performs data cleaning operations.</p>
+</dd>
+<dt class="label">1.2.8 XML data integration</dt>
+<dd>
+<p>Writing code that accesses multiple data sources with the
+ability of reflecting updates from the integrated data to the data
+sources.</p>
+</dd>
+<dt class="label">1.2.9 XML data verification</dt>
+<dd>
+<p>Expressing complex constraints on XML data.</p>
+</dd>
+</dl>
+</div>
+<div class="div2">
+<h3><a name="terminology" id="terminology"></a>1.3 Terminology</h3>
+<p>In this specification the words <a href="#RFC2119">must</a>,
+<a href="#RFC2119">must not</a>, <a href="#RFC2119">should</a>,
+<a href="#RFC2119">should not</a>, <a href="#RFC2119">may</a> and
+<a href="#RFC2119">recommended</a>, when are to be interpreted as
+described in <a href="#RFC2119">[RFC 2119]</a>. When these words
+are used in this technical sense, they occur as a hyperlink to
+<a href="#RFC2119">[RFC 2119]</a>. These words will also be used
+with their conventional English meaning, in which case there is no
+hyperlink.</p>
+<dl>
+<dt class="label"><a name="side-effects" id=
+"side-effects"></a>Side-effects</dt>
+<dd>
+<p>We say that an expression has side-effects if its evaluation may
+affect the external environment or may affect the result of the
+subsequent evaluation of another expression.</p>
+</dd>
+</dl>
+</div>
+<div class="div2">
+<h3><a name="general-requiremens" id="general-requiremens"></a>1.4
+General Requirements</h3>
+<dl>
+<dt class="label">1.4.1 Compatibility with other extensions</dt>
+<dd>
+<p>The XQuery Scripting Extension <a href="#RFC2119">must not</a>
+preclude the use of the other XQuery extensions developed by the
+Working Group.</p>
+</dd>
+<dt class="label">1.4.2 Protocol Independence</dt>
+<dd>
+<p>The XQuery Scripting Extension <a href="#RFC2119">must</a> be
+defined independently of any protocols with which it is used.</p>
+</dd>
+<dt class="label">1.4.3 Language Syntax</dt>
+<dd>
+<p>The XQuery Scripting Extension <a href="#RFC2119">must</a> have
+more than one syntax binding. One syntax <a href=
+"#RFC2119">must</a> be convenient for humans to read and write. One
+syntax <a href="#RFC2119">must</a> be expressed in XML in a way
+that reflects the underlying structure of the operations.</p>
+</dd>
+<dt class="label">1.4.4 Static Type Checking</dt>
+<dd>
+<p>The XQuery Scripting Extension <a href="#RFC2119">should</a>
+provide an optional static type checking feature.</p>
+</dd>
+<dt class="label">1.4.5 Ease of programming</dt>
+<dd>
+<p>The XQuery Scripting Extension <a href="#RFC2119">may</a>
+include syntactic constructs to facilitate common programming
+tasks.</p>
+</dd>
+</dl>
+</div>
+<div class="div2">
+<h3><a name="relationship-to-xquery" id=
+"relationship-to-xquery"></a>1.5 Relationship to <a href=
+"#xquery-30">XQuery 3.0</a></h3>
+<dl>
+<dt class="label">1.5.1 Based on Data Model</dt>
+<dd>
+<p>The XQuery Scripting Extension <a href="#RFC2119">must</a> be
+defined on the <a href="#datamodel-30">[XQuery and XPath Data Model
+3.0]</a>.</p>
+</dd>
+<dt class="label">1.5.2 Based on <a href="#xquery-30">XQuery
+3.0</a></dt>
+<dd>
+<p>The XQuery Scripting Extension <a href="#RFC2119">must</a> be
+based on <a href="#xquery-30">XQuery 3.0</a>. The Scripting
+Extension may constrain the evaluation order more than <a href=
+"#xquery-30">XQuery 3.0</a> evaluation model, but the evaluation of
+an expression that belongs to the syntax of <a href=
+"#xquery-30">XQuery 3.0</a> <a href="#RFC2119">must</a> result in a
+value, or in an error, that is one of those allowed by <a href=
+"#xquery-30">XQuery 3.0</a> semantics.</p>
+</dd>
+<dt class="label">1.5.3 Based on the <a href="#updatef-30">XQuery
+Update Facility</a></dt>
+<dd>
+<p>The XQuery Scripting Extension <a href="#RFC2119">should</a> be
+based on the <a href="#updatef-30">[XQuery Update Facility
+3.0]</a>. If it is based on the XQuery Update Facility, it may
+constrain the evaluation order in ways that are not required by the
+XQuery Update Facility evaluation model. However, if both the
+XQuery Update Facility and the XQuery Scripting Extension specify a
+result value for a given expression, they <a href=
+"#RFC2119">must</a> specify the same result value.</p>
+</dd>
+<dt class="label">1.5.4 Optimization</dt>
+<dd>
+<p>The XQuery Scripting Extension <a href="#RFC2119">should</a> be
+designed in such a way that the ability of a processor to optimize
+queries or parts of a query that make no use of the extension is
+not compromised.</p>
+</dd>
+</dl>
+</div>
+<div class="div2">
+<h3><a name="functionalities" id="functionalities"></a>1.6
+Functionalities</h3>
+<dl>
+<dt class="label">1.6.1 Controlling the order of evaluation of
+functions and expressions that have <a href=
+"#side-effects">side-effects</a></dt>
+<dd>
+<p>It <a href="#RFC2119">must</a> be possible for the programmer to
+control the evaluation order of expressions and function calls that
+perform <a href="#side-effects">side-effects</a>.</p>
+</dd>
+<dt class="label">1.6.2 Preserving state during computation</dt>
+<dd>
+<p>It <a href="#RFC2119">must</a> be possible to write code where
+pieces of data are bound to variables which are passed to further
+stages of the computation, and it <a href="#RFC2119">must</a> be
+possible to modify the value associated to such variables.</p>
+</dd>
+<dt class="label">1.6.3 Returning values from expressions that have
+<a href="#side-effects">side-effects</a></dt>
+<dd>
+<p>It <a href="#RFC2119">must</a> be possible to write code that
+has <a href="#side-effects">side-effects</a> and returns a
+value.</p>
+</dd>
+<dt class="label">1.6.4 Ability to see the results of <a href=
+"#side-effects">side-effects</a> during computation</dt>
+<dd>
+<p>It <a href="#RFC2119">must</a> be possible for an expression to
+observe some <a href="#side-effects">side-effects</a> caused by
+other expressions.</p>
+</dd>
+<dt class="label">1.6.5 Controlling the scope of snapshot,
+isolation, atomicity</dt>
+<dd>
+<p>The <a href="#updatef-30">[XQuery Update Facility 3.0]</a>
+defines a snapshot as the scope within which expressions are
+evaluated with respect to a fixed XDM instance and updates are held
+pending. The extension <a href="#RFC2119">may</a> provide the
+ability to control snapshots. The extension <a href=
+"#RFC2119">may</a> provide the ability to identify pieces of code
+whose execution should be isolated from the outer environment. It
+<a href="#RFC2119">may</a> be possible to indicate that some pieces
+of code must be executed atomically, with respect to failures.</p>
+</dd>
+</dl>
+<table border="1" summary="Editorial note">
+<tr>
+<td align="left" valign="top" width="50%"><b>Editorial
+note</b></td>
+<td align="right" valign="top" width="50%">2012-01-27</td>
+</tr>
+<tr>
+<td colspan="2" align="left" valign="top">The <a href=
+"http://www.w3.org/XML/Query/">XML Query Working Group</a> intends
+to explore whether or not the Scripting Extension should define a
+mechanism to control transaction boundaries.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="div1">
+<h2><a name="use-cases-for-xquery-sx" id=
+"use-cases-for-xquery-sx"></a>2 Use Cases</h2>
+<p>The use cases listed below were created by the <a href=
+"http://www.w3.org/XML/Query/">XML Query Working Group</a> to
+illustrate important applications for an XQuery scripting
+extension.</p>
+<div class="div2">
+<h3><a name="rdb" id="rdb"></a>2.1 Use Case "R" - Scripting
+Relational Data</h3>
+<p>This use case is based on performing updates on the data used in
+Use Case "R" from the <a href="#XQueryUseCases">[XML Query Use
+Cases]</a>. The DTD and sample data from this Use Case are copied
+below for convenience, and exactly match those found in the XQuery
+Use Cases.</p>
+<p>The data represents a relational database used by an online
+auction. The auction maintains a USERS table containing information
+on registered users, each identified by a unique userid, who can
+either offer items for sale or bid on items. An ITEMS table lists
+items currently or recently for sale, with the userid of the user
+who offered each item. A BIDS table contains all bids on record,
+keyed by the userid of the bidder and the item number of the item
+to which the bid applies.</p>
+<p>The three tables used by the online auction are below, with
+their column-names indicated in parentheses.</p>
+<div class="exampleInner">
+<pre>
+USERS ( USERID, NAME, RATING )
+ITEMS ( ITEMNO, DESCRIPTION, OFFERED_BY, 
+        START_DATE, END_DATE, RESERVE_PRICE ) 
+BIDS ( USERID, ITEMNO, BID, BID_DATE )
+</pre></div>
+<div class="div3">
+<h4><a name="rdb-dtd" id="rdb-dtd"></a>2.1.1 Document Type
+Definition (DTD)</h4>
+<p>This use case is based on three separate input documents named
+users.xml, items.xml, and bids.xml. Each of the documents
+represents one of the tables in the relational database described
+above, using the following DTDs:</p>
+<div class="div4">
+<h5><a name="dtd-for-usres.xml" id="dtd-for-usres.xml"></a>2.1.1.1
+DTD for users.xml</h5>
+<div class="exampleInner">
+<pre>
+                                            
+&lt;!ELEMENT users (user_tuple*)&gt; 
+&lt;!ELEMENT user_tuple (userid, name, rating?)&gt; 
+&lt;!ELEMENT userid (#PCDATA)&gt; 
+&lt;!ELEMENT name (#PCDATA)&gt; 
+&lt;!ELEMENT rating (#PCDATA)&gt;
+ 
+</pre></div>
+</div>
+<div class="div4">
+<h5><a name="dtd-for-items.xml" id="dtd-for-items.xml"></a>2.1.1.2
+DTD for items.xml</h5>
+<div class="exampleInner">
+<pre>
+                  
+&lt;!ELEMENT items (item_tuple*)&gt;
+&lt;!ELEMENT item_tuple (itemno, description, offered_by, 
+                      start_date?, end_date?, reserve_price?)&gt; 
+&lt;!ELEMENT itemno (#PCDATA)&gt;
+&lt;!ELEMENT description (#PCDATA)&gt;
+&lt;!ELEMENT offered_by (#PCDATA)&gt;
+&lt;!ELEMENT start_date (#PCDATA)&gt;
+&lt;!ELEMENT end_date (#PCDATA)&gt;
+&lt;!ELEMENT reserve_price (#PCDATA)&gt;
+</pre></div>
+</div>
+<div class="div4">
+<h5><a name="dtd-for-bids.xml" id="dtd-for-bids.xml"></a>2.1.1.3
+DTD for bids.xml</h5>
+<div class="exampleInner">
+<pre>
+                      
+&lt;!ELEMENT bids (bid_tuple*)&gt; 
+&lt;!ELEMENT bid_tuple (userid, itemno, bid, bid_date)&gt; 
+&lt;!ELEMENT userid (#PCDATA)&gt; 
+&lt;!ELEMENT itemno (#PCDATA)&gt; 
+&lt;!ELEMENT bid (#PCDATA)&gt;
+&lt;!ELEMENT bid_date (#PCDATA)&gt;
+
+                      
+</pre></div>
+</div>
+</div>
+<div class="div3">
+<h4><a name="rdb-data" id="rdb-data"></a>2.1.2 Input Data</h4>
+<p>Here is an abbreviated set of data showing the XML format of the
+instances:</p>
+<div class="exampleInner">
+<pre>
+&lt;items&gt;
+  &lt;item_tuple&gt;
+    &lt;itemno&gt;1001&lt;/itemno&gt;
+    &lt;description&gt;Red Bicycle&lt;/description&gt;
+    &lt;offered_by&gt;U01&lt;/offered_by&gt;
+    &lt;start_date&gt;1999-01-05&lt;/start_date&gt;
+    &lt;end_date&gt;1999-01-20&lt;/end_date&gt;
+    &lt;reserve_price&gt;40&lt;/reserve_price&gt;
+  &lt;/item_tuple&gt;
+  <em>  ... Snip ... </em>
+&lt;/items&gt;
+&lt;users&gt;
+  &lt;user_tuple&gt;
+    &lt;userid&gt;U01&lt;/userid&gt;
+    &lt;name&gt;Tom Jones&lt;/name&gt;
+    &lt;rating&gt;B&lt;/rating&gt;
+  &lt;/user_tuple&gt;
+  <em>  ... Snip ... </em>
+&lt;/users&gt;
+&lt;bids&gt;
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U02&lt;/userid&gt; 
+    &lt;itemno&gt;1001&lt;/itemno&gt; 
+    &lt;bid&gt;35&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-01-07&lt;/bid_date&gt; 
+    &lt;/bid_tuple&gt; 
+  &lt;bid_tuple&gt; 
+  <em>  ... Snip ... </em>
+&lt;/bids&gt;
+                    
+</pre></div>
+<p>The entire data set is represented by the following table:</p>
+<table border="1" summary="Data set table">
+<caption>USERS</caption>
+<thead>
+<tr>
+<td>USERID</td>
+<td>NAME</td>
+<td>RATING</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>U01</td>
+<td>Tom Jones</td>
+<td>B</td>
+</tr>
+<tr>
+<td>U02</td>
+<td>Mary Doe</td>
+<td>A</td>
+</tr>
+<tr>
+<td>U03</td>
+<td>Dee Linquent</td>
+<td>D</td>
+</tr>
+<tr>
+<td>U04</td>
+<td>Roger Smith</td>
+<td>C</td>
+</tr>
+<tr>
+<td>U05</td>
+<td>Jack Sprat</td>
+<td>B</td>
+</tr>
+<tr>
+<td>U06</td>
+<td>Rip Van Winkle</td>
+<td>B</td>
+</tr>
+</tbody>
+</table>
+<table border="1" summary="Data set table">
+<caption>ITEMS</caption>
+<thead>
+<tr>
+<td>ITEMNO</td>
+<td>DESCRIPTION</td>
+<td>OFFERED_BY</td>
+<td>START_DATE</td>
+<td>END_DATE</td>
+<td>RESERVE_PRICE</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1001</td>
+<td>Red Bicycle</td>
+<td>U01</td>
+<td>1999-01-05</td>
+<td>1999-01-20</td>
+<td>40</td>
+</tr>
+<tr>
+<td>1002</td>
+<td>Motorcycle</td>
+<td>U02</td>
+<td>1999-02-11</td>
+<td>1999-03-15</td>
+<td>500</td>
+</tr>
+<tr>
+<td>1003</td>
+<td>Old Bicycle</td>
+<td>U02</td>
+<td>1999-01-10</td>
+<td>1999-02-20</td>
+<td>25</td>
+</tr>
+<tr>
+<td>1004</td>
+<td>Tricycle</td>
+<td>U01</td>
+<td>1999-02-25</td>
+<td>1999-03-08</td>
+<td>15</td>
+</tr>
+<tr>
+<td>1005</td>
+<td>Tennis Racket</td>
+<td>U03</td>
+<td>1999-03-19</td>
+<td>1999-04-30</td>
+<td>20</td>
+</tr>
+<tr>
+<td>1006</td>
+<td>Helicopter</td>
+<td>U03</td>
+<td>1999-05-05</td>
+<td>1999-05-25</td>
+<td>50000</td>
+</tr>
+<tr>
+<td>1007</td>
+<td>Racing Bicycle</td>
+<td>U04</td>
+<td>1999-01-20</td>
+<td>1999-02-20</td>
+<td>200</td>
+</tr>
+<tr>
+<td>1008</td>
+<td>Broken Bicycle</td>
+<td>U01</td>
+<td>1999-02-05</td>
+<td>1999-03-06</td>
+<td>25</td>
+</tr>
+</tbody>
+</table>
+<table border="1" summary="Data set table">
+<caption>BIDS</caption>
+<thead>
+<tr>
+<td>USERID</td>
+<td>ITEMNO</td>
+<td>BID</td>
+<td>BID_DATE</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>U02</td>
+<td>1001</td>
+<td>35</td>
+<td>1999-01-07</td>
+</tr>
+<tr>
+<td>U04</td>
+<td>1001</td>
+<td>40</td>
+<td>1999-01-08</td>
+</tr>
+<tr>
+<td>U02</td>
+<td>1001</td>
+<td>45</td>
+<td>1999-01-11</td>
+</tr>
+<tr>
+<td>U04</td>
+<td>1001</td>
+<td>50</td>
+<td>1999-01-13</td>
+</tr>
+<tr>
+<td>U02</td>
+<td>1001</td>
+<td>55</td>
+<td>1999-01-15</td>
+</tr>
+<tr>
+<td>U01</td>
+<td>1002</td>
+<td>400</td>
+<td>1999-02-14</td>
+</tr>
+<tr>
+<td>U02</td>
+<td>1002</td>
+<td>600</td>
+<td>1999-02-16</td>
+</tr>
+<tr>
+<td>U03</td>
+<td>1002</td>
+<td>800</td>
+<td>1999-02-17</td>
+</tr>
+<tr>
+<td>U04</td>
+<td>1002</td>
+<td>1000</td>
+<td>1999-02-25</td>
+</tr>
+<tr>
+<td>U02</td>
+<td>1002</td>
+<td>1200</td>
+<td>1999-03-02</td>
+</tr>
+<tr>
+<td>U04</td>
+<td>1003</td>
+<td>15</td>
+<td>1999-01-22</td>
+</tr>
+<tr>
+<td>U05</td>
+<td>1003</td>
+<td>20</td>
+<td>1999-02-03</td>
+</tr>
+<tr>
+<td>U01</td>
+<td>1004</td>
+<td>40</td>
+<td>1999-03-05</td>
+</tr>
+<tr>
+<td>U03</td>
+<td>1007</td>
+<td>175</td>
+<td>1999-01-25</td>
+</tr>
+<tr>
+<td>U05</td>
+<td>1007</td>
+<td>200</td>
+<td>1999-02-08</td>
+</tr>
+<tr>
+<td>U04</td>
+<td>1007</td>
+<td>225</td>
+<td>1999-02-12</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="div3">
+<h4><a name="rdb-sx-results" id="rdb-sx-results"></a>2.1.3 Queries
+and Results</h4>
+<div class="div4">
+<h5><a name="rdb-sx-results-q1" id="rdb-sx-results-q1"></a>2.1.3.1
+Q1</h5>
+<p>Insert a new bid for Roger Smith on item 1002, adding 10% to the
+best bid received so far for this item, and report back what bid
+was just entered.</p>
+<p><em>Solution in the XQuery Scripting Extension:</em></p>
+<div class="exampleInner">
+<pre>
+let $uid := doc("users.xml")/users/user_tuple[name = "Roger Smith"]/userid
+let $topbid := max(doc("bids.xml")/bids/bid_tuple[itemno = 1002]/bid)
+let $newbid := $topbid * 1.1
+return (
+  insert nodes
+    &lt;bid_tuple&gt; 
+      &lt;userid&gt;{ data($uid) }&lt;/userid&gt; 
+      &lt;itemno&gt;1002&lt;/itemno&gt; 
+      &lt;bid&gt;{ $newbid }&lt;/bid&gt; 
+      &lt;bid_date&gt;1999-03-03&lt;/bid_date&gt; 
+    &lt;/bid_tuple&gt;
+  into doc("bids.xml")/bids,
+  &lt;new_bid&gt;{ $newbid }&lt;/new_bid&gt;
+)
+
+</pre></div>
+<p><em>Expected Result:</em></p>
+<p>The best bid for item 1002 had been at 1200, thus Roger's bid is
+at 1320.</p>
+<div class="exampleInner">
+<pre>
+&lt;new_bid&gt;1320&lt;/new_bid&gt;
+            
+</pre></div>
+<p><em>Expected resulting content of bids.xml:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;bids&gt;
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U02&lt;/userid&gt; 
+    &lt;itemno&gt;1001&lt;/itemno&gt; 
+    &lt;bid&gt;35&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-01-07&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+  <em>  ... Snip ... </em>
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U01&lt;/userid&gt; 
+    &lt;itemno&gt;1002&lt;/itemno&gt; 
+    &lt;bid&gt;400&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-02-14&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+  <em>  ... Snip ... </em>
+   &lt;bid_tuple&gt; 
+    &lt;userid&gt;U04&lt;/userid&gt; 
+    &lt;itemno&gt;1007&lt;/itemno&gt; 
+    &lt;bid&gt;225&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-02-12&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+  <em>  ... Snip ... </em>
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U04&lt;/userid&gt; 
+    &lt;itemno&gt;1002&lt;/itemno&gt; 
+    &lt;bid&gt;1320&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-03-03&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+&lt;/bids&gt;
+                                                
+</pre></div>
+</div>
+<div class="div4">
+<h5><a name="rdb-sx-results-q2" id="rdb-sx-results-q2"></a>2.1.3.2
+Q2</h5>
+<p>Place a bid for Roger Smith on item 1007, adding 10% to the best
+bid received so far on that item, but only if the bid amount does
+not exceed a given limit. Otherwise return the current top bid.</p>
+<p><em>Solution in the XQuery Scripting Extension:</em></p>
+<div class="exampleInner">
+<pre>
+let $uid := doc("users.xml")/users/user_tuple[name = "Roger Smith"]/userid
+let $topbid := max(doc("bids.xml")/bids/bid_tuple[itemno = 1007]/bid)
+let $newbid := $topbid * 1.1
+return
+  if($newbid &lt;= 240) then (
+    insert nodes
+      &lt;bid_tuple&gt;
+        &lt;userid&gt;{ data($uid) }&lt;/userid&gt;
+        &lt;itemno&gt;1002&lt;/itemno&gt;
+        &lt;bid&gt;{ $newbid }&lt;/bid&gt;
+        &lt;bid_date&gt;1999-03-03&lt;/bid_date&gt;
+      &lt;/bid_tuple&gt;
+    into doc("bids.xml")/bids,
+    &lt;new_bid&gt;{ $newbid }&lt;/new_bid&gt;
+  ) else (
+    &lt;top_bid&gt;{ $topbid }&lt;/top_bid&gt;
+  )
+
+</pre></div>
+<p><em>Expected Result:</em></p>
+<p>Adding 10% to the best bid on item 1007 would require a bid of
+247.5, which is more than the allowed limit of 240. Thus, the
+bids.xml document does not change.</p>
+<div class="exampleInner">
+<pre>
+&lt;top_bid&gt;225&lt;/top_bid&gt;
+            
+</pre></div>
+</div>
+<div class="div4">
+<h5><a name="rdb-sx-results-q3" id="rdb-sx-results-q3"></a>2.1.3.3
+Q3</h5>
+<p>Erase user Dee Linquent and the corresponding associated items
+and bids. Return a count of the items and bids deleted.</p>
+<p><em>Solution in the XQuery Scripting Extension:</em></p>
+<div class="exampleInner">
+<pre>
+let $user := doc("users.xml")/users/user_tuple[name = "Dee Linquent"]
+let $items := doc("items.xml")/items/item_tuple[offered_by = $user/userid]
+let $bids := doc("bids.xml")/bids/bid_tuple[userid = $user/userid]
+return (
+  delete nodes ($user, $items, $bids),
+  &lt;deleted&gt;
+    &lt;items&gt;{ count($items) }&lt;/items&gt;
+    &lt;bids&gt;{ count($bids) }&lt;/bids&gt;
+  &lt;/deleted&gt;
+)
+</pre></div>
+<p><em>Expected Result:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;deleted&gt;
+  &lt;items&gt;2&lt;/items&gt;
+  &lt;bids&gt;2&lt;/bids&gt;
+&lt;/deleted&gt;
+</pre></div>
+<p><em>Expected resulting content of items.xml:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;items&gt;
+  &lt;item_tuple&gt;
+    &lt;itemno&gt;1001&lt;/itemno&gt;
+    &lt;description&gt;Red Bicycle&lt;/description&gt;
+    &lt;offered_by&gt;U01&lt;/offered_by&gt;
+    &lt;start_date&gt;1999-01-05&lt;/start_date&gt;
+    &lt;end_date&gt;1999-01-20&lt;/end_date&gt;
+    &lt;reserve_price&gt;40&lt;/reserve_price&gt;
+  &lt;/item_tuple&gt;
+  <em>  ... Snip ... </em>
+  &lt;item_tuple&gt;
+    &lt;itemno&gt;1004&lt;/itemno&gt;
+    &lt;description&gt;Tricycle&lt;/description&gt;
+    &lt;offered_by&gt;U01&lt;/offered_by&gt;
+    &lt;start_date&gt;1999-02-25&lt;/start_date&gt;
+    &lt;end_date&gt;1999-03-08&lt;/end_date&gt;
+    &lt;reserve_price&gt;15&lt;/reserve_price&gt;
+  &lt;/item_tuple&gt;
+  &lt;item_tuple&gt;
+    &lt;itemno&gt;1007&lt;/itemno&gt;
+    &lt;description&gt;Racing bicycle&lt;/description&gt;
+    &lt;offered_by&gt;U04&lt;/offered_by&gt;
+    &lt;start_date&gt;1999-01-20&lt;/start_date&gt;
+    &lt;end_date&gt;1999-02-20&lt;/end_date&gt;
+    &lt;reserve_price&gt;200&lt;/reserve_price&gt;
+  &lt;/item_tuple&gt;
+  &lt;item_tuple&gt;
+    &lt;itemno&gt;1008&lt;/itemno&gt;
+    &lt;description&gt;Broken bicycle&lt;/description&gt;
+    &lt;offered_by&gt;U01&lt;/offered_by&gt;
+    &lt;start_date&gt;1999-02-05&lt;/start_date&gt;
+    &lt;end_date&gt;1999-03-06&lt;/end_date&gt;
+    &lt;reserve_price&gt;25&lt;/reserve_price&gt;
+  &lt;/item_tuple&gt;
+&lt;/items&gt;
+</pre></div>
+<p><em>Expected resulting content of users.xml:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;users&gt;
+  &lt;user_tuple&gt;
+    &lt;userid&gt;U01&lt;/userid&gt;
+    &lt;name&gt;Tom Jones&lt;/name&gt;
+    &lt;rating&gt;B&lt;/rating&gt;
+  &lt;/user_tuple&gt;
+  &lt;user_tuple&gt;
+    &lt;userid&gt;U02&lt;/userid&gt;
+    &lt;name&gt;Mary Doe&lt;/name&gt;
+    &lt;rating&gt;A&lt;/rating&gt;
+  &lt;/user_tuple&gt;
+   &lt;user_tuple&gt;
+    &lt;userid&gt;U04&lt;/userid&gt;
+    &lt;name&gt;Roger Smith&lt;/name&gt;
+    &lt;rating&gt;C&lt;/rating&gt;
+  &lt;/user_tuple&gt;
+<em>  ... Snip ... </em>
+  &lt;user_tuple&gt;
+   &lt;userid&gt;U06&lt;/userid&gt;
+   &lt;name&gt;Rip Van Winkle&lt;/name&gt;
+   &lt;rating&gt;B&lt;/rating&gt;
+  &lt;/user_tuple&gt;
+&lt;/users&gt;
+</pre></div>
+<p><em>Expected resulting content of bids.xml:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;bids&gt;
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U02&lt;/userid&gt; 
+    &lt;itemno&gt;1001&lt;/itemno&gt; 
+    &lt;bid&gt;35&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-01-07&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U04&lt;/userid&gt; 
+    &lt;itemno&gt;1001&lt;/itemno&gt; 
+    &lt;bid&gt;40&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-01-08&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+<em>  ... Snip ... </em>
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U02&lt;/userid&gt; 
+    &lt;itemno&gt;1002&lt;/itemno&gt; 
+    &lt;bid&gt;600&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-02-16&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U04&lt;/userid&gt; 
+    &lt;itemno&gt;1002&lt;/itemno&gt; 
+    &lt;bid&gt;1000&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-02-25&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+<em>  ... Snip ... </em>
+  &lt;bid_tuple&gt; 
+    &lt;userid&gt;U04&lt;/userid&gt; 
+    &lt;itemno&gt;1007&lt;/itemno&gt; 
+    &lt;bid&gt;225&lt;/bid&gt; 
+    &lt;bid_date&gt;1999-02-12&lt;/bid_date&gt; 
+  &lt;/bid_tuple&gt; 
+&lt;/bids&gt;
+
+</pre></div>
+</div>
+<div class="div4">
+<h5><a name="rdb-sx-results-q4" id="rdb-sx-results-q4"></a>2.1.3.4
+Q4</h5>
+<p>Monitor the bidding on the helicopter. If Roger Smith does not
+have the current highest bid, add a bid for him that is one higher
+than the top bid, unless the bid amount exceeds a given limit. Stop
+monitoring when the auction has finished.</p>
+<p><em>Solution in the XQuery Scripting Extension:</em></p>
+<table border="1" summary="Editorial note">
+<tr>
+<td align="left" valign="top" width="50%"><b>Editorial
+note</b></td>
+<td align="right" valign="top" width="50%">2008-01-25</td>
+</tr>
+<tr>
+<td colspan="2" align="left" valign="top">A naive execution of this
+query would form a busy loop waiting for the auction to end. This
+is not very desirable, so it's possible an alternative solution
+should be found.</td>
+</tr>
+</table>
+<div class="exampleInner">
+<pre>
+declare variable $uid := doc("users.xml")/users/user_tuple
+  [name = "Roger Smith"]/userid;
+declare variable $item := doc("items.xml")/items/item_tuple
+  [description = "Helicopter"];
+declare assignable variable $result :=
+  "Error: The auction has already ended or no bids were placed";
+declare assignable variable $maximumExceeded := false();
+
+while(xs:date($item/end_date) &gt;= fn:current-date() and not($maximumExceeded)) {
+  let $bids := doc("bids.xml")/bids/bid_tuple[itemno = $item/itemno]
+  let $topbid := max($bids/bid)
+  let $newbid := $topbid + 1
+  where $bids[bid = $topbid]/userid != $uid
+  return
+    if($newbid &lt;= 60000) then (
+      insert nodes
+        &lt;bid_tuple&gt;
+          { $uid, $item/itemno }
+          &lt;bid&gt;{ $newbid }&lt;/bid&gt; 
+          &lt;bid_date&gt;{ fn:current-date() }&lt;/bid_date&gt; 
+        &lt;/bid_tuple&gt;
+      into doc("bids.xml")/bids;
+      $result := concat("What a bargain! You got a helicopter for ",
+        $newbid);
+    ) else (
+      $result := "Bidding exceeded 60000";
+      $maximumExceeded := true();
+    )
+};
+
+$result;
+</pre></div>
+<p><em>Expected Result:</em></p>
+<p>Since this document was published after the end date for the
+auction ("1999-05-25"), the while loop will never be executed.</p>
+<div class="exampleInner">
+<pre>
+Error: The auction has already ended or no bids were placed
+</pre></div>
+</div>
+</div>
+</div>
+<div class="div2">
+<h3><a name="xhtml" id="xhtml"></a>2.2 Use Case "XHTML" - AJAX
+Scripting with XHTML</h3>
+<p>XQuery is ideally suited to manipulating the XML trees of XHTML.
+This use case speculates that XQuery could be used in the way
+Javascript is now, to modify an XHTML web page whilst it is being
+displayed. In this way XQuery can be used to implement effects like
+those commonly referred to by the acronym AJAX.</p>
+<p>This use case deals with a web page that can be used to perform
+a search in a book database. In all queries, there is an assumption
+that the xhtml document is supplied as the context item.</p>
+<div class="div3">
+<h4><a name="xhtml-data" id="xhtml-data"></a>2.2.1 Input Data</h4>
+<p>The starting state of the web page consists of only a simple
+XHTML form.</p>
+<div class="exampleInner">
+<pre>
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+  &lt;head&gt;
+    &lt;title&gt;Book Search&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;form&gt;
+      Book Name: &lt;input type="text" id="txtBookName"/&gt;
+      &lt;input type="button" id="btnSend" value="Start Search"/&gt;
+    &lt;/form&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre></div>
+</div>
+<div class="div3">
+<h4><a name="xhtml-sx-results" id="xhtml-sx-results"></a>2.2.2
+Queries and Results</h4>
+<div class="div4">
+<h5><a name="xhtml-sx-results-q1" id=
+"xhtml-sx-results-q1"></a>2.2.2.1 Q1</h5>
+<p>Write a script to act as an "onclick" event handler for the
+"btnSend" form button. The script calls a web service to search for
+the book entered by the user and retrieve detailed information for
+the book. While the user is waiting for the web service the message
+"Loading Book" is displayed. This message is later replaced with
+the detailed information for the book.</p>
+<p><em>Input web page:</em></p>
+<p>The web browser has already updated the content of the form's
+text input with the user's search string, "XQuery".</p>
+<div class="exampleInner">
+<pre>
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+  &lt;head&gt;
+    &lt;title&gt;Book Search&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;form&gt;
+      Book Name: &lt;input type="text" id="txtBookName"&gt;XQuery&lt;/input&gt;
+      &lt;input type="button" id="btnSend" value="Start Search"/&gt;
+    &lt;/form&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre></div>
+<p><em>Solution in the XQuery Scripting Extension:</em></p>
+<p>The element that caused the event is supplied as an external
+variable called $eventNode. The web service is called using the
+external functions "book:search", and "book:get".</p>
+<div class="exampleInner">
+<pre>
+declare namespace xhtml="http://www.w3.org/1999/xhtml";
+declare namespace book="http://www.example.com/booksearch";
+
+declare simple function book:search($name as xs:string) as element(book)* external;
+declare simple function book:get($isbn as xs:string) as element(bookinfo) external;
+
+declare variable $eventNode as element() external;
+declare assignable variable $searchResults := ();
+
+insert node &lt;xhtml:div&gt;Loading Book&lt;/xhtml:div&gt;
+after /xhtml:html/xhtml:body/xhtml:form;
+
+$searchResults :=
+  book:search($eventNode/preceding-sibling::xhtml:input[1]);
+
+if($searchResults) then (
+  replace node /xhtml:html/xhtml:body/xhtml:div
+  with &lt;xhtml:div&gt;{
+    book:get($searchResults[1]/isbn)/html/node()
+  }&lt;/xhtml:div&gt;;
+)
+else (
+  replace node /xhtml:html/xhtml:body/xhtml:div
+  with &lt;xhtml:div&gt;No books found!&lt;/xhtml:div&gt;;
+);
+</pre></div>
+<p><em>Results returned to the query from the function call
+book:search("XQuery"):</em></p>
+<div class="exampleInner">
+<pre>
+&lt;book&gt;
+  &lt;title&gt;XQuery from the Experts: A Guide to the W3C XML Query Language&lt;/title&gt;
+  &lt;isbn&gt;0321180607&lt;/isbn&gt;
+&lt;/book&gt;
+&lt;book&gt;
+  &lt;title&gt;XQuery: The XML Query Language&lt;/title&gt;
+  &lt;isbn&gt;0321165810&lt;/isbn&gt;
+&lt;/book&gt;
+</pre></div>
+<p><em>Results returned to the query from the function call
+book:get("0321180607"):</em></p>
+<div class="exampleInner">
+<pre>
+&lt;bookinfo&gt;
+  &lt;title&gt;XQuery from the Experts: A Guide to the W3C XML Query Language&lt;/title&gt;
+  &lt;isbn&gt;0321180607&lt;/isbn&gt;
+  &lt;html&gt;
+    &lt;h2 xmlns="http://www.w3.org/1999/xhtml"&gt;XQuery from the Experts: A Guide to the W3C XML Query Language&lt;/h2&gt;
+    ISBN: 0321180607
+  &lt;/html&gt;
+&lt;/bookinfo&gt;
+</pre></div>
+<p><em>Expected intermediate content of the web page:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+  &lt;head&gt;
+    &lt;title&gt;Book Search&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;form&gt;
+      Book Name: &lt;input type="text" id="txtBookName"&gt;XQuery&lt;/input&gt;
+      &lt;input type="button" id="btnSend" value="Start Search"/&gt;
+    &lt;/form&gt;
+    &lt;xhtml:div xmlns:xhtml="http://www.w3.org/1999/xhtml"&gt;Loading book&lt;/xhtml:div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre></div>
+<p><em>Expected resulting content of the web page:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+  &lt;head&gt;
+    &lt;title&gt;Book Search&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;form&gt;
+      Book Name: &lt;input type="text" id="txtBookName"&gt;XQuery&lt;/input&gt;
+      &lt;input type="button" id="btnSend" value="Start Search"/&gt;
+    &lt;/form&gt;
+    &lt;xhtml:div xmlns:xhtml="http://www.w3.org/1999/xhtml"&gt;
+      &lt;h2&gt;XQuery from the Experts: A Guide to the W3C XML Query Language&lt;/h2&gt;
+      ISBN: 0321180607
+    &lt;/xhtml:div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre></div>
+</div>
+<div class="div4">
+<h5><a name="xhtml-sx-results-q2" id=
+"xhtml-sx-results-q2"></a>2.2.2.2 Q2</h5>
+<p>Write a script to act as an "onclick" event handler for the
+"btnSend" form button. The script calls a web service to search for
+the book entered by the user, and uses an additional web service to
+find which libraries have these books on the shelves. The
+information received is displayed asynchronously as it arrives.</p>
+<p><em>Input web page:</em></p>
+<p>The web browser has already updated the content of the form's
+text input with the user's search string, "XQuery".</p>
+<div class="exampleInner">
+<pre>
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+  &lt;head&gt;
+    &lt;title&gt;Book Search&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;form&gt;
+      Book Name: &lt;input type="text" id="txtBookName"&gt;XQuery&lt;/input&gt;
+      &lt;input type="button" id="btnSend" value="Start Search"/&gt;
+    &lt;/form&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre></div>
+<p><em>Solution in the XQuery Scripting Extension:</em></p>
+<p>The element that caused the event is supplied as an external
+variable called $eventNode. The web services are called using the
+external functions "book:search", and "library:find".</p>
+<div class="exampleInner">
+<pre>
+declare namespace xhtml="http://www.w3.org/1999/xhtml";
+declare namespace book="http://www.example.com/booksearch";
+declare namespace library="http://www.example.com/library";
+
+declare simple function book:search($name as xs:string)
+  as element(book)* external;
+declare simple function library:find($isbn as xs:string)
+  as element(library)* external;
+
+declare variable $eventNode as element() external;
+declare assignable variable $table := ();
+
+insert node &lt;xhtml:div&gt;&lt;xhtml:table/&gt;&lt;/xhtml:div&gt;
+after /xhtml:html/xhtml:body/xhtml:form;
+$table := //xhtml:table;
+
+for $book in book:search($eventNode/preceding-sibling::xhtml:input[1])
+return (
+  insert node
+    &lt;xhtml:tr&gt;
+      &lt;xhtml:td&gt;{data($book/title)}&lt;/xhtml:td&gt;
+      &lt;xhtml:td&gt;{data($book/isbn)}&lt;/xhtml:td&gt;
+      &lt;xhtml:td/&gt;
+    &lt;/xhtml:tr&gt;
+  as last into $table;
+);
+
+for $row in $table/xhtml:tr
+return (
+  replace value of node $row/xhtml:td[3]
+  with string-join(library:find($row/xhtml:td[2])/name, ", ");
+);
+</pre></div>
+<p><em>Results returned to the query from the function call
+book:search("XQuery"):</em></p>
+<div class="exampleInner">
+<pre>
+&lt;book&gt;
+  &lt;title&gt;XQuery from the Experts: A Guide to the W3C XML Query Language&lt;/title&gt;
+  &lt;isbn&gt;0321180607&lt;/isbn&gt;
+&lt;/book&gt;
+&lt;book&gt;
+  &lt;title&gt;XQuery: The XML Query Language&lt;/title&gt;
+  &lt;isbn&gt;0321165810&lt;/isbn&gt;
+&lt;/book&gt;
+</pre></div>
+<p><em>Results returned to the query from the function call
+library:find("0321180607"):</em></p>
+<div class="exampleInner">
+<pre>
+&lt;library&gt;
+  &lt;name&gt;Bodleian Library&lt;/name&gt;
+  &lt;url&gt;http://www.bodley.ox.ac.uk/&lt;/url&gt;
+  &lt;lending&gt;no&lt;/lending&gt;
+&lt;/library&gt;
+&lt;library&gt;
+  &lt;name&gt;Radcliffe Science Library&lt;/name&gt;
+  &lt;url&gt;http://www.ouls.ox.ac.uk/rsl/&lt;/url&gt;
+  &lt;lending&gt;yes&lt;/lending&gt;
+&lt;/library&gt;
+</pre></div>
+<p><em>Results returned to the query from the function call
+library:find("0321165810"):</em></p>
+<div class="exampleInner">
+<pre>
+&lt;library&gt;
+  &lt;name&gt;Radcliffe Science Library&lt;/name&gt;
+  &lt;url&gt;http://www.ouls.ox.ac.uk/rsl/&lt;/url&gt;
+  &lt;lending&gt;yes&lt;/lending&gt;
+&lt;/library&gt;
+</pre></div>
+<p><em>Expected resulting content of the web page:</em></p>
+<p>The web page will be altered as the results are received from
+the web services, but the final result will look like this.</p>
+<div class="exampleInner">
+<pre>
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+  &lt;head&gt;
+    &lt;title&gt;Book Search&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;form&gt;
+      Book Name: &lt;input type="text" id="txtBookName"&gt;XQuery&lt;/input&gt;
+      &lt;input type="button" id="btnSend" value="Start Search"/&gt;
+    &lt;/form&gt;
+    &lt;xhtml:div xmlns:xhtml="http://www.w3.org/1999/xhtml"&gt;
+      &lt;xhtml:table&gt;
+        &lt;xhtml:tr&gt;
+          &lt;xhtml:td&gt;XQuery from the Experts: A Guide to the W3C XML Query Language&lt;/xhtml:td&gt;
+          &lt;xhtml:td&gt;0321180607&lt;/xhtml:td&gt;
+          &lt;xhtml:td&gt;Bodleian Library, Radcliffe Science Library&lt;/xhtml:td&gt;
+        &lt;/xhtml:tr&gt;
+        &lt;xhtml:tr&gt;
+          &lt;xhtml:td&gt;XQuery: The XML Query Language&lt;/xhtml:td&gt;
+          &lt;xhtml:td&gt;0321165810&lt;/xhtml:td&gt;
+          &lt;xhtml:td&gt;Radcliffe Science Library&lt;/xhtml:td&gt;
+        &lt;/xhtml:tr&gt;
+      &lt;/xhtml:table&gt;
+    &lt;/xhtml:div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="div2">
+<h3><a name="webservice" id="webservice"></a>2.3 Use Case "WS" -
+XQuery for Web Services</h3>
+<p>This use case deals with the implementation of a REST based web
+service, specifically a micro-blog.</p>
+<div class="div3">
+<h4><a name="webservice-data" id="webservice-data"></a>2.3.1 Input
+Data</h4>
+<p>The default collection contains a forest of micro blog
+documents, one for each user. Initially the forest contains these
+documents.</p>
+<p><em>John's micro-blog:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;micro-blog user="john"&gt;
+  &lt;entry timestamp="2007-10-17T10:02:53+01:00"&gt;
+    &lt;text&gt;Still reading email...&lt;/text&gt;
+  &lt;/entry&gt;
+  &lt;entry timestamp="2007-10-17T20:19:31+01:00"&gt;
+    &lt;text&gt;Writing XQuery Scripting Extension use cases (ideas, anyone?)&lt;/text&gt;
+  &lt;/entry&gt;
+  &lt;entry timestamp="2007-10-18T00:43:02+01:00"&gt;
+    &lt;text&gt;Thinking of going to bed&lt;/text&gt;
+  &lt;/entry&gt;
+&lt;/micro-blog&gt;
+</pre></div>
+<p><em>Emily's micro-blog:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;micro-blog user="emily"&gt;
+  &lt;entry timestamp="2007-10-16T18:12:51+01:00"&gt;
+    &lt;text&gt;So how do you use a micro-blog?&lt;/text&gt;
+  &lt;/entry&gt;
+  &lt;entry timestamp="2007-10-16T18:13:20+01:00"&gt;
+    &lt;text&gt;Ah, I see&lt;/text&gt;
+  &lt;/entry&gt;
+  &lt;entry timestamp="2007-10-17T07:33:44+01:00"&gt;
+    &lt;text&gt;Morning, everybody!&lt;/text&gt;
+  &lt;/entry&gt;
+&lt;/micro-blog&gt;
+</pre></div>
+<p><em>A document containing the blog access log:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;log&gt;
+&lt;/log&gt;
+</pre></div>
+</div>
+<div class="div3">
+<h4><a name="webservice-sx-results" id=
+"webservice-sx-results"></a>2.3.2 Queries and Results</h4>
+<div class="div4">
+<h5><a name="webservice-sx-results-q1" id=
+"webservice-sx-results-q1"></a>2.3.2.1 Q1</h5>
+<p>Process a request from John to add a blog entry, returning a
+confirmation XHTML page.</p>
+<p><em>The element representing the request:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;request&gt;
+  &lt;method&gt;POST&lt;/method&gt;
+  &lt;url&gt;http://blog.example.com/john/add&lt;/url&gt;
+  &lt;param name="text"&gt;Making a post to my XQuery blog engine&lt;/param&gt;
+&lt;/request&gt;
+</pre></div>
+<p><em>Solution in the XQuery Scripting Extension:</em></p>
+<p>The request element is bound to the external variable
+$request.</p>
+<div class="exampleInner">
+<pre>
+declare variable $request as element(request) external;
+
+declare simple function local:error($message)
+{
+  &lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+    &lt;head&gt;
+      &lt;title&gt;Error&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+      &lt;h1&gt;Error&lt;/h1&gt;
+      &lt;p&gt;{ $message }&lt;/p&gt;
+    &lt;/body&gt;
+  &lt;/html&gt;
+};
+
+if($request/method = "POST") then () else
+  exit returning local:error(concat("You cannot use the ",
+    $request/method, " method with this URL."));
+
+let $user := replace($request/url, "^http://.*/([^/]+)/add$", "$1")
+let $blog := collection()/micro-blog[@user = $user]
+return (
+  if($blog) then () else
+    exit returning local:error("Unknown user");
+
+  insert node
+    &lt;entry timestamp="{ current-dateTime() }"&gt;
+      &lt;text&gt;{ data($request/param[@name = "text"]) }&lt;/text&gt;
+    &lt;/entry&gt;
+  as last into $blog;
+
+  &lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+    &lt;head&gt;
+      &lt;title&gt;Blog entry added for { $user }&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+      &lt;h1&gt;Blog entry added for { $user }&lt;/h1&gt;
+      &lt;p&gt;{ data($request/param[@name = "text"]) }&lt;/p&gt;
+    &lt;/body&gt;
+  &lt;/html&gt;;
+);
+</pre></div>
+<p><em>Expected Result:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+  &lt;head&gt;
+    &lt;title&gt;Blog entry added for john&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Blog entry added for john&lt;/h1&gt;
+    &lt;p&gt;Making a post to my XQuery blog engine&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre></div>
+<p><em>Expected resulting content of John's micro-blog:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;micro-blog user="john"&gt;
+  &lt;entry timestamp="2007-10-17T10:02:53+01:00"&gt;
+    &lt;text&gt;Still reading email...&lt;/text&gt;
+  &lt;/entry&gt;
+  &lt;entry timestamp="2007-10-17T20:19:31+01:00"&gt;
+    &lt;text&gt;Writing XQuery Scripting Extension use cases (ideas, anyone?)&lt;/text&gt;
+  &lt;/entry&gt;
+  &lt;entry timestamp="2007-10-18T00:43:02+01:00"&gt;
+    &lt;text&gt;Thinking of going to bed&lt;/text&gt;
+  &lt;/entry&gt;
+  &lt;entry timestamp="2007-10-18T08:53:9+01:00"&gt;
+    &lt;text&gt;Making a post to my XQuery blog engine&lt;/text&gt;
+  &lt;/entry&gt;
+&lt;/micro-blog&gt;
+</pre></div>
+</div>
+<div class="div4">
+<h5><a name="webservice-sx-results-q2" id=
+"webservice-sx-results-q2"></a>2.3.2.2 Q2</h5>
+<p>Process the same request from John, using a function to check
+that "john" is a valid user name and to log the event.</p>
+<p><em>The element representing the request:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;request&gt;
+  &lt;method&gt;POST&lt;/method&gt;
+  &lt;url&gt;http://blog.example.com/john/add&lt;/url&gt;
+  &lt;param name="text"&gt;Making a post to my XQuery blog engine&lt;/param&gt;
+&lt;/request&gt;
+</pre></div>
+<p><em>Solution in the XQuery Scripting Extension:</em></p>
+<p>The request element is bound to the external variable
+$request.</p>
+<div class="exampleInner">
+<pre>
+declare variable $request as element(request) external;
+
+declare sequential function local:check-user-and-log($username as xs:string) 
+  as element(micro-blog)?
+{
+  declare $entry as element() :=
+    &lt;access-attempt&gt;
+      &lt;timestamp&gt;{fn:current-dateTime()}&lt;/timestamp&gt;
+      &lt;user-name&gt;{$username}&lt;/user-name&gt;
+      &lt;access-allowed/&gt;
+    &lt;/access-attempt&gt;;
+  declare $blog as element(micro-blog)? :=
+    collection()/micro-blog[@user = $username];
+
+  if($blog) then
+    replace value of node $entry/access-allowed with "Yes"
+  else
+    replace value of node $entry/access-allowed with "No";
+
+  insert node $entry as last into collection()/log;
+
+  $blog;
+}; 
+
+
+declare simple function local:error($message)
+{
+  &lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+    &lt;head&gt;
+      &lt;title&gt;Error&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+      &lt;h1&gt;Error&lt;/h1&gt;
+      &lt;p&gt;{ $message }&lt;/p&gt;
+    &lt;/body&gt;
+  &lt;/html&gt;
+};
+
+if($request/method = "POST") then () else
+  exit returning local:error(concat("You cannot use the ",
+    $request/method, " method with this URL."));
+
+let $user := replace($request/url, "^http://.*/([^/]+)/add$", "$1")
+let $blog := local:check-user-and-log($user)
+return (
+  if($blog) then () else
+    exit returning local:error("Unknown user");
+
+  insert node
+    &lt;entry timestamp="{ current-dateTime() }"&gt;
+      &lt;text&gt;{ data($request/param[@name = "text"]) }&lt;/text&gt;
+    &lt;/entry&gt;
+  as last into $blog;
+
+  &lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+    &lt;head&gt;
+      &lt;title&gt;Blog entry added for { $user }&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+      &lt;h1&gt;Blog entry added for { $user }&lt;/h1&gt;
+      &lt;p&gt;{ data($request/param[@name = "text"]) }&lt;/p&gt;
+    &lt;/body&gt;
+  &lt;/html&gt;;
+);
+</pre></div>
+<p><em>Expected Result:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+  &lt;head&gt;
+    &lt;title&gt;Blog entry added for john&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Blog entry added for john&lt;/h1&gt;
+    &lt;p&gt;Making a post to my XQuery blog engine&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre></div>
+<p><em>Expected resulting content of John's micro-blog:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;micro-blog user="john"&gt;
+  &lt;entry timestamp="2007-10-17T10:02:53+01:00"&gt;
+    &lt;text&gt;Still reading email...&lt;/text&gt;
+  &lt;/entry&gt;
+  &lt;entry timestamp="2007-10-17T20:19:31+01:00"&gt;
+    &lt;text&gt;Writing XQuery Scripting Extension use cases (ideas, anyone?)&lt;/text&gt;
+  &lt;/entry&gt;
+  &lt;entry timestamp="2007-10-18T00:43:02+01:00"&gt;
+    &lt;text&gt;Thinking of going to bed&lt;/text&gt;
+  &lt;/entry&gt;
+  &lt;entry timestamp="2007-10-18T08:53:9+01:00"&gt;
+    &lt;text&gt;Making a post to my XQuery blog engine&lt;/text&gt;
+  &lt;/entry&gt;
+&lt;/micro-blog&gt;
+</pre></div>
+<p><em>Expected resulting content of the log:</em></p>
+<div class="exampleInner">
+<pre>
+&lt;log&gt;
+  &lt;access-attempt&gt;
+    &lt;timestamp&gt;2007-10-18T08:53:9+01:00&lt;/timestamp&gt;
+    &lt;user-name&gt;john&lt;/user-name&gt;
+    &lt;access-allowed&gt;Yes&lt;/access-allowed&gt;
+  &lt;/access-attempt&gt;
+&lt;/log&gt;
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="back">
+<div class="div1">
+<h2><a name="references" id="references"></a>A References</h2>
+<dl>
+<dt class="label"><span><a name="RFC2119" id="RFC2119"></a>RFC
+2119</span></dt>
+<dd>
+<div>S. Bradner. <em>Key Words for use in RFCs to Indicate
+Requirement Levels.</em> IETF RFC 2119. See <a href=
+"http://www.ietf.org/rfc/rfc2119.txt">http://www.ietf.org/rfc/rfc2119.txt</a>.</div>
+</dd>
+<dt class="label"><span><a name="datamodel-30" id=
+"datamodel-30"></a>XQuery and XPath Data Model 3.0</span></dt>
+<dd>
+<div>World Wide Web Consortium. <em>XQuery and XPath Data Model
+3.0</em>. W3C Working Draft, 16 September 2010. See <a href=
+"http://www.w3.org/TR/xpath-datamodel-30/">http://www.w3.org/TR/xpath-datamodel-30/</a>.</div>
+</dd>
+<dt class="label"><span><a name="xquery-30" id=
+"xquery-30"></a>XQuery 3.0</span></dt>
+<dd>
+<div>World Wide Web Consortium. <em>XQuery 3.0</em>. W3C Working
+Draft, 16 September 2010. See <a href=
+"http://www.w3.org/TR/xquery-30/">http://www.w3.org/TR/xquery-30/</a>.</div>
+</dd>
+<dt class="label"><span><a name="updatef-30" id=
+"updatef-30"></a>XQuery Update Facility 3.0</span></dt>
+<dd>
+<div>World Wide Web Consortium. <em>XQuery Update Facility 3.0</em>
+. W3C Working Draft, 16 September 2010. See <a href=
+"http://www.w3.org/TR/xqupdate-30/">http://www.w3.org/TR/xquery-update-30/</a>.</div>
+</dd>
+<dt class="label"><span><a name="XQueryUseCases" id=
+"XQueryUseCases"></a>XML Query Use Cases</span></dt>
+<dd>
+<div>World Wide Web Consortium. <em>XML Query Use Cases</em>. W3C
+Working Group Note, 23 March 2007. See <a href=
+"http://www.w3.org/TR/xquery-use-cases/">http://www.w3.org/TR/xquery-use-cases/</a>.</div>
+</dd>
+</dl>
+</div>
+</div>
+</body>
+</html>

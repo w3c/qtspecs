@@ -1,0 +1,317 @@
+<div2 id="TextNode">
+  <head>&textNode;s</head>
+
+<div3 id="TextNodeOverview">
+  <head>Overview</head>
+
+<p>&textNode;s encapsulate XML character content. Text has the following properties:
+</p>
+
+  <ulist>
+  <item><p>&dm.prop.content;
+  </p></item>
+  <item><p>&dm.prop.parent;, possibly empty.
+  </p></item>
+  </ulist>
+
+<p>&textNode;s <rfc2119>must</rfc2119> satisfy the following constraint:</p>
+
+<olist>
+<item><p>If the &dm.prop.parent; of a text node is not empty,
+the &textNode; <rfc2119>must not</rfc2119> contain the zero-length string
+as its
+&dm.prop.content;.
+</p></item>
+</olist>
+
+<p>In addition, Document and &elementNode;s impose the constraint that
+two consecutive &textNode;s can never occur as adjacent siblings.
+When a Document or &elementNode; is constructed, &textNode;s that would
+be adjacent <rfc2119>must</rfc2119> be
+combined into a single &textNode;. If the resulting &textNode;
+is empty, it <rfc2119>must</rfc2119> never be placed among the children of
+its parent, it is simply discarded.
+</p>
+
+</div3>
+
+<div3 id="TextNodeAccessors">
+  <head>Accessors</head>
+
+<glist role="accessors">
+<gitem>
+<label><function>attributes</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>base-uri</function></label>
+<def>
+<p>If the &textNode; has a parent, returns the value of the
+<function>base-uri</function> of its parent; otherwise, returns
+the empty sequence.</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>children</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>document-uri</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>is-id</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>is-idrefs</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>namespace-nodes</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>nilled</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>node-kind</function></label>
+<def>
+<p>Returns “<code>text</code>”.</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>node-name</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>parent</function></label>
+<def>
+<p>Returns the value of the &dm.prop.parent; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>string-value</function></label>
+<def>
+<p>Returns the value of the &dm.prop.content; property.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>type-name</function></label>
+<def>
+<p>Returns <code>xs:untypedAtomic</code>.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>typed-value</function></label>
+<def>
+<p>Returns the value of the &dm.prop.content; property as an
+<code>xs:untypedAtomic</code>.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>unparsed-entity-public-id</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+
+<gitem>
+<label><function>unparsed-entity-system-id</function></label>
+<def>
+<p>Returns the empty sequence.
+</p>
+</def>
+</gitem>
+</glist>
+</div3>
+
+<div3 id="const-infoset-text">
+<head>Construction from an Infoset</head>
+
+<p>The <emph role="info-item">character information items</emph> are
+required. A &textNode; is constructed for each maximal sequence of
+<emph role="info-item">character information items</emph> in document order.</p>
+
+<p>The following infoset properties are required:
+<emph role="infoset-property">character code</emph> and
+<emph role="infoset-property">parent</emph>.</p>
+
+<p>The following infoset properties are optional:
+<emph role="infoset-property">element content whitespace</emph>.</p>
+
+<p>A sequence of
+<emph role="info-item">character information items</emph> is maximal
+if it satisfies the following constraints:</p>
+
+<olist>
+<item><p>All of the information items in the sequence have the same parent.</p>
+</item>
+<item><p>The sequence consists of adjacent
+<emph role="info-item">character information items</emph>
+uninterrupted by other types of information item.</p>
+</item>
+<item><p>No other such sequence exists that contains any of the same
+<emph role="info-item">character information items</emph> and is longer.</p>
+</item>
+</olist>
+
+<p>&textNode; properties are derived from the infoset as
+follows:</p>
+
+<glist>
+<gitem>
+<label>&dm.prop.content;</label>
+<def>
+<p>A string comprised of characters that correspond to the
+<emph role="infoset-property">character code</emph> properties of
+each of the <emph role="info-item">character information items</emph>.</p>
+
+<p>If the resulting &textNode; consists entirely of whitespace and
+the <emph role="infoset-property">element content whitespace</emph> property
+of the <emph role="info-item">character information items</emph> used to
+construct this node are <code>true</code>,
+the &dm.prop.content; of the &textNode;
+is the zero-length string. &textNode;s are only allowed to be empty if they
+have no parents; an empty &textNode; will be discarded when its parent
+is constructed, if it has a parent.</p>
+
+<p>The content of the &textNode; is not necessarily normalized as
+described in the <bibref ref="charmod"/>. It is the
+responsibility of data producers to provide normalized
+text, and the responsibility of applications to make sure that
+operations do not de-normalize text.</p>
+</def>
+</gitem>
+
+<gitem>
+<label>&dm.prop.parent;</label>
+<def>
+<p>The node corresponding to the value of the
+<emph role="infoset-property">parent</emph> property.</p>
+</def>
+</gitem>
+</glist>
+
+</div3>
+
+<div3 id="const-psvi-text">
+<head>Construction from a PSVI</head>
+
+<p>For &textNode;s constructed from the
+<emph role="infoset-property">schema normalized value</emph> of elements,
+&dm.prop.content; contains the value of the
+<emph role="infoset-property">schema normalized value</emph>.</p>
+
+<p>Otherwise, construction from a PSVI is the same as construction
+from the Infoset except for the &dm.prop.content; property. When
+constructing the &dm.prop.content; property,
+<emph role="infoset-property">element content whitespace</emph>
+is not used to test if whitespace is collapsed. Instead,
+if the resulting &textNode; consists entirely of whitespace and the
+<emph role="info-item">character information items</emph> used to
+construct this node have a parent and that parent is an element and its
+{content type} is not “<code>mixed</code>”, then
+the &dm.prop.content; of the &textNode;
+is the zero-length string.</p>
+
+<p>&textNode;s are only allowed to be empty if they
+have no parents; an empty &textNode; will be discarded when its parent
+is constructed, if it has a parent.</p>
+
+</div3>
+
+<div3 id="infoset-mapping-text">
+<head>Infoset Mapping</head>
+
+<p>A &textNode; maps to a sequence of <emph role="info-item">character information items</emph>.</p>
+
+<p>Each
+character of the <function>string-value</function> of the node is converted
+into a <emph role="info-item">character information item</emph> as specified by this mapping:</p>
+
+<glist>
+<gitem>
+<label><emph role="infoset-property">character code</emph></label>
+<def>
+<p>The Unicode code point value of the character.
+</p>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">parent</emph></label>
+<def>
+<ulist>
+<item>
+<p>If this node is the root of the infoset mapping operation,
+<emph>unknown</emph>.</p>
+</item>
+<item>
+<p>If this node has a parent, the information item that corresponds
+to the node returned by <function>parent</function>.
+</p>
+</item>
+<item>
+<p>Otherwise <emph>no value</emph>.
+</p>
+</item>
+</ulist>
+</def>
+</gitem>
+<gitem>
+<label><emph role="infoset-property">element content whitespace</emph></label>
+<def>
+<p><emph>Unknown</emph>.
+</p>
+</def>
+</gitem>
+</glist>
+
+<p>This sequence of characters constitutes the infoset mapping.</p>
+</div3>
+
+</div2>

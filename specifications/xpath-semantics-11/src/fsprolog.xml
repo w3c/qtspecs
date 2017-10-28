@@ -1,0 +1,3734 @@
+<div1 id="id-query-prolog">
+  <head>Modules and Prologs</head>
+
+  <p>The organization of this section parallels the organization of
+  <xspecref spec="XQ" ref="id-query-prolog"/>.</p>
+
+  <smintro>
+    <p>XQuery supports modules as defined in <xspecref spec="XQ"
+    ref="id-query-prolog"/>.  A <xtermref spec="XQ"
+    ref="dt-main-module"/> contains a <xtermref spec="XQ"
+    ref="dt-prolog"/> followed by a <xtermref spec="XQ"
+    ref="dt-queryBody"/>.  A query has exactly one main module. In a
+    main module, the <xtermref spec="XQ" ref="dt-queryBody"/> can be
+    evaluated, and its value is the result of the query. A <xtermref
+    spec="XQ" ref="dt-library-module"/> contains a module declaration
+    followed by a <xtermref spec="XQ" ref="dt-prolog"/>.</p>
+
+    <p>The Prolog is a sequence of declarations that affect query
+    processing. The Prolog can be used, for example, to declare
+    namespace prefixes, import types from XML Schemas, and declare
+    functions and variables.  Namespace declarations and schema
+    imports always precede function and variable declarations, as
+    specified by the following grammar productions.</p>
+
+    <scrap>
+      <head>Query Module</head>
+      <prodrecap id="Module"          ref="Module"          orig="xquery"/>
+      <prodrecap id="MainModule"      ref="MainModule"      orig="xquery"/>
+      <prodrecap id="LibraryModule"   ref="LibraryModule"   orig="xquery"/>
+      <prodrecap id="Prolog"          ref="Prolog"          orig="xquery"/>
+      <prodrecap id="Setter"          ref="Setter"          orig="xquery"/>
+      <prodrecap id="Import"          ref="Import"          orig="xquery"/>
+      <prodrecap id="Separator"       ref="Separator"       orig="xquery"/>
+      <prodrecap id="QueryBody"       ref="QueryBody"       orig="xquery"/>
+    </scrap>
+
+    <p>Function declarations are globally scoped, that is, the use of
+    a function name in a function call may precede declaration of the
+    function.  Variable declarations are lexically scoped, i.e.,
+    variable declarations must precede variable uses.</p>
+  </smintro>
+ 
+  <smcore>
+     <p>The module declarations and prolog are processed as part of
+     the static and dynamic context processing. In addition,
+     normalization of prolog declarations is performed into a
+     simplified formal grammar given below. As a result, the XQuery
+     core does not need to include the prolog and module
+     declarations. The entry point for the core grammar is the
+     &gr_Expr; non-terminal, as given in <specref
+     ref="id-expressions"/>.</p>
+
+<!--
+    <scrap>
+      <head>Query Module</head>
+      <prodrecap id="core-Module"          ref="Module"          orig="core"/>
+      <prodrecap id="core-MainModule"      ref="MainModule"      orig="core"/>
+      <prodrecap id="core-LibraryModule"   ref="LibraryModule"   orig="core"/>
+      <prodrecap id="core-Prolog"          ref="Prolog"          orig="core"/>
+      <prodrecap id="core-Setter"          ref="Setter"          orig="core"/>
+      <prodrecap id="core-Import"          ref="Import"          orig="core"/>
+      <prodrecap id="core-QueryBody"       ref="QueryBody"       orig="core"/>
+    </scrap>
+-->
+
+  </smcore>
+
+  <smnotation>
+    <p>Modules are identified and can be imported using a target
+    namespace (a URI). In &language;, the process by which a module is
+    obtained from a given target namespace is implementation
+    defined. In this specification, we use the following auxiliary
+    judgment to model that implementation defined process.</p>
+
+    <p id="jd_is_target_namespace_of_modules">The judgment:</p>
+
+    <display>
+      <clause>
+        <expression>&gr_URI; &jd_is_target_namespace_of_modules;
+        &gr_Module1; ... &gr_Modulen;
+        </expression>
+      </clause>
+    </display>
+
+    <p>holds if &gr_Module1; ... &gr_Modulen; are the modules
+    associated to the target namespace &gr_URI;, and such as
+    &gr_Modulei; does not depend directly, or transitively on any
+    module after it. (See <bibref ref="xquery-11"/> for the formal
+    definition of whether a module directly depends on another)</p>
+  </smnotation>
+
+  <smnotation>
+    <p>The XQuery Prolog requires that declarations appear in a
+    particular order.  In the Formal Semantics, it is simpler to
+    assume the declarations can appear in any order, as it does not
+    change their semantics -- we simply assume that an XQuery parser
+    has enforced the required order.</p>
+
+    <p>The Prolog contains a variety of declarations that specify the
+    initial static and dynamic context of the query.  The following
+    formal grammar productions represent any Prolog declaration.</p>
+
+    <scrap>
+      <head>Prolog Declarations</head>
+        <prodrecap id="PrologDeclList" ref="PrologDeclList" orig="formal" />
+        <prodrecap id="PrologDecl" ref="PrologDecl" orig="formal" />
+    </scrap>
+
+    <p id="jd_map_prolog">The function <map></map>&jd_map_prolog;
+    takes a prolog declaration and maps it into its equivalent
+    declaration in the Core grammar.</p>
+
+    <mapping>
+     <xquery>
+      <expression>
+       <map>&gr_PrologDecl1;</map>&jd_map_prolog;
+      </expression>
+     </xquery>
+     <core>
+      <expression>
+       &gr_PrologDecl2;
+      </expression>
+     </core>
+    </mapping>
+
+    <p id="jd_yields_context">The following auxiliary judgments are
+    applied when statically processing the declarations in the prolog.
+    The effect of the judgment is to process each prolog declaration
+    in order, constructing a new static environment from the static
+    environment constructed from previous prolog declarations.</p>
+
+    <p>The judgment:</p>
+
+    <display>
+      <clause>
+      	<environment>&gr_URI; ; &xq_stat_env1;</environment>
+        <expression>&gr_PrologDeclList; &jd_yields_context;
+        &xq_stat_env2; &jd_yields_context_with; &gr_PrologDeclList1;
+        </expression>
+      </clause>
+    </display>
+
+    <p>holds if for the given module with namespace &gr_URI;, and
+    under the static environment &xq_stat_env1;, the sequence of
+    prolog declarations &gr_PrologDeclList; yields the static
+    environment &xq_stat_env2; and the normalized sequence of prolog
+    declarations in the Core grammar.</p>
+
+    <p>The judgment:</p>
+
+    <display>
+      <clause>
+        <environment>&xq_stat_env1;</environment>
+        <expression>&gr_PrologDecl; &jd_yields_context; &xq_stat_env2;</expression>
+      </clause>
+    </display>
+
+    <p>holds if under the static environment &xq_stat_env1;, the
+    single prolog declaration &gr_PrologDecl; yields the new static
+    environment &xq_stat_env2;.</p>
+  </smnotation>
+
+  <smnotation>
+    <p>Because functions can be mutually referential, function
+    signatures must be defined in the static environment before static
+    type analysis is applied to the function bodies. The following
+    judgment is used to extend the static environment with the
+    appropriate function signatures. That judgment is used when
+    computing the static context for a given module before applying
+    static context processing.</p>
+
+    <p id="jd_yields_sigs">The judgment:</p>
+
+    <display>
+      <clause><environment>&xq_stat_env1;</environment>
+      <expression>&gr_PrologDeclList; &jd_yields_sigs; &xq_stat_env2;</expression></clause>
+    </display>
+
+    <p>holds if extending the static environment &xq_stat_env1; with
+    the function signatures declared in &gr_PrologDeclList; yields the
+    new static environment &xq_stat_env2;.</p>
+
+    <p> This judgment is defined as follows. In case there is no
+    declaration, the static environment is returned unchanged.</p>
+
+    <infergr>
+     <infer>
+      <postjudge>
+       <clause>
+     	   <environment>&xq_stat_env;</environment>
+         <expression>&jd_yields_sigs; &xq_stat_env;</expression>
+       </clause>
+      </postjudge>
+     </infer>
+    </infergr>
+
+    <p>If the case of a namespace declaration, the static context is
+    extended with the corresponding namespace binding.</p>
+
+    <infergr>
+  	<infer>
+  	  <prejudge>
+  	    <multiclause>
+            <clause>
+      	<expression>&gr_PrologDecl; = &gr_NamespaceDecl; or &gr_PrologDecl; = &gr_DefaultNamespaceDecl;</expression>
+            </clause>
+  	    </multiclause>
+  	    <multiclause>
+            <clause>
+      	<environment>&xq_stat_env;</environment>
+      	<expression>&gr_PrologDecl; &jd_yields_context; &xq_stat_env1;</expression>
+            </clause>
+  	    </multiclause>
+  	    <multiclause>
+  	      <clause>
+      	<environment>&xq_stat_env1;</environment>
+              <expression>&gr_PrologDeclList; &jd_yields_sigs;
+              &xq_stat_env2;</expression>
+  	      </clause>
+  	    </multiclause>
+  	  </prejudge>
+  	  <postjudge>
+  	      <clause>
+      	<environment>&xq_stat_env;</environment>
+              <expression>&gr_PrologDecl; ; &gr_PrologDeclList;
+              &jd_yields_sigs; &xq_stat_env2;</expression>
+  	      </clause>
+  	  </postjudge>
+  	</infer>
+    </infergr>
+
+    <p>If the case of a function declaration, the static context is
+    extended with the corresponding signature.</p>
+
+    <infergr>
+  	<infer>
+  	  <prejudge>
+  	    <multiclause>
+            <clause>
+      	<expression>&gr_PrologDecl; = &gr_FunctionDecl;</expression>
+            </clause>
+  	    </multiclause>
+  	    <multiclause>
+            <clause>
+      	<environment>&xq_stat_env;</environment>
+      	<expression>&gr_PrologDecl; &jd_yields_sigs; &xq_stat_env1;</expression>
+            </clause>
+  	    </multiclause>
+  	    <multiclause>
+  	      <clause>
+      	<environment>&xq_stat_env1;</environment>
+              <expression>&gr_PrologDeclList; &jd_yields_sigs;
+              &xq_stat_env2;</expression>
+  	      </clause>
+  	    </multiclause>
+  	  </prejudge>
+  	  <postjudge>
+  	      <clause>
+      	<environment>&xq_stat_env;</environment>
+              <expression>&gr_PrologDecl; ; &gr_PrologDeclList;
+              &jd_yields_sigs; &xq_stat_env2;</expression>
+  	      </clause>
+  	  </postjudge>
+  	</infer>
+    </infergr>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	    <multiclause>
+	      <clause>
+                <expression>&gr_FunctionDecl; = declare function
+                &gr_QName; ( &gr_DVarName1; as &gr_SequenceType1;,
+                ..., &gr_DVarNamen; as &gr_SequenceTypen;) as &gr_SequenceTyper; (&gr_EnclosedExpr; | external)</expression>
+	      </clause>
+	    </multiclause>
+	    <multiclause>
+	      <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>&gr_QName; &jd_func_qname_expands_to; &xd_qname;</expression>
+	      </clause>
+	    </multiclause>
+              <multiclause>
+                <clause>
+                        <expression><map>&gr_SequenceType1;</map>&jd_map_sequencetype;
+                        = &gr_Type1;</expression></clause>
+              </multiclause>
+              <multiclause>
+                <clause><expression>...</expression></clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                        <expression><map>&gr_SequenceTypen;</map>&jd_map_sequencetype;
+                        = &gr_Typen;</expression></clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                        <expression><map>&gr_SequenceTyper;</map>&jd_map_sequencetype;
+                        = &gr_Typer;</expression></clause>
+              </multiclause>
+       <multiclause>
+        <clause>
+         <expression>
+          &gr_FunctionSig;
+          =
+          declare function &xd_qname;(&gr_Type1;, ..., &gr_Typen;) as &gr_Typer;
+         </expression>
+        </clause>
+       </multiclause>
+	    <multiclause>
+	      <clause>
+                <expression>
+                &xq_stat_env1; =
+                    <update>
+                      <environment>&xq_functy_env;</environment>
+                      <expression>&xd_qname;<phrase diff='add' at='E006'>,n</phrase> &xt_bind; &gr_FunctionSig;</expression>
+                    </update>
+                </expression>
+              </clause>
+	    </multiclause>
+	  </prejudge>
+	  <postjudge>
+	    <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>
+              &gr_FunctionDecl; &jd_yields_sigs; &xq_stat_env1;
+  	     </expression>
+	    </clause>
+	  </postjudge>
+	</infer>
+      </infergr>
+
+    <p>For all other kinds of declarations, the static context is left
+    unchanged.</p>
+
+    <infergr>
+  	<infer>
+  	  <prejudge>
+  	    <multiclause>
+            <clause>
+      	<expression>&jd_not;(&gr_PrologDecl; = &gr_FunctionDecl;)
+            and &jd_not;(&gr_PrologDecl; = &gr_NamespaceDecl;) and &jd_not;(&gr_PrologDecl;
+            = &gr_DefaultNamespaceDecl;)</expression>
+            </clause>
+  	    </multiclause>
+  	  </prejudge>
+  	  <postjudge>
+  	      <clause>
+      	<environment>&xq_stat_env;</environment>
+              <expression>&gr_PrologDecl; ; &gr_PrologDeclList;
+              &jd_yields_sigs; &xq_stat_env;</expression>
+  	      </clause>
+  	  </postjudge>
+  	</infer>
+    </infergr>
+
+    <p>In case of a function declaration, the static context is
+    extended with the corresponding function signature.</p>
+
+  </smnotation>
+
+  <smcontext>
+    <p>Prolog declarations are processed in the order they are
+    encountered.  The normalization of a prolog declaration
+    &gr_PrologDecl; depends on the static context processing of all
+    previous prolog declarations.  In turn, static context processing
+    of &gr_PrologDecl; depends on the normalization of the
+    &gr_PrologDecl;.  For example, because variables are lexically
+    scoped, the normalization and static context processing of a
+    variable declaration depends on the normalization and static
+    context processing of all previous variable declarations.
+    Therefore, the normalization phase and static context processing
+    are interleaved, with normalization preceding static context
+    processing for each prolog declaration.</p>
+
+    <p>The following inference rules express this dependency.  The
+    first rule specifies that for an empty sequence of prolog
+    declarations, the initial static environment is left
+    unchanged.</p>
+
+    <infergr>
+     <infer>
+      <postjudge>
+       <clause>
+     	   <environment>&gr_URI; ; &xq_stat_env;</environment>
+         <expression>&jd_yields_context; &xq_stat_env; &jd_yields_context_with;</expression>
+       </clause>
+      </postjudge>
+     </infer>
+    </infergr>
+
+    <p>The next two rules interleaves normalization and static context
+    processing. The result of static context processing and
+    normalization is a static context and the normalized prolog
+    declarations. In case the declaration is a module import, the URI
+    for the current module is passed to the static context processing
+    rule. This allows to avoid self-import, which is handled globally
+    (See rules for building the context for module declarations in
+    <specref ref="id-module-declaration"/>).</p>
+
+    <infergr>
+  	<infer>
+  	  <prejudge>
+  	    <multiclause>
+            <clause>
+              <expression>&jd_not;(&gr_PrologDecl; = &gr_ModuleImport;)</expression>
+            </clause>
+  	    </multiclause>
+  	    <multiclause>
+  	      <clause>
+              <expression><map>&gr_PrologDecl;</map>&jd_map_prolog;
+              <phrase diff='chg' at='E007'>=</phrase> &gr_PrologDecl1;</expression>
+  	      </clause>
+  	    </multiclause>
+  	    <multiclause>
+            <clause>
+      	<environment>&xq_stat_env;</environment>
+      	<expression>&gr_PrologDecl1; &jd_yields_context; &xq_stat_env1;</expression>
+            </clause>
+  	    </multiclause>
+  	    <multiclause>
+  	      <clause>
+      	<environment>&gr_URI; ; &xq_stat_env1;</environment>
+              <expression>&gr_PrologDeclList; &jd_yields_context;
+              &xq_stat_env2; &jd_yields_context_with; &gr_PrologDeclList1;</expression>
+  	      </clause>
+  	    </multiclause>
+  	  </prejudge>
+  	  <postjudge>
+  	      <clause>
+      	<environment>&gr_URI; ; &xq_stat_env;</environment>
+              <expression>&gr_PrologDecl; ; &gr_PrologDeclList;
+              &jd_yields_context; &xq_stat_env2; &jd_yields_context_with;
+              &gr_PrologDecl1; ; &gr_PrologDeclList1;</expression>
+  	      </clause>
+  	  </postjudge>
+  	</infer>
+    </infergr>
+
+    <infergr>
+  	<infer>
+  	  <prejudge>
+  	    <multiclause>
+            <clause>
+              <expression>&gr_PrologDecl; = &gr_ModuleImport;</expression>
+            </clause>
+  	    </multiclause>
+  	    <multiclause>
+  	      <clause>
+              <expression><map>&gr_PrologDecl;</map>&jd_map_prolog;
+              <phrase diff='chg' at='E007'>=</phrase> &gr_PrologDecl1;</expression>
+  	      </clause>
+  	    </multiclause>
+  	    <multiclause>
+            <clause>
+      	<environment>&gr_URI; ; &xq_stat_env;</environment>
+      	<expression>&gr_PrologDecl1; &jd_yields_context; &xq_stat_env1;</expression>
+            </clause>
+  	    </multiclause>
+  	    <multiclause>
+  	      <clause>
+      	<environment>&gr_URI; ; &xq_stat_env1;</environment>
+              <expression>&gr_PrologDeclList; &jd_yields_context;
+              &xq_stat_env2; &jd_yields_context_with; &gr_PrologDeclList1;</expression>
+  	      </clause>
+  	    </multiclause>
+  	  </prejudge>
+  	  <postjudge>
+  	      <clause>
+      	<environment>&gr_URI; ; &xq_stat_env;</environment>
+              <expression>&gr_PrologDecl; ; &gr_PrologDeclList;
+              &jd_yields_context; &xq_stat_env2; &jd_yields_context_with;
+              &gr_PrologDecl1; ; &gr_PrologDeclList1;</expression>
+  	      </clause>
+  	  </postjudge>
+  	</infer>
+    </infergr>
+  </smcontext>
+
+  <smtype>
+    <p>Static typing of a main module follows context processing and
+    normalization.  Context processing and normalization of a main
+    module applies the rules above to the prolog, then using the
+    resulting static environment &xq_stat_env;, the query body is
+    normalized into a Core expression, and the static typing rules are
+    applied to this Core expression.</p>
+
+    <infergr>
+     <infer>
+      <prejudge>
+       <multiclause>
+        <clause>
+      	 <environment>&gr_URI; ; &xq_default_stat_env;</environment>
+         <expression>&gr_PrologDeclList; &jd_yields_context;
+         &xq_stat_env; &jd_yields_context_with; &gr_PrologDeclList1;</expression>
+        </clause>
+       </multiclause>
+       <multiclause>
+       <clause>
+        <environment>&xq_stat_env;</environment>
+        <expression><map>&gr_QueryBody;</map>&jd_map_expr; <phrase diff='chg' at='E007'>=</phrase> &gr_Expr2; </expression>
+       </clause>
+       </multiclause>
+       <multiclause>
+       <clause>
+        <environment>&xq_stat_env;</environment>
+        <expression>&gr_Expr2; &jd_has_type; &gr_Type;</expression>
+       </clause>
+       </multiclause>
+      </prejudge>
+       <postjudge>
+           <clause>
+           <expression>&gr_PrologDeclList; &gr_QueryBody;
+           &jd_has_type; &gr_Type;</expression>
+           </clause>
+       </postjudge>
+     </infer>
+    </infergr>
+  </smtype>
+
+  <smnotation>
+    <p id="jd_yields_dyn_context">Similarly, the judgment:</p>
+
+    <display>
+      <clause>
+      	<environment>&xq_dyn_env1;</environment>
+        <expression>&gr_PrologDeclList; &jd_yields_dyn_context;
+        &xq_dyn_env2;</expression>
+      </clause>
+    </display>
+
+    <p>holds if under the dynamic environment &xq_dyn_env1;, the
+    sequence of prolog declarations &gr_PrologDeclList; yields the
+    dynamic environment &xq_dyn_env2;.</p>
+
+    <p>The judgment:</p>
+
+    <display>
+      <clause>
+        <environment>&xq_dyn_env;</environment>
+        <expression>&gr_PrologDecl; &jd_yields_dyn_context; &xq_dyn_env1;</expression>
+      </clause>
+    </display>
+
+    <p>holds if under the dynamic environment &xq_dyn_env;, the single
+    prolog declaration &gr_PrologDecl; yields the new dynamic
+    environment &xq_dyn_env1;.</p>
+  </smnotation>
+
+  <smdyncontext>
+    <p>The rules for initializing the dynamic context are as follows.
+    The first rule specifies that for an empty sequence of prolog
+    declarations, the dynamic environment is left unchanged.</p>
+
+    <infergr>
+     <infer>
+      <postjudge>
+        <clause>
+         <environment>&xq_dyn_env;</environment>
+         <expression>&jd_yields_dyn_context; &xq_dyn_env;</expression>
+        </clause>
+      </postjudge>
+     </infer>
+    </infergr>
+
+    <p>The second rule simply computes the dynamic environment by
+    processing the prolog declarations in order.</p>
+
+    <infergr>
+     <infer>
+      <prejudge>
+       <multiclause>
+        <clause>
+         <environment>&xq_dyn_env;</environment>
+         <expression>&gr_PrologDecl; &jd_yields_dyn_context; &xq_dyn_env1;</expression>
+        </clause>
+       </multiclause>
+       <multiclause>
+        <clause>
+         <environment>&xq_dyn_env1;</environment>
+         <expression>&gr_PrologDeclList; &jd_yields_dyn_context; &xq_dyn_env2;</expression>
+        </clause>
+       </multiclause>
+      </prejudge>
+      <postjudge>
+        <clause>
+         <environment>&xq_dyn_env;</environment>
+         <expression>&gr_PrologDecl; ; &gr_PrologDeclList; &jd_yields_dyn_context; &xq_dyn_env2;</expression>
+        </clause>
+      </postjudge>
+     </infer>
+    </infergr>
+
+  </smdyncontext>
+
+  <smeval>
+    <p>Dynamic evaluation of a main module applies the rules for
+    dynamic-context processing to the prolog declarations, then using
+    the resulting dynamic environment &xq_dyn_env;, the dynamic
+    evaluation rules are applied to the normalized query body.</p>
+
+    <infergr>
+      <infer>
+        <prejudge>
+  	    <multiclause>
+            <clause diff='chg' at='E007'>
+              <environment>#MAIN ; &xq_default_stat_env;</environment>
+              <expression>
+                &gr_PrologDeclList; &jd_yields_context; &xq_stat_env;
+                &jd_yields_context_with; &gr_PrologDeclList1;
+              </expression>
+            </clause>
+  	    </multiclause>
+          <multiclause>
+           <clause>
+            <environment>&xq_stat_env;</environment>
+            <expression><map>&gr_QueryBody;</map>&jd_map_expr; <phrase diff='chg' at='E007'>=</phrase> &gr_Expr2;</expression>
+           </clause>
+          </multiclause>
+          <multiclause>
+           <clause>
+            <environment>&xq_default_dyn_env;</environment>
+             <expression><phrase diff='chg' at='E007'>&gr_PrologDeclList1;</phrase> &jd_yields_dyn_context;
+             &xq_dyn_env;</expression>
+           </clause>
+          </multiclause>
+          <multiclause>
+           <clause>
+            <environment>&xq_dyn_env;</environment>
+            <expression>&gr_Expr2; &jd_yields; &gr_Value;</expression>
+           </clause>
+          </multiclause>
+        </prejudge>
+        <postjudge>
+          <multiclause>
+            <clause>
+              <expression>&gr_PrologDeclList; &gr_QueryBody;
+              &jd_yields; &gr_Value;</expression>
+            </clause>
+          </multiclause>
+        </postjudge>
+      </infer>
+    </infergr>
+  </smeval>
+
+  <smnotation>
+    <p id="jd_module_statEnv">We define a new judgment that maps a
+    module's target namespace (or a main module) to the corresponding
+    module's static environment:</p>
+
+    <display>
+     <clause>
+      <expression>(&gr_URI; | #MAIN) &jd_module_statEnv; &xq_stat_env;</expression>
+     </clause>
+    </display>
+
+    <p id="jd_module_dynEnv">We also define a new judgment that maps a
+    module's target namespace (or a main module) to the corresponding
+    module's dynamic environment:</p>
+
+    <display>
+     <clause>
+      <expression>(&gr_URI; | #MAIN) &jd_module_dynEnv; &xq_dyn_env;</expression>
+     </clause>
+    </display>
+
+    <p>For a main module, those judgments are defined as follows.</p>
+
+    <infergr>
+	<infer>
+	  <prejudge>
+	    <multiclause>
+          <clause><environment>&xq_default_stat_env;</environment>
+     <expression>&gr_PrologDeclList; &jd_yields_context; &xq_stat_env;</expression>
+          </clause>
+          </multiclause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+            <clause>
+     <expression>#MAIN &jd_module_statEnv; &xq_stat_env;</expression>
+            </clause>
+          </multiclause>
+	  </postjudge>
+      </infer>
+    </infergr>
+
+    <infergr>
+    	<infer>
+    	  <prejudge>
+    	    <multiclause>
+            <clause><environment>&xq_default_dyn_env;</environment>
+     <expression>&gr_PrologDeclList; &jd_yields_dyn_context; &xq_dyn_env;</expression>
+            </clause>
+          </multiclause>
+    	  </prejudge>
+    	  <postjudge>
+    	    <multiclause>
+     <clause><expression>#MAIN &jd_module_dynEnv; &xq_dyn_env;</expression></clause>
+          </multiclause>
+    	  </postjudge>
+      </infer>
+    </infergr>
+
+    <p>For a library module, those judgments are defined in <specref
+    ref="id-module-imports"/>.</p>
+  </smnotation>
+
+  <div2 id="sec_version-declaration">
+
+    <head>Version Declaration</head>
+
+    <scrap><head></head>
+    <prodrecap id="VersionDecl" ref="VersionDecl" orig="xquery"/>
+    </scrap>
+
+    <smintro>
+      <p>A version declaration specifies the applicable XQuery syntax
+      and semantics for a module.  An XQuery implementation must raise
+      a static error when processing a query labeled with a version
+      that the implementation does not support.  This document applies
+      to XQuery 1.0 only and does not specify this static error
+      formally. Verifying whether the proper version declaration is
+      used is not formally specified.</p>
+    </smintro>
+
+<!--
+    <smcore>
+      <p>The core grammar production for version declarations is:</p>
+
+      <scrap><head></head>
+    	<prodrecap id="core-VersionDecl" ref="VersionDecl" orig="core"/>
+      </scrap>
+    </smcore>
+
+    <smnorm>
+      <p>Version declaration are left unchanged through
+      normalization.</p>
+
+      <mapping>
+       <xquery>
+        <expression>
+         <map>&gr_VersionDecl;</map>&jd_map_prolog;
+        </expression>
+       </xquery>
+       <core>
+        <expression>
+          &gr_VersionDecl;
+        </expression>
+       </core>
+      </mapping>
+    </smnorm>
+-->
+
+  </div2>
+
+  <div2 id="id-module-declaration">
+    <head>Module Declaration</head>
+
+    <smintro>
+      <scrap><head></head>
+        <prodrecap id="ModuleDecl" ref="ModuleDecl" orig="xquery"/>
+      </scrap>
+
+      <p>We assume that the static-context processing and
+      dynamic-context processing described in <specref
+      ref="id-query-prolog"/> are applied to all library modules
+      <emph>before</emph> the normalization, static context
+      processing, and dynamic context processing of the main module.
+      That is, at the time an "import module" declaration is
+      processed, we assume that the static and dynamic context of the
+      imported module is already available.  This assumption does not
+      require or assume separate compilation of modules.  An
+      implementation might process all or some imported modules
+      statically (i.e., before the importing module is identified) or
+      dynamically (i.e., when the importing module is identified and
+      processed).</p>
+    </smintro>
+
+    <smcore>
+      <p>The core grammar production for module declarations is:</p>
+
+      <scrap><head></head>
+    	<prodrecap id="core-ModuleDecl"      ref="ModuleDecl"      orig="core"/>
+        <prodrecap id="core-Separator"       ref="Separator"       orig="core"/>
+      </scrap>
+    </smcore>
+
+    <smnorm>
+      <p>Module declarations are left unchanged through
+      normalization.</p>
+
+      <mapping>
+       <xquery>
+        <expression>
+         <map>&gr_ModuleDecl;</map>&jd_map_prolog;
+        </expression>
+       </xquery>
+       <core>
+        <expression>
+          &gr_ModuleDecl;
+        </expression>
+       </core>
+      </mapping>
+    </smnorm>
+
+    <smcontext>
+      <p>The effect of a module declaration is to apply the static
+      context processing rules defined in <specref
+      ref="id-query-prolog"/> to the module's prolog.  The resulting
+      static context is then available to any importing module.</p>
+
+      <p>The module declaration extends the prolog with a namespace
+      declaration that binds the module's prefix to its target
+      namespace (a URI), then computes the static context for the
+      complete module.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	    <multiclause>
+      	      <clause>
+      	        <expression>&gr_URI; &jd_is_target_namespace_of_modules; &gr_Module1; ... &gr_Modulen;
+      	        </expression>
+      	      </clause>
+	    </multiclause>
+	    <multiclause>
+              <clause><expression>&gr_Module1; = module namespace &gr_NCName1; = &gr_URILiteral;; &gr_PrologDeclList1;</expression></clause>
+            </multiclause>
+      	    <multiclause>
+       	      <clause><expression>...</expression></clause>
+      	    </multiclause>
+	    <multiclause>
+              <clause><expression>&gr_Module1; = module namespace &gr_NCName1; = &gr_URILiteral;; &gr_PrologDeclListn;</expression></clause>
+            </multiclause>
+ 	    <multiclause>
+ 	      <clause>
+              <environment>&xq_dyn_env;</environment>
+ 	      <expression>&gr_URILiteral; &jd_has_atomic_value; &gr_URI;
+ 	      </expression>
+ 	      </clause>
+ 	    </multiclause>
+	    <multiclause>
+              <clause><environment>&xq_default_stat_env;</environment>
+ 	      <expression>&gr_PrologDeclList1; ... &gr_PrologDeclListn; 
+ 	      &jd_yields_sigs; &xq_stat_env0;</expression></clause>
+            </multiclause>
+	    <multiclause>
+              <clause><environment>&gr_URI; ; &xq_stat_env0;</environment>
+ 	      <expression>declare namespace &gr_NCName; =
+                    &gr_URILiteral;; &gr_PrologDeclList1;
+ 	      &jd_yields_context; &xq_stat_env1; &jd_yields_context_with; &gr_PrologDeclList;</expression></clause>
+            </multiclause>
+      	    <multiclause>
+       	      <clause><expression>...</expression></clause>
+      	    </multiclause>
+	    <multiclause>
+              <clause><environment>&gr_URI; ; &xq_stat_envnm1;</environment>
+ 	      <expression>declare namespace &gr_NCName; =
+                    &gr_URILiteral;; &gr_PrologDeclListn;
+ 	      &jd_yields_context; &xq_stat_envn; &jd_yields_context_with; &gr_PrologDeclList;</expression></clause>
+            </multiclause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+              <clause><expression>&gr_URI; &jd_module_statEnv; &xq_stat_envn;</expression></clause>
+            </multiclause>
+	  </postjudge>
+        </infer>
+      </infergr>
+
+      <p>Note that the rule above and the rules for static context
+      processing of an "import module" declaration in <specref
+      ref="id-module-imports"/> are mutually recursive.</p>
+
+    </smcontext>
+
+    <smdyncontext>
+      <p>The dynamic context processing of a module declaration is
+      similar to that of static processing.  The module declaration
+      extends the prolog with a namespace declaration that binds the
+      module's prefix to its target namespace (a URI), then computes
+      the dynamic context for the complete module.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	    <multiclause>
+      	      <clause>
+      	        <expression>&gr_URI;
+      	        &jd_is_target_namespace_of_modules; &gr_Module1; ... &gr_Modulen;
+      	        </expression>
+      	      </clause>
+	    </multiclause>
+	    <multiclause>
+              <clause><expression>&gr_Module1; = module namespace &gr_NCName; = &gr_URILiteral;; &gr_PrologDeclList1;</expression></clause>
+            </multiclause>
+      	    <multiclause>
+       	      <clause><expression>...</expression></clause>
+      	    </multiclause>
+	    <multiclause>
+              <clause><expression>&gr_Modulen; = module namespace &gr_NCName; = &gr_URILiteral;; &gr_PrologDeclListn;</expression></clause>
+            </multiclause>
+ 	    <multiclause>
+ 	      <clause>
+              <environment>&xq_dyn_env;</environment>
+ 	      <expression>&gr_URILiteral; &jd_has_atomic_value; &gr_URI;
+ 	      </expression>
+ 	      </clause>
+ 	    </multiclause>
+	    <multiclause>
+              <clause><environment>&xq_default_dyn_env;</environment>
+              <expression>declare namespace &gr_NCName; =
+                    &gr_URILiteral;; &gr_PrologDeclList1; &jd_yields_dyn_context; &xq_dyn_env1;</expression></clause>
+            </multiclause>
+      	    <multiclause>
+       	      <clause><expression>...</expression></clause>
+      	    </multiclause>
+	    <multiclause>
+              <clause><environment>&xq_dyn_envnm1;</environment>
+              <expression>declare namespace &gr_NCName; =
+                    &gr_URILiteral;; &gr_PrologDeclListn; &jd_yields_dyn_context; &xq_dyn_envn;</expression></clause>
+            </multiclause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+              <clause><expression>&gr_URI; &jd_module_dynEnv; &xq_dyn_envn;</expression></clause>
+            </multiclause>
+	  </postjudge>
+        </infer>
+      </infergr>
+
+      <p>Note that the rule above and the rules for dynamic context
+      processing of an "import module" declaration in <specref
+      ref="id-module-imports"/> are mutually recursive.</p>
+
+    </smdyncontext>
+  </div2>
+
+  <div2 id="sec_boundary-space-decls">
+    <head>Boundary-space Declaration</head>
+
+    <scrap>
+      <head/>
+      <prodrecap id="BoundarySpaceDecl" ref="BoundarySpaceDecl" orig="xquery"/>
+    </scrap>
+
+    <p>The semantics of a boundary-space declaration is not specified
+    formally.</p>
+  </div2>
+
+  <div2 id="sec_default-collation-declaration">
+    <head>Default Collation Declaration</head>
+
+    <scrap>
+    <head/>
+    <prodrecap id="DefaultCollationDecl" ref="DefaultCollationDecl" orig="xquery"/>
+    </scrap>
+
+    <smcore>
+     <p>The core grammar production for default collation declarations is:</p>
+
+     <scrap><head></head>
+     <prodrecap id="core-DefaultCollationDecl" ref="DefaultCollationDecl" orig="core"/>
+     </scrap>
+    </smcore>
+
+    <smnorm>
+      <p>Default collation declarations are left unchanged through
+      normalization.</p>
+
+      <mapping>
+       <xquery>
+        <expression>
+         <map>&gr_DefaultCollationDecl;</map>&jd_map_prolog;
+        </expression>
+       </xquery>
+       <core>
+        <expression>
+          &gr_DefaultCollationDecl;
+        </expression>
+       </core>
+      </mapping>
+
+    </smnorm>
+
+    <smcontext>
+      <p>The default collation declaration updates the collations
+      environment component within the static environment.  The
+      collations environment component is used by several functions in
+      &xq_functions;, but is not used in the Formal Semantics.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+ 	  <multiclause>
+ 	    <clause>
+            <environment>&xq_dyn_env;</environment>
+ 	    <expression>&gr_URILiteral; &jd_has_atomic_value; &gr_URI;
+ 	    </expression>
+ 	    </clause>
+ 	  </multiclause>
+            <multiclause>
+	      <clause>
+                <expression>
+                    &xq_collations_env;(&gr_URI;) = &gr_Collation;
+                </expression>
+	      </clause>
+            </multiclause>
+            <multiclause>
+	      <clause>
+                <expression>
+                  &xq_stat_env1; =
+                    <update>
+                      <environment>&xq_default_collation_env;</environment>
+                      <expression>&gr_Collation;</expression>
+                    </update>
+                </expression>
+	      </clause>
+            </multiclause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>declare default collation &gr_URILiteral; &jd_yields_context; &xq_stat_env1;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+
+    </smcontext>
+
+    <smdyncontext>
+      <p>The default collation declaration does not affect the dynamic
+      context.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause><environment>&xq_dyn_env;</environment>
+                <expression>declare default collation &gr_URILiteral; &jd_yields_dyn_context; &xq_dyn_env;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+</smdyncontext>
+  </div2>
+
+  <div2 id="sec_base-uri-decl"><head>Base URI Declaration</head>
+
+  <scrap><head></head>
+  <prodrecap id="BaseURIDecl" ref="BaseURIDecl" orig="xquery"/>
+  </scrap>
+
+  <smcore>
+     <p>The core grammar production for base uri declarations is:</p>
+
+      <scrap><head></head>
+    	<prodrecap id="core-BaseURIDecl" ref="BaseURIDecl" orig="core"/>
+      </scrap>
+  </smcore>
+
+  <smnorm>
+    <p>Base URI declarations are left unchanged through
+    normalization.</p>
+
+    <mapping>
+     <xquery>
+      <expression>
+       <map>&gr_BaseURIDecl;</map>&jd_map_prolog;
+      </expression>
+     </xquery>
+     <core>
+      <expression>
+        &gr_BaseURIDecl;
+      </expression>
+     </core>
+    </mapping>
+  </smnorm>
+
+  <smcontext>
+    <p>A base URI declaration specifies the base URI property of the
+    static context, which is used when resolving relative URIs within
+    a module.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+ 	  <multiclause>
+ 	    <clause>
+            <environment>&xq_dyn_env;</environment>
+ 	    <expression>&gr_URILiteral; &jd_has_atomic_value; &gr_URI;
+ 	    </expression>
+ 	    </clause>
+ 	  </multiclause>
+	    <multiclause>
+              <clause><expression>
+                    &xq_stat_env1; =
+                    <update>
+                      <environment>&xq_base_uri_env;</environment>
+                      <expression>&gr_URI;</expression>
+                    </update>
+</expression></clause>
+</multiclause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+<clause><environment>&xq_stat_env;</environment><expression>
+declare base-uri &gr_URILiteral; &jd_yields_context; &xq_stat_env1;
+</expression></clause>
+</multiclause>
+	  </postjudge>
+        </infer>
+      </infergr>
+</smcontext>
+<smdyncontext>
+<p>The base URI declaration does not affect the dynamic
+context. </p>
+      <infergr>
+	<infer>
+	  <prejudge>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause><environment>&xq_dyn_env;</environment>
+                <expression>declare base-uri &gr_URILiteral;  &jd_yields_dyn_context; &xq_dyn_env;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+</smdyncontext>
+</div2>
+
+  <div2 id="sec_validation_decl">
+    <head>Construction Declaration</head>
+
+    <scrap><head></head>
+      <prodrecap id="ConstructionDecl"  ref="ConstructionDecl" orig="xquery"/>
+    </scrap>
+
+    <smcore>
+     <p>The core grammar production for construction declarations is:</p>
+
+       <scrap><head></head>
+       <prodrecap id="core-ConstructionDecl" ref="ConstructionDecl" orig="core"/>
+       </scrap>
+    </smcore>
+
+    <smnotation>
+      <p>For convenience, we introduce the following auxiliary
+      grammar production.</p>
+
+      <scrap>
+        <head>Constr Mode</head>
+        <prodrecap id="ConstructionMode" ref="ConstructionMode" orig="formal" />
+      </scrap>
+
+    </smnotation>
+
+    <smnorm>
+      <p>Construction declarations are left unchanged through
+      normalization.</p>
+
+      <mapping>
+       <xquery>
+        <expression>
+         <map>&gr_ConstructionDecl;</map>&jd_map_prolog;
+        </expression>
+       </xquery>
+       <core>
+        <expression>
+          &gr_ConstructionDecl;
+        </expression>
+       </core>
+      </mapping>
+    </smnorm>
+
+    <smcontext>
+      <p>The construction declaration modifies the construction mode
+      in the static context.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	      <clause>
+                <expression>
+                  &xq_stat_env1; =
+                    <update>
+                      <environment>&xq_construction_mode_env;</environment>
+                      <expression>
+                      &gr_ConstructionMode;</expression>
+                    </update>
+                </expression>
+	      </clause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>declare construction &gr_ConstructionMode;
+                &jd_yields_context; &xq_stat_env1;</expression> 
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+</smcontext>
+
+<smdyncontext>
+<p>The construction declaration does not have any effect on the dynamic
+context.</p>
+      <infergr>
+	<infer>
+	  <prejudge>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause><environment>&xq_dyn_env;</environment>
+                <expression>declare construction &gr_ConstructionMode; &jd_yields_context; &xq_dyn_env;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+</smdyncontext>
+  </div2>
+
+<div2 id="id-default-ordering-decl">
+  <head>Ordering Mode Declaration</head>
+  <scrap>
+    <head></head>
+    <prodrecap id="OrderingModeDecl"	ref="OrderingModeDecl" orig="xquery"/>
+  </scrap>
+
+    <smcore>
+     <p>The core grammar production for ordering mode declarations is:</p>
+
+       <scrap>
+       <head></head>
+       <prodrecap id="core-OrderingModeDecl" ref="OrderingModeDecl" orig="core"/>
+       </scrap>
+    </smcore>
+
+    <smnorm>
+      <p>Ordering mode declarations are left unchanged through
+      normalization.</p>
+
+      <mapping>
+       <xquery>
+        <expression>
+         <map>&gr_OrderingModeDecl;</map>&jd_map_prolog;
+        </expression>
+       </xquery>
+       <core>
+        <expression>
+          &gr_OrderingModeDecl;
+        </expression>
+       </core>
+      </mapping>
+    </smnorm>
+
+    <smcontext>
+      <p>The ordering mode declaration does not have any effect on the
+      static context.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause><environment>&xq_stat_env;</environment>
+                <expression>&gr_OrderingModeDecl; &jd_yields_context; &xq_stat_env;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+    </smcontext>
+
+    <smdyncontext>
+      <p>The ordering mode declaration does not have any effect on the
+      dynamic context.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause><environment>&xq_dyn_env;</environment>
+                <expression>&gr_OrderingModeDecl; &jd_yields_dyn_context; &xq_dyn_env;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+    </smdyncontext>
+   </div2>
+
+<div2 id="id-empty-order-decl">
+  <head>Empty Order Declaration</head>
+  <scrap>
+    <head></head>
+    <prodrecap id="EmptyOrderDecl" ref="EmptyOrderDecl" orig="xquery"/>
+  </scrap>
+
+    <smcore>
+     <p>The core grammar production for empty order declarations is:</p>
+
+       <scrap>
+       <head></head>
+       <prodrecap id="core-EmptyOrderDecl" ref="EmptyOrderDecl" orig="core"/>
+       </scrap>
+    </smcore>
+
+    <smnorm>
+      <p>Empty order declarations are left unchanged through
+      normalization.</p>
+
+      <mapping>
+       <xquery>
+        <expression>
+         <map>&gr_EmptyOrderDecl;</map>&jd_map_prolog;
+        </expression>
+       </xquery>
+       <core>
+        <expression>
+          &gr_EmptyOrderDecl;
+        </expression>
+       </core>
+      </mapping>
+    </smnorm>
+
+    <smcontext>
+      <p>The empty order declaration does not have any effect on the
+      static context.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause><environment>&xq_stat_env;</environment>
+                <expression>&gr_EmptyOrderDecl; &jd_yields_context; &xq_stat_env;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+    </smcontext>
+
+    <smdyncontext>
+      <p>The empty order declaration does not have any effect on the
+      dynamic context.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause><environment>&xq_dyn_env;</environment>
+                <expression>&gr_EmptyOrderDecl; &jd_yields_dyn_context; &xq_dyn_env;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+    </smdyncontext>
+  </div2>
+
+  <div2 id="id-copy-namespaces-decl">
+    <head>Copy-Namespaces Declaration</head>
+
+    <scrap>
+      <head></head>
+      <prodrecap id="CopyNamespacesDecl" ref="CopyNamespacesDecl" orig="xquery"/>
+      <prodrecap id="PreserveMode"       ref="PreserveMode"       orig="xquery"/>
+      <prodrecap id="InheritMode"        ref="InheritMode"        orig="xquery"/>
+    </scrap>
+
+    <smcore>
+      <p>The core grammar productions for copy-namespaces declarations
+      are:</p>
+
+      <scrap>
+        <head></head>
+        <prodrecap id="core-CopyNamespacesDecl" ref="CopyNamespacesDecl" orig="core"/>
+        <prodrecap id="core-PreserveMode"       ref="PreserveMode"       orig="core"/>
+        <prodrecap id="core-InheritMode"        ref="InheritMode"        orig="core"/>
+      </scrap>
+    </smcore>
+
+    <smnorm>
+      <p>Copy-namespace declarations are left unchanged through
+      normalization.</p>
+
+      <mapping>
+       <xquery>
+        <expression>
+         <map>&gr_CopyNamespacesDecl;</map>&jd_map_prolog;
+        </expression>
+       </xquery>
+       <core>
+        <expression>
+          &gr_CopyNamespacesDecl;
+        </expression>
+       </core>
+      </mapping>
+    </smnorm>
+
+    <smcontext>
+      <p>The copy-namespace declaration does not have any effect on the
+      static context.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause><environment>&xq_stat_env;</environment>
+                <expression>&gr_CopyNamespacesDecl; &jd_yields_context; &xq_stat_env;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+    </smcontext>
+
+    <smdyncontext>
+      <p>The copy-namespace declaration does not have any effect on
+      the dynamic context.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause><environment>&xq_dyn_env;</environment>
+                <expression>&gr_CopyNamespacesDecl; &jd_yields_dyn_context; &xq_dyn_env;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+    </smdyncontext>
+  </div2>
+
+  <div2 id="sec_schema_imports">
+    <head>Schema Import</head>
+
+    <scrap>
+      <head>Schema Imports</head>
+      <prodrecap id="SchemaImport"     ref="SchemaImport" orig="xquery"/>
+      <prodrecap id="SchemaPrefix"     ref="SchemaPrefix" orig="xquery"/>
+    </scrap>
+
+    <p>The semantics of Schema Import is described in terms of the
+    &language; type system. The process of converting an XML Schema
+    into a sequence of type declarations is described in Section
+    <specref ref="sec_importing_schema"/>.  This section describes how
+    the resulting sequence of type declarations is added into the
+    static context when the Prolog is processed.</p>
+
+    <smcore>
+      <p>The Core grammar productions for schema imports are:</p>
+
+      <scrap>
+        <head>Schema Imports</head>
+        <prodrecap id="core-SchemaImport" ref="SchemaImport" orig="core"/>
+        <prodrecap id="core-SchemaPrefix" ref="SchemaPrefix" orig="core"/>
+      </scrap>
+    </smcore>
+
+    <smnorm>
+      <p>Schema imports are left unchanged through normalization.</p>
+
+      <mapping>
+       <xquery>
+        <expression>
+         <map>&gr_SchemaImport;</map>&jd_map_prolog;
+        </expression>
+       </xquery>
+       <core>
+        <expression>
+          &gr_SchemaImport;
+        </expression>
+       </core>
+      </mapping>
+    </smnorm>
+
+    <smnotation>
+      <p>For convenience, we introduce the following auxiliary
+      grammar productions.</p>
+
+      <scrap>
+        <head>Location Hints</head>
+        <prodrecap id="LocationHints"    ref="LocationHints"    orig="formal" />
+        <prodrecap id="OptLocationHints" ref="OptLocationHints" orig="formal" />
+      </scrap>
+
+    </smnotation>
+
+    <smnotation>
+      <p id="jd_yields_type_context">The following auxiliary judgments
+      are used when processing schema imports.</p>
+
+      <p>The judgment:</p>
+
+      <display>
+        <clause>
+          <environment>&xq_stat_env1;</environment>
+          <expression>&gr_Definitions; &jd_yields_type_context; &xq_stat_env2;</expression>
+        </clause>
+      </display>
+
+      <p>holds if under the static environment &xq_stat_env1;, the
+      sequence of type definitions &gr_Definitions; yields the new
+      static environment &xq_stat_env2;.</p>
+
+      <p>The judgment:</p>
+
+      <display>
+        <clause>
+          <environment>&xq_stat_env1;</environment>
+          <expression>&gr_Definition; &jd_yields_type_context; &xq_stat_env2;</expression>
+        </clause>
+      </display>
+
+      <p>holds if under the static environment &xq_stat_env1;, the
+      single definition &gr_Definition; yields the new static
+      environment &xq_stat_env2;.</p>
+    </smnotation>
+
+    <smcontext>
+
+      <p>A schema imported into a query is first mapped into the
+      &language; type system, which yields a sequence of XQuery type
+      definitions.  The rules for mapping the imported schema begin in
+      <specref ref="sec_schema_as_a_whole"/>.  Each type definition in
+      an imported schema is then added to the static environment.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	    <multiclause>
+	      <clause>
+                <expression>&gr_Definitions; = <map>schema
+                &gr_URILiteral; &gr_OptLocationHints;</map>&jd_map_schema;</expression>
+	      </clause>
+	    </multiclause>
+	    <multiclause>
+              <clause>
+                <environment>&xq_stat_env;</environment>
+        	<expression>&gr_Definitions; &jd_yields_type_context; &xq_stat_env1;</expression>
+              </clause>
+	    </multiclause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>import schema &gr_URILiteral; &gr_OptLocationHints;
+                &jd_yields_context; &xq_stat_env1;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+
+      <p>The schema import declaration may also assign an element/type
+      namespace prefix to the URI of the imported schema, or assign
+      the default element namespace to the URI of the imported
+      schema.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	    <multiclause>
+	      <clause>
+                <expression>&gr_Definitions; = <map>schema
+                &gr_URILiteral; &gr_OptLocationHints;</map>&jd_map_schema;</expression>
+	      </clause>
+	    </multiclause>
+	    <multiclause>
+              <clause>
+                <environment>&xq_stat_env;</environment>
+        	<expression>&gr_Definitions; &jd_yields_type_context; &xq_stat_env1;</expression>
+              </clause>
+	    </multiclause>
+ 	  <multiclause>
+ 	    <clause>
+            <environment>&xq_dyn_env;</environment>
+ 	    <expression>&gr_URILiteral; &jd_has_atomic_value; &gr_URI;
+ 	    </expression>
+ 	    </clause>
+ 	  </multiclause>
+            <multiclause>
+	      <clause>
+                <expression>
+                    &xq_stat_env2; =
+                    <update>
+                      <environment>&xq_ns_env1;</environment>
+                      <expression>&gr_NCName; 
+                      &xt_bind; (passive, &gr_URI;)</expression>
+                    </update>
+                </expression>
+	      </clause>
+	    </multiclause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>import schema namespace &gr_NCName; =
+                &gr_URILiteral; &gr_OptLocationHints;
+                &jd_yields_context; &xq_stat_env2;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	    <multiclause>
+	      <clause>
+                <expression>&gr_Definitions; = <map>schema
+                &gr_URILiteral; &gr_OptLocationHints;</map>&jd_map_schema;</expression>
+	      </clause>
+	    </multiclause>
+	    <multiclause>
+              <clause>
+                <environment>&xq_stat_env;</environment>
+        	<expression>&gr_Definitions; &jd_yields_type_context; &xq_stat_env1;</expression>
+              </clause>
+	    </multiclause>
+ 	  <multiclause>
+ 	    <clause>
+            <environment>&xq_dyn_env;</environment>
+ 	    <expression>&gr_URILiteral; &jd_has_atomic_value; &gr_URI;
+ 	    </expression>
+ 	    </clause>
+ 	  </multiclause>
+            <multiclause>
+	      <clause>
+                <expression>
+                    &xq_stat_env2; =
+                    <update>
+                      <environment>&xq_default_elem_ns_env1;</environment>
+                      <expression> &gr_URI;</expression>
+                    </update>
+                </expression>
+	      </clause>
+	    </multiclause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>import schema default element namespace
+                &gr_URILiteral; &gr_OptLocationHints;
+                &jd_yields_context; &xq_stat_env2;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+
+      <p>An empty sequence of type definitions yields the input
+      environment.</p>
+
+      <infergr>
+	<infer>
+	  <postjudge>
+	    <multiclause>
+	      <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>&jd_yields_type_context; &xq_stat_env;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+
+      <p>Each type definition is added into the static
+      environment.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	    <multiclause>
+	      <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>&gr_Definitions; &jd_yields_type_context;
+                &xq_stat_env1;</expression>
+	      </clause>
+	    </multiclause>
+	    <multiclause>
+              <clause>
+        	<environment>&xq_stat_env1;</environment>
+        	<expression>&gr_Definition1; &jd_yields_type_context;
+        	&xq_stat_env2;</expression>
+              </clause>
+	    </multiclause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>&gr_Definition1; &E042_semi; &gr_Definitions;
+                &jd_yields_type_context; &xq_stat_env2;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+
+      <p>Each type, element, or attribute declaration is added
+      respectively to the type, element and attribute declarations
+      components of the static environment.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	    <multiclause>
+          <clause>
+           <environment>&xq_stat_env;</environment>
+           <expression>
+             &gr_TypeName; &jd_elem_qname_expands_to; &xd_qname;
+           </expression>
+          </clause>
+	    </multiclause>
+	    <multiclause>
+	      <clause>
+                <expression>
+                &xq_stat_env1; =
+                    <update>
+                      <environment>&xq_type_defn;</environment>
+                      <expression>&xd_qname; &xt_bind; define type
+                      &gr_TypeName; &gr_TypeDerivation; </expression>
+                    </update>
+                </expression>
+	      </clause>
+	    </multiclause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause>
+        	<environment>&xq_stat_env;</environment>
+                <expression>define type &gr_TypeName;
+                &gr_TypeDerivation; &jd_yields_type_context;
+                &xq_stat_env1;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	    <multiclause>
+          <clause>
+           <environment>&xq_stat_env;</environment>
+           <expression>
+             &gr_ElementName; &jd_elem_qname_expands_to; &xd_qname;
+           </expression>
+          </clause>
+	    </multiclause>
+	    <multiclause>
+	      <clause>
+                <expression>
+                &xq_stat_env1; =
+                    <update>
+                      <environment>&xq_elem_decl;</environment>
+                      <expression>&xd_qname; &xt_bind; define
+                      element &gr_ElementName; &gr_OptSubstitution;
+                      &gr_OptNillable;  &gr_TypeReference;</expression>
+                    </update>
+                </expression>
+	      </clause>
+	    </multiclause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause>
+        	<environment>&xq_stat_env;</environment>
+                <expression>define element &gr_ElementName;
+                &gr_OptSubstitution; &gr_OptNillable;  &gr_TypeReference;
+                &jd_yields_type_context; &xq_stat_env1;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	    <multiclause>
+          <clause>
+           <environment>&xq_stat_env;</environment>
+           <expression>
+             &gr_AttributeName; &jd_attr_qname_expands_to; &xd_qname;
+           </expression>
+          </clause>
+	    </multiclause>
+	    <multiclause>
+	      <clause>
+                <expression>
+                &xq_stat_env1; =
+                    <update>
+                      <environment>&xq_attr_decl;</environment>
+                      <expression>&xd_qname; &xt_bind; define
+                      attribute &gr_AttributeName;
+                      &gr_TypeReference;</expression>
+                    </update>
+                </expression>
+	      </clause>
+	    </multiclause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause>
+        	<environment>&xq_stat_env;</environment>
+                <expression>define attribute &gr_AttributeName;
+                &gr_TypeReference; &jd_yields_type_context;
+                &xq_stat_env1;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+
+      <p>Note that it is a static error to import two schemas that
+      both define the same name in the same symbol space and in the
+      same scope. That is multiple top-level definitions of the same
+      type, element, or attribute name raises a static error.  For
+      instance, a query may not import two schemas that include
+      top-level element declarations for two elements with the same
+      expanded name.</p>
+
+    </smcontext>
+
+    <smdyncontext>
+      <p>The schema import declarations do not affect the dynamic
+      context.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause><environment>&xq_dyn_env;</environment>
+      <expression>&gr_SchemaImport; &jd_yields_dyn_context; &xq_dyn_env;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+    </smdyncontext>
+  </div2>
+
+  <div2 id="id-module-imports">
+    <head>Module Import</head>
+    <scrap><head></head>
+        <prodrecap id="ModuleImport" ref="ModuleImport" orig="xquery" />
+    </scrap>
+
+    <smintro>
+      <p>The effect of an "import module" declaration is to extend the
+      importing module's dynamic (and static) context with the global
+      variables (and their types) and the functions (and their
+      signatures) of the imported module.  Module import is not
+      transitive, only the global variables and functions declared
+      explicitly in the imported module are available in the importing
+      module.  Also, module import does not import schemas, therefore
+      the importing module must explicitly import any schemas on which
+      the imported global variables or functions depend.</p>
+    </smintro>
+
+    <smcore>
+      <p>The core grammar production for module imports is:</p>
+
+      <scrap>
+        <head>Module Import</head>
+        <prodrecap id="core-ModuleImport" ref="ModuleImport" orig="core" />
+      </scrap>
+    </smcore>
+
+    <smnorm>
+      <p>Module imports are left unchanged through normalization.</p>
+
+      <mapping>
+       <xquery>
+        <expression>
+         <map>&gr_ModuleImport;</map>&jd_map_prolog;
+        </expression>
+       </xquery>
+       <core>
+        <expression>
+          &gr_ModuleImport;
+        </expression>
+       </core>
+      </mapping>
+    </smnorm>
+
+    <smnotation>
+      <p>The rules below depend on the following auxiliary functions
+      which are used to import the proper fragment of the static
+      context.</p>
+
+      <p id="fs_local_variables">The function
+      &fs_local_variables;(&xq_stat_env;, &gr_URI;) returns all the
+      (&xd_qname;, &gr_Type;) pairs in &xq_type_env; such that the URI
+      part of the variable's expanded-QName equals the given URI, that
+      is, the variables that are declared locally in the module with
+      the given namespace URI.</p>
+
+      <p id="fs_local_functions">
+      The function &fs_local_functions;(&xq_stat_env;, &gr_URI;)
+      returns all the
+      <phrase diff='chg' at='E006'>(&gr_FunctionKey;, &gr_FunctionSig;) pairs</phrase>
+      in &xq_functy_env; such that
+      the URI part of the function's expanded-QName equals the given
+      URI, that is, the function signatures that are declared locally
+      in the module with the given namespace URI.</p>
+    </smnotation>
+
+    <smnotation>
+      <p>The following auxiliary judgments is used to extend a given
+      static environment with the static environment from an imported
+      module.</p>
+
+      <p id="jd_extended_with_static_environment">The judgment</p>
+
+      <display>
+        <clause>
+        <expression>&xq_stat_env1;
+        &jd_extended_with_static_environment; &xq_stat_env2;
+        &jd_extended_with_static_environment_yields; &xq_stat_env3;
+        &jd_extended_with_static_environment_for_uri; &gr_URI1;</expression>
+        </clause>
+      </display>
+
+      <p>holds if extending the environment &xq_stat_env1; with the
+      environment &xq_stat_env2; yields the environment &xq_stat_env3;
+      under the given namespace uri &gr_URI;.</p>
+
+      <p>This judgment is defined as follows.</p>
+
+      <infergr>
+      <infer>
+      <prejudge>
+      <multiclause>
+      <clause>
+        <expression>&fs_local_variables;(&xq_stat_env2;, &gr_URI;) =
+        (&gr_Variable1;,&gr_Type1;) ... (&gr_Variablem;,&gr_Typem;)</expression>
+      </clause>
+      </multiclause>
+      <multiclause>
+      <clause>
+        <expression>&xq_stat_env3; =
+        <update><environment>&xq_type_env1;</environment>
+        <expression>&gr_Variable1; &xt_bind; &gr_Type1; ... ;
+        &gr_Variablem; &xt_bind; &gr_Typem;</expression></update></expression>
+      </clause>
+      </multiclause>
+      <multiclause>
+      <clause>
+        <expression>
+          &fs_local_functions;(&xq_stat_env2;, &gr_URI;) =
+          (<phrase diff='chg' at='E006'>&gr_FunctionKey1;</phrase>,&gr_FunctionSig1;) ...
+          (<phrase diff='chg' at='E006'>&gr_FunctionKeyn;</phrase>,&gr_FunctionSign;)
+        </expression>
+      </clause>
+      </multiclause>
+      <multiclause>
+      <clause>
+        <expression>&xq_stat_env4; =
+        <update><environment>&xq_functy_env3;</environment>
+        <expression>
+          <phrase diff='chg' at='E006'>&gr_FunctionKey1;</phrase> &xt_bind; &gr_FunctionSig1;; ... ;
+          <phrase diff='chg' at='E006'>&gr_FunctionKeyn;</phrase> &xt_bind; &gr_FunctionSign;
+        </expression></update></expression>
+      </clause>
+      </multiclause>
+      </prejudge>
+      <postjudge>
+      <multiclause>
+      <clause>
+      <expression>&xq_stat_env1;
+          &jd_extended_with_static_environment; &xq_stat_env2;
+          &jd_extended_with_static_environment_yields; &xq_stat_env4;
+          &jd_extended_with_static_environment_for_uri; &gr_URI1;</expression>
+      </clause>
+      </multiclause>
+      </postjudge>
+      </infer>
+      </infergr>
+    </smnotation>
+
+      <smnotation>
+        <p>The rules below depend on the following auxiliary
+        judgments.</p>
+
+        <p id="jd_import_variables">
+        The following rules add each variable explicitly declared in
+        the imported module to the importing module's dynamic variable
+        environment.</p>
+
+        <infergr>
+        <infer>
+        <prejudge>
+        </prejudge>
+        <postjudge>
+        <multiclause>
+        <clause><environment>&xq_dyn_env1; ; &gr_URI;</environment>
+        <expression>&jd_import_variables; &xq_dyn_env1; </expression>
+        </clause>
+        </multiclause>
+        </postjudge>
+        </infer>
+        </infergr>
+
+        <infergr>
+        <infer>
+        <prejudge>
+        <multiclause>
+        <clause>
+          <expression>&xq_dyn_env2; = <update><environment>&xq_val_env1;</environment><expression>&xd_qname1;
+          &xt_bind;
+          <code>#IMPORTED</code>(&gr_URI;)</expression></update></expression>
+        </clause>
+        </multiclause>
+        <multiclause>
+        <clause>
+          <environment>&xq_dyn_env2; ; &gr_URI;</environment>
+          <expression>(&xd_qname2;, &gr_Type2;), &middot;&middot;&middot;, (&xd_qnamen;, &gr_Typen;)
+        &jd_import_variables; &xq_dyn_env3; </expression>
+        </clause>
+        </multiclause>
+        </prejudge>
+        <postjudge>
+        <multiclause>
+        <clause><environment>&xq_dyn_env1; ; &gr_URI;</environment>
+        <expression>(&xd_qname1;, &gr_Type1;), &middot;&middot;&middot;, (&xd_qnamen;, &gr_Typen;)
+        &jd_import_variables; &xq_dyn_env3; </expression>
+        </clause>
+        </multiclause>
+        </postjudge>
+        </infer>
+        </infergr>
+
+        <p id="jd_import_functions">The following rules add each
+        function explicitly declared in the imported module to the
+        importing module's dynamic function environment.</p>
+
+        <infergr>
+        <infer>
+        <prejudge>
+        </prejudge>
+        <postjudge>
+        <multiclause>
+        <clause><environment>&xq_dyn_env1; ; &gr_URI;</environment>
+        <expression>&jd_import_functions; &xq_dyn_env1; </expression>
+        </clause>
+        </multiclause>
+        </postjudge>
+        </infer>
+        </infergr>
+
+        <infergr>
+        <infer>
+        <prejudge>
+        <multiclause>
+        <clause>
+          <expression>&xq_dyn_env2; =
+          <update><environment>&xq_func_env1;</environment><expression><phrase diff='chg' at='E006'>&gr_FunctionKey1;</phrase> &xt_bind;
+          <code>#IMPORTED</code>(&gr_URI;)</expression></update></expression>
+        </clause>
+        </multiclause>
+        <multiclause>
+        <clause>
+          <environment>&xq_dyn_env2; ; &gr_URI;</environment>
+          <expression>
+            <phrase diff='chg' at='E006'>
+            (&gr_FunctionKey2;,&gr_FunctionSig2;) ...
+            (&gr_FunctionKeyn;,&gr_FunctionSign;)
+            </phrase>
+        &jd_import_functions; &xq_dyn_env3; </expression>
+        </clause>
+        </multiclause>
+        </prejudge>
+        <postjudge>
+        <multiclause>
+        <clause><environment>&xq_dyn_env1; ; &gr_URI;</environment>
+        <expression>
+          <phrase diff='chg' at='E006'>
+          (&gr_FunctionKey1;,&gr_FunctionSig1;) ...
+          (&gr_FunctionKeyn;,&gr_FunctionSign;)
+          </phrase>
+        &jd_import_functions; &xq_dyn_env3; </expression>
+        </clause>
+        </multiclause>
+        </postjudge>
+        </infer>
+        </infergr>
+      </smnotation>
+
+    <smnotation>
+      <p>The following auxiliary judgments is used to extend a given
+      dynamic environment with the dynamic environment from an
+      imported module.</p>
+
+      <p id="jd_extended_with_dynamic_environment">The judgment</p>
+        <display>
+          <clause>
+          <expression>&xq_dyn_env1;
+          &jd_extended_with_dynamic_environment; &xq_dyn_env2;
+          &jd_extended_with_dynamic_environment_yields; &xq_dyn_env3;
+          &jd_extended_with_dynamic_environment_for_uri; &gr_URI;</expression>
+          </clause>
+        </display>
+
+      <p>holds if extending the dynamic environment &xq_dyn_env1; with
+      the dynamic environment &xq_dyn_env2; yields the dynamic
+      environment &xq_dyn_env3; under the given namespace uri
+      &gr_URI;.</p>
+
+      <p>This judgment is defined as follows.</p>
+
+      <infergr>
+      <infer>
+      <prejudge>
+      <multiclause>
+      <clause>
+    	 <environment>&xq_dyn_env1; ; &gr_URI;</environment>
+    	 <expression>&fs_local_variables;(&xq_stat_env2;,
+    	 &gr_URI;) &jd_import_variables;
+    	 &xq_dyn_env3;</expression>
+      </clause>
+      </multiclause>
+      <multiclause>
+      <clause>
+    	 <environment>&xq_dyn_env1; ; &gr_URI;</environment>
+    	 <expression>&fs_local_variables;(&xq_stat_env2;,
+    	 &gr_URI;) &jd_import_variables;
+    	 &xq_dyn_env3;</expression>
+      </clause>
+      </multiclause>
+      <multiclause>
+      <clause>
+    	 <environment>&xq_dyn_env3; ; &gr_URI;</environment>
+    	 <expression>&fs_local_functions;(&xq_stat_env2;,
+    	 &gr_URI;) &jd_import_functions;
+    	 &xq_dyn_env4;</expression>
+      </clause>
+      </multiclause>
+      </prejudge>
+      <postjudge>
+      <multiclause>
+      <clause>
+      <expression>&xq_dyn_env1;
+          &jd_extended_with_dynamic_environment; &xq_dyn_env2;
+          &jd_extended_with_dynamic_environment_yields; &xq_dyn_env4;
+          &jd_extended_with_dynamic_environment_for_uri; &gr_URI;</expression>
+      </clause>
+      </multiclause>
+      </postjudge>
+      </infer>
+      </infergr>
+    </smnotation>
+
+    <smcontext>
+      <p>The first set of premises below "look up" the static contexts
+      of all the imported modules, as defined in <specref
+      ref="id-module-declaration"/>. The second set of premises extend
+      the input static context with the global variables and function
+      signatures declared in the imported static contexts.</p>
+
+      <infergr>
+      <infer>
+      <prejudge>
+      <multiclause>
+      <clause>
+        <expression>&jd_not;(&gr_URI1; = &gr_URI;)</expression>
+      </clause>
+      </multiclause>
+      <multiclause>
+      <clause>
+        <expression>&gr_URI1; &jd_module_statEnv; &xq_stat_env1;</expression>
+      </clause>
+      </multiclause>
+      <multiclause>
+      <clause>
+        <expression>&xq_stat_env;
+          &jd_extended_with_static_environment; &xq_stat_env1;
+          &jd_extended_with_static_environment_yields; &xq_stat_env2;
+          &jd_extended_with_static_environment_for_uri; &gr_URI1;</expression>
+      </clause>
+      </multiclause>
+      </prejudge>
+      <postjudge>
+      <multiclause>
+      <clause><environment>&gr_URI; ; &xq_stat_env;</environment>
+      <expression>import module &gr_URI1; &gr_LocationHints;? &jd_yields_context; &xq_stat_env2;</expression>
+      </clause>
+      </multiclause>
+      </postjudge>
+      </infer>
+      </infergr>
+
+      <infergr>
+      <infer>
+      <prejudge>
+      <multiclause>
+      <clause>
+        <expression>&gr_URI1; = &gr_URI;</expression>
+      </clause>
+      </multiclause>
+      </prejudge>
+      <postjudge>
+      <multiclause>
+      <clause><environment>&gr_URI; ; &xq_stat_env;</environment>
+      <expression>import module &gr_URI1; &gr_LocationHints;? &jd_yields_context; &xq_stat_env1;</expression>
+      </clause>
+      </multiclause>
+      </postjudge>
+      </infer>
+      </infergr>
+
+      <infergr>
+      <infer>
+      <prejudge>
+ 	  <multiclause>
+      <clause>
+        <expression>&jd_not;(&gr_URI1; = &gr_URI;)</expression>
+      </clause>
+ 	  </multiclause>
+ 	  <multiclause>
+ 	    <clause>
+            <environment>&xq_dyn_env;</environment>
+ 	    <expression>&gr_URILiteral1; &jd_has_atomic_value; &gr_URI1;
+ 	    </expression>
+ 	    </clause>
+ 	  </multiclause>
+      <multiclause>
+      <clause>
+        <expression>&gr_URI1; &jd_module_statEnv; &xq_stat_env1;</expression>
+      </clause>
+      </multiclause>
+      <multiclause>
+      <clause>
+        <expression>&xq_stat_env;
+          &jd_extended_with_static_environment; &xq_stat_env1;
+          &jd_extended_with_static_environment_yields; &xq_stat_env2;
+          &jd_extended_with_static_environment_for_uri; &gr_URI1;</expression>
+      </clause>
+      </multiclause>
+      <multiclause>
+        <clause>
+          <expression>
+            &xq_stat_env3; =
+            <update>
+              <environment>&xq_ns_env2;</environment>
+              <expression>&gr_NCName; 
+              &xt_bind; (passive, &gr_URI;)</expression>
+            </update>
+          </expression>
+        </clause>
+      </multiclause>
+      </prejudge>
+      <postjudge>
+      <multiclause>
+      <clause><environment>&xq_stat_env;</environment>
+      <expression>import module namespace &gr_NCName; = &gr_URILiteral1; &gr_LocationHints;? &jd_yields_context; &xq_stat_env3;</expression>
+      </clause>
+      </multiclause>
+      </postjudge>
+      </infer>
+      </infergr>
+
+      <infergr>
+      <infer>
+      <prejudge>
+ 	  <multiclause>
+      <clause>
+        <expression>&gr_URI1; = &gr_URI;</expression>
+      </clause>
+ 	  </multiclause>
+ 	  <multiclause>
+ 	    <clause>
+            <environment>&xq_dyn_env;</environment>
+ 	    <expression>&gr_URILiteral1; &jd_has_atomic_value; &gr_URI1;
+ 	    </expression>
+ 	    </clause>
+ 	  </multiclause>
+      <multiclause>
+        <clause>
+          <expression>
+            &xq_stat_env2; =
+            <update>
+              <environment>&xq_ns_env1;</environment>
+              <expression>&gr_NCName; 
+              &xt_bind; (passive, &gr_URI;)</expression>
+            </update>
+          </expression>
+        </clause>
+      </multiclause>
+      </prejudge>
+      <postjudge>
+      <multiclause>
+      <clause><environment>&xq_stat_env;</environment>
+      <expression>import module namespace &gr_NCName; = &gr_URILiteral1; &gr_LocationHints;? &jd_yields_context; &xq_stat_env2;</expression>
+      </clause>
+      </multiclause>
+      </postjudge>
+      </infer>
+      </infergr>
+
+      <p>Note that the rules above and the rules for processing a
+      library module in <specref ref="id-module-declaration"/> above
+      are mutually recursive. It is possible to define the semantics
+      in that way, since XQuery forbids the use of recursive
+      modules.</p>
+    </smcontext>
+
+    <smdyncontext>
+      <p>During dynamic context processing, each variable and function
+      name is mapped to the special value
+      <code>#IMPORTED</code>(&gr_URI;) to indicate that the variable
+      or function is defined in the imported module with the given
+      URI.</p>
+
+      <p>The first set of premises below "look up" the dynamic
+      contexts of all the imported modules, as defined in <specref
+      ref="id-module-declaration"/>. The second set of premises extend
+      the input dynamic context with the global variables and
+      functions declared in the imported dynamic contexts.</p>
+
+  <infergr>
+  <infer>
+  <prejudge>
+ 	  <multiclause>
+ 	    <clause>
+            <environment>&xq_dyn_env;</environment>
+ 	    <expression>&gr_URILiteral; &jd_has_atomic_value; &gr_URI;
+ 	    </expression>
+ 	    </clause>
+ 	  </multiclause>
+  <multiclause>
+  <clause>
+    <expression>&gr_URI; &jd_module_dynEnv; &xq_dyn_env1;</expression>
+  </clause>
+  </multiclause>
+  <multiclause>
+  <clause>
+    <expression>...</expression>
+  </clause>
+  </multiclause>
+  <multiclause>
+  <clause>
+    <expression>&gr_URI; &jd_module_dynEnv; &xq_dyn_envn;</expression>
+  </clause>
+  </multiclause>
+      <multiclause>
+      <clause>
+        <expression>&xq_dyn_env;
+          &jd_extended_with_dynamic_environment; &xq_dyn_env1;
+          &jd_extended_with_dynamic_environment_yields; &xq_dyn_env1;'
+          &jd_extended_with_dynamic_environment_for_uri; &gr_URI;</expression>
+      </clause>
+      </multiclause>
+      <multiclause>
+      <clause>
+        <expression>...</expression>
+      </clause>
+      </multiclause>
+      <multiclause>
+      <clause>
+        <expression>&xq_dyn_envnm1;
+          &jd_extended_with_dynamic_environment; &xq_dyn_envn;
+          &jd_extended_with_dynamic_environment_yields; &xq_dyn_envn;'
+          &jd_extended_with_dynamic_environment_for_uri; &gr_URI;</expression>
+      </clause>
+      </multiclause>
+  </prejudge>
+  <postjudge>
+  <multiclause>
+  <clause><environment>&xq_dyn_env1;</environment>
+  <expression>import module (namespace &gr_NCName; =)? &gr_URILiteral; &gr_LocationHints;?
+         &jd_yields_dyn_context;  &xq_dyn_envn;'</expression>
+  </clause>
+  </multiclause>
+  </postjudge>
+  </infer>
+  </infergr>
+
+  <p>Note that the rule above and the rules for processing a library
+  module in <specref ref="id-module-declaration"/> above are mutually
+  recursive. It is possible to define the semantics in that way, since
+  XQuery forbids the use of recursive modules.</p>
+
+  </smdyncontext>
+
+  </div2>
+
+  <div2 id="sec_namespace_decls">
+    <head>Namespace Declaration</head>
+
+      <scrap><head></head>
+    	<prodrecap id="NamespaceDecl" ref="NamespaceDecl" orig="xquery"/>
+      </scrap>
+
+     <smcore>
+      <p>The core grammar production for namespace declarations is:</p>
+
+      <scrap><head></head>
+    	<prodrecap id="core-NamespaceDecl" ref="NamespaceDecl" orig="core"/>
+      </scrap>
+
+     </smcore>
+
+    <smnorm>
+      <p>Namespace declarations are left unchanged through
+      normalization.</p>
+
+      <mapping>
+       <xquery>
+        <expression>
+         <map>&gr_NamespaceDecl;</map>&jd_map_prolog;
+        </expression>
+       </xquery>
+       <core>
+        <expression>
+          &gr_NamespaceDecl;
+        </expression>
+       </core>
+      </mapping>
+    </smnorm>
+
+    <smcontext>
+      <p>A namespace declaration adds a new (prefix,uri) binding in
+      the namespace component of the static environment.  All
+      namespace declarations in the prolog are <term>passive</term>
+      declarations.  Namespace declaration attributes of element
+      constructors are <term>active</term> declarations.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+ 	  <multiclause>
+ 	    <clause>
+            <environment>&xq_dyn_env;</environment>
+ 	    <expression>&gr_URILiteral; &jd_has_atomic_value; &gr_URI;
+ 	    </expression>
+ 	    </clause>
+ 	  </multiclause>
+ 	  <multiclause>
+	      <clause>
+                <expression>
+                   &xq_stat_env1; =
+                   <update>
+                     <environment>&xq_ns_env;</environment>
+                     <expression>&gr_NCName; &xt_bind; (passive, &gr_URI;)</expression>
+                   </update>
+                </expression>
+	      </clause>
+ 	  </multiclause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>declare namespace &gr_NCName; = &gr_URILiteral; &jd_yields_context; &xq_stat_env1;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+
+      <p>In case the &gr_URILiteral; part of a namespace declaration
+      is a zero-length string, the namespace prefix is marked as
+      #UNDECLARED in the static context.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+ 	  <multiclause>
+	      <clause>
+                <expression>
+                   &xq_stat_env1; =
+                   <update>
+                     <environment>&xq_ns_env;</environment>
+                     <expression>&gr_NCName; &xt_bind; (passive, #UNDECLARED)</expression>
+                   </update>
+                </expression>
+	      </clause>
+ 	  </multiclause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>declare namespace &gr_NCName; = "" &jd_yields_context; &xq_stat_env1;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+    </smcontext>
+
+    <smdyncontext>
+      <p>The namespace declaration does not affect the dynamic
+      context.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause><environment>&xq_dyn_env;</environment>
+                <expression>declare namespace &gr_NCName; = &gr_URILiteral; &jd_yields_dyn_context; &xq_dyn_env;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+    </smdyncontext>
+  </div2>
+
+  <div2 id="sec_default_namespace_decls">
+    <head>Default Namespace Declaration</head>
+
+    <scrap>
+      <head></head>
+      <prodrecap id="DefaultNamespaceDecl" ref="DefaultNamespaceDecl" orig="xquery"/>
+    </scrap>
+
+    <smcore>
+      <p>The core grammar production for default namespace
+      declarations is:</p>
+
+     <scrap><head></head>
+     <prodrecap id="core-DefaultNamespaceDecl" ref="DefaultNamespaceDecl" orig="core"/>
+     </scrap>
+    </smcore>
+
+    <smnorm>
+      <p>Default namespace declarations are left unchanged through
+      normalization.</p>
+
+      <mapping>
+       <xquery>
+        <expression>
+         <map>&gr_DefaultNamespaceDecl;</map>&jd_map_prolog;
+        </expression>
+       </xquery>
+       <core>
+        <expression>
+          &gr_DefaultNamespaceDecl;
+        </expression>
+       </core>
+      </mapping>
+    </smnorm>
+
+    <smcontext>
+      <p>A default element namespace declaration changes the default
+      element namespace component of the static environment. If the
+      URI literal is the zero-length string, the default element
+      namespace is set to the null namespace. </p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	      <clause>
+                <expression>
+                  &xq_stat_env1; =
+                    <update>
+                      <environment>&xq_default_elem_ns_env;</environment>
+                      <expression>#NULL-NAMESPACE</expression>
+                    </update>
+                </expression>
+	      </clause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>declare default element namespace "" &jd_yields_context; &xq_stat_env1;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+           <multiclause>
+            <clause><expression>&jd_not;(&gr_URILiteral; = "")</expression></clause>
+           </multiclause>
+ 	   <multiclause>
+ 	     <clause>
+             <environment>&xq_dyn_env;</environment>
+ 	     <expression>&gr_URILiteral; &jd_has_atomic_value; &gr_URI;
+ 	     </expression>
+ 	     </clause>
+ 	   </multiclause>
+           <multiclause>
+	    <clause>
+              <expression>
+                &xq_stat_env1; =
+                  <update>
+                    <environment>&xq_default_elem_ns_env;</environment>
+                    <expression>
+                    &gr_URI;</expression>
+                  </update>
+              </expression>
+	    </clause>
+           </multiclause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>declare default element namespace &gr_URILiteral; &jd_yields_context; &xq_stat_env1;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+
+      <p>A default function namespace declaration changes the default
+      function namespace component of the static environment. If the
+      URI literal is the zero-length string, the default function
+      namespace is set to the null namespace.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	      <clause>
+                <expression>
+                  &xq_stat_env1; =
+                    <update>
+                      <environment>&xq_default_fn_ns_env;</environment>
+                      <expression>#NULL-NAMESPACE</expression>
+                    </update>
+                </expression>
+	      </clause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>declare default function namespace "" &jd_yields_context; &xq_stat_env1;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+           <multiclause>
+            <clause><expression>&jd_not;(&gr_URILiteral; = "")</expression></clause>
+           </multiclause>
+ 	   <multiclause>
+ 	     <clause>
+             <environment>&xq_dyn_env;</environment>
+ 	     <expression>&gr_URILiteral; &jd_has_atomic_value; &gr_URI;
+ 	     </expression>
+ 	     </clause>
+ 	   </multiclause>
+           <multiclause>
+            <clause>
+              <expression>
+                &xq_stat_env1; =
+                  <update>
+                    <environment>&xq_default_fn_ns_env;</environment>
+                    <expression>
+                    &gr_URI;</expression>
+                  </update>
+              </expression>
+	    </clause>
+           </multiclause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>declare default function namespace &gr_URILiteral; &jd_yields_context; &xq_stat_env1;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+
+      <p>Note that multiple declarations of the same namespace prefix
+      in the Prolog result in a static error.  However, a declaration
+      of a namespace in the Prolog can override a prefix that has been
+      predeclared in the static context.</p>
+    </smcontext>
+
+<smdyncontext>
+<p>Default namespace declarations do not affect the dynamic
+context. </p>
+      <infergr>
+	<infer>
+	  <prejudge>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause><environment>&xq_dyn_env;</environment>
+                <expression>&gr_DefaultNamespaceDecl;  &jd_yields_dyn_context; &xq_dyn_env;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+</smdyncontext>
+  </div2>
+
+  <div2 id="sec_variable-declarations">
+    <head>Variable Declaration</head>
+
+    <scrap>
+      <head></head>
+      <prodrecap id="VarDecl"  ref="VarDecl" orig="xquery"/>
+    </scrap>
+
+    <smcore>
+      <p>The core grammar production for variable declarations is:</p>
+
+      <scrap><head></head>
+        <prodrecap id="core-VarDecl" ref="VarDecl" orig="core" />
+      </scrap>
+    </smcore>
+
+    <smnorm>
+      <p>Normalization of a variable declaration normalizes its
+      initializing expression, if it is present.</p>
+
+      <mapping>
+       <xquery>
+  	 <expression><map>
+  	   declare variable &gr_DVarName; as &gr_SequenceType; := &gr_Expr;
+  	 </map>&jd_map_prolog;</expression>
+       </xquery>
+       <core>
+  	 <expression>
+  	   declare variable &gr_DVarName; as &gr_SequenceType; :=
+  	   <map>&gr_Expr;</map>&jd_map_expr; 
+  	 </expression>
+       </core>
+      </mapping>
+
+      <mapping>
+       <xquery>
+  	 <expression><map>
+  	   declare variable &gr_DVarName; := &gr_Expr;
+  	 </map>&jd_map_prolog;</expression>
+       </xquery>
+       <core>
+  	 <expression>
+  	   declare variable &gr_DVarName; :=
+  	   <map>&gr_Expr;</map>&jd_map_expr; 
+  	 </expression>
+       </core>
+      </mapping>
+
+      <p>If an external variable declaration does not have a type
+      declaration it is treated as if the type declaration was
+      <code>item()*</code>.</p>
+
+      <mapping>
+       <xquery>
+  	<expression><map>
+  	  declare variable &gr_DVarName; external
+  	</map>&jd_map_prolog;</expression>
+       </xquery>
+       <core>
+  	<expression>
+  	  declare variable &gr_DVarName; as item()* external
+  	</expression>
+       </core>
+      </mapping>
+
+      <mapping>
+       <xquery>
+  	 <expression><map>
+  	   declare variable &gr_DVarName; as &gr_SequenceType; external
+  	 </map>&jd_map_prolog;</expression>
+       </xquery>
+       <core>
+  	 <expression>
+  	   declare variable &gr_DVarName; as &gr_SequenceType; external
+  	 </expression>
+       </core>
+      </mapping>
+ 
+    </smnorm>
+
+    <smcontext>
+      <p>A variable declaration updates the variable component of the
+      static context by associating the given variable with a static
+      type.</p>
+
+      <p>If a variable declaration has an associated expression but
+      does not have a type declaration, the static type of the
+      variable is the static type of the expression.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	    <multiclause>
+              <clause>
+                <environment>&xq_stat_env;
+                </environment>
+                <expression>&gr_VarName; &jd_var_qname_expands_to;
+                &gr_Variable;</expression>
+              </clause>
+	    </multiclause>
+            <multiclause>
+	      <clause><environment>&xq_stat_env;</environment>
+                <expression>
+                  &gr_Expr; &jd_has_type; &gr_Type;
+                </expression>
+	      </clause>
+	    </multiclause>
+	    <multiclause>
+	      <clause>
+                <expression>
+                  &xq_stat_env1; =
+                    <update>
+                      <environment>&xq_type_env;</environment>
+                      <expression>
+                      &gr_Variable; &xt_bind; &gr_Type;</expression>
+                    </update>
+                </expression>
+	      </clause>
+            </multiclause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>declare variable &gr_DVarName;
+                := &gr_Expr;
+                &jd_yields_context; &xq_stat_env1;</expression> 
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+
+      <p>If the variable declaration has an associated expression and
+      has a type declaration, the static type of the variable is the
+      specified type. The type of the expression must be a subtype of
+      the declared type.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+            <multiclause>
+              <clause>
+                <environment>&xq_stat_env;
+                </environment>
+                <expression>&gr_VarName; &jd_var_qname_expands_to;
+                &gr_Variable;</expression>
+              </clause>
+	    </multiclause>
+            <multiclause>
+	      <clause>
+                <expression>
+                  &gr_Type; = <map>&gr_SequenceType;</map>&jd_map_sequencetype;
+                </expression>
+	      </clause>
+	    </multiclause>
+	    <multiclause>
+  	     <clause><environment>&xq_stat_env;</environment>
+  	       <expression>&gr_Expr; &jd_has_type; &gr_Type2;
+  	       </expression>
+  	     </clause>
+	    </multiclause>
+  	    <multiclause>
+  	      <clause>
+  		<environment>&xq_stat_env;</environment>
+                <expression>&gr_Type2; &jd_subtype_of; &gr_Type;</expression>
+  	      </clause>
+  	    </multiclause>
+	    <multiclause>
+	      <clause>
+                <expression>
+                  &xq_stat_env1; =
+                    <update>
+                      <environment>&xq_type_env;</environment>
+                      <expression>
+                      &gr_Variable; &xt_bind; &gr_Type;</expression>
+                    </update>
+                </expression>
+	      </clause>
+            </multiclause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>declare variable &gr_DVarName;
+                as &gr_SequenceType; := &gr_Expr;
+                &jd_yields_context;
+                <phrase diff='del' at='E035'>&xq_stat_env2;</phrase>
+                <phrase diff='add' at='E035'>&xq_stat_env1;</phrase>
+                </expression> 
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+
+      <p>If the variable declaration is external and has a type
+      declaration, the static type of the variable is the specified
+      type.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+            <multiclause>
+              <clause>
+                <environment>&xq_stat_env;
+                </environment>
+                <expression>&gr_VarName; &jd_var_qname_expands_to;
+                &gr_Variable;</expression>
+              </clause>
+	    </multiclause>
+            <multiclause>
+	      <clause>
+                <expression>
+                  &gr_Type; = <map>&gr_SequenceType;</map>&jd_map_sequencetype;
+                </expression>
+	      </clause>
+	    </multiclause>
+	    <multiclause>
+	      <clause>
+                <expression>
+                  &xq_stat_env1; =
+                    <update>
+                      <environment>&xq_type_env;</environment>
+                      <expression>
+                      &gr_Variable; &xt_bind; &gr_Type;</expression>
+                    </update>
+                </expression>
+	      </clause>
+            </multiclause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>declare variable &gr_DVarName;
+                as &gr_SequenceType; external
+                &jd_yields_context;
+                <phrase diff='del' at='E035'>&xq_stat_env2;</phrase>
+                <phrase diff='add' at='E035'>&xq_stat_env1;</phrase>
+                </expression> 
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+
+    </smcontext>
+
+    <smdyncontext>
+      <p>To evaluate a variable declaration, its associated expression
+      is evaluated, and the dynamic context is updated with the
+      variable bound to the resulting value.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	   <multiclause>
+	    <clause><environment>&xq_dyn_env;</environment> <expression>&gr_Expr;
+	    &jd_yields; &gr_Value; </expression></clause>
+	   </multiclause>
+	   <multiclause>
+            <clause>
+              <environment>&xq_stat_env;
+              </environment>
+              <expression>&gr_VarName; &jd_var_qname_expands_to;
+              &gr_Variable;</expression>
+            </clause>
+	   </multiclause>
+	   <multiclause>
+	     <clause>
+               <expression>
+                 &xq_dyn_env1; =
+                   <update>
+                     <environment>&xq_val_env;</environment>
+                     <expression>
+                     &gr_Variable; &xt_bind; &gr_Value;</expression>
+                   </update>
+               </expression>
+	     </clause>
+           </multiclause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause>
+                <environment>&xq_dyn_env;</environment>
+                <expression>declare variable &gr_DVarName; := &gr_Expr;
+                &jd_yields_dyn_context; &xq_dyn_env1;</expression> 
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	   <multiclause>
+	    <clause><environment>&xq_dyn_env;</environment> <expression>&gr_Expr;
+	    &jd_yields; &gr_Value; </expression></clause>
+	   </multiclause>
+           <multiclause>
+            <clause>
+             <expression>
+                &gr_Type; = <map> &gr_SequenceType; </map>&jd_map_sequencetype;
+             </expression>
+            </clause>
+           </multiclause>
+           <multiclause>
+            <clause>
+             <environment> &xq_stat_env; </environment>
+             <expression>
+                &gr_Value; &jd_matches; &gr_Type;
+             </expression>
+            </clause>
+           </multiclause>
+	   <multiclause>
+            <clause>
+              <environment>&xq_stat_env;
+              </environment>
+              <expression>&gr_VarName; &jd_var_qname_expands_to;
+              &gr_Variable;</expression>
+            </clause>
+	   </multiclause>
+	   <multiclause>
+	     <clause>
+               <expression>
+                 &xq_dyn_env1; =
+                   <update>
+                     <environment>&xq_val_env;</environment>
+                     <expression>
+                     &gr_Variable; &xt_bind; &gr_Value;</expression>
+                   </update>
+               </expression>
+	     </clause>
+           </multiclause>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause>
+                <environment>&xq_dyn_env;</environment>
+                <expression>declare variable &gr_DVarName;
+                as &gr_SequenceType; := &gr_Expr;
+                &jd_yields_dyn_context; &xq_dyn_env1;</expression> 
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+
+      <p>Dynamic evaluation does not apply to externally defined
+      variables.  The dynamic environment must provide the values of
+      external variables in the initial dynamic context
+      (&xq_default_dyn_env;).</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause>
+                <environment>&xq_dyn_env;</environment>
+                <expression>declare variable &gr_DVarName;
+                as &gr_SequenceType; external
+                &jd_yields_dyn_context; &xq_dyn_env;</expression> 
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+    </smdyncontext>
+  </div2>
+
+  <div2 id="sec_FunctionDeclns">
+    <head>Function Declaration</head>
+
+    <smintro>
+
+      <p>User-defined functions specify the name of the function, the
+      names and types of the parameters, and the type of the
+      result. The <term>function body</term> defines how the result of
+      the function is computed from its parameters.</p>
+
+      <scrap>
+    	<head>Function declarations</head>
+    	<prodrecap id="FunctionDecl" ref="FunctionDecl" orig="xquery"/>
+    	<prodrecap id="ParamList" ref="ParamList" orig="xquery"/>
+    	<prodrecap id="Param" ref="Param" orig="xquery"/>
+      </scrap>
+    </smintro>
+
+    <smcore>
+      <p>The core grammar productions for function declarations
+      are:</p>
+
+      <scrap>
+    	<head>Function declarations</head>
+    	<prodrecap id="core-FunctionDecl" ref="FunctionDecl" orig="core"/>
+    	<prodrecap id="core-ParamList"    ref="ParamList"    orig="core"/>
+    	<prodrecap id="core-Param"        ref="Param"        orig="core"/>
+      </scrap>
+    </smcore>
+
+    <smnotation>
+      <p id="jd_map_param">The following auxiliary mapping rule is
+      used for the normalization of parameters in function
+      declarations:
+      <expression><map></map>&jd_map_param;</expression>.</p>
+
+      <p>Parameters without a declared type are given the item()*
+      sequence type.</p>
+
+      <mapping>
+       <xquery>
+  	 <expression>
+           <map>&gr_DVarName;</map>&jd_map_param;
+         </expression>
+       </xquery>
+       <core>
+  	 <expression>
+           &gr_DVarName; as item()* 
+         </expression>
+       </core>
+      </mapping>
+
+      <mapping>
+       <xquery>
+  	 <expression>
+           <map>&gr_DVarName; as &gr_SequenceType; </map>&jd_map_param;
+         </expression>
+       </xquery>
+       <core>
+  	 <expression>
+           &gr_DVarName; as &gr_SequenceType; 
+         </expression>
+       </core>
+      </mapping>
+
+      <p>An empty parameter list is left unchanged.</p>
+
+      <mapping>
+       <xquery>
+  	 <expression>
+           <map></map>&jd_map_param;
+         </expression>
+       </xquery>
+       <core>
+  	 <expression>
+         </expression>
+       </core>
+      </mapping>
+
+      <p>A parameter list is normalized by applying the normalization
+      rule to each parameter.</p>
+
+      <mapping>
+       <xquery>
+  	 <expression>
+           <map> &gr_Param1;, ..., &gr_Paramn; </map>&jd_map_param;
+         </expression>
+       </xquery>
+       <core>
+  	 <expression>
+           <map> &gr_Param1; </map>&jd_map_param;, ..., <map> &gr_Paramn; </map>&jd_map_param;
+         </expression>
+       </core>
+      </mapping>
+
+    </smnotation>
+
+    <smnorm>
+      <p>The parameter list and body of a user-defined function are
+      all normalized into Core expressions.</p>
+
+         <infergr>
+          <infer>
+           <prejudge>
+            <multiclause>
+              <clause><environment>&xq_stat_env;</environment>
+                <expression>&gr_QName; &jd_func_qname_expands_to; &xd_qname;</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+	      <clause>
+                <expression>
+                  &gr_Type; = <map>&gr_SequenceType;</map>&jd_map_sequencetype;
+                </expression>
+	      </clause>
+	    </multiclause>
+           </prejudge>
+          <postjudge>
+           <clause>
+            <environment>&xq_stat_env;</environment>
+            <expression><map>
+  	   declare function &gr_QName; ( &gr_ParamList;? ) as
+  	   &gr_SequenceType; { &gr_Expr; }
+  	 </map>&jd_map_prolog;
+              =
+         declare function &gr_QName; (
+  	   <map>&gr_ParamList;?</map>&jd_map_param; )
+  	   as &gr_SequenceType;
+  	   { <map>&gr_Expr;</map>&jd_map_function_argument; }
+            </expression>
+           </clause>
+          </postjudge>
+         </infer>
+         </infergr>
+ 
+      <p>If the return type of the function is not provided, it is
+      given the <code>item()*</code> sequence type.</p>
+
+      <mapping>
+       <xquery>
+  	 <expression>
+           <map>declare function &gr_QName; ( &gr_ParamList;?  )
+  	   { &gr_Expr; }</map>&jd_map_prolog;
+         </expression>
+       </xquery>
+       <core>
+  	 <expression>
+           <map>declare function &gr_QName; ( &gr_ParamList;?  ) as item()*
+  	   { &gr_Expr; }</map>&jd_map_prolog;
+  	 </expression>
+       </core>
+      </mapping>
+
+      <p>Externally defined functions are normalized similarly.</p>
+
+      <mapping>
+       <xquery>
+  	 <expression><map>
+  	   declare function &gr_QName; ( &gr_ParamList;? ) as
+  	   &gr_SequenceType; external</map>&jd_map_prolog;</expression>
+       </xquery>
+       <core>
+  	 <expression>
+  	   declare function &gr_QName;(
+  	   <map>&gr_ParamList;?</map>&jd_map_param; )
+  	   as &gr_SequenceType; external
+  	 </expression>
+       </core>
+      </mapping>
+ 
+      <mapping>
+       <xquery>
+  	 <expression>
+           <map>declare function &gr_QName; ( &gr_ParamList;?  )
+  	   external </map>&jd_map_prolog;
+         </expression>
+       </xquery>
+       <core>
+  	 <expression>
+           <map>declare function &gr_QName; ( &gr_ParamList;?  ) as item()*
+  	   external </map>&jd_map_prolog;
+  	 </expression>
+       </core>
+      </mapping>
+
+    </smnorm>
+
+    <smnotation>
+       <p>We use the following auxiliary judgment during static
+       context processing and static type analysis of function
+       declarations.</p>
+
+       <p id="jd_function_declaration">The judgment:</p>
+
+       <display>
+         <clause>
+           <environment>&xq_stat_env;</environment>
+           <expression>&jd_function_declaration; &gr_FunctionDecl;
+           &jd_function_declaration_with_signature; &gr_FunctionSig; &jd_function_declaration_has_type; &gr_Type;
+           </expression>
+         </clause>
+       </display>
+
+       <p>holds if the function declaration &gr_FunctionDecl; with the
+       signature &gr_FunctionSig; has the type &gr_Type;.</p>
+    </smnotation>
+
+    <smcontext>
+      <p>Static context processing accesses the function signature
+      from the static context, and checks that the function
+      declaration corresponds to the declared type.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+           <multiclause>
+             <clause>
+               <expression>&xq_functy_env;(&xd_qname;,n) = &gr_FunctionSig;
+               </expression>
+             </clause>
+           </multiclause>
+	   <multiclause>
+             <clause>
+               <environment>&xq_stat_env;</environment>
+               <expression>&jd_function_declaration; &gr_FunctionDecl;
+               &jd_function_declaration_with_signature; &gr_FunctionSig; &jd_function_declaration_has_type; &gr_Typer;
+               </expression>
+             </clause>
+	   </multiclause>
+	  </prejudge>
+	  <postjudge>
+	    <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>
+              &gr_FunctionDecl; &jd_yields_context; &xq_stat_env1;
+  	     </expression>
+	    </clause>
+	  </postjudge>
+	</infer>
+      </infergr>
+
+      <p>Note that the static context processing is performing type
+      checking of the function, as defined below. Note also that the
+      type checking is done in the new environment in which the
+      function declaration has been added which ensures that recursive
+      calls are type-checked properly.</p>
+    </smcontext>
+
+    <smtype>
+      <p>The static typing rules for function bodies follow
+      normalization and processing of the static context.  The static
+      typing rules below construct a new environment in which each
+      parameter has the given expected type, then the static type of
+      the function's body is computed under the new environment.  The
+      function body's type must be a subtype of the expected return
+      type.  If static typing fails, a static type error is raised.
+      Otherwise, static typing of the function has no other effect, as
+      function signatures are already inside the static
+      environment.</p>
+  
+      <infergr> 
+  	<infer>
+  	   <prejudge>
+  	    <multiclause>
+  	      <clause>
+  		<environment>&xq_type_env;</environment>
+  		<expression>&gr_Expr; &jd_has_type; &gr_Type;</expression>
+  	      </clause>
+  	    </multiclause>
+  	    <multiclause>
+  	      <clause>
+  		<environment>&xq_stat_env;</environment>
+                <expression>&gr_Type; &jd_subtype_of; &gr_Typer;</expression>
+  	      </clause>
+  	    </multiclause>
+  	   </prejudge>
+  	   <postjudge>
+  	    <clause><environment>&xq_stat_env;</environment>
+  	      <expression>&jd_function_declaration; declare function &gr_QName; ()
+  	      as &gr_SequenceTyper;
+  	      { &gr_Expr; } &jd_function_declaration_with_signature;
+  	      declare function &xd_qname;()
+  	      as &gr_Typer; &jd_function_declaration_has_type; &gr_Typer;
+  	      </expression>
+  	    </clause>
+  	  </postjudge>
+  	</infer>
+      </infergr>
+
+      <infergr> 
+  	<infer>
+  	   <prejudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;
+                  </environment>
+                  <expression>&gr_VarName1; &jd_var_qname_expands_to;
+                  &gr_Variable1;</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause><expression>...</expression></clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;
+                  </environment>
+                  <expression>&gr_VarNamen; &jd_var_qname_expands_to;
+                  &gr_Variablen;</expression>
+                </clause>
+              </multiclause>
+  	    <multiclause>
+  	      <clause>
+  		<environment>
+  		  <update>
+  		    <environment>&xq_type_env;</environment>
+  		    <expression>
+  		      &gr_Variable1; &xt_bind; &gr_Type1;
+  		      ;...;
+  		      &gr_Variablen; &xt_bind; &gr_Typen;
+  		    </expression>
+  		  </update>
+  		</environment>
+  		<expression>&gr_Expr; &jd_has_type; &gr_Type;</expression>
+  	      </clause>
+  	    </multiclause>
+  	    <multiclause>
+  	      <clause>
+  		<environment>&xq_stat_env;</environment>
+                <expression>&gr_Type; &jd_can_be_promoted_to; &gr_Typer;</expression>
+  	      </clause>
+  	    </multiclause>
+  	   </prejudge>
+  	   <postjudge>
+  	    <clause><environment>&xq_stat_env;</environment>
+  	      <expression>&jd_function_declaration; declare function &gr_QName;
+  		(&gr_DVarName1; as  &gr_SequenceType1;, &middot;&middot;&middot;,
+  	      &gr_DVarNamen; as &gr_SequenceTypen;)
+  	      as &gr_SequenceTyper;
+  	      { &gr_Expr; } &jd_function_declaration_with_signature;
+  	      declare function &xd_qname;(&gr_Type1;, ..., &gr_Typen;)
+  	      as &gr_Typer; &jd_function_declaration_has_type; &gr_Typer;
+  	      </expression>
+  	    </clause>
+  	  </postjudge>
+  	</infer>
+      </infergr>
+
+      <p>The bodies of external functions are not available and
+      therefore cannot by type checked.  To ensure type soundness, the
+      implementation must guarantee that the value returned by the
+      external function matches the expected return type. </p>
+
+      <infergr>
+  	<infer>
+  	   <prejudge>
+  	   </prejudge>
+  	   <postjudge>
+  	    <clause><environment>&xq_stat_env;</environment>
+  	      <expression>&jd_function_declaration; declare function &gr_QName; ()
+  	      as &gr_SequenceTyper;
+  	      external &jd_function_declaration_with_signature;
+  	      declare function &xd_qname;()
+  	      as &gr_Typer; &jd_function_declaration_has_type; &gr_Typer;
+  	      </expression>
+  	    </clause>
+  	  </postjudge>
+  	</infer>
+      </infergr>
+
+      <infergr>
+  	<infer>
+  	   <prejudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;
+                  </environment>
+                  <expression>&gr_VarName1; &jd_var_qname_expands_to;
+                  &gr_Variable1;</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause><expression>...</expression></clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;
+                  </environment>
+                  <expression>&gr_VarNamen; &jd_var_qname_expands_to;
+                  &gr_Variablen;</expression>
+                </clause>
+              </multiclause>
+  	   </prejudge>
+  	   <postjudge>
+  	    <clause><environment>&xq_stat_env;</environment>
+  	      <expression>&jd_function_declaration; declare function &gr_QName;
+  		( &gr_DVarName1; as &gr_SequenceType1;, &middot;&middot;&middot;,
+  	      &gr_DVarNamen; as &gr_SequenceTypen; )
+  	      as &gr_SequenceTyper;
+  	      external &jd_function_declaration_with_signature;
+  	      declare function &xd_qname;(&gr_Type1;, ..., &gr_Typen;)
+  	      as &gr_Typer; &jd_function_declaration_has_type; &gr_Typer;
+  	      </expression>
+  	    </clause>
+  	  </postjudge>
+  	</infer>
+      </infergr>
+
+     </smtype>
+
+     <smdyncontext>
+       <p>A function declaration updates the dynamic context.  The
+       function name with arity N is associated with the given
+       function body.  The number of arguments is required, because
+       XQuery permits overloading of function names as long as each
+       function signature has a different number of arguments.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	    <multiclause>
+	      <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>&gr_QName; &jd_func_qname_expands_to; &xd_qname;</expression>
+	      </clause>
+	    </multiclause>
+            <multiclause>
+	      <clause>
+                <expression>
+                &xq_dyn_env1; =
+                    <update>
+                      <environment>&xq_func_env;</environment>
+                      <expression>&xd_qname;<phrase diff='chg' at='E006'>,0</phrase> &xt_bind; (&gr_Expr;)</expression>
+                    </update>
+                </expression>
+	      </clause>
+	    </multiclause>
+	  </prejudge>
+	  <postjudge>
+  	    <clause><environment>&xq_dyn_env;</environment>
+  	      <expression>declare function &gr_QName; ()
+  	      as &gr_SequenceTyper;
+  	      { &gr_Expr; } &jd_yields_dyn_context; &xq_dyn_env1;
+  	      </expression>
+  	    </clause>
+	  </postjudge>
+	</infer>
+      </infergr>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	    <multiclause>
+	      <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>&gr_QName; &jd_func_qname_expands_to; &xd_qname;</expression>
+	      </clause>
+	    </multiclause>
+	    <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_VarName1; &jd_var_qname_expands_to;
+                  &gr_Variable1;</expression>
+                </clause>
+	    </multiclause>
+	    <multiclause>
+                <clause><expression>&middot;&middot;&middot;</expression></clause>
+	    </multiclause>
+	    <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;
+                  </environment>
+                  <expression>&gr_VarNamen; &jd_var_qname_expands_to;
+                  &gr_Variablen;</expression>
+                </clause>
+            </multiclause>
+              <multiclause diff='del' at='E006'>
+                <clause>
+                        <expression><map>&gr_SequenceType1;</map>&jd_map_sequencetype;
+                        = &gr_Type1;</expression></clause>
+              </multiclause>
+              <multiclause diff='del' at='E006'>
+                <clause><expression>...</expression></clause>
+              </multiclause>
+              <multiclause diff='del' at='E006'>
+                <clause>
+                        <expression><map>&gr_SequenceTypen;</map>&jd_map_sequencetype;
+                        = &gr_Typen;</expression></clause>
+              </multiclause>
+            <multiclause>
+	      <clause>
+                <expression>
+                &xq_dyn_env1; =
+                    <update>
+                      <environment>&xq_func_env;</environment>
+                      <expression>&xd_qname;<phrase diff='chg' at='E006'>,n</phrase> &xt_bind; (
+                      &gr_Expr; , &gr_Variable1; , &middot;&middot;&middot;,
+                      &gr_Variablen;)</expression>
+                    </update>
+                </expression>
+	      </clause>
+	    </multiclause>
+	  </prejudge>
+	  <postjudge>
+  	    <clause><environment>&xq_dyn_env;</environment>
+  	      <expression>declare function &gr_QName;
+  		( &gr_DVarName1; as &gr_SequenceType1;, &middot;&middot;&middot;,
+  	      &gr_DVarNamen;  as &gr_SequenceTypen; )
+  	      as &gr_SequenceTyper;
+  	      { &gr_Expr; } &jd_yields_dyn_context; &xq_dyn_env1;
+  	      </expression>
+  	    </clause>
+	  </postjudge>
+	</infer>
+      </infergr>
+
+       <p>An external function declaration does not affect the dynamic
+       environment. The implementation must support the declared
+       external functions.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	  </prejudge>
+	  <postjudge>
+  	    <clause><environment>&xq_dyn_env;</environment>
+  	      <expression>declare function &gr_QName;
+  		( &gr_DVarName1; as &gr_SequenceType1;, &middot;&middot;&middot;,
+  	      &gr_DVarNamen; as &gr_SequenceTypen; )
+  	      as &gr_SequenceTyper;
+  	      external &jd_yields_dyn_context; &xq_dyn_env;
+  	      </expression>
+  	    </clause>
+	  </postjudge>
+	</infer>
+      </infergr>
+       <p>The dynamic semantics of a function body are applied when
+       the function is called, as described in <specref
+       ref="id-function-calls"/>.</p>
+
+     </smdyncontext>
+
+  </div2>
+
+  <div2 id="id-option-declaration">
+    <head>Option Declaration</head>
+    <scrap>
+      <head></head>
+      <prodrecap id="OptionDecl" ref="OptionDecl" orig="xquery"/>
+    </scrap>
+
+    <smcore>
+      <p>The core grammar production for option declarations is:</p>
+
+      <scrap>
+      <head></head>
+        <prodrecap id="core-OptionDecl" ref="OptionDecl" orig="core"/>
+      </scrap>
+    </smcore>
+
+    <smnorm>
+      <p>Option declarations are left unchanged through
+      normalization.</p>
+
+      <mapping>
+       <xquery>
+        <expression>
+         <map>&gr_OptionDecl;</map>&jd_map_prolog;
+        </expression>
+       </xquery>
+       <core>
+        <expression>
+          &gr_OptionDecl;
+        </expression>
+       </core>
+      </mapping>
+    </smnorm>
+
+    <smcontext>
+      <p>An option declaration does not have any effect on the static
+      context.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause><environment>&xq_stat_env;</environment>
+                <expression>&gr_OptionDecl; &jd_yields_context; &xq_stat_env;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+    </smcontext>
+
+    <smdyncontext>
+      <p>An option declaration does not have any effect on the dynamic
+      context.</p>
+
+      <infergr>
+	<infer>
+	  <prejudge>
+	  </prejudge>
+	  <postjudge>
+	    <multiclause>
+	      <clause><environment>&xq_dyn_env;</environment>
+                <expression>&gr_OptionDecl; &jd_yields_dyn_context; &xq_dyn_env;</expression>
+	      </clause>
+	    </multiclause>
+	  </postjudge>
+	</infer>
+      </infergr>
+    </smdyncontext>
+  </div2>
+
+</div1>
+

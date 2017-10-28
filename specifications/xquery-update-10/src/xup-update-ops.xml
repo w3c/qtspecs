@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="utf-8"?>
+<div1 id="id-update-operations">
+<head>Update Operations</head>
+<p>This section describes the update operations defined by &language;. Although these update operations are described using a functional notation, they are not true functions because many of them have no return value. These update operations are used in defining the semantics of XQuery expressions, but they are not directly available to users.</p><p>Update operations consist of <termref def="dt-update-primitive">update primitives</termref>, which are the components of <termref def="dt-pending-update-list">pending update lists</termref>, and <termref def="dt-update-routine">update routines</termref>, which are used in defining XQuery semantics but do not appear on <termref def="dt-pending-update-list">pending update lists</termref>.</p>
+<div2 id="id-update-primitives"><head>Update Primitives</head><p>The update primitives described in this section may be held on <termref def="dt-pending-update-list">pending update lists</termref>. When an update primitive is held on a pending update list, its node operands are represented by their <termref def="dt-node-identity">node identities</termref>. The semantics of an update primitive do not become effective until their pending update list is processed by the  <code>upd:applyUpdates</code> routine.</p>
+
+<div3 id="id-upd-insert-before"><head>upd:insertBefore</head>
+					<glist>
+						<gitem><label>Parameters</label><def><eg><![CDATA[upd:insertBefore(
+   $target as node(),
+   $content as node()+)]]></eg></def></gitem><gitem>
+							<label>Summary</label>
+							<def>
+								<p>Inserts <code>$content</code> immediately before <code>$target</code>.</p>
+							</def>
+						</gitem>
+						<gitem>
+							<label>Constraints</label>
+							<def>
+								<p><code>$target</code> must be an element, text, processing
+									instruction, or comment node with a non-empty <code>parent</code> property. <code>$content</code> must be a sequence containing only element, text, processing instruction,
+									and comment nodes.</p>
+							</def>
+						</gitem>
+<gitem><label>Semantics</label>
+<def>
+<olist>
+<item><p>Effects on nodes in <code>$content</code>:</p><olist><item><p>For each node in <code>$content</code>, the <code>parent</code> property is set to <code>parent($target)</code>.</p></item><item><p>If the <code>type-name</code> property of <code>parent($target)</code> is <code>xs:untyped</code>, then <code><loc href="#id-upd-set-to-untyped">upd:setToUntyped()</loc></code> is invoked on each element or attribute node in <code>$content</code>.</p></item></olist></item>
+
+<item><p>Effects on <code>parent($target)</code>:</p>
+<olist>
+<item><p>The <code>children</code> property of <code>parent($target)</code> is modified to add the nodes in <code>$content</code> just before <code>$target</code>, preserving their order.</p></item>
+<item><p>If at least one of the nodes in <code>$content</code> is an element or text node, <code><loc href="#id-upd-remove-type">upd:removeType</loc>(parent($target))</code> is invoked.</p></item>
+</olist>
+</item>
+
+<item diff="add"><p>All the namespace bindings of <code>parent($target)</code> are <termref def="dt-mark">marked for namespace propagation</termref>.</p></item>
+
+</olist></def></gitem>
+						
+						
+					</glist></div3><div3 id="id-upd-insert-after"><head>upd:insertAfter</head><glist>
+						<gitem><label>Parameters</label><def><eg><![CDATA[upd:insertAfter(
+   $target as node(),
+   $content as node()+)]]></eg></def></gitem><gitem>
+							<label>Summary</label>
+							<def>
+								<p>Inserts <code>$content</code> immediately after <code>$target</code>.</p>
+							</def>
+						</gitem>
+						<gitem>
+							<label>Constraints</label>
+							<def>
+								<p><code>$target</code> must be an element, text, processing
+									instruction, or comment node with a non-empty <code>parent</code> property. <code>$content</code> must be a sequence containing only element, text, processing instruction,
+									and comment nodes.</p>
+							</def>
+						</gitem><gitem><label>Semantics</label><def><p>The semantics of <code>upd:insertAfter</code> are identical to the semantics of <code>upd:insertBefore</code>, except that Rule 2a is changed as follows:</p><ulist><item><p>The <code>children</code> property of <code>parent($target)</code> is modified to add the nodes in <code>$content</code> just after <code>$target</code>, preserving their order.</p></item>
+</ulist></def></gitem>
+						
+						
+					</glist></div3><div3 id="id-upd-insert-into"><head>upd:insertInto</head><glist>
+						<gitem><label>Parameters</label><def><eg><![CDATA[upd:insertInto(
+   $target as node(),
+   $content as node()+)]]></eg></def></gitem><gitem>
+							<label>Summary</label>
+							<def>
+								<p>Inserts <code>$content</code> as the children of <code>$target</code>, in an implementation-dependent position.</p>
+							</def>
+						</gitem>
+						<gitem>
+							<label>Constraints</label>
+							<def>
+								<p><code>$target</code> must be an element or document node. <code>$content</code> must be a sequence containing only element, text, processing instruction,
+									and comment nodes.</p>
+							</def>
+						</gitem><gitem><label>Semantics</label><def><p>The semantics of <code>upd:insertInto</code> are identical to the semantics of <code>upd:insertBefore</code>, except that <code>$target</code> is substituted everywhere for <code>parent($target)</code>, and Rule 2a is changed as follows:</p><ulist><item><p>The <code>children</code> property of <code>$target</code> is changed to add the nodes in <code>$content</code> in implementation-dependent positions, preserving their relative order.</p></item></ulist></def></gitem>
+						
+						
+					</glist></div3><div3 id="id-upd-insert-into-as-first"><head>upd:insertIntoAsFirst</head><glist>
+						<gitem><label>Parameters</label><def><eg><![CDATA[upd:insertIntoAsFirst(
+   $target as node(),
+   $content as node()+)]]></eg></def></gitem><gitem>
+							<label>Summary</label>
+							<def>
+								<p>Inserts <code>$content</code> as the first children of <code>$target</code>.</p>
+							</def>
+						</gitem>
+						<gitem>
+							<label>Constraints</label>
+							<def>
+								<p><code>$target</code> must be an element or document node. <code>$content</code> must be a sequence containing only element, text, processing instruction,
+									and comment nodes.</p>
+							</def>
+						</gitem><gitem><label>Semantics</label><def><p>The semantics of <code>upd:insertIntoAsFirst</code> are identical to the semantics of <code>upd:insertBefore</code>, except that <code>$target</code> is substituted everywhere for <code>parent($target)</code>, and Rule 2a is changed as follows:</p><ulist><item><p>The <code>children</code> property of <code>$target</code> is changed to add the nodes in <code>$content</code> as the first children, preserving their order.</p></item></ulist></def></gitem>
+						
+						
+					</glist></div3><div3 id="id-upd-insert-into-as-last"><head>upd:insertIntoAsLast</head><glist>
+						<gitem><label>Parameters</label><def><eg><![CDATA[upd:insertIntoAsLast(
+   $target as node(),
+   $content as node()+)]]></eg></def></gitem><gitem>
+							<label>Summary</label>
+							<def>
+								<p>Inserts <code>$content</code> as the last children of <code>$target</code>.</p>
+							</def>
+						</gitem>
+						<gitem>
+							<label>Constraints</label>
+							<def>
+								<p><code>$target</code> must be an element or document node. <code>$content</code> must be a sequence containing only element, text, processing instruction,
+									and comment nodes.</p>
+							</def>
+						</gitem><gitem><label>Semantics</label><def><p>The semantics of <code>upd:insertIntoAsLast</code> are identical to the semantics of <code>upd:insertBefore</code>, except that <code>$target</code> is substituted everywhere for <code>parent($target)</code>, and Rule 2a is changed as follows:</p><ulist><item><p>The <code>children</code> property of <code>$target</code> is changed to add the nodes in <code>$content</code> as the last children, preserving their order.</p></item></ulist></def></gitem>
+						
+						
+					</glist></div3><div3 id="id-upd-insert-attributes"><head>upd:insertAttributes</head><glist>
+						<gitem><label>Parameters</label><def><eg><![CDATA[upd:insertAttributes(
+   $target as element(),
+   $content as attribute()+)]]></eg></def></gitem><gitem>
+							<label>Summary</label>
+							<def>
+								<p>Inserts <code>$content</code> as attributes of <code>$target</code>.</p>
+							</def>
+						</gitem>
+						<gitem>
+							<label>Constraints</label>
+							<def>
+								<p>None</p>
+							</def>
+						</gitem><gitem><label>Semantics</label><def><olist><item><p>For each node <code>$A</code> in <code>$content</code>:</p><olist><item><p>The <code>parent</code> property of <code>$A</code> is set to <code>$target</code>.</p></item><item><p>If the <code>type-name</code> property of <code>$target</code> is <code>xs:untyped</code>, then <code><loc href="#id-upd-set-to-untyped">upd:setToUntyped</loc>($A)</code> is invoked.</p></item></olist></item><item><p>The following properties of <code>$target</code> are changed:</p><olist><item><p><code>attributes</code>: Modified to <phrase diff="del">include</phrase><phrase diff="add">add</phrase> the nodes in <code>$content</code>.</p></item><item><p><code>namespaces:</code> Modified to add namespace bindings for any attribute namespace prefixes in <code>$content</code> that did not already have bindings.
+<phrase diff="add">These bindings are <termref def="dt-mark">marked for namespace propagation</termref>.</phrase>
+
+</p></item>
+<item><p><code><loc href="#id-upd-remove-type">upd:removeType</loc>($target)</code> is invoked.</p></item>
+
+</olist></item></olist></def></gitem>
+						
+						
+					</glist></div3><div3 id="id-upd-delete"><head id="id-dm-delete">upd:delete</head><glist>
+						<gitem><label>Parameters</label><def><eg><![CDATA[upd:delete(
+   $target as node())]]></eg></def></gitem>
+						<gitem>
+							<label>Constraints</label>
+							<def>
+								<p>None</p>
+							</def>
+						</gitem><gitem><label>Semantics</label><def><olist><item><p>If <code>$target</code> has a parent node <code>$P</code>, then:</p><olist><item><p>The <code>parent</code> property of <code>$target</code> is set to empty.</p></item><item><p>If <code>$target</code> is an attribute node, the <code>attributes</code> property of <code>$P</code> is modified to remove <code>$target</code>.</p></item><item><p>If <code>$target</code> is a non-attribute node, the <code>children</code> property of <code>$P</code> is modified to remove <code>$target</code>.</p></item><item><p>If <code>$target</code> is an element, attribute, or text node, and <code>$P</code> is an element node, then <code><loc href="#id-upd-remove-type">upd:removeType</loc>($P)</code>  is invoked.</p></item></olist></item><item><p>If <code>$target</code> has no parent, the <termref def="dt-xdm-instance">XDM instance</termref> is unchanged.</p></item></olist><note><p>Deleted nodes are detached from their parent nodes; however, a node deletion has no effect on variable bindings or on the set of available documents or collections during processing of the current query.</p></note><note><p>Multiple <code>upd:delete</code> operations may be applied to the same node during execution of a query; this is not an error.</p></note></def></gitem>
+						
+						
+					</glist></div3>
+<div3 id="id-upd-replacenode">
+<head>upd:replaceNode</head>
+<glist>
+						<gitem><label>Parameters</label><def><eg><![CDATA[upd:replaceNode(
+   $target as node(),
+   $replacement as node()*)]]></eg></def></gitem><gitem>
+							<label>Summary</label>
+							<def>
+								<p>Replaces <code>$target</code> with <code>$replacement</code>.</p>
+							</def>
+						</gitem>
+						<gitem>
+							<label>Constraints</label>
+							<def>
+								<p><code>$target</code> must be a node that has a parent. If <code>$target</code> is an attribute node, <code>$replacement</code> must consist of zero or more attribute nodes. If <code>$target</code> is an element, text, comment, or processing instruction node, <code>$replacement</code> must be consist of zero or more element, text, comment, or processing instruction nodes.</p>
+							</def>
+						</gitem><gitem><label>Semantics</label><def><olist><item><p>Effects on nodes in <code>$replacement</code>:</p><olist><item><p>For each node in <code>$replacement</code>, the <code>parent</code> property is set to <code>parent($target)</code>.</p></item><item><p>If the <code>type-name</code> property of <code>parent($target)</code> is <code>xs:untyped</code>, then <code><loc href="#id-upd-set-to-untyped">upd:setToUntyped</loc>()</code> is invoked on each <phrase diff="del">element</phrase> node in <code>$replacement</code>.</p></item></olist></item><item><p>Effect on <code>$target</code>:</p><olist><item><p>The <code>parent</code> property of <code>$target</code> is set to empty.</p></item></olist></item><item><p>Effects on <code>parent($target)</code>:</p><olist><item><p>If <code>$target</code> is an attribute node, the <code>attributes</code> property of <code>parent($target)</code> is modified by removing <code>$target</code> and adding the nodes in <code>$replacement</code> (if any).</p></item>
+
+<item><p>If <code>$target</code> is an attribute node, the <code>namespaces</code> property of <code>parent($target)</code> is modified to add namespace bindings for any attribute namespace prefixes in <code>$replacement</code> that did not already have bindings. <phrase diff="add">These bindings are <termref def="dt-mark">marked for namespace propagation</termref>.</phrase></p></item>
+
+<item><p>If <code>$target</code> is an element, text, comment, or processing instruction node, the <code>children</code> property of <code>parent($target)</code> is modified by removing <code>$target</code> and adding the nodes in <code>$replacement</code> (if any) in the former position of <code>$target</code>, preserving their order.</p></item><item><p>If <code>$target</code> or any node in <code>$replacement</code> is an element, attribute, or text
+node,  <code><loc href="#id-upd-remove-type">upd:removeType</loc>(parent($target))</code> is invoked.</p></item></olist></item></olist></def></gitem>
+						
+						
+					</glist></div3><div3 id="id-upd-replace-value"><head>upd:replaceValue</head><glist>
+						<gitem><label>Parameters</label><def><eg><![CDATA[upd:replaceValue(
+   $target as node(),
+   $string-value as xs:string)]]></eg></def></gitem><gitem>
+							<label>Summary</label>
+							<def>
+								<p>Replaces the string value of <code>$target</code> with <code>$string-value</code>.</p>
+							</def>
+						</gitem>
+						<gitem>
+							<label>Constraints</label>
+							<def>
+								<p><code>$target</code> must be an attribute, text, comment, or processing instruction node.</p>
+							</def>
+						</gitem><gitem><label>Semantics</label><def><olist><item><p>If <code>$target</code> is an attribute node:</p><olist><item><p><code>string-value</code> of <code>$target</code> is set to <code>$string-value</code>.</p></item><item><p><code><loc href="#id-upd-remove-type">upd:removeType</loc>($target)</code> is invoked.</p></item></olist></item><item><p>If <code>$target</code> is a text, comment, or processing instruction node: <code>content</code> of <code>$target</code> is set to <code>$string-value</code>.</p></item><item><p>If  <code>$target</code> is a text node that has a parent, <code><loc href="#id-upd-remove-type">upd:removeType</loc>(parent($target))</code> is invoked.</p></item></olist></def></gitem>
+						
+						
+					</glist></div3><div3 id="id-upd-replace-element-content"><head>upd:replaceElementContent</head><glist>
+						<gitem><label>Parameters</label><def><eg><![CDATA[upd:replaceElementContent(
+   $target as element(),
+   $text as text()?)]]></eg></def></gitem><gitem>
+							<label>Summary</label>
+							<def>
+								<p>Replaces the existing children of the element node <code>$target</code> by the optional text node <code>$text</code>. The attributes of <code>$target</code> are not affected.</p>
+							</def>
+						</gitem>
+						<gitem>
+							<label>Constraints</label>
+							<def>
+								<p>None.</p>
+							</def>
+						</gitem><gitem><label>Semantics</label><def><olist><item><p>For each node <code>$C</code> that is a child of <code>$target</code>, the <code>parent</code> property of <code>$C</code> is set to empty.</p></item><item><p>The <code>parent</code> property of <code>$text</code> is set to <code>$target</code>.</p></item><item><p>Effects on <code>$target</code>:</p><olist><item><p><code>children</code> is set to consist exclusively of <code>$text</code>. If <code>$text</code> is an empty sequence, then <code>$target</code> has no children.</p></item><item><p><code>typed-value</code> and <code>string-value</code> are set to the <code>content</code> property of <code>$text</code>. If <code>$text</code> is an empty sequence, then <code>typed-value</code> is an empty sequence and <code>string-value</code> is an empty string.</p></item><item><p><code><loc href="#id-upd-remove-type">upd:removeType($target)</loc></code> is invoked.</p></item></olist></item></olist></def></gitem>
+						
+						
+					</glist></div3><div3 id="id-upd-rename"><head>upd:rename</head><glist>
+						<gitem><label>Parameters</label><def><eg><![CDATA[upd:rename(
+   $target as node(),
+   $newName as xs:QName)]]></eg></def></gitem><gitem>
+							<label>Summary</label>
+							<def>
+								<p>Changes the node-name of <code>$target</code> to <code>$newName</code>.</p>
+							</def>
+						</gitem>
+						<gitem>
+							<label>Constraints</label>
+							<def>
+								<p><code>$target</code> must be an element, attribute, or processing instruction node.</p>
+							</def>
+						</gitem><gitem><label>Semantics</label><def><olist><item><p>If <code>$target</code> is an element node:</p><olist><item><p><code>node-name</code> of <code>$target</code> is set to <code>$newName</code>.</p></item><item><p><code><loc href="#id-upd-remove-type">upd:removeType</loc>($target)</code> is invoked.</p> </item><item><p>If <code>$newname</code> has no prefix and no namespace URI, 
+the <code>namespaces</code> property of <code>$target</code> is modified by removing the binding (if any) 
+for the empty prefix.</p></item><item><p>The <code>namespaces</code> property of <code>$target</code> is modified to add a namespace binding derived from <code>$newName</code>, if this binding did not already exist.
+
+<phrase diff="add">This binding is <termref def="dt-mark">marked for namespace propagation</termref>.</phrase>
+</p></item></olist></item><item><p>If <code>$target</code> is an attribute node:</p><olist><item><p><code>node-name</code> of <code>$target</code> is set to <code>$newName</code>.</p></item><item><p><code><loc href="#id-upd-remove-type">upd:removeType</loc>($target)</code> is invoked.</p> </item><item><p>If <code>$newName</code> is <code>xml:id</code>, the <code>is-id</code> property of <code>$target</code> is set to <code>true</code>.</p></item><item><p>If <code>$target</code> has a parent, the <code>namespaces</code> property of <code>parent($target)</code> is modified to add a namespace binding derived from <code>$newName</code>, if this binding did not already exist.
+
+<phrase diff="add">This binding is <termref def="dt-mark">marked for namespace propagation</termref>.</phrase>
+</p></item></olist></item><item><p>If <code>$target</code> is a processing instruction node, its <code>target</code> property is set to the local part of  <code>$newName</code>.</p></item></olist><note><p>At the end of a <termref def="dt-snapshot">snapshot</termref>, if multiple attribute nodes with the same parent have the same qualified name, an error will be raised by <code>upd:applyUpdates</code>.</p></note></def></gitem>
+						
+						
+					</glist></div3><div3 id="id-upd-put"><head>upd:put</head><glist>
+						<gitem><label>Parameters</label><def><eg><![CDATA[upd:put(
+   $node as node(),
+   $uri as xs:string)]]></eg></def></gitem><gitem>
+							<label>Summary</label>
+							<def>
+								
+							<p> The XDM node tree rooted at <code>$node</code> is stored to the location specified by <code>$uri</code>.</p>
+
+
+
+</def>
+						</gitem>
+						<gitem>
+							<label>Constraints</label>
+							<def>
+								<p><code>$uri</code> must be a valid absolute URI.</p>
+							</def>
+						</gitem><gitem><label>Semantics</label><def><p>The external effects of <code>upd:put</code> are implementation-defined,
+since they occur outside the domain of XQuery. The intent is that, if <code>upd:put</code> is invoked on a document node and no error is raised, a
+subsequent query can access the stored document by invoking
+<code>fn:doc</code> with the same URI.</p></def></gitem>
+						
+						
+					</glist></div3></div2><div2 id="id-update-routines"><head>Update Routines</head><div3 id="id-upd-merge-updates"><head>upd:mergeUpdates</head><glist><gitem><label>Parameters</label>
+<def><eg><![CDATA[upd:mergeUpdates(
+   $pul1 as pending-update-list,
+   $pul2 as pending-update-list)]]></eg>  
+</def>
+						</gitem>
+						<gitem>
+							<label>Summary</label>
+							<def>
+								<p>Merges two <termref def="dt-pending-update-list">pending update lists</termref>.</p>
+							</def>
+						</gitem><gitem>
+							<label>Constraints</label>
+							<def>
+								<p>None.</p>
+							</def>
+						</gitem><gitem>
+							<label>Semantics</label>
+							<def>
+                              <olist><item><p>The two <termref def="dt-pending-update-list">pending update lists</termref> are merged and a single pending update list containing all the update primitives from both lists is returned.</p></item><item><p>Optionally, <code>upd:mergeUpdates</code> may raise a dynamic error if any of the following conditions are detected:</p><olist><item><p>Two or more <code>upd:rename</code> primitives on the merged list have the same target node <errorref code="0015" class="DY"/>.</p></item><item><p>Two or more <code>upd:replaceNode</code> primitives on the merged list have the same target node <errorref code="0016" class="DY"/>.</p></item><item><p>Two or more <code>upd:replaceValue</code> primitives on the merged list have the same target node <errorref code="0017" class="DY"/>.</p></item><item><p>Two or more <code>upd:replaceElementContent</code> primitives on the merged list have the same target node <errorref code="0017" class="DY"/>.</p></item><item><p>Two or more <code>upd:put</code> primitives on the merged list have the same <code>$uri</code> operand <errorref code="0031" class="DY"/>.</p></item><item><p>Two or more primitives on the merged list create  <termref def="dt-conflict">conflicting</termref> namespace bindings for the same element node <errorref code="0024" class="DY"/>. The following kinds of primitives create namespace bindings:</p>
+
+                              <olist><item><p><code>upd:insertAttributes</code>
+                              creates one namespace binding on the
+                              <code>$target</code> element
+                              corresponding to the <termref
+                              def="dt-implied-namespace-binding">implied
+                              namespace binding</termref> of the name
+                              of each attribute node in
+                              <code>$content</code> if the name 
+                              has a non-empty prefix.</p></item>
+
+                              <item><p><code>upd:replaceNode</code> creates one namespace binding on the <code>parent($target)</code> element
+                              corresponding to the <termref def="dt-implied-namespace-binding">implied namespace binding</termref> of the name of each attribute node in
+                              <code>$replacement</code> if the name has a non-empty prefix.</p></item>
+
+
+                              <item><p><code>upd:rename</code> creates a namespace binding on <code>$target</code>, or on the parent (if any) of
+                              <code>$target</code> if <code>$target</code> is an attribute node, corresponding to the <termref def="dt-implied-namespace-binding">implied namespace binding</termref> of <code>$newName</code>.
+However, if $target is an attribute and its name has an empty prefix, the namespace binding is not created.
+</p></item></olist></item></olist></item></olist>
+
+							</def>
+						</gitem></glist></div3>
+
+<div3 id="id-upd-apply-updates">
+<head>upd:applyUpdates</head>
+<glist>
+<gitem>
+<label>Parameters</label>
+<def>
+<eg>upd:applyUpdates(
+   $pul as pending-update-list,
+   $revalidation-mode as xs:string<phrase diff="add">,
+   $inherit-namespaces as xs:boolean</phrase>)</eg>
+ </def>
+</gitem>
+						<gitem>
+							<label>Summary</label>
+							<def>
+								<p>This routine ends a <termref def="dt-snapshot">snapshot</termref> by making effective  the semantics of all the update primitives on a <termref def="dt-pending-update-list">pending update list</termref> and by revalidating the resulting <termref def="dt-xdm-instance">XDM instance</termref>.</p>
+							</def>
+						</gitem><gitem>
+							<label>Constraints</label>
+							<def>
+								<p><code>$revalidation-mode</code> must be <code>"strict"</code>, <code>"lax"</code>, or <code>"skip"</code></p>
+							</def>
+						</gitem><gitem>
+							<label>Semantics</label>
+							<def>
+								
+							<olist><item><p>Checks the update primitives on <code>$pul</code> for compatibility. Raises a dynamic error if any of the following conditions are detected:</p><olist><item><p>Two or more <code>upd:rename</code> primitives on <code>$pul</code> have the same target node <errorref code="0015" class="DY"/>.</p></item><item><p>Two or more <code>upd:replaceNode</code> primitives on <code>$pul</code> have the same target node <errorref code="0016" class="DY"/>.</p></item><item><p>Two or more <code>upd:replaceValue</code> primitives on <code>$pul</code> have the same target node <errorref code="0017" class="DY"/>.</p></item><item><p>Two or more <code>upd:replaceElementContent</code> primitives on <code>$pul</code> have the same target node <errorref code="0017" class="DY"/>.</p></item><item><p>Two or more <code>upd:put</code> primitives on the merged list have the same <code>$uri</code> operand <errorref code="0031" class="DY"/>.</p></item><item><p>Two or more primitives on <code>$pul</code> create  <termref def="dt-conflict">conflicting</termref> namespace bindings for the same element node <errorref code="0024" class="DY"/>. The following kinds of primitives create namespace bindings:</p>
+
+                            <olist><item><p><code>upd:insertAttributes</code> creates one namespace binding on the <code>parent($target)</code> element
+                            corresponding to the <termref def="dt-implied-namespace-binding">implied namespace binding</termref> of the name of each attribute node in
+                            <code>$content</code> if the name 
+                              has a non-empty prefix.</p></item>
+
+                            <item><p><code>upd:replaceNode</code> creates one namespace binding on the <code>$target</code> element
+                            corresponding to the <termref def="dt-implied-namespace-binding">implied namespace binding</termref> of the name of each attribute node in
+                            <code>$replacement</code>  if the name 
+                              has a non-empty prefix.</p></item>
+
+                            <item><p><code>upd:rename</code> creates a namespace binding on <code>$target</code>, or on the parent (if any) of
+                            <code>$target</code> if <code>$target</code> is an attribute node, corresponding to the <termref def="dt-implied-namespace-binding">implied namespace binding</termref> of <code>$newName</code>. However, if $target is an attribute and its name has an empty prefix, the namespace binding is not created.</p></item></olist>
+
+</item></olist></item><item><p>The semantics of all  <termref def="dt-update-primitive">update primitives</termref> on <code>$pul</code>, other than <code>upd:put</code> primitives, are made effective in the following order:</p><olist><item><p>First, all <code>upd:insertInto</code>, <code>upd:insertAttributes</code>, <code>upd:replaceValue</code>, and <code>upd:rename</code>  primitives are applied.</p></item><item><p>Next, all <code>upd:insertBefore</code>, <code>upd:insertAfter</code>, <code>upd:insertIntoAsFirst</code>, and <code>upd:insertIntoAsLast</code> primitives are applied.</p></item><item><p>Next, all <code>upd:replaceNode</code> primitives are applied.</p></item><item><p>Next, all <code>upd:replaceElementContent</code> primitives are applied.</p></item><item><p>Next, all <code>upd:delete</code> primitives are applied.</p></item></olist></item><item><p>If, as a net result of the above steps, the <code>children</code> property of some node contains adjacent text nodes, these adjacent text nodes are merged into a single text node. The string-value of the resulting text node is the concatenated string-values of the adjacent text nodes, with no intervening space added. The <termref def="dt-node-identity">node identity</termref> of the resulting text node is implementation-dependent.</p></item><item><p>If, as a net result of the above steps, the <code>children</code> property of some node contains an empty text node, that empty text node is deleted from the <code>children</code> property.</p></item>
+
+<item><p diff="del">If the resulting <termref def="dt-xdm-instance">XDM instance</termref> violates any constraint specified in <bibref ref="xpath-datamodel"/>, a dynamic error is raised <errorref code="0021" class="DY"/>.</p>
+<p diff="add">If, after applying the updates, any <termref def="dt-xdm-instance">XDM instance</termref> (including a node that has
+been deleted or detached from its parent, or that is a descendant of such a
+node) violates any constraint specified in <bibref ref="xpath-datamodel"/>, a
+dynamic error is raised <errorref code="0021" class="DY"/>.</p>
+
+<note><p>For example, a data model constraint violation might occur if multiple attributes with the same parent have the same qualified name (see <xspecref spec="DM" ref="ElementNodeOverview"></xspecref>.)</p></note>
+
+<note><p>During processing of a <termref def="dt-pending-update-list">pending update list</termref>, an <termref def="dt-xdm-instance">XDM instance</termref> may temporarily violate a data model constraint. An error is raised only if a constraint remains unsatisfied after all update primitives other than <code>upd:put</code> have been applied.</p></note>
+</item>
+
+
+<item diff="add"><p>If <code>$inherit-namespaces</code> is
+<code>true</code>, then <code><loc
+href="#id-upd-propagate-namespace">upd:propagateNamespace</loc>($element,
+$prefix, $uri)</code> is invoked for each namespace binding that was
+<termref def="dt-mark">marked for namespace propagation</termref>,
+except for namespace bindings associated with the empty prefix,
+where <code>$element</code> is the element node on which the namespace
+binding appears, <code>$prefix</code> is the namespace prefix, and
+<code>$uri</code> is the namespace URI. Each of these nodes is then
+unmarked.</p></item>
+
+
+<item><p>For each document or element node <code>$top</code> that was <termref def="dt-mark">marked for revalidation</termref> by one of the earlier steps, <code>upd:revalidate($top, $revalidation-mode)</code> is invoked. <phrase diff="add">Each of these nodes is then unmarked.</phrase></p></item>
+
+<item><p>As the final step, all <code>upd:put</code> primitives on <code>$pul</code> are applied.</p></item><item><p>The  <code>upd:applyUpdates</code> operation is atomic with respect to the data model. In other words, if <code>upd:applyUpdates</code> terminates normally, the resulting <termref def="dt-xdm-instance">XDM instance</termref> reflects the result of all update primitives; but if <code>upd:applyUpdates</code> raises an error, the resulting <termref def="dt-xdm-instance">XDM instance</termref>  reflects no changes. Atomicity is guaranteed only with respect to operations on XDM instances, 
+and only with respect to error conditions specified in this document.</p><note><p>The results of implementation-dependent error conditions such as exceeding 
+resource limits are beyond the scope of this specification.</p></note></item><item><p>Propagation
+of XDM changes to an underlying persistent store is beyond the
+scope of this specification. For example, the effect on persistent storage of deleting a node that has no parent is beyond the scope of this specification.</p></item></olist></def>
+						</gitem></glist></div3><div3 id="id-upd-revalidate"><head>upd:revalidate</head><glist><gitem><label>Parameters</label><def><eg><![CDATA[upd:revalidate(
+   $top as node(),
+   $revalidation-mode as xs:string)]]></eg></def></gitem>
+						<gitem>
+							<label>Constraints</label>
+							<def>
+								<p><code>$top</code> must be a document node or an element node.</p><p><code>$revalidation-mode</code> must be <code>"strict"</code>, <code>"lax"</code>, or <code>"skip"</code>.</p>
+							</def>
+						</gitem><gitem>
+							<label>Summary</label>
+							<def>
+								<p>Schema validation is applied to the subtree rooted at <code>$top</code> in order to recover the types of updated nodes while preserving their <termref def="dt-node-identity">node identities</termref>.</p>
+							</def>
+						</gitem><gitem>
+							<label>Semantics</label>
+							<def>
+								
+							<p>If <code>$revalidation-mode</code> is <code>skip</code>, <code>upd:revalidate</code> performs no action. Otherwise:</p>
+              <olist>
+              <item><p>If <code>$revalidation-mode</code> is <code>lax</code>,
+              define <code>$topV</code> as the result of the XQuery expression <code>validate lax {$top}</code>. 
+              If <code>$revalidation-mode</code> is <code>strict</code>,
+              define <code>$topV</code> as the result of the XQuery expression <code>validate strict {$top}</code>. 
+              During computation of <code>$topV</code>, it is necessary to maintain a mapping between each node
+              in <code>$topV</code> and the corresponding node (if any) in the subtree rooted at <code>$top</code>
+              (this mapping is maintained in an implementation-dependent way.)</p>
+              <note>
+              <ulist>
+              <item><p>This step may raise an error <xerrorref spec="XQ" code="0027" class="DY"></xerrorref>
+              if <code>$top</code> is found to be invalid.</p>
+              </item>
+              <item>
+              <p>Some of the nodes in <code>$topV</code> (for example, default attributes generated by
+              the validation process) may have no corresponding nodes in <code>$top</code>.</p>
+              </item>
+              </ulist>
+              </note>
+              </item>
+              <item><p>For each node <code>$nV</code> in <code>$topV</code> that has a corresponding node
+              <code>$n</code> in <code>$top</code>, replace the following properties of <code>$n</code>
+              with the corresponding properties of <code>$nV</code>: <code>type-name</code>,
+              <code>typed-value</code>, <code>string-value</code>, <code>is-id</code>, <code>is-idrefs</code>,
+              <code>namespace-bindings</code>, <code>nilled</code>.</p>
+              </item>
+              <item>
+              <p>For each node <code>$nV</code> in <code>$topV</code> that does not have
+              a corresponding node in <code>$top</code>, insert the node <code>$nV</code>
+              into the subtree rooted at <code>$top</code> as a child or attribute of the node
+              corresponding to the parent of <code>$nV</code>.</p>
+              </item>
+              <item>
+              <p>The result of <code>upd:revalidate</code> is to modify the properties of the nodes
+              rooted at <code>$top</code> and possibly to add some new nodes to this subtree. 
+              When the revalidation process is complete, <code>$topV</code> can be discarded.</p>
+              </item>
+              </olist>
+              <note>
+              <p>After revalidation, the type annotations of the nodes in the validated subtree
+              are consistent with their content. 
+              It is expected that implementations will optimize the revalidation process by taking into account
+              which nodes have been modified since they were last validated.</p>
+              </note>
+              </def>
+						</gitem></glist></div3><div3 id="id-upd-remove-type"><head>upd:removeType</head><glist><gitem><label>Parameters</label><def><eg><![CDATA[upd:removeType(
+   $N as node())]]></eg></def></gitem>
+						<gitem>
+							<label>Constraints</label>
+							<def>
+								<p><code>$N</code> must be an element or attribute node</p>
+							</def>
+						</gitem><gitem>
+							<label>Summary</label>
+							<def>
+								<p> This routine is applied to a node whose name or content has been modified, in order to remove specific type information from the node and its ancestors, pending revalidation.</p>
+							</def>
+						</gitem><gitem>
+							<label>Semantics</label>
+							<def>
+								
+							<olist><item><p>If <code>$N</code> is an element node, its properties are changed as follows:</p><olist><item><p> If <code>type-name</code> is not equal to <code>xs:untyped</code>, then</p><p><olist><item><p><code>type-name</code> is set to <code>xs:anyType</code></p></item><item><p>If the parent of <code>N</code> is an element node, then <code>upd:removeType(parent($N))</code> is invoked.</p></item></olist> </p></item><item><p><code>string-value</code> is set equal to the concatenated contents of the text node descendants, in document order.</p></item><item><p><code>typed-value</code> is set equal to the <code>string-value</code> property, as an instance of <code>xs:untypedAtomic</code>.</p><note><p>The <termref def="dt-data-model">data model</termref> allows some flexibility to implementations regarding whether <code>string-value</code> and/or <code>typed-value</code> are stored or computed dynamically.</p></note></item><item><p><code>nilled</code>, <code>is-id</code>, and <code>is-idrefs</code> are set to <code>false</code>.</p></item></olist></item><item><p>If <code>$N</code> is an attribute node, its properties are changed as follows:</p><olist><item><p><code>type-name</code> is set to <code>xs:untypedAtomic</code>.</p> </item><item><p><code>typed-value</code> is set equal to the <code>string-value</code> property, as an instance of <code>xs:untypedAtomic</code>.</p></item><item><p> <code>is-id</code> and <code>is-idrefs</code> are set to <code>false</code>.</p></item><item><p>If <code>$N</code> has a parent, <code>upd:removeType(parent($N))</code> is invoked.</p></item></olist></item><item><p>The topmost ancestor of <code>$N</code> is <termref def="dt-mark">marked</termref> for revalidation.</p><p><termdef term="mark" id="dt-mark">To <term>mark</term> a node means to identify the node as participating in a later operation.</termdef> Marking of nodes is accomplished in an implementation-dependent way--for example, an implementation might maintain a list of marked nodes.</p></item></olist></def>
+						</gitem></glist></div3>
+
+<div3 id="id-upd-set-to-untyped"><head>upd:setToUntyped</head><glist><gitem><label>Parameters</label><def><eg><![CDATA[upd:setToUntyped(
+   $N as node())]]></eg></def></gitem>
+						<gitem>
+							<label>Constraints</label>
+							<def>
+								<p><code>$N</code> must be an element or attribute node</p>
+							</def>
+						</gitem><gitem>
+							<label>Summary</label>
+							<def>
+								<p> This routine is applied to a node that has been inserted into an untyped context, which requires that the node and its descendants be untyped as well.</p>
+</def>
+</gitem>
+
+<gitem>
+<label>Semantics</label>
+<def>							
+<olist>
+<item><p>If <code>$N</code> is an element node, its properties are changed as follows:</p>
+<olist>
+<item><p><code>type-name</code> is set to <code>xs:untyped</code>.</p></item>
+<item><p><code>typed-value</code> is set equal to the <code>string-value</code> property, as an instance of <code>xs:untypedAtomic</code>.</p>
+<note><p>The <termref def="dt-data-model">data model</termref> allows some flexibility to implementations regarding whether <code>string-value</code> and/or <code>typed-value</code> are stored or computed dynamically.</p></note>
+</item>
+<item><p><code>nilled</code>, <code>is-id</code>, and <code>is-idrefs</code> are set to <code>false</code>.</p></item>
+<item><p><code>upd:setToUntyped()</code> is invoked on the attributes and child element nodes of <code>$N</code>.</p></item>
+</olist>
+</item>
+
+<item><p>If <code>$N</code> is an attribute node, its properties are changed as follows:</p>
+
+<olist>
+<item><p><code>type-name</code> is set to <code>xs:untypedAtomic</code>.</p> </item>
+<item><p><code>typed-value</code> is set equal to the <code>string-value</code> property, as an instance of <code>xs:untypedAtomic</code>.</p></item>
+<item><p><phrase diff="del"><code>is-id</code> and </phrase><code>is-idrefs</code> <phrase diff="del">are</phrase><phrase diff="add">is</phrase> set to <code>false</code>.</p></item>
+<item diff="add"><p><code>is-id</code> is set to <code>false</code> if the attribute name is not <code>xml:id</code>.</p></item>
+</olist>
+</item>
+</olist>
+</def>
+						</gitem></glist></div3>
+
+
+<div3 id="id-upd-propagate-namespace" diff="add">
+<head>upd:propagateNamespace</head>
+
+<glist><gitem><label>Parameters</label><def><eg><![CDATA[upd:propagateNamespace(
+   $element as element(), 
+   $prefix as xs:NCName, 
+   $uri as xs:anyURI)]]></eg></def></gitem>
+
+
+						<gitem>
+							<label>Constraints</label>
+							<def>
+								<p>None</p>
+							</def>
+						</gitem><gitem>
+							<label>Summary</label>
+							<def>
+								<p>Propagates a namespace binding to all descendants of an element.</p>
+</def>
+</gitem>
+
+<gitem>
+<label>Semantics</label>
+<def>							
+<p>For each element <code>$child</code> among the children of <code>$element</code> that does not have a namespace binding for <code>$prefix</code>,</p>
+
+<olist>
+<item><p>add a namespace binding <code>($prefix, $uri)</code> to <code>$child</code></p></item>
+<item><p>call <code>upd:propagateNamespace($child, $prefix, $uri)</code></p></item>
+</olist>
+</def>
+						</gitem></glist></div3>
+
+
+
+</div2></div1>

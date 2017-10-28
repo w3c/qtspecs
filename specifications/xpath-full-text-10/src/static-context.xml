@@ -1,0 +1,155 @@
+
+<!-- JD
+<div1 role="xquery" id="id-xqft-context-components"><head>Context
+Components</head><p>The tables in this section describe how values are
+assigned to the various components of the static context and dynamic
+context, and to the parameters that control the serialization
+process.</p>
+-->
+
+<div1 id="id-xqft-static-context-components">
+<head>Static Context Components</head>
+
+<p>The following table describes the full-text components of
+the <term>static context</term> (as defined in <xspecref spec="XQ" ref="static_context"/>). 
+The following aspects of each
+component are described:</p>
+
+<ulist>
+
+<item>
+<p><emph>Default initial value:</emph> This is the initial value of the component if it is not
+overridden or augmented by the implementation or by a query.</p>
+</item>
+
+<item>
+<p><emph>Can be overwritten or augmented by
+implementation:</emph> Indicates whether an XQuery implementation is
+allowed to replace the default initial value of the component by a
+different, &ref-implementation-defined; value
+and/or to augment the default initial value by additional
+&ref-implementation-defined; values.</p>
+</item>
+
+<item>
+<p><emph>Can be overwritten or augmented by a
+query:</emph> Indicates whether a query is allowed to replace and/or
+augment the initial value provided by default or by the
+implementation. If so, indicates how this is accomplished (for
+example, by a declaration in the
+<term>prolog</term>; as defined in <xspecref spec="XQ" ref="id-query-prolog"/>).</p>
+</item>
+
+<item>
+<p><emph>Scope:</emph> Indicates where the
+component is applicable. "Global" indicates that the component applies
+globally, throughout all the modules used in a query. "Module"
+indicates that the component applies throughout a <term>module</term>
+(as defined in <xspecref spec="XQ" ref="id-query-prolog"/>). "Lexical" indicates that the
+component applies within the expression in which it is defined
+(equivalent to "module", if the component is declared in a
+prolog.)</p>
+</item>
+
+<item>
+<p><emph>Consistency
+Rules:</emph> Indicates rules that must be observed in assigning
+values to the component. </p>
+</item>
+</ulist>
+
+<table width="100%" border="1" summary="Static Context" role="small">
+<caption>Static Context Components</caption>
+
+<tbody>
+<tr>
+<th>Component</th> <th>Default initial value</th> <th>Can be
+overwritten or augmented by implementation?</th> <th>Can be
+overwritten or augmented by a query?</th> <th>Scope</th>
+<th>Consistency rules</th>
+</tr>
+
+<tr>
+<td><loc href="#ftcaseoption">FTCaseOption</loc></td> <td><code>case
+insensitive</code></td> <td>overwriteable</td>
+<td>overwriteable by prolog</td> <td>lexical</td> 
+<td>Value must be
+<code>case insensitive</code>, <code>case sensitive</code>, 
+<code>lowercase</code>, or <code>uppercase</code>.</td>
+</tr>
+
+<tr>
+<td><loc href="#ftdiacriticsoption">FTDiacriticsOption</loc></td>
+<td><code>diacritics insensitive</code></td> <td>overwriteable</td> 
+<td>overwriteable by prolog</td> <td>lexical</td> 
+<td>Value must be <code>diacritics insensitive</code> or
+<code>diacritics sensitive</code>.</td>
+</tr>
+
+<tr>
+<td><loc href="#ftstemoption">FTStemOption</loc></td>
+<td><code>no stemming</code></td> <td>overwriteable</td> 
+<td>overwriteable by prolog</td> <td>lexical</td> 
+<td>Value must be <code>stemming</code> or
+<code>no stemming</code>.</td>
+</tr>
+
+<tr>
+<td><loc href="#ftthesaurusoption">FTThesaurusOption</loc></td>
+<td><code>no thesaurus</code></td> <td>overwriteable</td> 
+<td>overwriteable by prolog (refer to default to augment)</td> 
+<td>lexical</td> 
+<td>Each URI in the value must be found in the
+statically known thesauri.</td>
+</tr>
+
+<tr>
+<td>Statically known thesauri</td>
+<td>none</td> <td>augmentable</td> 
+<td>cannot be augmented or overwritten by prolog</td> <td>module</td> 
+<td> Each URI uniquely identifies a thesaurus list.</td>
+</tr>
+
+<tr>
+<td><loc href="#ftstopwordoption">FTStopWordOption</loc></td>
+<td><code>no stop words</code></td> <td>overwriteable</td> 
+<td>overwriteable by prolog (refer to default to augment)</td> 
+<td>lexical</td>
+<td>Each URI in the value must be found in the statically known stop
+word lists.</td> 
+</tr>
+
+<tr>
+<td>Statically known stop word lists</td>
+<td>none</td> <td>augmentable</td> 
+<td>cannot be augmented or overwritten by prolog</td> <td>module</td> 
+<td>Each URI uniquely identifies a stop word list.</td>
+</tr>
+
+<tr>
+<td><loc href="#ftlanguageoption">FTLanguageOption</loc></td> 
+<td>&ref-implementation-defined;</td> <td>overwriteable</td>
+<td>overwriteable by prolog</td> <td>lexical</td> 
+<td>Value must be castable to <code>xs:language</code>.</td>
+</tr>
+
+<tr>
+<td>Statically known languages</td> 
+<td>none</td> <td>augmentable</td>
+<td>cannot be augmented or overwritten by prolog</td> <td>module</td> 
+<td>Each string uniquely identifies a language.</td>
+</tr>
+
+<tr>
+<td><loc href="#ftwildcardoption">FTWildCardOption</loc></td>
+<td><code>no wildcards</code></td> <td>no</td> 
+<td>overwriteable by prolog</td> <td>lexical</td>
+<td>Value must be <code>wildcards</code> or <code>no
+wildcards</code>.</td>
+</tr>
+
+</tbody>
+</table>
+
+</div1>
+

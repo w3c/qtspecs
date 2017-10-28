@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<div1 role="xquery" id="id-mime-type">
+
+  <head>The <code>application/xquery</code> Media Type</head>
+
+
+
+  <p>This Appendix 
+
+    specifies the media type for XQuery Version 1.0.  XQuery is a language for querying over
+
+    collections of data from XML data sources, as specified in the main body of this document. This media type is being 
+
+submitted to the IESG (Internet Engineering Steering Group)
+
+for review, approval, and registration with IANA (Internet Assigned Numbers
+
+Authority.)</p>
+
+
+
+  <div2 id="id-mime-type-intro">
+
+    <head>Introduction</head>
+
+    <p>
+
+	This document, found at
+
+	<loc href="http://www.w3.org/TR/xquery/" role="xquery">http://www.w3.org/TR/xquery/</loc>,
+
+	together with its normative references,  defines the language XQuery Version 1.0.  This Appendix
+
+      provides information about the <code>application/xquery</code> media type,
+
+      which is intended to be used for transmitting queries written in the
+
+      XQuery language.</p>
+
+    <p>This document was prepared by members of the W3C XML Query Working
+
+      Group.  Please send comments to public-qt-comments@w3.org,
+
+      a public mailing list with archives at
+
+      <loc href="http://lists.w3.org/Archives/Public/public-qt-comments">http://lists.w3.org/Archives/Public/public-qt-comments</loc>.</p></div2>
+
+
+
+  <div2 id="id-registration-of-mime-type">
+
+    <head>Registration of MIME Media Type <code>application/xquery</code></head>
+
+
+
+    <p>MIME media type name:  <code>application</code></p>
+
+    <p>MIME subtype name:    <code>xquery</code></p>
+
+    <p>Required parameters:  none</p>
+
+    <p>Optional parameters: none</p>
+
+    <p>The syntax of XQuery is expressed in Unicode but may be written
+
+	with any Unicode-compatible character encoding, including UTF-8 or
+
+	UTF-16, or transported as US-ASCII or ISO-8859-1 with Unicode
+
+	characters outside the range of the given encoding represented using
+
+	an XML-style <code>&amp;#xddd;</code> syntax.</p>
+
+
+
+      
+
+
+
+      <div3 id="id-interoperability-considerations"><head>Interoperability Considerations</head>
+
+	<p>None known.</p></div3>
+
+
+
+      <div3 id="id-applications-of-media-type"><head>Applications Using this Media Type</head>
+
+	<p>The public
+
+	  <loc href="http://www.w3.org/XML/Query/">XQuery Web page</loc>
+
+	  lists more than two dozen implementations of the XQuery language,
+
+	  both proprietary and open source.</p>
+
+
+
+	<p>This <phrase diff="del" at="2014-12-05">new</phrase> media
+	type is <phrase diff="del" at="2014-12-05">being</phrase>
+	registered to allow for deployment of XQuery on the World Wide
+	Web.</p></div3>
+
+
+
+      <div3 id="id-file-extensions"><head>File Extensions</head>
+
+	<p>The most common file extensions in use for XQuery are
+
+	  <code>.xq</code> and <code>.xquery</code>.</p>
+
+
+
+	<p>The appropriate Macintosh file type code is <code>TEXT</code>.</p>
+
+      </div3>
+
+
+
+      
+
+
+
+    <div3 id="id-intended-usage"><head>Intended Usage</head>
+
+      <p>The intended usage of this media type is for interchange
+
+	of XQuery expressions.</p></div3>
+
+
+
+    <div3 id="id-author-change-controller"><head>Author/Change Controller</head>
+
+      <p>XQuery was produced by, and is maintained by, the World Wide Web
+
+	Consortium's XML Query Working Group.  The W3C has change
+
+	control over this specification.</p></div3></div2>
+
+
+
+  <div2 id="xquery-mime-encoding"><head>Encoding Considerations</head>
+
+
+
+    <p>For use with transports that are not 8-bit clean, quoted-printable
+
+    encoding is recommended since the XQuery syntax itself uses the
+
+    US-ASCII-compatible subset of Unicode.</p>
+
+
+
+  <p>An XQuery document may contain an <termref def="dt-encoding-declaration">encoding 
+
+declaration</termref> as part of its <termref def="dt-version-declaration">version declaration</termref>:</p>
+
+  <eg role="frag-prolog-parse-test">xquery version "3.1" encoding "utf-8";</eg>
+
+
+
+  </div2>
+
+
+
+<div2 id="xquery-mime-recognizing">
+
+  <head>Recognizing XQuery Files</head>
+
+
+
+  <p>An XQuery file may have the string <code>xquery version "V.V"</code> near the
+
+    beginning of the document, where <code>"V.V"</code> is a version number.
+
+    Currently the version number, if present, must be <code>"1.0"</code><phrase diff="add" at="2014-12-05">, <code>"3.0"</code>, or <code>"3.1"</code></phrase>.</p></div2>
+
+
+
+<div2 id="id-charset-default-rules"><head>Charset Default Rules</head>
+
+
+
+  <p>XQuery documents use the Unicode character set and, by default, the UTF-8 encoding.</p></div2>
+
+
+
+<div2 id="id-security-considerations"><head>Security Considerations</head>
+
+
+
+  <p>Queries written in XQuery may cause arbitrary URIs or IRIs to be
+
+    dereferenced.  Therefore, the security issues of <bibref ref="RFC3987"/> Section 8 should be considered.
+
+    In addition, the contents of resources identified by  <code>file:</code> URIs can in some cases be
+
+    accessed, processed and returned as results. XQuery expressions can invoke any of the functions defined in
+
+<bibref ref="xpath-functions-31"/>. For example, the
+
+<code>fn:doc()</code> and <code>fn:doc-available()</code> functions  allow local filesystem probes as well as
+
+access to any URI-defined resource accessible from the system
+
+evaluating the XQuery expression.
+
+<phrase diff="add" at="bug 30027">
+The <code>fn:transform()</code> function allows calls to URI-identified
+XSLT transformations which may in turn call external extension functions
+and access or write to the file system. The <code>fn:transform()</code> function
+should be sandboxed or disabled if untrusted queries are run.
+</phrase>
+
+</p><p>XQuery is a full declarative programming language, and supports
+
+user-defined functions, external function libraries (modules)
+
+referenced by URI, and system-specific "native" functions.</p><p>Arbitrary recursion is possible, as is arbitrarily large
+
+memory usage, and implementations may place limits on CPU
+
+and memory usage, as well as restricting access to system-defined
+
+functions.
+
+</p>
+
+
+
+  <p diff="del" at="2014-12-05">The XML Query Working group is working on a facility to
+
+    allow XQuery expressions to create and update 
+
+    persistent data.  Untrusted queries should not be given write
+
+    access to data.</p>
+
+    <p diff="add" at="2014-12-05">
+      The optional XQuery Update Facility allows XQuery expressions to
+      create and update persistent data, potentially including writing
+      to arbitrary locations on the local filesystem as well as to
+      remote URIs. Untrusted queries should not be given write access
+      to data.
+    </p>
+
+
+    <p>Furthermore, because the XQuery language permits extensions, 
+
+    it is possible that <code>application/xquery</code>
+
+    may describe content that has
+
+    security implications beyond those described here.</p>
+
+  </div2>
+
+  </div1>

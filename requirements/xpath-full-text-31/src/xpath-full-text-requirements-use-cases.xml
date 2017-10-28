@@ -1,0 +1,604 @@
+<?xml version="1.0"?>
+<!DOCTYPE spec PUBLIC "-//W3C//DTD Specification V2.1//EN" "http://www.w3.org/2002/xmlspec/dtd/2.2/xmlspec.dtd" [
+<!ENTITY doc.version "3.1">
+<!ENTITY doc.version-code "31">
+<!ENTITY doc.stage "WD">
+<!ENTITY doc.w3c-doctype "wd">
+<!ENTITY doc.w3c-doctype-full "Working Draft">
+<!-- e.g., "Working Draft" or "Candidate Recommendation" -->
+<!ENTITY date.day "27">
+<!ENTITY date.DD "27">
+<!ENTITY date.month "March">
+<!ENTITY date.monthnum "03">
+<!ENTITY date.year "2015">
+<!ENTITY prevdate.day "">
+<!ENTITY prevdate.month "">
+<!ENTITY prevdate.monthnum "">
+<!ENTITY prevdate.year "">
+<!ENTITY doc.date "&date.year;&date.monthnum;&date.day;">
+<!ENTITY doc.prevdate "&prevdate.year;&prevdate.monthnum;&prevdate.day;">
+<!ENTITY w3c.tr "http://www.w3.org/TR">
+<!ENTITY doc.parent.shortname "xpath-full-text-&doc.version-code;">
+<!ENTITY doc.shortname "&doc.parent.shortname;-requirements-use-cases">
+<!ENTITY doc.w3c-designation "&doc.stage;-&doc.shortname;">
+<!ENTITY doc.publoc "&w3c.tr;/&date.year;/&doc.w3c-designation;-&doc.date;/">
+<!ENTITY doc.latestloc "&w3c.tr;/&doc.shortname;/">
+<!ENTITY doc.parent.latestloc "&w3c.tr;/&doc.parent.shortname;/">
+<!ENTITY language "XQuery and XPath Full Text &doc.version;">
+<!ENTITY % status-entities SYSTEM "../../../etc/status-entities.dtd">
+%status-entities;
+<!ENTITY doc.WD-pubdate "27 March 2015">
+<!ENTITY doc.LC-pubdate "TO BE DETERMINED">
+<!ENTITY doc.LC-comments-due "TO BE DETERMINED">
+<!ENTITY doc.CR-pubdate "NOT RELEVANT">
+<!ENTITY doc.CR-comments-due "NOT RELEVANT">
+<!ENTITY doc.PR-expected "NOT RELEVANT">
+<!ENTITY doc.PR-pubdate "NOT RELEVANT">
+<!ENTITY doc.PR-comments-due "NOT RELEVANT">
+<!ENTITY doc.REC-pubdate "NOT RELEVANT">
+<!ENTITY doc.pubdate "&doc.WD-pubdate;">
+<!ENTITY doc.comments-due "">
+<!ENTITY status-section-id "status">
+<!ENTITY spec-devby "&devby.joint1;">
+<!ENTITY changelog-id "">
+<!ENTITY changes-para "&post.FPWD.changes;">
+<!ENTITY implementation-report-location "">
+<!ENTITY implementation-report-availability "">
+<!ENTITY implementation-report "&implementation-report-irrelevant;">
+<!ENTITY disclosure.one "&disclosure.xquery;">
+<!ENTITY Bugzilla-key "FT31req">
+<!ENTITY patent-policy-paragraph "&ppp-two-NOTE;">
+<!ENTITY documents-and-relationships "&not-set-of-documents;">
+<!ENTITY advancement.statement "This document will eventually be published as a
+&WGNote;
+to persistently record the Requirements that guided the development of
+<loc href='http://www.w3.org/TR/xpath-full-text-31/'>&language;</loc>
+as a W3C Recommendation.">
+<!ENTITY doc-stability "&doc-stability-WD;">
+<!ENTITY PR-entrance-criteria "">
+<!ENTITY features-at-risk-para "&no-features-at-risk;">
+<!ENTITY document-stage "&doc-stage-FPWD;">
+<!ENTITY customized-paragraph '<p>This document includes,
+for each requirement, a corresponding status, indicating the 
+current situation of the requirement in <loc href="&doc.latestloc;" 
+xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">&language;</loc>
+at the time that the spec was most recently published on 27 March 2015. 
+Organizations and individuals should review this document to determine whether or not the 
+requirements provided meet the needs of the full-text community. 
+If additional requirements are identified, they may be added to these requirements in a future publication.</p>
+<p>A future publication of this document will incorporate a number of Use Cases that assist the Working Groups
+in determining whether a candidate requirement is, in fact, a real requirement and illustrating various
+problems that &language; is intended to address.</p>'>
+<!ENTITY status-section SYSTEM "../../../etc/status-general.xml">
+<!-- Added several entities for characters used in this document JM 2001-08-20 -->
+<!ENTITY currency "&#164;">
+<!ENTITY divide "&#247;">
+<!-- DIVISION SIGN -->
+<!ENTITY times "&#215;">
+<!-- MULTIPLICATION SIGN -->
+<!ENTITY eacute "&#233;">
+<!ENTITY ocircumflex "&#244;">
+<!-- Add some shorthand entities for consistency SB 2003-01-24 -->
+<!ENTITY must '<termref def="terminology-must">MUST</termref>'>
+<!ENTITY should '<termref def="terminology-should">SHOULD</termref>'>
+<!ENTITY may '<termref def="terminology-may">MAY</termref>'>
+<!ENTITY score '<termref def="terminology-score">SCORE</termref>'>
+<!ENTITY inconc "The questionnaire was inconclusive">
+]>
+<spec w3c-doctype="wd">
+  <header>
+    <title diff="chg">&language; Requirements and Use Cases</title>
+    <w3c-designation>&doc.w3c-designation;</w3c-designation>
+    <w3c-doctype>W3C &doc.w3c-doctype-full;</w3c-doctype>
+    <pubdate diff="chg">
+      <day>&date.day;</day>
+      <month>&date.month;</month>
+      <year>&date.year;</year>
+    </pubdate>
+    <publoc diff="chg">
+      <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/2015/WD-xpath-full-text-31-requirements-use-cases-20150327/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">&doc.publoc;</loc>
+    </publoc>
+    <latestloc diff="chg">
+      <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/xpath-full-text-31-requirements-use-cases/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">&doc.latestloc;</loc>
+    </latestloc>
+    <!--
+    <prevlocs>
+      <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="&doc.latestloc;"
+           xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">INSERT HARDCODED URI HERE</loc>
+    </prevlocs>
+-->
+    <authlist diff="chg">
+      <author>
+        <name>(somebody at EMC)</name>
+        <affiliation>EMC Corporation</affiliation>
+      </author>
+    </authlist>
+
+    <abstract diff="chg">
+      <p>This document specifies requirements and use cases for Full-Text Search for use in
+         XQuery 3.1 <bibref ref="xquery-31"/> and XPath 3.1 <bibref ref="xpath-31"/>.</p>
+    </abstract>
+
+    &status-section;
+
+    <langusage>
+      <language id="EN">English</language>
+    </langusage>
+
+    <revisiondesc>
+
+      <slist>
+
+        <sitem>Strawman 3.1 (JM; 2015-01-06)</sitem>
+
+      </slist>
+
+    </revisiondesc>
+
+  </header>
+
+  <body>
+
+    <div1 id="goals">
+      <head>Goals</head>
+
+      <p>The goal of &language; is to extend XQuery and XPath Full Text 3.0
+         with additional functionality in response to requests from users and implementors.</p>
+
+    </div1>
+
+
+    <div1 id="Requirements">
+      <head>Requirements</head>
+
+      <div2 id="Terminology">
+        <head>Terminology</head>
+
+        <p>The following key words are used throughout the document to specify the
+           extent to which an item is a requirement for the work of the XML Query 
+           Working Group:</p>
+
+        <glist>
+
+          <gitem>
+            <label id="terminology-must">MUST</label>
+            <def>
+              <p>This word means that the item is an absolute requirement.</p>
+            </def>
+          </gitem>
+
+          <gitem>
+            <label id="terminology-should">SHOULD</label>
+            <def>
+              <p>This word means that there may exist valid reasons not to treat this item
+                 as a requirement, but the full implications should be understood and the case
+                 carefully weighed before discarding this item.</p>
+            </def>
+          </gitem>
+
+          <gitem>
+            <label id="terminology-may">MAY</label>
+            <def>
+              <p>This word means that an item deserves attention, but further study is
+                 needed to determine whether the item should be treated as a 
+                 requirement.</p>
+            </def>
+          </gitem>
+
+        </glist>
+
+        <p>When the words
+          <loc href="#terminology-must">MUST</loc>,
+          <loc href="#terminology-should">SHOULD</loc>, or
+          <loc href="#terminology-may">MAY</loc>are used in this technical sense, they
+          occur as a hyperlink to these definitions. These words will also be used with
+          their conventional English meaning, in which case there is no hyperlink. For
+          instance, the phrase "the full implications should be understood" uses the
+          word "should" in its conventional English sense, and therefore occurs without
+          the hyperlink.</p>
+        <p id="req-status">Each requirement also includes a status section,
+          indicating its current situation in the XML-Query family of specifications.
+          Three status levels are available:</p>
+
+        <glist>
+
+          <gitem>
+            <label>"Green" status</label>
+            <def>
+              <p>
+                <graphic source="http://www.w3.org/Icons/green-ball.gif" alt="green status"></graphic>
+                This indicates that the requirement, according to its
+                original formulation, has been completely met. Optional clarificatory text
+                may follow.</p>
+            </def>
+          </gitem>
+
+          <gitem>
+            <label>"Yellow" status</label>
+            <def>
+              <p>
+                <graphic source="http://www.w3.org/Icons/yellow-ball.gif" alt="yellow status"></graphic>
+                This indicates that the requirement has been partially met
+                according to its original formulation. When this happens, explanatory text is
+                provided to better clarify the current scope of the
+                requirement.</p>
+            </def>
+          </gitem>
+
+          <gitem>
+            <label>"Red" status</label>
+            <def>
+              <p>
+                <graphic source="http://www.w3.org/Icons/red-ball.gif" alt="red status"></graphic>
+                This indicates that the requirement, according to its
+                original formulation, has not been met. If this is the case, explanatory text
+                is provided.</p>
+            </def>
+          </gitem>
+
+        </glist>
+
+      </div2>
+
+
+      <div2 id="general-requirements">
+        <head>General Requirements</head>
+
+
+        <div3 id="backward-compatibility">
+          <head>Backward compatibility</head>
+
+          <glist>
+
+            <gitem>
+              <label/>
+              <def>
+                <p>&language; <loc href="#terminology-must">MUST</loc> be backward compatible.</p>
+                <p>Every valid XQuery and XPath Full Text 3.0 expression <loc href="#terminology-must">MUST</loc>
+                   be valid in &language; and it <loc href="#terminology-must">MUST</loc>  evaluate to the same result.</p>
+
+                <p>
+                  <graphic source="http://www.w3.org/Icons/green-ball.gif" alt="green status"></graphic>
+                  <emph>Status:</emph>this requirement has been met.</p>
+              </def>
+            </gitem>
+
+          </glist>
+
+        </div3>
+
+
+        <div3 id="extension-compatibility">
+          <head>Extension compatibility</head>
+
+          <glist>
+
+            <gitem>
+              <label/>
+              <def>
+                <p>&language; <loc href="#terminology-must">MUST</loc> be compatible with
+                   XQuery and XPath 3.1 extensions developed by the
+                  <loc href="http://www.w3.org/XML/Query/">XML Query Working Group</loc>and the <loc href="http://www.w3.org/Style/XSL/">XSLT Working Group</loc>.</p>
+
+                <p>
+                  <graphic source="http://www.w3.org/Icons/green-ball.gif" alt="green status"></graphic>
+                  <emph>Status:</emph>this requirement has been met.</p>
+              </def>
+            </gitem>
+
+          </glist>
+
+        </div3>
+
+      </div2>
+
+
+      <!--  REQUIREMENTS ***********************************-->
+      <div2 id="full-text-search-functionality">
+        <head>Full Text Search Functionality</head>
+
+
+        <div3>
+          <head>Feature names for XQuery require-feature and prohibit-feature</head>
+
+          <glist>
+
+            <gitem>
+              <label/>
+              <def>
+                <p>&language; <loc href="#terminology-must">MUST</loc> add feature names for
+                XQuery require-feature and prohibit-feature to include the names defined in the
+                "http://www.w3.org/2011/xquery-features" namespace.</p>
+
+                <p>
+                  <graphic source="http://www.w3.org/Icons/green-ball.gif" alt="green status"></graphic>
+                  <emph>Status:</emph>this requirement has been met.</p>
+              </def>
+            </gitem>
+
+          </glist>
+
+        </div3>
+
+
+        <div3>
+          <head>Language Identifiers</head>
+
+          <glist>
+
+            <gitem>
+              <label/>
+              <def>
+                <p>&language; <loc href="#terminology-must">MUST</loc> specify in the Language Option
+                how to handle multiple language identifiers for the same language,
+                including languages represented by both two- and three- letter identifiers.</p>
+                <p>
+                  <graphic source="http://www.w3.org/Icons/green-ball.gif" alt="green status"></graphic>
+                  <emph>Status:</emph>this requirement has been met.</p>
+              </def>
+            </gitem>
+
+          </glist>
+
+        </div3>
+
+        <div3>
+          <head>Match highlighting</head>
+
+          <glist>
+
+            <gitem>
+              <label/>
+              <def>
+                <p>&language; <loc href="#terminology-must">MUST</loc> support adding marker elements around token matches. How the element will be marked <loc href="#terminology-may">MAY</loc> be specified by an EQName or a function item as argument.</p>
+                <p>
+                  <graphic source="http://www.w3.org/Icons/red-ball.gif" alt="red status"></graphic>
+                  <emph>Status:</emph>this requirement has not been met.</p>
+              </def>
+            </gitem>
+
+          </glist>
+
+        </div3>
+
+        <div3>
+          <head>Optional URI for stemming algorithms</head>
+
+          <glist>
+
+            <gitem>
+              <label/>
+              <def>
+                <p>&language; <loc href="#terminology-must">MUST</loc> define an
+                optional URI to identify stemming algorithms. Issue raised in Bugzilla Bug 9680.</p>
+                <p>
+                  <graphic source="http://www.w3.org/Icons/red-ball.gif" alt="red status"></graphic>
+                  <emph>Status:</emph>this requirement has not been met. The Working Group has yet to decide whether it will be a requirement for this or any other version.</p>
+              </def>
+            </gitem>
+
+          </glist>
+
+        </div3>
+
+
+        <div3>
+          <head>Refine language about levels in FTThesaurus Option</head>
+
+          <glist>
+
+            <gitem>
+              <label/>
+              <def>
+                <p>&language; <loc href="#terminology-must">MUST</loc> refine language about levels in FTThesaurus Option. Issue raised in Bugzilla Bug 11444.</p>
+                <p>
+                  <graphic source="http://www.w3.org/Icons/red-ball.gif" alt="red status"></graphic>
+                  <emph>Status:</emph>this requirement has not been met. The Working Group has yet to decide whether it will be a requirement for this or any other version.</p>
+              </def>
+            </gitem>
+
+          </glist>
+
+        </div3>
+
+
+        <div3>
+          <head>Tokenize items</head>
+
+          <glist>
+
+            <gitem>
+              <label/>
+              <def>
+                <p>&language; <loc href="#terminology-must">MUST</loc> support explicitly tokenizing an item and returning a sequence of strings.</p>
+                <p>
+                  <graphic source="http://www.w3.org/Icons/red-ball.gif" alt="red status"></graphic>
+                  <emph>Status:</emph>this requirement has not been met. The Working Group has yet to decide whether it will be a requirement for this or any other version.</p>
+              </def>
+            </gitem>
+
+          </glist>
+
+        </div3>
+
+
+        <div3>
+          <head>Count occurrences of search terms</head>
+
+          <glist>
+
+            <gitem>
+              <label/>
+              <def>
+                <p>&language; <loc href="#terminology-must">MUST</loc> enable counting the number of occurrences of search terms specified in a full-text expression.</p>
+                <p>
+                  <graphic source="http://www.w3.org/Icons/red-ball.gif" alt="red status"></graphic>
+                  <emph>Status:</emph>this requirement has not been met. The Working Group has yet to decide whether it will be a requirement for this or any other version.</p>
+              </def>
+            </gitem>
+
+          </glist>
+
+        </div3>
+
+
+        <div3>
+          <head>Return score values</head>
+
+          <glist>
+
+            <gitem>
+              <label/>
+              <def>
+                <p>&language; <loc href="#terminology-must">MUST</loc> allow explicit access to score values that have been assigned to items by an FTContains expression, making the score values available for merging and other computations.</p>
+                <p>
+                  <graphic source="http://www.w3.org/Icons/red-ball.gif" alt="red status"></graphic>
+                  <emph>Status:</emph>this requirement has not been met. The Working Group has yet to decide whether it will be a requirement for this or any other version.</p>
+              </def>
+            </gitem>
+
+          </glist>
+
+        </div3>
+
+
+        <div3>
+          <head>Search on punctuation</head>
+
+          <glist>
+
+            <gitem>
+              <label/>
+              <def>
+                <p>&language; <loc href="#terminology-must">MUST</loc> support searching on punctuation. 
+                For example, searching on tokens that contain punctuation such as PB&amp;J and document.xml.</p>
+                <p>
+                  <graphic source="http://www.w3.org/Icons/red-ball.gif" alt="red status"></graphic>
+                  <emph>Status:</emph>this requirement has not been met. The Working Group has yet to decide whether it will be a requirement for this or any other version.</p>
+              </def>
+            </gitem>
+
+          </glist>
+
+        </div3>
+
+
+        <div3>
+          <head>Snippets</head>
+
+          <glist>
+
+            <gitem>
+              <label/>
+              <def>
+                <p>&language; <loc href="#terminology-must">MUST</loc> support displaying snippets (match tokens in context). 
+                Snippets are brief segments of text surrounding matches displayed in search results to enable the
+                user to better judge the usefulness of a search result.</p>
+                <p>
+                  <graphic source="http://www.w3.org/Icons/red-ball.gif" alt="red status"></graphic>
+                  <emph>Status:</emph>this requirement has not been met. The Working Group has yet to decide whether it will be a requirement for this or any other version.</p>
+              </def>
+            </gitem>
+
+          </glist>
+
+        </div3>
+
+      </div2>
+
+
+      <div2 id="editorial-changes">
+        <head>Editorial Changes</head>
+
+        <div3>
+          <head>Irrevocable Stop Words</head>
+
+          <glist>
+
+            <gitem>
+              <label/>
+              <def>
+                <p>&language; <loc href="#terminology-must">MUST</loc> specify in the Stop Word Option that
+                implementations may apply stop word lists during indexing and be unable to comply with query-time requests to not apply those stop words.</p>
+                <p>
+                  <graphic source="http://www.w3.org/Icons/green-ball.gif" alt="green status"></graphic>
+                  <emph>Status:</emph>this requirement has been met.</p>
+              </def>
+            </gitem>
+
+          </glist>
+
+        </div3>
+
+
+        <div3>
+          <head>Rename TokenInfo</head>
+
+          <glist>
+
+            <gitem>
+              <label/>
+              <def>
+                <p>&language; <loc href="#terminology-must">MUST</loc> rename TokenInfo to something like TokenSpan or TokenRange. 
+                Issue raised in Bugzilla Bug 9541.</p>
+                <p>
+                  <graphic source="http://www.w3.org/Icons/red-ball.gif" alt="red status"></graphic>
+                  <emph>Status:</emph>this requirement has not been met. The Working Group has yet to decide whether it will be a requirement for this or any other version.</p>
+              </def>
+            </gitem>
+
+          </glist>
+
+        </div3>
+
+      </div2>
+
+    </div1>
+
+
+    <div1 id="use-cases">
+      <head>Use Cases</head>
+
+      <p>The solutions provided for the following Use Cases use
+         Full Text syntax in the context of the XQuery 3.1 query language,
+         the XPath 3.1 expression language, or both.</p>
+    </div1>
+
+  </body>
+
+
+  <back>
+
+    <div1 id="biblio">
+      <head>References</head>
+
+      <div2 id="non-normative-biblio">
+        <head>Non-Normative</head>
+
+        <blist>
+
+          <bibl diff="chg" id="xpath-datamodel-31" key="XQuery and XPath Data Model (XDM) 3.1"/>
+
+          <bibl id="xquery-31" key="XQuery 3.1: An XML Query Language"/>
+
+          <bibl id="xpath-31" key="XML Path Language (XPath) 3.1"/>
+
+          <bibl diff="chg" id="xquery-31-requirements" key="XQuery 3.1 Requirements"/>
+
+          <bibl id="SQLMMFT" key="SQL/MM Full-Text">ISO/IEC 13249-2:2000,
+             Information technology &mdash; Database languages &mdash;
+             SQL Multimedia and Application Packages &mdash;
+             Part 2: Full-Text,
+             International Organization For Standardization, 2000, referenced in e.g.
+             <loc href="http://www.acm.org/sigmod/record/issues/0112/standards.pdf">"SQL Multimedia and Application Packages (SQL/MM)"</loc>
+             (See http://www.acm.org/sigmod/record/issues/0112/standards.pdf)</bibl>
+
+        </blist>
+
+      </div2>
+
+    </div1>
+
+  </back>
+
+</spec>

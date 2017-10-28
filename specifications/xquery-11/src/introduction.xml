@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<div1 id="id-introduction">
+
+	<head>Introduction</head> 
+
+	<p role="xquery">As increasing amounts of information are
+	stored, exchanged, and presented using XML, the ability to
+	intelligently query XML data sources becomes increasingly
+	important. One of the great strengths of XML is its
+	flexibility in representing many different kinds of
+	information from diverse sources. To exploit this flexibility,
+	an XML query language must provide features for retrieving and
+	interpreting information from these diverse sources.</p> 
+
+	<p role="xquery">XQuery is designed to meet the requirements
+	identified by the W3C XML Query Working Group <bibref ref="xquery-11-requirements"/>
+  and the use cases in <bibref ref="UseCases"/>. 
+  It is designed to be a language in which queries are concise and easily
+	understood. It is also flexible enough to query a broad
+	spectrum of XML information sources, including both databases
+	and documents. The Query Working Group has identified a
+	requirement for both a non-XML query syntax and an
+	XML-based query syntax. XQuery is designed to meet the first
+	of these requirements.  XQuery is derived from an XML query
+	language called Quilt <bibref ref="Quilt"/>, which in turn
+	borrowed features from several other languages, including
+	XPath 1.0 <bibref ref="xpath"/>, XQL <bibref ref="XQL"/>,
+	XML-QL <bibref ref="XML-QL"/>, SQL <bibref ref="SQL"/>, and
+	OQL <bibref ref="ODMG"/>. </p>
+
+	<p role="xpath">The primary purpose of XPath is to address the
+	nodes of <bibref ref="XML"/> or <bibref ref="XML1.1"/> trees.
+
+	XPath gets its name from its use of a path notation for navigating through the hierarchical structure of an XML
+	document.
+
+        XPath uses a compact, non-XML syntax to facilitate use of
+        XPath within URIs and XML attribute values.</p>
+
+<p><termdef id="dt-datamodel" term="data model">&language; operates on the abstract,
+	logical structure of an XML document, rather than its surface
+	syntax.  This logical structure, known as the <term>data
+	model</term>,  is defined in <bibref ref="xpath-datamodel-11"/>.</termdef></p>
+
+	<p role="xpath">XPath is designed to be embedded in a
+	<term>host language</term> such as <bibref ref="xslt-21"/> or
+	<bibref ref="xquery-11"/>. XPath has a natural subset that can be
+	used for matching (testing whether or not a node matches a
+	pattern); this use of XPath is described in <bibref ref="xslt-21"/>.</p>
+
+	<p>XQuery Version 1.1 is an extension of XPath Version
+	2.1. 
+
+	In general, any expression that is syntactically valid and executes
+	successfully in both XPath 2.1 and XQuery 1.1 will return the
+	same result in both languages. There are a few exceptions to this
+	rule:
+
+	<ulist>
+	<item><p>Because XQuery expands 
+<phrase role="xquery">
+ <termref def="dt-predefined-entity-reference">predefined entity references</termref> and <termref def="dt-character-reference">character references</termref>
+</phrase>
+<phrase role="xpath">
+predefined entity references and character references
+</phrase>
+ and XPath does not, expressions containing these produce different results in the two languages. For instance, the value of the string literal <code role="parse-test">"&amp;amp;"</code> is <code>&amp;</code> in XQuery, and <code>&amp;amp;</code> in XPath. (XPath is often embedded in other languages, which may expand predefined entity references or character references before the XPath expression is evaluated.)</p></item>
+	<item><p>If XPath 1.0 compatibility mode is enabled, XPath behaves differently from XQuery in a number of ways, 
+<phrase role="xpath">which are noted throughout this document, and listed in <specref ref="id-incompat-in-false-mode"/>.</phrase>
+<phrase role="xquery">which are discussed in <bibref ref="xpath-21"/>.</phrase></p></item>
+	</ulist></p>
+
+	<p>Because these languages are so closely related, their grammars
+	and language descriptions are generated from a common source
+	to ensure consistency, and the editors of these specifications
+	work together closely.</p>
+
+	<p>&language; also depends on and is closely related to the
+	following specifications:</p>
+
+	<ulist>
+	  <item>
+            <p><bibref ref="xpath-datamodel-11"/> defines the data model that underlies all &language; expressions.</p>
+	  </item>
+
+          <item>
+	  <p>The type system of &language; is based on <bibref ref="XMLSchema"/>.</p>
+	  </item>
+
+	  <item>
+	  <p>The built-in function library  and the operators supported by
+	  &language; are defined in <bibref ref="xpath-functions-11"/>.</p>
+	  </item>
+
+	  <item role="xquery">
+	  <p>One requirement in <bibref ref="xquery-11-requirements"/> is that
+	  an XML query language have both a human-readable syntax and
+	  an XML-based syntax.  The XML-based syntax for XQuery is
+	  described in <bibref ref="xqueryx-11"/>. </p> 
+          </item>
+
+        </ulist>
+
+<p><termdef id="dt-xquery-11-processor" term="XQuery 1.1 Processor">An
+<term>XQuery 1.1 Processor</term> processes a query according to the
+XQuery 1.1 specification.</termdef></p>
+<p><termdef id="dt-xquery-10-processor" term="XQuery 1.0 Processor">An
+<term>XQuery 1.0 Processor</term> processes a query according to the
+XQuery 1.0 specification.</termdef></p>
+
+	
+	<p>This document specifies a grammar for &language;, using the
+		same basic EBNF notation used in <bibref ref="XML"/>. 
+    Unless otherwise noted (see <specref ref="lexical-structure"/>), 
+    whitespace is not significant in <phrase role="xquery">queries</phrase><phrase role="xpath">expressions</phrase>. 
+    Grammar productions are introduced together with the features that they describe,
+    and a complete grammar is also presented in the appendix [<specref ref="nt-bnf"/>]. 
+    The appendix is the normative version.</p><p>In the grammar productions in this document,
+    named symbols are underlined and literal text is enclosed in double quotes. 
+    For example, the following  production describes the syntax of a function call:</p><scrap> 
+		  <head></head> 
+		  <prodrecap ref="FunctionCall" id="fakeid"/> 
+		</scrap><p>The production should be read as follows: A
+		function call consists of an <nt
+		def="EQName">EQName</nt> followed by an
+		open-parenthesis. The open-parenthesis is followed by
+		an optional argument list. The argument list (if
+		present) consists of one or more expressions,
+		separated by commas. The optional argument list is
+		followed by a close-parenthesis. </p>
+
+
+<p>This document normatively defines the static and dynamic semantics of
+&language;. In this document, examples and material labeled as "Note"
+are provided for explanatory purposes and are not normative.</p>
+
+
+		<p>Certain aspects of language
+		processing are described in this specification as
+		<term>implementation-defined</term> or
+		<term>implementation-dependent</term>.</p>
+
+<ulist>
+  <item>
+    <p><termdef id="dt-implementation-defined" term="implementation defined"><term>Implementation-defined</term>
+		indicates an aspect that may differ between
+		implementations, but must be specified by the
+		implementor for each particular
+		implementation.</termdef></p>
+  </item>
+  <item>
+    <p>
+      <termdef id="dt-implementation-dependent" term="implementation
+		dependent"><term>Implementation-dependent</term>
+		indicates an aspect that may differ between
+		implementations, is not specified by this or any W3C
+		specification, and is not required to be specified by
+		the implementor for any particular
+		implementation.</termdef></p>
+  </item>
+</ulist>
+
+<p role="xpath">A language aspect described in this specification as
+<term>implementation-defined</term> or <term>implementation
+dependent</term> may be further constrained by the specifications of a
+host language in which XPath is embedded.</p>
+
+
+</div1>

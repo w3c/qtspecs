@@ -1,0 +1,337 @@
+<!ENTITY % specAbbreviations "XML | Names | XS1 | XS2
+                            | DM   | FO   | FS   | XP   | XQ   | XQX   | SE   | XT
+                            | DM11 | FO11 | FS11 | XP21 | XQ11 | XQX11 | SER11 | XT21
+                            | DM30 | FO30 | XP30 | XQ30 | XQX30 | SER30 | XT30
+                            | DM31 | FO31 | XP31 | XQ31 | XQX31 | SER31 | XT31
+                            | FT | XU | SX
+                            | FT30 | XU30 | SX30 
+                            | XS1-1 | XS1-2 | XS11-1 | XS11-2">
+
+<!--
+   Note, XS1-1 and XS1-2 are aliases for XS1 and XS2 repsectively (XML
+   Schema 1.0).  New references should use XS1-1 and XS1-2.
+-->
+
+<!ENTITY % local.proto.att "
+	returnEmptyOk	(yes|no)	'no'
+	returnSeq	(yes|no)	'no'
+	class		(op|func|dm|schema|special|xslt)	#IMPLIED
+	prefix      (op|fn|math|eg|map|xs) 'fn'
+	returnVaries    (yes|no)	'no'
+	isSchema	(yes|no)	'no'
+	isDatatype      (yes|no)	'no'
+	isSpecial       (yes|no)	'no'
+	isOp		(yes|no)	'no'
+">
+
+<!ENTITY % local.arg.att "
+	name	CDATA		#IMPLIED
+	emptyOk	(yes|no)	#IMPLIED
+	seq	(yes|no)	#IMPLIED
+">
+
+<!ENTITY % argtypes "CDATA">
+
+<!ENTITY % issue.attlist "IGNORE">
+<!ENTITY % resolution.attlist "IGNORE">
+<!ENTITY % spec.attlist "IGNORE">
+<!ENTITY % rhs.element "IGNORE">
+
+<!ENTITY % nt.attlist "IGNORE">
+
+<!ENTITY % xspecref.element "IGNORE">
+<!ENTITY % xspecref.attlist "IGNORE">
+<!ENTITY % xnt.element "IGNORE">
+<!ENTITY % xnt.attlist "IGNORE">
+<!ENTITY % xtermref.element "IGNORE">
+<!ENTITY % xtermref.attlist "IGNORE">
+<!ENTITY % author.element "IGNORE">
+
+<!-- add the "at" attribute to indicate when a change was last made to an element -->
+<!ENTITY % diff.att
+        'diff                   (chg
+                                |add
+                                |del
+                                |off)           #IMPLIED
+         at                     CDATA           #IMPLIED'>
+
+<!ENTITY % local.p.class  "|change|error|error-list|imp-def-feature|imp-dep-feature">
+<!ENTITY % local.illus.class "|e:element-syntax|t:tree|g:graph|requirements">
+<!ENTITY % local.tech.class "|error|errorref|xerrorref|elcode|xfunction">
+
+<!ENTITY % local.div.mix "|notes">
+
+<!ENTITY % role.att
+        'role                   CDATA        #IMPLIED'>
+
+<!ENTITY % header.mdl
+        "title, subtitle?, version?, w3c-designation, w3c-doctype,
+        pubdate, notice*, publoc, altlocs?,
+        ((prevlocs, latestloc?) | (latestloc, prevlocs?))?,
+        latestloc-major?, latestloc-tech?, prevrec?,
+        authlist,
+        errataloc?, preverrataloc?, translationloc?,
+        copyright?,
+        ((status, abstract) | (abstract, status)), pubstmt?,
+        sourcedesc?, langusage, revisiondesc">
+
+
+<!ENTITY % xmlspec SYSTEM "xmlspec.dtd">
+%xmlspec;
+
+<!ATTLIST latestloc
+  doc		CDATA		#IMPLIED
+  %common.att;>
+
+<!ATTLIST prevlocs
+  doc		CDATA		#IMPLIED
+  %common.att;>
+
+<!ENTITY % latestloc-major.element "INCLUDE">
+<![%latestloc-major.element;[
+<!ELEMENT latestloc-major (%p.pcd.mix;)*>
+]]>
+<!ENTITY % latestloc-major.attlist "INCLUDE">
+<![%latestloc-major.attlist;[
+<!ATTLIST latestloc-major
+  doc		CDATA		#REQUIRED
+  %common.att;>
+]]>
+
+<!ENTITY % latestloc-tech.element "INCLUDE">
+<![%latestloc-tech.element;[
+<!ELEMENT latestloc-tech (%p.pcd.mix;)*>
+]]>
+<!ENTITY % latestloc-tech.attlist "INCLUDE">
+<![%latestloc-tech.attlist;[
+<!ATTLIST latestloc-tech
+  doc		CDATA		#REQUIRED
+  %common.att;>
+]]>
+
+<!ENTITY % prevrec.element "INCLUDE">
+<![%prevrec.element;[
+<!ELEMENT prevrec (%p.pcd.mix;)*>
+]]>
+<!ENTITY % prevrec.attlist "INCLUDE">
+<![%prevrec.attlist;[
+<!ATTLIST prevrec
+  doc		CDATA		#REQUIRED
+  %common.att;>
+]]>
+
+
+<!ATTLIST spec
+        %common.att;
+        %local.spec.att;
+        w3c-doctype     (cr
+                        |dispcmts
+                        |issues
+                        |note
+                        |other
+                        |pr
+                        |per
+                        |rec
+                        |wd
+                        |wgnote)  #IMPLIED
+        other-doctype   CDATA	    #IMPLIED
+        status          (int-review
+                        |ext-review
+                        |final)		#IMPLIED
+	xmlns:e		CDATA		#FIXED "http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+>
+
+<!-- tweak author -->
+<!ELEMENT author (name, affiliation?, (email|loc)?)>
+
+<!ATTLIST issue
+        id              ID		#REQUIRED
+        status          (open
+                        |closed)	"open"
+	date		CDATA		#IMPLIED
+	raisedby	CDATA		#IMPLIED
+	priority	CDATA		#IMPLIED
+        %role.att;
+        %diff.att;
+>
+
+<!ATTLIST resolution
+	date		CDATA		#IMPLIED
+	%common.att;
+>
+
+<!-- ====================================================================== -->
+
+<!ATTLIST nt
+        %common.att;
+        %simple-xlink.att;
+        %def-req.att;>
+
+<!-- ====================================================================== -->
+
+<!ELEMENT rhs (#PCDATA|nt|xnt|com|rhs-group|br)*>
+<!ELEMENT rhs-group (#PCDATA|nt|xnt|com|rhs-group|br)*>
+
+<!ELEMENT br EMPTY>
+<!ATTLIST br
+	%common.att;
+>
+
+<!-- ====================================================================== -->
+
+<!ENTITY % elements SYSTEM "elements.dtd">
+%elements;
+
+<!-- ====================================================================== -->
+
+<!-- Tree drawing mark 1 in XSLT 2.1 specification. Obsolescent (July 2009) -->
+<!ENTITY % tree-diagram SYSTEM "tree-diagram.dtd">
+%tree-diagram;
+
+<!-- Tree drawing mark 2 in XSLT 2.1 specification, using DotML markup vocabulary. Added July 2009 -->
+<!ENTITY % DotML SYSTEM "dotML.dtd">
+%DotML;
+
+<!-- ====================================================================== -->
+<!-- originally for F&O -->
+<!ELEMENT notes (%obj.mix;)+>
+<!ATTLIST notes
+	%common.att; 
+>
+
+<!-- ====================================================================== -->
+<!-- Error markup -->
+
+<!ELEMENT error (%obj.mix;)+>
+<!ATTLIST error
+	%common.att;
+        spec (%specAbbreviations;) #IMPLIED
+	code	CDATA	#REQUIRED
+	class	CDATA	#IMPLIED
+	label	CDATA	#IMPLIED
+	type	(static|dynamic|type|serialization) #IMPLIED
+>
+
+<!ELEMENT errorref EMPTY>
+<!ATTLIST errorref
+	%common.att;
+        spec (%specAbbreviations;) #IMPLIED
+	code	CDATA	#REQUIRED
+	class	CDATA	#IMPLIED
+	label	CDATA	#IMPLIED
+	type	(static|dynamic|type|serialization) #IMPLIED
+>
+
+<!ELEMENT error-list (error+)>
+<!ATTLIST error-list
+	%common.att;
+>
+
+<!-- ====================================================================== -->
+<!-- Impl Def/Dep markup -->
+
+<!ELEMENT imp-def-feature (%p.pcd.mix;)*>
+<!ATTLIST imp-def-feature
+	%common.att;
+>
+<!ELEMENT imp-dep-feature (%p.pcd.mix;)*>
+<!ATTLIST imp-dep-feature
+	%common.att;
+>
+
+<!-- ====================================================================== -->
+<!-- Cross-spec references -->
+
+<!-- The XSL/XML Query specifications have their own cross-spec reference
+     markup.
+
+     I propose that we encode cross-spec references with the following
+     markup:
+
+       <xspecref spec="XX" ref="idvalue"/>
+
+     Where
+
+       XX = the spec in question
+
+            XML = the XML recommendation
+            Names = the Namespaces recommendation
+            XS1 = XML Schema 1.0 Part 1
+            XS2 = XML Schema 1.0 Part 2
+            DM = Data Model 1.0
+            FO = Functions and Operators 1.0
+            FS = Formal Semantics 1.0
+            XP = XPath 2.0
+            XQ = XQuery 1.0
+            SE = Xerialization 1.0
+            XT = XSLT 2.0
+            FT = Full Text 1.0
+            XU = XQuery Update 1.0
+            SX = Scripting Extension 1.0
+            DM11 = Data Model 1.1
+            FO11 = Functions and Operators 1.1
+            FS11 = Formal Semantics 1.1
+            XP21 = XPath 2.1
+            XQ11 = XQuery 1.1
+            XQX11 = XQueryX 1.1
+            SER11 = Serialization 1.1
+            XT21 = XSLT 2.1
+            DM30 = Data Model 3.0
+            FO30 = Functions and Operators 3.0
+            FS30 = Formal Semantics 13.0
+            XP30 = XPath 3.0
+            XQ30 = XQuery 3.0
+            XQX30 = XQueryX 3.0
+            SER30 = Serialization 3.0
+            XT30 = XSLT 3.0
+            FT30 = Full Text 3.0
+            XU30 = XQuery Update 3.0
+            SX30 = Scripting Extension 3.0
+
+    This will produce the following text where it appears:
+
+       [Title of Specification, X.Y Name of Section]
+-->
+
+<!ELEMENT xspecref (#PCDATA)>
+<!ATTLIST xspecref
+        %common.att;
+        spec (%specAbbreviations;) #REQUIRED
+        ref CDATA #REQUIRED
+>
+
+<!-- xnt is similarly extended -->
+
+<!ELEMENT xnt (#PCDATA)>
+<!ATTLIST xnt
+        %common.att;
+        %simple-xlink.att;
+        %href.att;
+        spec (%specAbbreviations;) #IMPLIED
+        ref CDATA #IMPLIED
+>
+
+<!-- xtermref is also similarly extended -->
+
+<!ELEMENT xtermref (#PCDATA)>
+<!ATTLIST xtermref
+        %common.att;
+        spec (%specAbbreviations;) #REQUIRED
+        ref CDATA #REQUIRED
+>
+
+<!ELEMENT xerrorref (#PCDATA)>
+<!ATTLIST xerrorref
+	%common.att;
+        spec (%specAbbreviations;) #REQUIRED
+        code CDATA #REQUIRED
+	class	CDATA	#REQUIRED
+	type	(static|dynamic|type|serialization) #IMPLIED
+>
+
+<!-- Content model for requirements appendix -->
+
+<!ELEMENT requirements (req)*>
+<!ELEMENT req (req-text, req-response)>
+<!ELEMENT req-text (p)*>
+<!ELEMENT req-response (p)*>

@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<div1 id="id-conformance">
+    <head>Conformance</head>
+
+    <note role="xquery" diff="del" at="bug28782">
+        <p>The XQuery Working Group has not yet determined conformance criteria for XQuery 3.1; in
+            particular, we have not decided which of the new features of XQuery 3.1 are optional.
+            This section currently contains the conformance criteria for XQuery 3.0, with two
+            modifications: (1) support for all axes is now required, (2) conformance criteria for
+            syntax extensions are given.</p>
+    </note>
+
+    <p>This section defines the conformance criteria for an &language; processor. In this section, the
+        following terms are used to indicate the requirement levels defined in <bibref ref="RFC2119"
+        />. <termdef id="must" term="must"><term>MUST</term> means that the item is an absolute
+            requirement of the specification.</termdef>
+        <termdef id="mustnot" term="must not"><term>MUST NOT</term> means that the item is an
+            absolute prohibition of the specification.</termdef>
+        <termdef id="may" term="may"><term>MAY</term> means that an item is truly
+            optional.</termdef>
+        <termdef id="should" term="should" role="xquery"><term>SHOULD</term> means that there may exist valid
+            reasons in particular circumstances to ignore a particular item, but the full
+            implications must be understood and carefully weighed before choosing a different
+            course.</termdef>
+    </p>
+
+
+      <p role="xpath">XPath is intended primarily as a component that can be used by
+      other specifications. Therefore, XPath relies on specifications that
+      use it (such as <bibref ref="XPTR"/> and <bibref ref="xslt-30"/>) to
+      specify conformance criteria for XPath in their respective
+      environments. Specifications that set conformance criteria for their
+      use of XPath <termref def="mustnot" diff="chg">MUST NOT</termref> change the
+      syntactic or semantic definitions of XPath as given in this
+      specification, except by subsetting and/or compatible extensions.</p>
+      
+      <p role="xpath"><phrase diff="add" at="bug29498">If a language is described as an extension of XPath, 
+      then every expression that conforms to the XPath grammar <termref def="must">MUST</termref>  behave as described in this specification.</phrase>
+      <phrase diff="del" at="bug29498">The specification of such a language may describe it as an
+      extension of XPath provided that every expression that conforms to the
+      XPath grammar behaves as described in this specification.</phrase></p>
+
+      <p role="xquery">An XQuery processor that claims to conform to
+      this specification <termref def="must" >MUST</termref> include a
+      claim of Minimal Conformance as defined in <specref
+      ref="id-minimal-conformance"/>. In addition to a claim of
+      Minimal Conformance, it <termref def="may">MAY</termref> claim
+      conformance to one or more optional features defined in <specref
+      ref="id-conform-optional-features"/>.</p>
+
+      <div2 id="id-xpath-static-typing" role="xpath">
+        <head>Static Typing Feature</head>
+
+        <p>
+          <termdef id="dt-xpath-static-typing-feature" term="static typing feature" role="xpath">The <term>Static
+        Typing Feature</term> is an optional feature of XPath that provides support for static semantics, and requires implementations to detect and report <termref def="dt-type-error">type errors</termref> during the <termref def="dt-static-analysis">static analysis phase</termref>.</termdef> Specifications that use XPath <termref def="may" diff="chg" at="bug29498">MAY</termref>  specify conformance criteria for use of the Static Typing Feature.</p>
+        <p>If an implementation does not support the <termref def="dt-xpath-static-typing-feature">Static Typing Feature</termref>, but can
+        nevertheless determine during the static analysis phase that
+        <phrase role="xquery">a <nt def="QueryBody">QueryBody</nt></phrase><phrase role="xpath">an XPath expression</phrase>, if evaluated, would necessarily raise a <termref def="dt-dynamic-error">dynamic error</termref> or that an expression, if evaluated, would necessarily raise a <termref def="dt-type-error">type error</termref>, the implementation <termref def="may" diff="chg" at="bug29498">MAY</termref> raise that error during the static analysis phase. The choice
+        of whether to raise such an error at analysis time is <termref def="dt-implementation-dependent">implementation dependent</termref>.</p>
+
+      </div2>
+
+    <div2 id="id-minimal-conformance" role="xquery">
+        <head>Minimal Conformance</head>
+        <p>An implementation that claims <term>Minimal Conformance</term> to this specification
+                <termref def="must">MUST</termref> provide all of the following items:</p>
+        <olist>
+            <item>
+                <p>An implementation of everything specified in this document except those features
+                    specified in <specref ref="id-conform-optional-features"/> to be optional. If an
+                    implementation does not provide a given optional feature, it <termref def="must"
+                        >MUST</termref> implement any requirements specified in <specref
+                        ref="id-conform-optional-features"/> for implementations that do not provide
+                    that feature.</p>
+            </item>
+            <item>
+                <p>A definition of every item specified to be <termref
+                        def="dt-implementation-defined">implementation-defined</termref>, unless
+                    that item is part of an optional feature that is not provided by the
+                    implementation. A list of <termref def="dt-implementation-defined"
+                        >implementation-defined</termref> items can be found in <specref
+                        ref="id-impl-defined-items"/>.</p>
+                <note>
+                    <p>Implementations are not required to define items specified to be <termref
+                            def="dt-implementation-dependent"
+                        >implementation-dependent</termref>.</p>
+                </note>
+            </item>
+            <item>
+                <p>An implementation of <bibref ref="xpath-datamodel-31"/>, as specified in <specref
+                        ref="id-data-model-conformance"/>, and a definition of every item specified
+                    to be <termref def="dt-implementation-defined">implementation-defined</termref>,
+                    unless that item is part of an optional feature that is not provided by the
+                    implementation.</p>
+            </item>
+            <item>
+                <p>An implementation of all functions defined in <bibref ref="xpath-functions-31"/>,
+                    and a definition of every item specified to be <termref
+                        def="dt-implementation-defined">implementation-defined</termref>, unless
+                    that function or item is part of an optional feature that is not provided by the
+                    implementation.</p>
+            </item>
+        </olist>
+    </div2>
+    <div2 id="id-conform-optional-features" role="xquery">
+        <head>Optional Features</head>
+
+        <p>The features discussed in this section are optional. An implementation <termref def="may"
+                >MAY</termref> claim conformance to one or more of these features.</p>
+
+        <p>The description of each feature mentions any errors that <phrase diff="del" at="bug29498">may</phrase> occur if a query relies on a
+            feature that is not present.</p>
+
+
+        <div3 id="id-schema-aware-feature">
+            <head>Schema Aware Feature</head>
+            <p>
+                <termdef id="dt-schema-aware-feature" term="schema aware feature"
+                    >The <term>Schema Aware Feature</term> permits the query Prolog to contain a
+                        <termref def="dt-schema-import">schema import</termref>, and permits a query
+                    to contain a <code>validate</code> expression (see <specref ref="id-validate"
+                    />). </termdef>
+            </p>
+
+            <p>If an XQuery implementation does not provide the Schema Aware Feature, it <termref
+                    def="must">MUST</termref> raise a static error <errorref class="ST" code="0009"
+                /> if it encounters a schema import, and it <termref def="must">MUST</termref> raise
+                a static error <errorref class="ST" code="0075"/> if it encounters a
+                    <code>validate</code> expression.</p>
+
+            <p>If an implementation provides the Schema Aware Feature, it <termref def="must"
+                    >MUST</termref> also provide the <specref ref="id-typed-data-feature"/>.</p>
+        </div3>
+
+
+        <div3 id="id-typed-data-feature">
+            <head>Typed Data Feature</head>
+            <p>
+                <termdef id="dt-typed-data-feature" term="typed data feature">The
+                        <term>Typed Data Feature</term> permits an XDM instance to contain element
+                    node types other than <code>xs:untyped</code> and attributes node types other
+                    than <code>xs:untypedAtomic</code>.</termdef>
+            </p>
+
+            <p>If an XQuery implementation does not provide the Typed Data Feature, it <termref
+                    def="must">MUST</termref> guarantee that:</p>
+
+            <olist>
+                <item>
+                    <p>The XDM has the type <code>xs:untyped</code> for every element node and
+                            <code>xs:untypedAtomic</code> for every attribute node, including nodes
+                        created by the query.</p>
+                </item>
+                <item>
+                    <p>Elements constructed by the query always have the type
+                            <code>xs:untyped</code>; attributes constructed by the query always have
+                        the type <code>xs:untypedAtomic</code>. (This is equivalent to using
+                            <code>construction mode = strip</code>.)</p>
+                </item>
+            </olist>
+        </div3>
+
+        <div3 id="id-static-typing-feature">
+            <head>Static Typing Feature</head>
+            <p>
+                <termdef id="dt-static-typing-feature" term="static
+		  typing feature"
+                    role="xquery">The <term>Static Typing Feature</term> requires implementations to
+                    report all <termref def="dt-type-error">type errors</termref> during the
+                        <termref def="dt-static-analysis">static analysis phase</termref>.</termdef>
+            </p>
+
+
+            <p>If an implementation provides the <termref def="dt-static-typing-feature">Static
+                    Typing Feature</termref>, then it <termref def="must">MUST</termref> raise an
+                error during static analysis whenever the inferred static type of an expression is
+                not subsumed by the required type for the context in which it appears.</p>
+
+            <p>If an implementation does not provide the <termref def="dt-static-typing-feature"
+                    >Static Typing Feature</termref>, then it <termref diff="del" at ="bug28966" def="may">MAY</termref><termref diff="add" at ="bug28966" def="mustnot">MUST NOT</termref>
+                report type errors during the static analysis phase <phrase diff="del" at ="bug28966">only</phrase><phrase diff="add" at ="bug28966">except</phrase> in cases where the inferred
+                static type and the required type have an empty intersection (that is, where
+                evaluation of the expression is guaranteed to fail). It <termref def="may">MAY</termref> defer some or all type checking until the dynamic evaluation
+                phase.</p>
+        </div3>
+        <div3 id="id-module-feature">
+            <head>Module Feature</head>
+            <p>
+                <termdef id="dt-module-feature" term="module feature">The <term>Module
+                        Feature</term> allows a query Prolog to contain a <term>Module Import</term>
+                    and allows <term>library modules</term> to be created.</termdef>
+            </p>
+            <p>An implementation that does not provide the Module Feature <termref def="must"
+                    >MUST</termref> raise a <termref def="dt-static-error">static error</termref>
+                <errorref class="ST" code="0016"/> if it encounters a <termref
+                    def="dt-module-declaration">module declaration</termref> or a <termref
+                    def="dt-module-import">module import</termref>. Since a <termref
+                    def="dt-module-declaration">module declaration</termref> is required in a
+                    <termref def="dt-library-module">library module</termref>, the Module Feature is
+                required in order to create a <termref def="dt-library-module">library module</termref>. </p>
+            <note>
+                <p>In the absence of the Module Feature, each query consists of a single <termref
+                        def="dt-main-module">main module</termref>.</p>
+            </note>
+        </div3>
+        <div3 id="id-serialization-feature">
+            <head>Serialization Feature</head>
+            <p>
+                <termdef id="dt-serialization-feature" term="serialization feature">The
+                        <term>Serialization Feature</term> provides means for serializing the result
+                    of a query as specified in <specref ref="id-serialization"/>.</termdef> A
+                conforming XQuery implementation that provides the Serialization Feature <termref
+                    def="must">MUST</termref> conform to <specref ref="id-serialization"/>. An
+                implementation <termref def="may">MAY</termref> provide other forms of
+                serialization, which do not conform to the Serialization Feature, and are beyond the
+                scope of this specification. </p>
+            <p>The means by which serialization is invoked is <termref
+                    def="dt-implementation-defined">implementation-defined</termref>.</p>
+            <p>If an error is raised during the serialization process as specified in <bibref
+                    ref="xslt-xquery-serialization-31"/>, an implementation <termref def="must"
+                    >MUST</termref> report the error to the calling environment.</p>
+
+            <p>An implementation that does not provide the Serialization Feature <termref def="must"
+                    >MUST NOT</termref> raise errors when reading an <termref
+                    def="dt-output-declaration">output declaration</termref>, and <termref
+                    def="must">MUST</termref> implement <code>fn:serialize</code>; it <termref
+                    def="may">MAY</termref>, however, raise an error when <code>fn:serialize</code>
+                is invoked, as specified in <xspecref spec="FO31" ref="func-serialize"/>. An
+                implementation that does not provide the Serialization Feature <termref def="may"
+                    >MAY</termref> provide results of a query using a vendor-defined
+                serialization.</p>
+
+            <note>
+                <p>Some implementations return query results without serialization. For instance, an
+                    implementation might provide results via an XML API or a binary representation
+                    such as a persistent DOM.</p>
+            </note>
+        </div3>
+
+        <div3 id="id-higher-order-function-feature">
+            <head>Higher-Order Function Feature</head>
+            <p>
+                <termdef id="dt-higher-order-function-feature" term="higher-order function feature"
+                    >The <term>Higher Order Function Feature</term> allows an expression to evaluate
+                    to a function <phrase diff="chg" at="bug28810">item other than a map or array.</phrase></termdef>
+            </p>
+
+            <p>An implementation that does not provide the Higher-Order Function Feature <termref
+                    def="must">MUST</termref> raise a static error <errorref class="ST" code="0129"
+                /> if it encounters a <phrase diff="del" at="bug28810"><nt def="FunctionTest">FunctionTest</nt>, <termref
+                    def="dt-dynamic-function-invocation">dynamic function call</termref>,</phrase> 
+                    <phrase diff="add" at="bug28810"><nt def="TypedFunctionTest">TypedFunctionTest</nt>,</phrase> <termref
+                    def="dt-named-function-ref">named function reference</termref>, <termref
+                    def="dt-inline-func">inline function expression</termref>, or <termref
+                    def="dt-partial-function-application">partial function application</termref>.  <phrase diff="add" at="bug28810">
+                    The effect of this rule is that it is impossible to construct function items other than maps and arrays.
+                    Dynamic function calls are permitted, but the function that is called will necessarily be a map or array.
+                    The <nt def="AnyFunctionTest">AnyFunctionTest</nt> <termref def="dt-sequence-type">sequence type</termref> is permitted and will match either a map 
+                    or array.</phrase>
+                Such an implementation <termref def="may">MAY</termref> raise a type error <errorref
+                    class="TY" code="0004"/> if an expression evaluates to a sequence that contains
+                a function.</p>
+
+            <p><phrase diff="chg" at="bug28810">If an implementation provides the Higher-Order Function Feature, then it <termref def="must" diff="chg" at="bug29498">MUST</termref> provide
+                    all <xtermref spec="FO31" ref="dt-higher-order"/> functions defined in <bibref ref="xpath-functions-31"/>.</phrase>
+                If an implementation does not provide the Higher
+                Order Function Feature, a <termref def="dt-static-error">static error</termref> is
+                raised <errorref class="ST" code="0017"/> if any of these functions is present in a
+                query. </p>
+
+        </div3>
+
+        <div3 diff="del" at="bug 29959" id="id-fnput-feature">
+            <head><code>fn:put()</code> Feature</head>
+            <p>
+                <termdef id="dt-fnput-feature" term="fn:put()
+                feature" >The <term>fn:put() Feature</term> allows the
+                <code>fn:put()</code> function, defined in <bibref
+                ref="xquery-update-30"/> , to be used in a
+                query.</termdef>
+
+                This feature is defined as an update because
+                <code>fn:put()</code> has side effects. It is provided
+                as a separate feature because some implementations <phrase diff="del" at="bug29498">may want</phrase>
+                need to be able to output files even if they do not
+                conform to the XQuery Update Facility specification.
+            </p>
+
+            <p>An implementation that does not provide the
+            <term>fn:put() feature</term> <termref
+            def="must">MUST</termref> raise an error <errorref
+            class="ST" code="0017"/> if <code>fn:put()</code> is
+            present in a query.</p>
+
+            <p>An implementation that provides the
+            <term>fn:put() feature</term> <termref
+            def="must">MUST</termref> implement the function as
+            defined in <bibref ref="xquery-update-30"/>.</p>
+
+        </div3>
+
+    </div2>
+    <div2 id="id-data-model-conformance" role="xquery">
+        <head>Data Model Conformance</head>
+        <p>All XQuery implementations process data represented in the <termref def="dt-datamodel"
+                >data model</termref> as specified in <bibref ref="xpath-datamodel-31"/>. The data
+            model specification relies on languages such as XQuery to specify conformance criteria
+            for the data model in their respective environments, and suggests that the following
+            issues should be considered:</p>
+        <olist>
+            <item>
+                <p>
+                    <emph>Support for normative construction from an infoset.</emph> An
+                    implementation <termref def="may">MAY</termref> choose to claim conformance to
+                        <xspecref spec="DM31" ref="const-infoset"/>, which defines a normative way
+                    to construct an <termref def="dt-data-model-instance">XDM instance</termref>
+                    from an XML document that is merely well-formed or is governed by a DTD.</p>
+            </item>
+            <item>
+                <p>
+                    <emph>Support for normative construction from a PSVI.</emph> An implementation
+                        <termref def="may">MAY</termref> choose to claim conformance to <xspecref
+                        spec="DM31" ref="const-psvi"/>, which defines a normative way to construct
+                    an <termref def="dt-data-model-instance">XDM instance</termref> from an XML
+                    document that is governed by a W3C XML Schema.</p>
+            </item>
+            <item>
+                <p>
+                    <emph>Support for versions of XML and XSD.</emph> As stated in <bibref
+                        ref="xpath-datamodel-31"/>, <phrase diff="del" at="bug29498">it is recommended (but not required) that</phrase> the
+                    definitions of primitives such as strings, characters, and names <termref def="should" diff="chg" at="bug29498">SHOULD</termref> be taken
+                    from the latest applicable version of the base specifications in which they are
+                    defined; it is implementation-defined which definitions are used in cases where
+                    these differ. </p>
+                <note>
+                    <p>For suggestions on processing XML 1.1 documents with XSD 1.0, see <bibref
+                            ref="xml11schema10"/>.</p>
+                </note>
+            </item>
+
+            <item>
+                <p><emph>Ranges of data values.</emph> In XQuery, the following limits are <termref
+                        def="dt-implementation-defined">implementation-defined</termref>:</p>
+                <olist>
+                    <item>
+                        <p>For the <code>xs:decimal</code> type, the maximum number of decimal
+                            digits (<code>totalDigits</code> facet) <termref def="must" diff="chg" at="bug29498">MUST</termref> be at least 18.
+                            <phrase diff="add" at="bug29419">This limit <termref def="should">SHOULD</termref> be at least 20 digits in order to accommodate the full range of values of built-in subtypes of <code>xs:integer</code>, such as <code>xs:long</code> and <code>xs:unsignedLong</code>.</phrase>
+                        </p>
+                    </item>
+                    <item>
+                        <p diff="del" at="bug29576">For the types <code>xs:date</code>, <code>xs:time</code>,
+                                <code>xs:dateTime</code>, <code>xs:gYear</code>, and
+                                <code>xs:gYearMonth</code>: the maximum value of the year component
+                            and the maximum number of fractional second digits (<termref def="must" diff="chg" at="bug29498">MUST</termref> be at least
+                            3).</p>
+
+                        <p diff="add" at="bug29576">For the types <code>xs:date</code>, <code>xs:dateTime</code>, <code>xs:gYear</code>, and <code>xs:gYearMonth</code>: the minimum and maximum value of the year component (must be at least 1 to 9999).</p>
+
+                        <p diff="add" at="bug29576">For the types <code>xs:time</code> and <code>xs:dateTime</code>: the maximum number of fractional second digits (must be at least 3).</p>
+
+                    </item>
+                    <item>
+                        <p>For the <code>xs:duration type</code>: the maximum absolute values of the
+                            years, months, days, hours, minutes, and seconds components.</p>
+                    </item>
+                    <item>
+                        <p>For the <code>xs:yearMonthDuration</code> type: the maximum absolute
+                            value, expressed as an integer number of months.</p>
+                    </item>
+                    <item>
+                        <p>For the <code>xs:dayTimeDuration</code> type: the maximum absolute value,
+                            expressed as a decimal number of seconds.</p>
+                    </item>
+                    <item>
+                        <p>For the types <code>xs:string</code>, <code>xs:hexBinary</code>,
+                                <code>xs:base64Binary</code>, <code>xs:QName</code>,
+                                <code>xs:anyURI</code>, <code>xs:NOTATION</code>, and types derived
+                            from them: limitations (if any) imposed by the implementation on lengths
+                            of values.</p>
+                    </item>
+                </olist>
+                <p>The limits listed above need not be fixed, but <termref def="may" diff="chg" at="bug29498">MAY</termref>  depend on environmental
+                    factors such as system resources. For example, the length of a value of type
+                        <code>xs:string</code> <phrase diff="chg" at="bug29498">might</phrase> be limited by available memory.</p>
+                <note>
+                    <p>For discussion of errors due to <termref def="dt-implementation-dependent"
+                            >implementation-dependent</termref> limits, see <specref
+                            ref="id-kinds-of-errors"/>.</p>
+                </note>
+            </item>
+        </olist>
+    </div2>
+    <div2 id="id-syntax-extensions" role="xquery">
+        <head>Syntax Extensions</head>
+        <p>Any syntactic extensions to XQuery are <termref def="dt-implementation-defined"
+                >implementation-defined</termref>. The effect of syntactic extensions, including
+            their error behavior, is <termref def="dt-implementation-defined"
+                >implementation-defined</termref>. Syntactic extensions <termref def="may" diff="chg" at="bug29498">MAY</termref> be used without
+            restriction to modify the semantics of a XQuery expression.</p>
+
+    </div2>
+</div1>

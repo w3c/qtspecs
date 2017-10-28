@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding='utf-8'?>
+<project name="shared" default="build.shared" basedir=".">
+<!-- build customization file for shared XQuery and XPath specification -->
+
+<!-- Import a bunch of global property definitions -->
+  <dirname property="etc.dir" file="../../etc/*"/>
+  <import file="${etc.dir}/build-constants.xml"/>
+
+<!-- Set properties for "this" document's build requirements -->
+  <property name="generic-shortname" value="shared"/>
+  <property name="this-spec-version-code" value="31"/>
+
+  <property name="spec.code" value="XQ${this-spec-version-code}XP${this-spec-version-code}"/>
+  <property name="spec.xml" value="${src.dir}/XPathXQueryShared.xml"/>
+  <property name="first-generic-shortname" value="xquery31"/>
+  <property name="second-generic-shortname" value="xpath31"/>
+  <property name="not-this-generic-shortname" value=""/>
+
+  <property name="spec.style" value="${local.style.dir}/shared.xsl"/>
+  <property name="building-shared-doc" value="yes"/>
+
+  <!-- ====================================================================== -->
+
+  <!-- The "help" template displays on the message medium the names of the    -->
+  <!--   various targets in this project and their purposes.                  -->
+  <target name="help">
+    <echo message="This file should never be invoked directly, but only from the build.xml ant project"/>
+    <echo message="This project to build the shared XPath/XQuery spec includes only one target."/>
+    <echo message="  build.shared -- builds the spec by invoking build-spec.xml"/>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="build.shared"
+          description="This is the default target. ">
+    <ant antfile="build-spec.xml" inheritAll="true" inheritRefs="true" target="build-spec"/>
+  </target>
+
+</project>

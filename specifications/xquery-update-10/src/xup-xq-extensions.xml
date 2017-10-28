@@ -1,0 +1,955 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<div1 id="id-extensions">
+<head>Extensions to XQuery 1.0</head>
+
+<p>The basic  building block of XQuery is the expression. XQuery 1.0 provides 
+several kinds of expressions that can be composed with each other in 
+arbitrary ways. An XQuery 1.0 expression takes zero or more 
+<termref def="dt-xdm-instance">XDM instances</termref> as input and returns an <termref def="dt-xdm-instance">XDM instance</termref> as 
+a result. In XQuery 1.0, an expression never modifies the state of 
+an existing node; however, constructor expressions create new nodes 
+with new <termref def="dt-node-identity">node identities</termref>.</p>
+
+<p>&language; introduces a new category of expression called an <termref def="dt-updating-expression">updating expression</termref>, which can potentially modify the state of an existing node.</p>
+
+<p>The extensions to XQuery 1.0 provided by &language; may be characterized 
+as follows:</p>
+
+
+<olist>
+<item>
+<p>&language; introduces five new kinds of expressions, called insert, 
+delete, replace, rename, and transform expressions, and specifies the syntax and semantics of each new kind of expression.</p></item><item>
+<p>&language; classifies XQuery expressions into the following categories:
+<olist><item>
+<p><termdef term="basic updating expression" id="dt-basic-updating-expression">A <term>basic updating expression</term> is an insert, delete, replace, or rename expression, or a call to an <termref def="dt-updating-function">updating function</termref>.</termdef></p></item><item>
+<p><termdef term="updating expression" id="dt-updating-expression">An <term>updating expression</term> is a <termref def="dt-basic-updating-expression">basic updating expression</termref> or any
+expression (other than a transform expression) that directly
+contains an <termref def="dt-updating-expression">updating expression</termref>.</termdef></p><note>
+<p>The definition of an <termref def="dt-updating-expression">updating expression</termref> is recursive.</p></note></item><item>
+<p><termdef term="simple expression" id="dt-simple-expression">A <term>simple expression</term> is any XQuery expression that is not an <termref def="dt-updating-expression">updating expression</termref>.</termdef></p></item>
+
+<item><p diff="del">
+<termdef term="vacuous expression" id="dt-vacuous-expression-obsolete">A <term>vacuous expression</term> is a <termref def="dt-simple-expression">simple expression</termref> that can only return an empty sequence or raise an error.</termdef></p>
+
+<p diff="add"><termdef term="vacuous expression" id="dt-vacuous-expression">
+Certain expressions are defined in this specification
+   to be <term>vacuous expressions</term>. These all have the characteristic that
+   they can be determined statically to either return an empty
+   sequence or raise an error.</termdef></p>
+<note diff="add"><p>Every vacuous expression is identified explicitly in this specification. Some expressions can be determined to either return an empty
+   sequence or raise an error, but are nevertheless not defined to be vacuous.  For convenience, here is a list of the vacuous expressions:</p>
+<ulist>
+<item><p>A call to the built-in function <code>fn:error</code> is a vacuous expression.</p></item>
+<item><p>An empty parenthesized expression ( ) is a vacuous expression.</p></item>
+<item><p>A non-empty parenthesized expression is a vacuous expression if the expression it contains is a vacuous expression.</p></item>
+<item><p>If all branches are vacuous expressions, the typeswitch expression is a
+vacuous expression.</p></item>
+<item><p>If both branches are vacuous expressions, the conditional expression is a
+vacuous expression.</p></item>
+<item><p>If all operands are vacuous expressions, the comma expression is a vacuous
+expression.</p></item>
+<item><p>If the return clause of a FLWOR Expression is vacuous, the FLWOR expression is a vacuous expression.</p></item>
+</ulist>
+</note>
+</item>
+
+</olist></p> </item>
+
+<item>
+<p>&language; defines  the places 
+in which each type of expression can be used. In so doing, it makes small 
+extensions to the syntax and semantics of certain existing expressions.</p></item>
+
+
+
+</olist>
+<p>The classification of each expression into one of the above categories is performed by static analysis, according to rules specified in this document for each type of expression.</p>
+
+
+
+<div2 id="id-processing-model">
+<head>Extensions to the Processing Model</head>
+<p>&language; defines the following extensions to the XQuery processing model:</p>
+<olist><item>
+<p>In XQuery 1.0, the result of each expression is an <termref def="dt-xdm-instance">XDM instance</termref>. &language; extends the XQuery processing model so that the
+result of an expression consists of both an <termref def="dt-xdm-instance">XDM instance</termref> and a <termref def="dt-pending-update-list">pending update list</termref> (either or both of which may be empty). <termdef id="dt-pending-update-list" term="pending update list">A <term>pending update list</term> is an unordered collection of <termref def="dt-update-primitive">update primitives</termref>, which represent node state changes that have not yet been applied.</termdef> The term "result" used in <xspecref spec="XQ" ref="id-errors-and-opt"></xspecref> includes both the  <termref def="dt-xdm-instance">XDM instance</termref> and the <termref def="dt-pending-update-list">pending update list</termref> returned by an expression.</p><note>
+<p>In &language;, no expression returns both a non-empty <termref def="dt-xdm-instance">XDM instance</termref> and a non-empty <termref def="dt-pending-update-list">pending update list</termref>.</p></note></item><item>
+<p>&language; also defines a set of <termref def="dt-update-operation">update operations</termref>. <termdef term="update operation" id="dt-update-operation"><term>Update operations</term> are used in defining the semantics of XQuery updates, but are not directly available to users. Update operations are defined in <specref ref="id-update-operations"/>.</termdef> Update operations fall into the following categories:</p>
+<olist><item>
+<p> <termdef term="update primitive" id="dt-update-primitive"><term>Update primitives</term> are the components of <termref def="dt-pending-update-list">pending update lists</termref>. Each <term>update primitive</term> represents a node state change that has not yet been applied.</termdef> <termdef term="target node" id="dt-target-node">The first argument of an update primitive, called its <term>target node</term>, is the principal node to be affected by the update primitive.</termdef> Update primitives are held on <termref def="dt-pending-update-list">pending update lists</termref> until they are made effective by a <loc href="#id-upd-apply-updates">upd:applyUpdates</loc> operation.</p></item><item>
+<p><termdef term="update routine" id="dt-update-routine"><term>Update routines</term> are sequences of actions that are used in the definition of XQuery semantics but do not appear on <termref def="dt-pending-update-list">pending update lists</termref>.</termdef> <loc href="#id-upd-apply-updates">upd:applyUpdates</loc> is an example of an update routine.</p></item></olist></item><item>
+<p>If the outermost expression in a query returns a <termref def="dt-pending-update-list">pending update list</termref>, <loc href="#id-upd-apply-updates">upd:applyUpdates</loc> is implicitly invoked to apply the pending updates to the  <termref def="dt-xdm-instance">XDM instance</termref>. This invocation of <loc href="#id-upd-apply-updates">upd:applyUpdates</loc> may raise an error (see <specref ref="id-upd-apply-updates"/> for possible error codes.)</p></item></olist>
+<p><termdef id="dt-snapshot" term="snapshot">A <term>snapshot</term> is a scope within which expressions are evaluated
+with respect to a fixed <termref def="dt-xdm-instance">XDM instance</termref> and updates are held pending.</termdef> A snapshot
+is terminated by invocation of the <loc href="#id-upd-apply-updates">upd:applyUpdates</loc> operation. &language; defines an entire query as one snapshot.</p>
+<p>This specification defines the semantics of updates to an <termref def="dt-xdm-instance">XDM instance</termref>.
+Propagation of these updates to an underlying persistent store (if any)
+is beyond the scope of this specification.</p></div2>
+
+<div2 id="id-prolog-extensions"><head>Extensions to the Prolog</head><div3 id="id-revalidation-declaration"><head>Revalidation Declaration</head><scrap> 
+<head/> 
+<prodrecap ref="Setter" id="Setter"/> 
+<prodrecap id="RevalidationDecl" ref="RevalidationDecl"/>
+</scrap>
+<p>The Prolog is extended by adding a new kind of <nt def="Setter">Setter</nt>
+called a revalidation declaration. 
+<termdef term="revalidation declaration" id="dt-revalidation-decl">A <term>revalidation declaration</term>
+sets the <termref def="dt-revalidation-mode">revalidation mode</termref> in the static context,
+overriding any implementation-defined default.</termdef>
+If a Prolog contains more than one revalidation declaration,
+a static error is raised <errorref code="0003" class="ST"/>. 
+<termref def="dt-revalidation-mode">Revalidation mode</termref> controls the process by which type information
+is recovered for an updated document, as described in <specref ref="id-upd-revalidate"/></p>
+
+
+<p>Support for each of the three revalidation modes is implementation-defined; however, an implementation must support at least one of the three revalidation modes. If a revalidation declaration specifies a revalidation mode that is not supported by the current implementation, a static error is raised <errorref code="0026" class="ST"/>.</p></div3><div3 id="id-variable-declaration"><head>Variable Declaration</head>
+<p>The following rule is added: If the expression on the right-hand-side of a variable declaration (the initializing expression) is not a <termref def="dt-simple-expression">simple expression</termref>, a static error is raised <errorref code="0001" class="ST"/>.</p></div3><div3 id="id-function-declaration"><head>Function Declaration</head><scrap><head/>
+
+<prodrecap ref="FunctionDecl" id="FunctionDecl"/>
+</scrap>
+
+
+<p>The syntax of a function declaration is extended with an optional keyword: <code>updating</code>. <termdef term="updating function" id="dt-updating-function">Functions whose declarations contain the keyword <code>updating</code>, and certain built-in functions including <code>fn:put</code>, are called <term>updating functions</term>.</termdef> The semantics of a function declaration, described in Section 4.15 of <bibref ref="xquery"/>,  are extended as follows:</p>
+<olist><item>
+<p>If <code>updating</code> is not specified:</p>
+<olist><item>
+<p>If <code>external</code> is not specified, the EnclosedExpr in the function declaration must be a <termref def="dt-simple-expression">simple expression</termref>; otherwise a static error is raised <errorref code="0001" class="ST"/>.</p></item><item>
+<p>If <code>external</code> is specified, the external function  must not return a non-empty <termref def="dt-pending-update-list">pending update list</termref>; otherwise a dynamic error is raised <errorref code="0018" class="DY"/>.</p></item></olist></item><item>
+<p>If <code>updating</code> is specified:</p>
+<olist><item>
+<p>A return type must not  be specified <errorref code="0028" class="ST"/>.</p></item><item>
+<p>If <code>external</code> is not specified, the EnclosedExpr in the function declaration must be an <termref def="dt-updating-expression">updating expression</termref> or a <termref def="dt-vacuous-expression">vacuous expression</termref>; otherwise a static error is raised <errorref code="0002" class="ST"/>.</p></item><item>
+<p>If <code>external</code> is specified, the external function may return a non-empty <termref def="dt-pending-update-list">pending update list</termref> but it must not return a non-empty <termref def="dt-xdm-instance">XDM instance</termref>; otherwise a dynamic error is raised <errorref code="0019" class="DY"/>.</p></item></olist></item></olist>
+<p>The means by which an external function returns an <termref def="dt-xdm-instance">XDM instance</termref> or a <termref def="dt-pending-update-list">pending update list</termref> is implementation-defined.</p>
+<p>The following example illustrates a declaration of an updating function.</p>
+<ulist><item>
+<p>This function takes an element, a QName, and an atomic value. If the given element has an attribute with the given QName, the function updates the attribute with the given value; otherwise it inserts a new attribute with the given name and value.</p>
+<eg>declare updating function 
+   upsert($e as element(), 
+          $an as xs:QName, 
+          $av as xs:anyAtomicType) 
+   {
+   let $ea := $e/attribute()[fn:node-name(.) = $an]
+   return
+      if (fn:empty($ea))
+      then insert node attribute {$an} {$av} into $e
+      else replace value of node $ea with $av
+   }</eg></item></ulist></div3></div2>
+
+<div2 id="id-static-context-extensions"><head>Extensions to the Static Context</head>
+
+
+<olist>
+
+<item>
+<p>The following definition is added to the XQuery static context
+(documented in <xspecref ref="static_context" spec="XQ"></xspecref>):</p>
+
+
+<p><termdef term="revalidation mode" id="dt-revalidation-mode"><term>Revalidation mode</term>,
+which may be <code>strict</code>, <code>lax</code>, or <code>skip</code>,
+is a component of the static context that controls the behavior of the
+<code><loc href="#id-upd-revalidate">upd:revalidate</loc></code> operation.</termdef></p>
+</item>
+
+<item>
+
+<p>The following entry is added to the table of static context components
+(documented in <xspecref ref="id-xq-static-context-components" spec="XQ"></xspecref>):</p>
+
+
+<ulist>
+
+<item>
+
+<p>Component: Revalidation mode</p>
+</item>
+
+<item>
+
+<p>Default initial value: <code>lax</code>.</p>
+</item>
+
+<item>
+
+<p>Can be overwritten by an implementation: Yes (implementation defined.)</p>
+</item>
+
+<item>
+
+<p>Can be overwritten by a query: Yes, overwritable by declaration in query prolog.</p>
+</item>
+
+<item>
+
+<p>Scope: Module.</p>
+</item>
+
+<item>
+
+<p>Consistency rules: Must be <code>strict</code>, <code>lax</code>, or <code>skip</code>.</p>
+</item>
+
+</ulist>
+
+</item>
+
+</olist>
+
+</div2>
+
+<div2 id="id-new-expressions"><head>New Kinds of Expressions</head>
+<scrap> 
+<head/> 
+
+<prodrecap ref="ExprSingle" id="ExprSingle"/> 
+
+</scrap>
+
+
+
+
+<p>&language; extends the syntax of <nt def="ExprSingle">ExprSingle</nt> by adding five new kinds of expressions, called insert, delete, replace, rename, and transform expressions.
+The syntax and semantics of these expressions are described in the following sections.</p>
+
+<note>
+<p>In general, <termref def="dt-updating-expression">updating expressions</termref> cause a loss of type information from nodes that are affected by the update. Type information for these nodes may be recovered by a revalidation process at the end of the <termref def="dt-snapshot">snapshot</termref>. For more details on type loss and recovery, see the <termref def="dt-update-primitive">update primitives</termref> associated with each updating expression; see also <specref ref="id-upd-remove-type"/> and <specref ref="id-upd-revalidate"/>.</p></note><div3 id="id-insert"><head>Insert</head><scrap><head/>
+
+<prodrecap id="InsertExpr" ref="InsertExpr"/>
+
+<prodrecap id="InsertExprTargetChoice" ref="InsertExprTargetChoice"/>
+
+<prodrecap id="SourceExpr" ref="SourceExpr"/>
+<prodrecap id="TargetExpr" ref="TargetExpr"/></scrap>
+
+
+
+
+<p>An insert expression is an <termref def="dt-updating-expression">updating expression</termref> that inserts copies of zero or more nodes into a 
+designated position with respect to a target node. The keywords <code>node</code> and <code>nodes</code> may be used interchangeably, regardless of how many nodes are actually inserted. The position of the inserted nodes is determined as follows:</p>
+<ulist><item>
+<p>If <code>before</code> (or <code>after</code>) is specified:</p>
+<ulist><item>
+<p>The inserted nodes become the preceding (or following) siblings of the 
+target node.</p></item><item>
+<p>If multiple nodes are inserted by a single insert expression, the nodes 
+remain adjacent and their order preserves the node ordering of the source expression.</p></item><item>
+<p>If multiple groups of nodes are inserted by multiple insert expressions 
+in the same <termref def="dt-snapshot">snapshot</termref>, adjacency and ordering of nodes within each group is 
+preserved but ordering among the groups is implementation-dependent.
+</p></item></ulist></item><item>
+<p>If <code>as first into</code> (or <code>as last into</code>) is specified:</p>
+<ulist><item>
+<p>The inserted nodes become the first (or last) children of the target 
+node.</p></item><item>
+<p>If multiple nodes are inserted by a single insert expression, the nodes 
+remain adjacent and their order preserves the node ordering of the source expression.</p></item><item>
+<p>If multiple groups of nodes are inserted by multiple insert expressions 
+in the same <termref def="dt-snapshot">snapshot</termref>, adjacency and ordering of nodes within each group is 
+preserved but ordering among the groups is implementation-dependent.</p></item></ulist></item><item>
+<p>If <code>into</code> is specified without <code>as first</code> or <code>as last</code>:</p>
+<ulist><item>
+<p>The inserted nodes become children of the target node.</p></item><item>
+<p>If multiple nodes are inserted by a single insert expression, their 
+order preserves the node ordering of the source expression.</p></item><item>
+<p>The positions of the inserted nodes are chosen so as not to  interfere with the intended 
+position of nodes that are inserted with the specification <code>before</code>, <code>after</code>, 
+<code>as first into</code>, or <code>as last into</code>. For example, If node B is inserted "after node A", 
+no other node will be inserted between nodes A and B unless it is also 
+inserted "after node A".</p></item><item>
+<p>Subject to the above constraints, the positions of the inserted nodes 
+among the children of the target node are implementation-dependent.</p></item></ulist></item></ulist>
+<p>Examples:</p>
+<ulist><item>
+<p>Insert a <code>year</code> element after the publisher of the first book.</p>
+<eg>insert node &lt;year&gt;2005&lt;/year&gt;
+    after fn:doc("bib.xml")/books/book[1]/publisher</eg></item><item>
+<p>Navigating by means of several bound variables, insert a new police report into the list of police reports for a particular accident.</p>
+<eg>insert node $new-police-report
+   as last into fn:doc("insurance.xml")/policies
+      /policy[id = $pid]
+      /driver[license = $license]
+      /accident[date = $accdate]
+      /police-reports</eg></item></ulist>
+<p>The semantics of an insert 
+expression are as follows:</p>
+
+
+<olist>
+<item>
+<p><nt def="SourceExpr">SourceExpr</nt> must be a <termref def="dt-simple-expression">simple expression</termref>; otherwise a static error is raised <errorref code="0001" class="ST"/>. <nt def="SourceExpr">SourceExpr</nt> is evaluated as though it were an enclosed 
+expression in an element constructor (see Rule 1e in <xspecref spec="XQ" ref="id-content"></xspecref>). The result of this step is either an error or a 
+sequence of nodes to be inserted, called the <term>insertion sequence</term>. If the insertion sequence contains a document node, the document node is replaced in the insertion sequence by its children. If the insertion sequence contains an attribute node following a node that is not an attribute node, a type error is raised <errorref code="0004" class="TY"/>. Let <code>$alist</code> be the sequence of attribute nodes in the insertion sequence. Let <code>$clist</code> be the remainder of the insertion sequence, in its original order.</p><note>
+<p>Either <code>$alist</code> or <code>$clist</code> or both may be empty.</p></note></item>
+
+<item>
+<p>The target expression must be a <termref def="dt-simple-expression">simple expression</termref>; otherwise a static error is raised <errorref code="0001" class="ST"/>. The target expression is evaluated and checked as follows:</p>
+<olist><item>
+<p>If the result is an empty sequence, <errorref code="0027" class="DY"/> is raised.</p></item><item>
+<p>If any form of <code>into</code> is specified, 
+the result must be a single element or document node; any other non-empty result raises a type error <errorref code="0005" class="TY"/>.</p></item><item>
+<p>If <code>before</code> or <code>after</code> 
+is specified, the result must be a single element, text, comment, or processing instruction node; any other non-empty result raises a type error  <errorref code="0006" class="TY"/>.</p></item><item>
+<p>If <code>before</code> or <code>after</code> 
+is specified, the node returned by the target expression must have a non-empty <code>parent</code> property <errorref code="0029" class="DY"/>.</p></item></olist>
+<p>  Let 
+<code>$target</code> be the  node returned by the target expression.</p></item><item>
+<p>If <code>$alist</code> is not empty and any form of <code>into</code> is specified, the following checks are performed:</p>
+<olist><item>
+<p><code>$target</code> must be an element node <errorref code="0022" class="TY"/>.</p></item>
+
+<item>
+<p>No attribute node in <code>$alist</code> may have a QName whose
+<termref def="dt-implied-namespace-binding">implied namespace
+binding</termref> <termref def="dt-conflict">conflicts</termref> with
+a namespace binding in the "namespaces" property of
+<code>$target</code> <errorref code="0023" class="DY"/>, unless the
+namespace prefix for the attribute is absent.</p></item><item>
+
+<p>Multiple attribute nodes in <code>$alist</code> must not have QNames whose <termref def="dt-implied-namespace-binding">implied namespace bindings</termref> <termref def="dt-conflict">conflict</termref> with each other <errorref code="0024" class="DY"/>.</p></item></olist></item>
+
+<item>
+<p>If <code>$alist</code> is not empty and <code>before</code> or <code>after</code> is specified, the following checks are performed:</p>
+<olist><item>
+<p> <code>parent($target)</code> must be an element node <errorref code="0030" class="DY"/>.</p></item><item>
+<p>No attribute node in <code>$alist</code> may have a QName whose <termref def="dt-implied-namespace-binding">implied namespace binding</termref> <termref def="dt-conflict">conflicts</termref> with a namespace binding in the "namespaces" property of <code>parent($target)</code> <errorref code="0023" class="DY"/> unless the namespace prefix for the attribute is absent.</p></item><item>
+<p>Multiple attribute nodes in <code>$alist</code> must not have QNames whose <termref def="dt-implied-namespace-binding">implied namespace bindings</termref> <termref def="dt-conflict">conflict</termref> with each other <errorref code="0024" class="DY"/>.</p></item></olist></item><item>
+<p>The result of the insert expression is an empty <termref
+def="dt-xdm-instance">XDM instance</termref> and a <termref
+def="dt-pending-update-list">pending update list</termref> constructed
+as follows:</p>
+
+
+<olist>
+<item>
+<p>If <code>as first into</code> is specified, the <termref def="dt-pending-update-list">pending update list</termref> consists of the following <termref def="dt-update-primitive">update primitives</termref>:</p>
+<olist><item>
+<p>If <code>$alist</code> is not empty, <code><loc href="#id-upd-insert-attributes">upd:insertAttributes</loc>($target, $alist)</code></p></item><item>
+<p>If <code>$clist</code> is not empty, <code><loc href="#id-upd-insert-into-as-first">upd:insertIntoAsFirst</loc>($target, $clist)</code></p></item></olist></item>
+
+<item>
+<p>If <code>as last into</code> is specified, the <termref def="dt-pending-update-list">pending update list</termref> consists of the following <termref def="dt-update-primitive">update primitives</termref>:</p>
+<olist><item>  
+<p>If <code>$alist</code> is not empty, <code><loc href="#id-upd-insert-attributes">upd:insertAttributes</loc>($target, $alist)</code></p></item><item>
+<p>If <code>$clist</code> is not empty, <code><loc href="#id-upd-insert-into-as-last">upd:insertIntoAsLast($target, $clist)</loc></code></p></item></olist></item>
+
+<item>
+<p>If <code>into</code> is specified with neither <code>as first</code> nor <code>as last</code>, the <termref def="dt-pending-update-list">pending update list</termref> consists of the following <termref def="dt-update-primitive">update primitives</termref>:</p>
+<olist><item>
+<p>If <code>$alist</code> is not empty, <code><loc href="#id-upd-insert-attributes">upd:insertAttributes</loc>($target, $alist)</code></p></item><item>
+<p>If <code>$clist</code> is not empty, <code><loc href="#id-upd-insert-into">upd:insertInto</loc>($target, $clist)</code></p></item></olist></item>
+
+
+
+<item>
+<p>If <code>before</code> is specified, let <code>$parent</code> be the parent node of <code>$target</code>. The <termref def="dt-pending-update-list">pending update list</termref> consists of the following <termref def="dt-update-primitive">update primitives</termref>:</p>
+<olist><item>
+<p>If <code>$alist</code> is not empty, <code><loc href="#id-upd-insert-attributes">upd:insertAttributes</loc>($parent, $alist)</code></p></item><item>
+<p>If <code>$clist</code> is not empty, <code><loc href="#id-upd-insert-before">upd:insertBefore($target, $clist)</loc></code></p></item></olist></item>
+
+<item>
+<p>If <code>after</code> is specified, let <code>$parent</code> be the parent node of <code>$target</code>. The <termref def="dt-pending-update-list">pending update list</termref> consists of the following <termref def="dt-update-primitive">update primitives</termref>:</p>
+<olist><item>
+<p>If <code>$alist</code> is not empty, <code><loc href="#id-upd-insert-attributes">upd:insertAttributes</loc>($parent, $alist)</code></p></item><item>
+<p>If <code>$clist</code> is not empty, <code><loc href="#id-upd-insert-after">upd:insertAfter</loc>($target, $clist)</code></p></item></olist></item>
+
+</olist>
+</item>
+</olist></div3>
+
+
+<div3 id="id-delete"><head>Delete</head><scrap><head/>
+
+<prodrecap id="DeleteExpr" ref="DeleteExpr"/>
+
+<prodrecap ref="TargetExpr"/></scrap>
+
+
+
+
+
+<p>A delete expression deletes zero or more nodes from an <termref def="dt-xdm-instance">XDM instance</termref>. 
+The keywords <code>node</code> and <code>nodes</code> may be used interchangeably, regardless of how many nodes are actually deleted. A delete expression is an <termref def="dt-updating-expression">updating expression</termref>.</p>
+<p>Examples:</p>
+<ulist>
+<item>
+<p>Delete the last author of the first book in a given bibliography.</p>
+<eg>delete node fn:doc("bib.xml")/books/book[1]/author[last()]</eg></item>
+<item>
+<p>Delete all email messages that are more than 365 days old.</p>
+<eg>delete nodes /email/message
+     [fn:currentDate() - date &gt; xs:dayTimeDuration("P365D")]</eg></item></ulist>
+<p>The semantics of a delete expression are as follows:
+</p>
+
+
+<olist>
+
+<item>
+<p>The target expression must be a <termref def="dt-simple-expression">simple expression</termref>; otherwise a static error is raised <errorref code="0001" class="ST"/>. The target expression is evaluated. The result must be a 
+sequence of zero or more nodes; otherwise a type error is raised <errorref code="0007" class="TY"/>. 
+Let <code>$tlist</code> be the list of nodes returned by 
+the target expression.</p></item>
+
+<item>
+<p>If any node in <code>$tlist</code> has no parent, 
+<phrase diff="add">it is removed from <code>$tlist</code> (and is thus ignored in the following step).</phrase>
+<phrase diff="del"><!--ins-->the node is removed from <code>$tlist</code> (and is thus ignored in the following step)<!--/ins--><!--del-->an implementation may (but is not required to) raise a dynamic error <errorref code="0020" class="DY"/><!--/del-->.
+</phrase></p></item>
+
+
+<item>
+<p>A new <termref def="dt-pending-update-list">pending update list</termref> is created. For each node 
+<code>$tnode</code> in <code>$tlist</code>, the following <termref def="dt-update-primitive">update primitive</termref> is appended  to the pending update list: <code>upd:delete($tnode)</code>. The resulting 
+pending update list (together with an empty <termref def="dt-xdm-instance">XDM instance</termref>)  is the result of the delete expression.</p></item>
+
+</olist><notes>
+<ulist>
+<item>
+<p>Since node deletions do not become effective until the end of a <termref def="dt-snapshot">snapshot</termref>, they have no effect on variable bindings or on the set of available documents or collections within the current query.</p></item>
+<item>
+<p>The semantics of a delete expression are defined in terms of their effect on an  <termref def="dt-xdm-instance">XDM instance</termref>: the deleted nodes are detached from their parents after completion of the current query. The effects of a delete expression on persistent storage are beyond the scope of this specification.</p></item></ulist></notes></div3><div3 id="id-replace"><head>Replace</head><scrap><head/>
+
+<prodrecap id="ReplaceExpr" ref="ReplaceExpr"/>
+
+<prodrecap ref="TargetExpr"/></scrap>
+
+
+
+
+<p>A replace expression is an <termref def="dt-updating-expression">updating expression</termref>. A replace expression has two forms, depending on whether <code>value of</code> 
+is specified.</p>
+
+<div4 id="id-replacing-node"><head>Replacing a Node</head>
+<p>If <code>value of</code> is not specified, a replace expression 
+ replaces one node with a new sequence of zero or more nodes. The replacement nodes occupy the position in the node hierarchy that was formerly occupied by the node that was replaced. For this reason, an attribute node can be replaced only by zero or more attribute nodes, and an element, text, comment, or processing instruction node can be replaced only by zero or more element, text, comment, or processing instruction nodes.  Example:</p>
+<ulist>
+<item>
+<p>Replace the publisher of the first book with the publisher of the second book.</p>
+<eg>replace node fn:doc("bib.xml")/books/book[1]/publisher
+with fn:doc("bib.xml")/books/book[2]/publisher</eg></item></ulist>
+<p> The semantics of this form of replace expression are as follows:
+</p>
+
+
+<olist>
+<item>
+<p>The expression following the keyword <code>with</code> must be a <termref def="dt-simple-expression">simple expression</termref>; otherwise a static error is raised <errorref code="0001" class="ST"/>. This expression is evaluated as though it were an enclosed 
+expression in an element constructor (see Rule 1e in <xspecref spec="XQ" ref="id-content"></xspecref>). Let <code>$rlist</code> be the node sequence that results from this evaluation. If <code>$rlist</code> contains a document node, the document node is replaced in <code>$rlist</code> by its children.</p></item>
+
+
+
+
+<item>
+<p>The target expression must be a <termref def="dt-simple-expression">simple expression</termref>; otherwise a static error is raised <errorref code="0001" class="ST"/>. The target expression is evaluated and checked as follows:</p>
+<olist>
+<item>
+<p>If the result is an empty sequence, <errorref code="0027" class="DY"/> is raised.</p></item>
+<item>
+<p>If the result is non-empty and does not consist of a single element, attribute, text, comment, or processing instruction node, <errorref code="0008" class="TY"/> is raised.</p></item>
+<item>
+<p>If the result consists of a node whose parent property is empty, <errorref code="0009" class="DY"/> is raised.</p></item></olist>
+<p>  Let 
+<code>$target</code> be the  node returned by the target expression, and let <code>$parent</code> be its parent node.</p></item>
+<item>
+<p>If <code>$target</code> is an element, text, comment, or processing 
+instruction node, then <code>$rlist</code> must consist exclusively of zero or more element, text, comment, or processing instruction nodes <errorref code="0010" class="TY"/>.</p>
+
+   
+</item>
+<item>
+<p>If <code>$target</code> is an attribute node, then:</p>
+<olist>
+<item>
+<p> <code>$rlist</code> must consist exclusively of zero or more attribute nodes <errorref code="0011" class="TY"/>.</p></item>
+<item>
+<p>No attribute node in <code>$rlist</code> may have a QName whose <termref def="dt-implied-namespace-binding">implied namespace binding</termref> <termref def="dt-conflict">conflicts</termref> with a namespace binding in the "namespaces" property of <code>$parent</code> <errorref code="0023" class="DY"/>
+unless the namespace prefix for the attribute is absent.</p></item>
+<item>
+<p>Multiple attribute nodes in <code>$rlist</code> must not have QNames whose <termref def="dt-implied-namespace-binding">implied namespace bindings</termref> <termref def="dt-conflict">conflict</termref> with each other <errorref code="0024" class="DY"/>.</p></item></olist></item>
+<item>
+<p>The result of the replace expression is an empty <termref def="dt-xdm-instance">XDM instance</termref> and a <termref def="dt-pending-update-list">pending update list</termref> consisting of the following <termref def="dt-update-primitive">update primitive</termref>:
+<code><loc href="#id-upd-replacenode">upd:replaceNode</loc>($target, $rlist)</code></p></item>
+
+</olist></div4><div4 id="id-replacing-node-value"><head>Replacing the Value of a Node</head>
+<p>If <code>value of</code> is specified, 
+a replace expression is used to modify the value of a node while preserving 
+its <termref def="dt-node-identity">node identity</termref>. Example:</p>
+<ulist>
+<item>
+<p>Increase the price of the first book by ten percent.</p>
+<eg>replace value of node fn:doc("bib.xml")/books/book[1]/price
+with fn:doc("bib.xml")/books/book[1]/price * 1.1</eg></item></ulist>
+<p>The semantics of this form of replace expression are as 
+follows:
+</p>
+
+
+<olist>
+<item>
+<p>The expression following the keyword <code>with</code> must be a <termref def="dt-simple-expression">simple expression</termref>; otherwise a static error is raised <errorref code="0001" class="ST"/>. This expression is evaluated as though it were the content 
+expression of a text node constructor (see  Section 3.7.3.4 of 
+<bibref ref="xquery"/>.) The result of this step, in the absence of errors, is 
+either a single text node or an empty sequence. Let <code>$text</code> be the result of this step. 
+</p></item>
+
+
+<item>
+<p>The target expression must be a <termref def="dt-simple-expression">simple expression</termref>; otherwise a static error is raised <errorref code="0001" class="ST"/>. The target expression is evaluated and checked as follows:</p>
+<olist>
+<item>
+<p>If the result is an empty sequence, <errorref code="0027" class="DY"/> is raised.</p></item>
+<item>
+<p>If the result is non-empty and does not consist of a single element, attribute, text, comment, or processing instruction node, <errorref code="0008" class="TY"/> is raised.</p></item></olist>
+<p>  Let 
+<code>$target</code> be the  node returned by the target expression.</p></item>
+<item>
+<p>If <code>$target</code> is an element node, the result of the replace 
+expression is an empty <termref def="dt-xdm-instance">XDM instance</termref> and a <termref def="dt-pending-update-list">pending update list</termref> consisting of the following <termref def="dt-update-primitive">update primitive</termref>: <code><loc href="#id-upd-replace-element-content">upd:replaceElementContent</loc>($target, $text)</code></p></item>
+
+
+<item>
+<p>If <code>$target</code> is an attribute, text, comment, or processing 
+instruction node, let <code>$string</code> be the string value of the text node 
+constructed in Step 1. If Step 1 did not construct 
+a text node, let <code>$string</code> be a zero-length string.
+
+Then:</p>
+<olist>
+<item>
+<p>If <code>$target</code> is a comment node, and <code>$string</code> contains two adjacent hyphens or ends with a hyphen,
+a dynamic error is raised <errorref code="0072" class="DY"/>.</p></item>
+<item>
+<p>If <code>$target</code> is a processing instruction node, and <code>$string</code> contains the substring "<code>?&gt;</code>", a dynamic error is raised <errorref code="0026" class="DY"/>.</p></item>
+<item>
+<p>In the absence of errors, the result of a replace expression is an empty <termref def="dt-xdm-instance">XDM instance</termref> and a <termref def="dt-pending-update-list">pending update list</termref> containing the following <termref def="dt-update-primitive">update primitive</termref>: 
+<code><loc href="#id-upd-replace-value">upd:replaceValue</loc>($target, $string)</code>.</p></item></olist></item>
+
+</olist></div4></div3><div3 id="id-rename"><head>Rename</head><scrap><head/>
+
+<prodrecap id="RenameExpr" ref="RenameExpr"/>
+
+<prodrecap ref="TargetExpr"/>
+<prodrecap id="NewNameExpr" ref="NewNameExpr"/></scrap>
+
+
+
+
+<p>A rename expression replaces the <code>name</code> property of a <termref def="dt-data-model">data model</termref> node with a 
+new QName. A rename expression is an <termref def="dt-updating-expression">updating expression</termref>.</p>
+<p>Examples:</p>
+<ulist>
+<item>
+<p>Rename the first <code>author</code> element of the first book to <code>principal-author</code>.</p>
+<eg>rename node fn:doc("bib.xml")/books/book[1]/author[1]
+as "principal-author"</eg></item>
+<item>
+<p>Rename the first <code>author</code> element of the first book to the QName that is the value of the variable <code>$newname</code>.</p>
+<eg>rename node fn:doc("bib.xml")/books/book[1]/author[1]
+as $newname</eg></item></ulist>
+<p>The semantics of a rename expression are as follows:</p>
+
+
+<olist>
+
+
+<item>
+<p>The target expression must be a <termref def="dt-simple-expression">simple expression</termref>; otherwise a static error is raised <errorref code="0001" class="ST"/>. The target expression is evaluated and checked as follows:</p>
+<olist>
+<item>
+<p>If the result is an empty sequence, <errorref code="0027" class="DY"/> is raised.</p></item>
+<item>
+<p>If the result is non-empty and does not consist of a single element, attribute, or processing instruction node, <errorref code="0012" class="TY"/> is raised.</p></item></olist>
+<p>  Let 
+<code>$target</code> be the  node returned by the target expression.</p></item>
+<item>
+<p><nt def="NewNameExpr">NewNameExpr</nt> must be a <termref def="dt-simple-expression">simple expression</termref>; otherwise a static error is raised <errorref code="0001" class="ST"/>. <nt def="NewNameExpr">NewNameExpr</nt> is 
+processed as follows:</p>
+<olist>
+<item>
+<p>If <code>$target</code> is an element node, let <code>$QName</code> be the result of evaluating
+<nt def="NewNameExpr">NewNameExpr</nt> as though it were the name expression of a computed element
+constructor  (see <xspecref spec="XQ" ref="id-computedElements"></xspecref>). If the namespace binding of <code>$QName</code>
+conflicts with any namespace binding in the <code>namespaces</code> property of <code>$target</code>, a
+dynamic error is raised <errorref code="0023" class="DY"/>.</p></item>
+<item>
+<p>If <code>$target</code> is an attribute node, let <code>$QName</code> be the result of evaluating
+<nt def="NewNameExpr">NewNameExpr</nt> as though it were the name expression of a computed attribute
+constructor (see <xspecref spec="XQ" ref="id-computedAttributes"></xspecref>). If <code>$QName</code> has a non-absent namespace URI, and if the namespace binding of <code>$QName</code>
+conflicts with any namespace binding in the <code>namespaces</code> property of the parent
+(if any) of <code>$target</code>, a dynamic error is raised <errorref code="0023" class="DY"/>.</p></item>
+<item>
+<p>If <code>$target</code> is a processing instruction node, let <code>$NCName</code> be the result of
+evaluating <nt def="NewNameExpr">NewNameExpr</nt> as though it were the name expression of a computed
+processing instruction constructor (see <xspecref spec="XQ" ref="id-computed-pis"></xspecref>), and let <code>$QName</code> be
+defined as <code>fn:QName((), $NCName)</code>.</p></item></olist></item>
+
+
+<item>
+<p>The result of the rename expression is an empty <termref def="dt-xdm-instance">XDM instance</termref> and a <termref def="dt-pending-update-list">pending update list</termref> 
+containing the following <termref def="dt-update-primitive">update primitive</termref>: 
+<code><loc href="#id-upd-rename">upd:rename</loc>($target, $QName)</code>.</p></item>
+
+</olist><note>
+<p>The effects of a rename expression are limited to its target node. Attributes and descendants of the target node are not affected. If a global change of names or namespaces is intended, some form of explicit iteration must be used. The following example illustrates such a global change. The example operates on the node bound to variable <code>$root</code> and all its attributes and descendants, changing all QNames with the prefix <code>abc</code> to have a new prefix <code>xyz</code> and a new namespace URI <code>http://xyz/ns</code>.
+<eg>for $node in $root//abc:*
+let $localName := fn:local-name($node),
+    $newQName := fn:concat("xyz:", $localName)
+return (
+   rename node $node as fn:QName("http://xyz/ns", $newQName),
+   for $attr in $node/@abc:*
+   let $attrLocalName := fn:local-name($attr),
+       $attrNewQName := fn:concat("xyz:", $attrLocalName)
+   return
+      rename node $attr as fn:QName("http://xyz/ns", $attrNewQName)
+)</eg></p></note></div3><div3 id="id-transform"><head>Transform</head><scrap><head/>
+
+<prodrecap id="TransformExpr" ref="TransformExpr"/>
+</scrap>
+
+
+
+
+<p>A transform expression can be used to create modified copies of existing nodes in an <termref def="dt-xdm-instance">XDM instance</termref>. Each node created by a transform expression has a new <termref def="dt-node-identity">node identity</termref>. The result of a transform expression is an <termref def="dt-xdm-instance">XDM instance</termref> that may include both nodes that were created by the transform expression and other, previously existing nodes. A transform expression is a <termref def="dt-simple-expression">simple expression</termref> because it does not modify the value of any existing nodes.</p>
+<p>Examples:</p>
+<ulist>
+<item>
+<p>Return a sequence consisting of all <code>employee</code> elements that have Java as a skill, excluding their <code>salary</code> child-elements:</p>
+<eg>for $e in //employee[skill = "Java"]
+return 
+   copy $je := $e
+   modify delete node $je/salary
+   return $je</eg></item>
+<item>
+<p>The following example copies a node, modifies the copy, and returns both the original node and the modified copy:</p>
+<eg>let $oldx := /a/b/x
+return
+   copy $newx := $oldx
+   modify (rename node $newx as "newx", 
+           replace value of node $newx with $newx * 2)
+   return ($oldx, $newx)
+</eg><note>
+<p>No persistent changes to the underlying data result from this example.</p></note></item></ulist>
+<p>A transform expression consists of three clauses, denoted by the keywords <code>copy</code>, <code>modify</code>, and <code>return</code>. The semantics of a transform expression are as follows:</p>
+<olist>
+<item>
+<p>The <code>copy</code> clause contains one or more variable bindings, each of which consists of a variable name and an expression called the <term>source expression</term>. Each variable binding is processed as follows:</p>
+<olist>
+<item>
+<p>The source expression must be a <termref def="dt-simple-expression">simple expression</termref>; otherwise a static error is raised <errorref code="0001" class="ST"/>.</p></item>
+<item>
+<p>The result of evaluating the source expression must be a single node <errorref code="0013" class="TY"/>. Let <code>$node</code> be this single node.</p></item>
+<item>
+<p>A new copy is made of <code>$node</code> and all nodes that have <code>$node</code> as an ancestor,
+collectively referred to as <term>copied nodes</term>. Each copied node receives a new node
+identity. The <code>parent</code>, <code>children</code>, and <code>attributes</code> properties of the copied nodes
+are set so as to preserve their inter-node relationships. 
+
+<phrase diff="add">The parent property of the copy of <code>$node</code> is set
+to empty.</phrase>
+
+Other properties of the copied nodes are determined as follows:</p>
+<olist>
+<item>
+<p>For a copied element node, the <code>type-name</code> property is set to <code>xs:untyped</code>,
+and the <code>nilled</code>, <code>is-id</code>, and <code>is-idrefs</code> properties are set to <code>false</code>.</p></item>
+<item>
+<p>For a copied attribute node, the <code>type-name</code> property is set to
+<code>xs:untypedAtomic</code> and the <code>is-idrefs</code> property is set to <code>false</code>. The <code>is-id</code> property
+is set to <code>true</code> if the qualified name of the attribute node is <code>xml:id</code>; otherwise
+it is set to <code>false</code>.</p></item>
+<item>
+<p>The string value of each copied element and attribute node remains
+unchanged, and its typed value becomes equal to its string value as an instance
+of <code>xs:untypedAtomic</code>.</p><note>
+<p>Implementations that store only the typed value of a
+node are required at this point to convert the typed value to a string form.</p></note></item>
+<item>
+<p>If <code>copy-namespaces mode</code> in the static context specifies <code>preserve</code>, all in-scope-namespaces of the original element are
+retained in the new copy. If <code>copy-namespaces</code> mode specifies <code>no-preserve</code>, the new copy retains only those in-scope namespaces of the original element that are used in the names of the element and its
+     attributes.</p></item>
+<item>
+<p>All other properties of the copied nodes are preserved.</p></item></olist></item>
+<item>
+<p>The variable name is bound to the top-level copied node generated in the
+previous step. The scope of this variable binding includes all subexpressions
+of the containing transform expression that appear after the variable binding
+clause, including the source expressions of later variable bindings, but it
+does not include the source expression to which the current variable name is
+bound.</p></item></olist></item>
+<item>
+
+<p>The <code>modify</code> clause must
+
+<phrase diff="add">contain an <termref def="dt-updating-expression">updating expression</termref> or a <termref def="dt-vacuous-expression">vacuous expression</termref>
+</phrase>
+
+<phrase diff="del">contain either an <termref def="dt-updating-expression">updating expression</termref>, an empty expression <code>( )</code>, or a call to the <code>fn:error</code> function</phrase>; 
+
+otherwise a static error is raised <errorref code="0002" class="ST"/>. The  expression in the <code>modify</code> clause is evaluated, resulting in a <termref def="dt-pending-update-list">pending update list</termref>. If the <termref def="dt-target-node">target node</termref> of any <termref def="dt-update-primitive">update primitive</termref> on this pending update list is a node that was not newly created in Step 1, a dynamic error is raised <errorref code="0014" class="DY"/>. <phrase diff="del">Let <code>$pul</code> be the pending update list generated by this step.</phrase></p></item>
+<item>
+<p><phrase diff="add">Let <code>$pul</code> be the pending update list generated by the previous step.</phrase> Let <code>$revalidation-mode</code> be the value of
+the revalidation mode in the static context of the transform expression. <phrase diff="add">Let <code>$inherit-namespaces</code> be <code>true</code> if the <code>copy-namespaces</code> mode specifies <code>inherit</code>, or <code>false</code> if the 
+<code>copy-namespaces</code> mode specifies <code>no-inherit</code>.</phrase> The following <termref def="dt-update-operation">update operation</termref> is invoked: <code><loc href="#id-upd-apply-updates">upd:applyUpdates</loc>($pul, $revalidation-mode<phrase diff="add">, $inherit-namespaces</phrase>)</code>. The effect of this operation is to make the updates specified in the <code>modify</code> clause effective on the copied nodes.</p><note>
+<p>In the event of incompatible updates, the <loc href="#id-upd-apply-updates">upd:applyUpdates</loc> operation may raise an error, as described in <specref ref="id-upd-apply-updates"/>.</p></note></item>
+<item>
+<p>The <code>return</code> clause must contain a <termref def="dt-simple-expression">simple expression</termref>; otherwise a static error is raised <errorref code="0001" class="ST"/>. The <code>return</code> clause is evaluated, and its result is the result of the transform expression. During evaluation of the <code>return</code> clause, changes applied to copied nodes by the preceding step are visible.</p></item></olist></div3><div3 id="id-compatibility"><head>Compatibility of Updating Expressions</head>
+<p>The rules defining compatibility of <termref def="dt-updating-expression">updating expressions</termref> within a <termref def="dt-snapshot">snapshot</termref> are defined in <specref ref="id-upd-apply-updates"/>.</p><note>
+<p>The effect of these rules is as follows:</p>
+<olist>
+<item>
+<p>If any node is affected by more than one <code>rename</code> expression within a  <termref def="dt-snapshot">snapshot</termref>, a dynamic error is raised <errorref code="0015" class="DY"/>.</p></item>
+<item>
+<p>If any node is affected by more than one <code>replace</code> expression (without <code>value of</code> being specified) within a  <termref def="dt-snapshot">snapshot</termref>, a dynamic error is raised <errorref code="0016" class="DY"/>.</p></item>
+<item>
+<p>If any node is affected by more than one <code>replace value of</code> expression within a  <termref def="dt-snapshot">snapshot</termref>, a dynamic error is raised <errorref code="0017" class="DY"/>.</p></item>
+<item>
+<p>If multiple calls to <code>fn:put</code> operate on the same URI in the same <termref def="dt-snapshot">snapshot</termref>, a dynamic error is raised <errorref code="0031" class="DY"/>.</p></item>
+<item>
+<p>Within a given <termref def="dt-snapshot">snapshot</termref>, if an element node <code>E</code> is the target of a <code>replace value of</code> expression, and the children of <code>E</code> are also modified by other expressions, the final children of <code>E</code> are determined by the <code>replace value of</code> expression. For example:</p>
+<ulist>
+<item>
+<p>Suppose that <code>$A</code> is bound to an element node that has a child element named <code>B</code>. Suppose that the following expressions are evaluated in the same <termref def="dt-snapshot">snapshot</termref>:</p>
+<eg>replace node $A/B with &lt;C&gt;Hello&lt;/C&gt;,
+replace value of node $A with &lt;D&gt;Goodbye&lt;/D&gt;</eg> 
+<p>The expressions on the left and right side of the comma can be evaluated in any order. No error is raised. At the end of the <termref def="dt-snapshot">snapshot</termref>, the children of <code>$A</code> will consist of a single text node with the content <code>"Goodbye"</code>.</p></item></ulist></item></olist></note></div3></div2>
+<div2 id="id-extensions-to-existing"><head>Extensions to Existing Expressions</head>
+<p>&language; provides extensions to the semantics of several existing kinds of XQuery expressions, as specified in this section.</p><div3 id="id-flwor-expr"><head>FLWOR Expression</head>
+
+
+<p>The syntax of the FLWOR expression is not changed. Its semantics are extended as follows:</p>
+
+
+<olist>
+
+
+<item>
+<p>If a <code>for</code>,
+<code>let</code>, <code>where</code>, or <code>order by</code>
+clause contains an <termref def="dt-updating-expression">updating expression</termref>, a static error is raised <errorref code="0001" class="ST"/>.</p></item>
+<item>
+<p>The <code>return</code> clause may contain any category of expression. The category of the FLWOR expression is the same as the category of the expression in its <code>return</code> clause (simple, vacuous, or updating.)</p></item>
+<item>
+<p>If the <code>return</code> clause contains a <termref def="dt-simple-expression">simple expression</termref>, the semantics of the FLWOR expression  are as specified in <xspecref spec="XQ" ref="id-flwor-expressions"></xspecref>.</p></item>
+<item>
+<p>If the <code>return</code> clause contains an <termref def="dt-updating-expression">updating expression</termref>, the semantics of the FLWOR expression are as follows:</p>
+<olist>
+
+
+<item>
+<p>The semantics of the <code>for</code>,
+<code>let</code>, <code>where</code>, and <code>order by</code>
+clauses are as specified in <xspecref spec="XQ" ref="id-flwor-expressions"></xspecref>. These clauses generate a stream of tuples of bound
+variables.</p></item>
+
+
+<item>
+<p>For each tuple
+generated by the previous step, the updating expression in the
+<code>return</code> clause is evaluated, resulting in a <termref def="dt-pending-update-list">pending update list</termref>.</p></item>
+
+
+<item>
+<p>All the <termref def="dt-pending-update-list">pending update lists</termref> generated by the
+previous step are merged by successive invocations of the <code><loc href="#id-upd-merge-updates">upd:mergeUpdates</loc></code>
+operation. The resulting merged pending update list is the
+result of the FLWOR expression.</p><note>
+<p>In the event of incompatible updates, the <code><loc href="#id-upd-merge-updates">upd:mergeUpdates</loc></code> operation may raise an error, as described in <specref ref="id-upd-merge-updates"/>.</p></note></item>
+</olist></item>
+
+</olist>
+<p>The following example illustrates the use of an updating expression in a FLWOR expression:</p>
+<ulist>
+<item>
+<p>Update an inventory of parts according to a set of changes provided in the bound variable <code>$changes</code>. Both <code>/inventory</code> and <code>$changes</code> contain a set of <code>part</code> elements, each with a <code>partno</code> and a <code>quantity</code>.</p>
+<eg>for $p in /inventory/part
+let $deltap := $changes/part[partno eq $p/partno]
+return 
+    replace value of node $p/quantity
+    with $p/quantity + $deltap/quantity</eg></item></ulist></div3><div3 id="id-typeswitch-expr"><head>Typeswitch Expression</head>
+
+
+<p>The syntax of the typeswitch expression is not changed. Its semantics are extended as
+follows. Let the expressions in the  <code>case</code>  and <code>default</code> clauses be called <term>branches</term>. Then:
+</p>
+
+
+<olist>
+
+
+<item>
+<p>If the operand expression of a typeswitch is an <termref def="dt-updating-expression">updating expression</termref>, a static error is raised <errorref code="0001" class="ST"/>.</p></item>
+<item>
+<p>If any branch is an <termref def="dt-updating-expression">updating expression</termref>, then all branches must be <termref def="dt-updating-expression">updating</termref> or <termref def="dt-vacuous-expression">vacuous expressions</termref> <errorref code="0001" class="ST"/>.  In this case, the typeswitch expression is an <termref def="dt-updating-expression">updating expression</termref>.</p></item>
+<item>
+<p>If all branches are <termref def="dt-vacuous-expression">vacuous expressions</termref>, the typeswitch expression is a <termref def="dt-vacuous-expression">vacuous expression</termref>.</p></item>
+<item>
+<p>Otherwise, the typeswitch expression is a <termref def="dt-simple-expression">simple expression</termref>.</p></item>
+<item>
+<p>If the typeswitch expression is a <termref def="dt-simple-expression">simple</termref> (including <termref def="dt-vacuous-expression">vacuous</termref>) expression, its semantics are as specified in <xspecref spec="XQ" ref="id-typeswitch"></xspecref>.</p></item>
+<item>
+<p>If the typeswitch expression is an <termref def="dt-updating-expression">updating expression</termref>, then  selection of the effective case and
+binding of variables are performed as specified in <xspecref spec="XQ" ref="id-typeswitch"></xspecref>. The  expression in the <code>return</code>
+clause of the effective case (or default) is then evaluated, resulting
+in a <termref def="dt-pending-update-list">pending update list</termref>, which serves as the result of
+the typeswitch expression.</p></item>
+
+
+
+</olist></div3><div3 id="id-conditional-expr"><head>Conditional Expression</head>
+<p>The semantics of
+conditional expressions are extended as follows.
+Let the expressions in the  <code>then</code>  and <code>else</code> clauses be called <term>branches</term>. Then:
+</p>
+<olist>
+
+
+<item>
+<p>If the if-clause contains an <termref def="dt-updating-expression">updating expression</termref>, a static error is raised <errorref code="0001" class="ST"/>.</p></item>
+<item>
+<p>If either branch is an <termref def="dt-updating-expression">updating expression</termref>, then both branches must be <termref def="dt-updating-expression">updating</termref> or <termref def="dt-vacuous-expression">vacuous expressions</termref> <errorref code="0001" class="ST"/>.  In this case, the conditional expression is an <termref def="dt-updating-expression">updating expression</termref>.</p></item>
+<item>
+<p>If both branches are <termref def="dt-vacuous-expression">vacuous expressions</termref>, the conditional expression is a <termref def="dt-vacuous-expression">vacuous expression</termref>.</p></item>
+<item>
+<p>Otherwise, the conditional expression is a <termref def="dt-simple-expression">simple expression</termref>.</p></item>
+<item>
+<p>If the conditional expression is a <termref def="dt-simple-expression">simple</termref> (including <termref def="dt-vacuous-expression">vacuous</termref>) expression, its semantics are as specified in <xspecref spec="XQ" ref="id-conditionals"></xspecref>.</p></item>
+<item>
+<p>If the conditional expression is an <termref def="dt-updating-expression">updating expression</termref>, then  selection of the effective branch performed as specified in <xspecref spec="XQ" ref="id-conditionals"></xspecref>. The result of the conditional expression is
+the <termref def="dt-pending-update-list">pending update list</termref> returned by the
+selected branch.</p></item>
+
+
+
+</olist>
+
+
+<p>The following example illustrates the use of updating expressions in a conditional expression:</p>
+<ulist>
+<item>
+<p>If the element bound to variable <code>$e</code> has a <code>last-updated</code> attribute, update its value to the current date; otherwise insert such an attribute.</p>
+<eg>if ($e/@last-updated)
+then replace value of node 
+        $e/last-updated with fn:currentDate()
+else insert node 
+        attribute last-updated {fn:currentDate()} into $e</eg></item></ulist></div3><div3 id="id-comma-expr"><head>Comma Expression</head>
+<p>The semantics of
+comma expressions (composed of one or more expressions concatenated by the comma operator, as described in <xspecref spec="XQ" ref="construct_seq"></xspecref>) are extended as follows:
+</p>
+<olist>
+
+
+<item>
+<p>If any operand is an <termref def="dt-updating-expression">updating expression</termref>, then all operands must be <termref def="dt-updating-expression">updating</termref> or <termref def="dt-vacuous-expression">vacuous expressions</termref> <errorref code="0001" class="ST"/>.  In this case, the comma expression is an <termref def="dt-updating-expression">updating expression</termref>.</p></item>
+<item>
+<p>If all operands are <termref def="dt-vacuous-expression">vacuous expressions</termref>, the comma expression is a <termref def="dt-vacuous-expression">vacuous expression</termref>.</p></item>
+<item>
+<p>Otherwise, the comma expression is a <termref def="dt-simple-expression">simple expression</termref>.</p></item>
+<item>
+<p>If the comma expression is a <termref def="dt-simple-expression">simple</termref> (including <termref def="dt-vacuous-expression">vacuous</termref>) expression, its semantics are as specified in <xspecref spec="XQ" ref="construct_seq"></xspecref>.</p></item>
+<item>
+<p>If the comma expression is an <termref def="dt-updating-expression">updating expression</termref>, its operand expressions are evaluated (in any order), and the <termref def="dt-pending-update-list">pending update lists</termref>
+returned by the operand expressions are merged by the <code><loc href="#id-upd-merge-updates">upd:mergeUpdates</loc></code>
+operation. The resulting merged <termref def="dt-pending-update-list">pending update list</termref> is the result of the comma expression.</p></item>
+
+</olist>
+
+
+<p>The following example illustrates the use of an updating comma expression:</p>
+<ulist>
+<item>
+<p>This example makes the value of an element empty and gives the element an <code>xsi:nil="true"</code> attribute. Both of these operations may be necessary in order to preserve the validity of the element.</p>
+<eg>let $q := /inventory/item[serialno = "123456"]/quantity
+return
+   ( replace value of node $q with ( ),
+     insert node attribute xsi:nil {"true"} into $q )</eg></item></ulist></div3><div3 id="id-parenthesized-expr"><head>Parenthesized Expression</head>
+<p>The semantics of a parenthesized expression (any XQuery expression enclosed in parentheses) are extended as follows:</p>
+<p>The category of a parenthesized expression is the same as the category of the expression enclosed in parentheses, which may have any category. The result of a parenthesized expression is also the same as the result of the expression enclosed in parentheses. </p>
+<p>An empty parenthesized expression <code>( )</code> is a <termref def="dt-vacuous-expression">vacuous expression</termref>. Its result is an empty sequence and an empty <termref def="dt-pending-update-list">pending update list</termref>.</p></div3><div3 id="id-function-call"><head>Function Call</head>
+<p>The semantics of a function call are extended as follows:</p>
+<p>The function call is evaluated as specified in Section 3.1.5 of <bibref ref="xquery"/>. If any input parameter of the function  call is an <termref def="dt-updating-expression">updating expression</termref>, a static error is raised <errorref code="0001" class="ST"/>.</p>
+<p>The expression category of a function call is as follows:</p>
+<ulist>
+<item>
+<p>A call to the built-in function <code>fn:error</code> is a <termref def="dt-vacuous-expression">vacuous expression</termref>.</p></item>
+<item>
+<p>A call to an <termref def="dt-updating-function">updating function</termref> is an <termref def="dt-updating-expression">updating expression</termref>.</p></item>
+<item>
+<p>A call to any other function is a <termref def="dt-simple-expression">simple expression</termref>.</p><note>
+<p>This includes calls to built-in functions other than <code>fn:error</code> and calls to user-defined functions that were not declared to be <code>updating</code>.</p></note></item></ulist></div3><div3 id="id-other-expr"><head>Other Expressions</head>
+<p>The semantics of all XQuery expressions other than FLWOR expressions, 
+typeswitch expressions, conditional expressions, comma expressions, 
+parenthesized expressions, and function calls are extended as follows:</p>
+<p>If any operand of this expression is an <termref def="dt-updating-expression">updating expression</termref>, a static error is raised <errorref code="0001" class="ST"/>.</p>
+<p diff="del">In addition, the initializing expression of a variable declaration in a Prolog must not be an <termref def="dt-updating-expression">updating expression</termref> <errorref code="0001" class="ST"/>.</p></div3></div2>
+
+<div2 id="id-new-functions">
+  <head>Extensions to Built-in Function Library</head>
+  
+  
+<p>&language; provides extensions to XQuery built-in function library, as specified in this
+  section.</p> 
+
+  <div3 id="id-func-put">
+    <head>fn:put</head>
+      
+
+
+
+
+<proto name="put" isSchema="no" isDatatype="no" isSpecial="no" isOp="no" return-type="empty-sequence()" isStd="yes">
+<arg name="node" type="node()" emptyOk="no"/>
+<arg name="uri" type="xs:string" emptyOk="no"/>
+</proto>
+
+
+<p><term>Summary:</term> Stores  a document or element to the location specified by <code>$uri</code>.
+This function is normally invoked to create
+a resource on an external storage system such as a file system or a
+database.</p>
+
+
+
+
+<p>The external effects of <code>fn:put</code> are implementation-defined,
+since they occur outside the domain of XQuery. The intent is that, if <code>fn:put</code> is invoked on a document node and no error is raised, a
+subsequent query can access the stored document by invoking
+<code>fn:doc</code> with the same URI.</p>
+<p><term>Semantics:</term></p>
+<olist>
+<item>
+<p><code>fn:put</code> is an updating function.</p></item>
+<item>
+<p>If <code>$node</code> is not a document node or an element node, and the implementation does not support <code>fn:put</code> on the given node kind, a dynamic error is
+raised <errorref code="0001" class="UP"/>.</p></item>
+<item>
+<p>If
+<code>$uri</code> is not a valid lexical representation of the <code>xs:anyURI</code> type, a dynamic error is
+raised <errorref code="0002" class="UP"/>. If <code>$uri</code> is a relative URI reference, it is resolved
+relative to the value of the base URI property in the static
+context.</p></item>
+<item>
+<p>The result of a call to <code>fn:put</code> is an empty <termref def="dt-xdm-instance">XDM instance</termref> and a <termref def="dt-pending-update-list">pending update list</termref> 
+containing the following <termref def="dt-update-primitive">update primitive</termref>: 
+<code><loc href="#id-upd-put">upd:put</loc>($node, $uri)</code>.</p></item></olist>
+
+<notes>
+<ulist>
+<item>
+<p>The results of <code>fn:put</code> do not become effective until after completion of the current <termref def="dt-snapshot">snapshot</termref>. The <code>fn:put</code> function has no effect on the set of available documents or collections seen by the current <termref def="dt-snapshot">snapshot</termref>.</p></item>
+<item>
+<p>If a node that is an operand of <code>fn:put</code> is affected by updating expressions in the current <termref def="dt-snapshot">snapshot</termref>, the <code>fn:put</code> function operates on the node after these updating expressions are made effective. As a result, after completion of the current <termref def="dt-snapshot">snapshot</termref>, the effects of updates to <code>$node</code> can be seen via <code>$uri</code>. (For details on application of updates, see <specref ref="id-upd-apply-updates"/>.)</p></item>
+<item>
+<p>If multiple calls to <code>fn:put</code> in the same <termref def="dt-snapshot">snapshot</termref> operate on the same URI (after any necessary resolution of relative URIs), a dynamic error <errorref code="0031" class="DY"/> is raised. The dynamic error is raised by an expression at some level of the query that contains more than one call to <code>fn:put</code>. For a normative description of this error, see <specref ref="id-upd-merge-updates"/> and <specref ref="id-upd-apply-updates"/>.</p></item></ulist></notes>
+
+
+  </div3>
+
+</div2>
+
+
+
+</div1>

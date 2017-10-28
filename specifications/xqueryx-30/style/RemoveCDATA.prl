@@ -1,0 +1,25 @@
+#! perl infile outfile
+use warnings;
+
+open (CDATAFILE, "$ARGV[0]")
+  or die "Could not open input file: $!";
+
+open (OUTFILE, ">$ARGV[1]")
+  or die "Could not open output file: $!";
+
+@lines = <CDATAFILE>;
+
+close (CDATAFILE);
+
+$CDATA = join("", @lines);
+
+$CDATA =~ s{<!\[CDATA\[}{}g;
+$CDATA =~ s{\]\]>}{}g;
+$CDATA =~ s{<phrase diff="del".*?</phrase>}{}sg;
+$CDATA =~ s{<phrase diff="add".*?>}{}g;
+$CDATA =~ s{<phrase diff="chg".*?>}{}g;
+$CDATA =~ s{</phrase>}{}g;
+
+print OUTFILE $CDATA;
+
+close (OUTFILE);

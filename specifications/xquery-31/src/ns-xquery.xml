@@ -1,0 +1,245 @@
+<?xml version="1.0"?>
+<!DOCTYPE spec SYSTEM "../../../schema/qtnamespaces.dtd" [
+<!ENTITY doc.date.day "17">
+<!ENTITY doc.date.month "December">
+<!ENTITY doc.date.MM "12">
+<!ENTITY doc.date.year "2015">
+<!ENTITY doc.nsname "xquery">
+<!ENTITY doc.publoc "http://www.w3.org/2012/&doc.nsname;">
+<!ENTITY nsname     "http://www.w3.org/2012/&doc.nsname;">
+
+<!ENTITY xq.spec.date.day "17">
+<!ENTITY xq.spec.date.month "December">
+<!ENTITY xq.spec.date.MM "12">
+<!ENTITY xq.spec.date.year "2015">
+<!ENTITY xq.spec.ver "31">
+<!ENTITY xq.spec.doctype "CR">
+<!ENTITY xq.spec.name "xquery">
+<!ENTITY xq.loc     "http://www.w3.org/TR/&xq.spec.name;-&spec.ver;">
+<!ENTITY xq.loc.dated     "http://www.w3.org/TR/&xq.spec.date.year;/&xq.spec.doctype;-&xq.spec.name;-&xq.spec.ver;-&xq.spec.date.year;&xq.spec.date.MM;&xq.spec.date.day;/">
+]>
+<spec w3c-doctype="cr" status="ext-review">
+  <header>
+    <title>XQuery Annotations and Optional Features Namespace Document</title>
+    <version/>
+    <w3c-designation/>
+    <w3c-doctype>W3C Candidate Recommendation</w3c-doctype>
+    <pubdate>
+      <day>&doc.date.day;</day>
+      <month>&doc.date.month;</month>
+      <year>&doc.date.year;</year>
+    </pubdate>
+    <publoc>
+      <loc href="&doc.publoc;">&doc.publoc;</loc>
+    </publoc>
+    <latestloc>
+      <loc href="&doc.publoc;">&doc.publoc;</loc>
+    </latestloc>
+    <authlist>
+      <author>
+        <name/>
+      </author>
+    </authlist>
+    <abstract>
+      <p/>
+    </abstract>
+    <status id="status">
+      <p/>
+    </status>
+    <langusage>
+      <language id="EN">English</language>
+    </langusage>
+    <revisiondesc>
+      <slist>
+        <sitem>Initial draft.</sitem>
+      </slist>
+    </revisiondesc>
+  </header>
+
+  <body>
+
+    <div1 id="intro">
+      <head>Introduction</head>
+
+      <p> This document describes the namespace <code>&nsname;</code> defined by the <bibref
+          ref="xquery-31-ref"/> specification (&xq.spec.date.month; &xq.spec.date.year; version).
+        This namespace is identified in this document by the namespace prefix <code>qfa:</code>, but
+        that is <emph>not</emph> a predefined namespace prefix; this namespace is not defined by an
+        XML Schema. For updated information, please refer to the latest version of the <bibref
+          ref="xquery-31-ref"/> specification. </p>
+
+      <p>This document describes the intended uses of this namespace. The W3C reserves the right to
+        define names in this namespace in the future. <bibref ref="xquery-31-ref"/> is the
+          <emph>only</emph> specification that may amend this namespace.</p>
+
+      <p> This document contains a directory of links to related resources, using RDDL (as defined
+        in <bibref ref="rddl-ref"/>). </p>
+
+      <p> It is GRDDL-enabled (as defined in <bibref ref="grddl-ref"/>), that is to say that a
+        GRDDL-compliant processor can extract useful RDF (as defined in <bibref ref="rdf-ref"/>)
+        representations of the information contained herein. </p>
+
+    </div1>
+
+
+
+    <div1 id="features" class="resource">
+      <head>XQuery Annotations</head>
+
+      <rddl:resource xlink:title="XQuery Annotations" xlink:role="http://www.rddl.org/natures#term"
+        xlink:arcrole="http://www.rddl.org/purposes#definition"
+        xlink:href="&xq.loc.dated;#id-annotations">
+        <p>
+          <bibref ref="xquery-31-ref"/> provides syntax to define annotations on function
+          declarations and variable declarations. Two annotations are defined in <bibref
+            ref="xquery-31-ref"/>. Application and query authors may define additional annotations,
+          as may XQuery implementations. Those additional applications belong, by default, to the
+            <code>&nsname;</code> namespace (but may be defined in other namespaces as well). </p>
+      </rddl:resource>
+
+      <ulist>
+
+        <item>
+          <p><eg>%public</eg> Public variables and public functions are accessible to module import.
+            (Variables declared without either a <code>%public</code> or <code>%private</code>
+            annotation are, by default, public variables.)</p>
+        </item>
+
+        <item>
+          <p><eg>%private</eg> Private variables and private functions are hidden from module
+            import.</p>
+        </item>
+
+      </ulist>
+
+    </div1>
+
+
+    <div1 id="features" class="resource">
+      <head>XQuery Features</head>
+
+      <rddl:resource xlink:title="XQuery Features" xlink:role="http://www.rddl.org/natures#term"
+        xlink:arcrole="http://www.rddl.org/purposes#definition"
+        xlink:href="&xq.loc.dated;#id-conform-optional-features">
+        <p>
+          <bibref ref="xquery-31-ref"/> defines two features that are used to control the use of
+          other, optional features. </p>
+      </rddl:resource>
+
+      <ulist>
+
+        <item>
+          <p><eg>qfa:require-feature</eg> identifies features that must be enabled for the module in
+            which the option declaration occurs; if any of these QNames corresponds to a feature
+            that the implementation does not support, a static error is raised.</p>
+        </item>
+
+        <item>
+          <p><eg>qfa:prohibit-feature</eg> identifies features that must not be enabled in the
+            module in which the option declaration occurs; if any of these QNames corresponds to a
+            feature that the implementation supports, it must disable that feature.</p>
+        </item>
+
+      </ulist>
+
+      <p> There are several optional features defined in <bibref ref="xquery-31-ref"/> for which
+        these two features have meaning: </p>
+
+      <ulist>
+
+        <item>
+          <p><eg>qfa:schema-aware</eg></p>
+        </item>
+
+        <item>
+          <p><eg>qfa:static-typing</eg></p>
+        </item>
+
+        <item>
+          <p><eg>qfa:module</eg></p>
+        </item>
+
+        <item>
+          <p><eg>qfa:serialization</eg></p>
+        </item>
+
+        <item>
+          <p><eg>qfa:higher-order-function</eg></p>
+        </item>
+
+      </ulist>
+
+    </div1>
+
+
+
+    <div1 id="normrefs">
+      <head>Normative References</head>
+
+      <blist>
+
+        <bibl id="xquery-31-ref" key="XQuery 3.1" class="resource">
+          <rddl:resource xlink:title="XQuery 3.1"
+            xlink:role="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional"
+            xlink:arcrole="http://www.rddl.org/purposes#normative-reference" xlink:href="&xq.loc;">
+            <p><loc href="&xq.loc.dated;">XQuery 3.1</loc> (&xq.spec.date.day; &xq.spec.date.month;
+              &xq.spec.date.year; version)</p>
+          </rddl:resource>
+          <p>This document describes the usage of this namespace. The W3C reserves the right to
+            define names in this namespace in the future. <bibref ref="xquery-31-ref"/> is the
+              <emph>only</emph> specification that is permitted to amend this namespace. It may,
+            however, be augmented by other specifications that define XQuery 3.1 extensions. </p>
+        </bibl>
+
+      </blist>
+
+    </div1>
+
+
+    <div1 id="nonnormrefs">
+      <head>Non-Normative References</head>
+
+      <blist>
+
+        <bibl id="rddl-ref" key="Resource Directory Description Language (RDDL)" class="resource">
+          <rddl:resource xlink:title="Resource Directory Description Language (RDDL)"
+            xlink:role="http://www.w3.org/TR/xhtml-basic"
+            xlink:arcrole="http://www.rddl.org/purposes#non-normative-reference"
+            xlink:href="http://www.rddl.org/20050704/">
+            <p><loc href="http://www.rddl.org/">Resource Directory Description Language (RDDL)</loc>
+              (4 July 2007)</p>
+          </rddl:resource>
+        </bibl>
+
+
+        <bibl id="grddl-ref" key="Gleaning Resource Descriptions from Dialects of Languages (GRDDL)"
+          class="resource">
+          <rddl:resource
+            xlink:title="Gleaning Resource Descriptions from Dialects of Languages (GRDDL)"
+            xlink:role="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict"
+            xlink:arcrole="http://www.rddl.org/purposes#non-normative-reference"
+            xlink:href="http://www.w3.org/TR/2007/REC-grddl-20070911/">
+            <p><loc href="http://www.w3.org/TR/grddl/">Gleaning Resource Descriptions from Dialects
+                of Languages (GRDDL)</loc> (Recommendation of 11 September 2007)</p>
+          </rddl:resource>
+        </bibl>
+
+        <bibl id="rdf-ref" key="Resource Description Framework (RDF): Concepts and Abstract Syntax"
+          class="resource">
+          <rddl:resource
+            xlink:title="Resource Description Framework (RDF): Concepts and Abstract Syntax"
+            xlink:role="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict"
+            xlink:arcrole="http://www.rddl.org/purposes#non-normative-reference"
+            xlink:href="http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/">
+            <p><loc href="http://www.w3.org/TR/rdf-concepts/">Resource Description Framework (RDF):
+                Concepts and Abstract Syntax</loc> (Recommendation of 10 February 2004)</p>
+          </rddl:resource>
+        </bibl>
+
+      </blist>
+
+    </div1>
+
+  </body>
+
+</spec>

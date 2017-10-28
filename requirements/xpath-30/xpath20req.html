@@ -1,0 +1,1796 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="EN" lang="EN">
+<head>
+  <meta name="generator" content="HTML Tidy for Linux/x86 (vers 1st July 2003), see www.w3.org" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>XPath Requirements Version 2.0</title>
+  <style type="text/css">
+  /*<![CDATA[*/
+  .req-must     { font-weight: bold; color: red; text-decoration: underline; }
+  .req-should   { font-weight: bold; color: blue; text-decoration: underline; }
+  span.title    { font-weight: bold; text-decoration: underline; }
+  .satisfied    { font-weight: bold; color: green; }
+  .notsatisfied { font-weight: bold; color: #FF00FF; }
+  td.item       { padding-top: 10px; margin-top: 10px; }
+  /*]]>*/
+  </style>
+  <link rel="stylesheet" type="text/css" href=
+  "http://www.w3.org/StyleSheets/TR/W3C-WD.css" />
+</head>
+
+
+<body bgcolor="#ffffff">
+  <div class="head">
+    <a href="http://www.w3.org/"><img src=
+    "http://www.w3.org/Icons/w3c_home" alt="W3C" height="48" width="72" /></a>
+
+    <h1><a name="title" id="title"></a>XPath Requirements
+    Version 2.0</h1>
+
+    <h2>W3C Working Draft 3 June 2005</h2>
+
+    <dl>
+      <dt>This version:</dt>
+
+      <dd><a href="http://www.w3.org/TR/2005/WD-xpath20req-20050603/">http://www.w3.org/TR/2005/WD-xpath20req-20050603/</a></dd>
+
+      <dt>Latest version:</dt>
+
+      <dd><a href="http://www.w3.org/TR/xpath20req/">http://www.w3.org/TR/xpath20req/</a></dd>
+
+      <dt>Previous versions:</dt>
+
+      <dd><a href="http://www.w3.org/TR/2003/WD-xpath20req-20030822">http://www.w3.org/TR/2003/WD-xpath20req-20030822</a></dd>
+      <dd><a href="http://www.w3.org/TR/2001/WD-xpath20req-20010214">http://www.w3.org/TR/2001/WD-xpath20req-20010214</a></dd>
+
+      <dt>Editors:</dt>
+
+      <dd>Mary Fernandez (AT&amp;T) <a href="mailto:mff@research.att.com">mff@research.att.com</a></dd>
+
+      <dd>K Karun (Oracle) <a href="mailto:K.Karun@oracle.com">K.Karun@oracle.com</a></dd>
+
+      <dd>Mark Scardina (Oracle) <a href="mailto:Mark.Scardina@oracle.com">Mark.Scardina@oracle.com</a></dd>
+
+    </dl>
+
+    <p class="copyright"><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2005 <a href="http://www.w3.org/"><acronym title="World Wide Web Consortium">W3C</acronym></a><sup>®</sup>
+    (<a href="http://www.csail.mit.edu/"><acronym title="Massachusetts Institute of Technology">MIT</acronym></a>,
+    <a href="http://www.ercim.org/"><acronym title="European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>,
+    <a href="http://www.keio.ac.jp/">Keio</a>), All Rights
+    Reserved. W3C <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a>, and
+    <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document
+    use</a> rules apply.</p>
+    <hr title="Separator for header" />
+  </div>
+
+  <h2><a name="abstract" id="abstract">Abstract</a></h2>
+
+  <p>This document describes the requirements for the XPath 2.0
+  specification and is annotated with their resolution in <a href="#XPath2">[XPath 2.0]</a> or <a href="#XPathFO">[XQuery 1.0 and
+  XPath 2.0 Functions and Operators]</a> and the <a href="#XQDM">[XQuery 1.0 and XPath 2.0 Data Model]</a>
+  specifications.</p>
+
+  <h2><a name="status" id="status">Status of this document</a></h2>
+
+  <p><em>This section describes the status of this document at the
+  time of its publication. Other documents may supersede this
+  document. A list of current W3C publications and the latest
+  revision of this technical report can be found in the <a href="http://www.w3.org/TR/">W3C technical reports index</a> at
+  http://www.w3.org/TR/.</em></p>
+
+  <p>This document includes, for each
+requirement, a corresponding status, indicating the current situation
+of the requirement in the XPath 2.0 family of specifications at the
+time that they are being issued as Last Call Working Drafts in April, 2005.</p>
+
+  <p>This is a W3C Working Draft for review by W3C Members and
+  other interested parties. Publication as a Working Draft does not
+  imply endorsement by the W3C Membership. This is a draft document
+  and may be updated, replaced or obsoleted by other documents at
+  any time. It is inappropriate to cite this document as other than
+  work in progress.</p>
+
+  <p>This document has been defined jointly by the <a href="http://www.w3.org/Style/XSL/">XSL Working Group</a> and the
+  <a href="http://www.w3.org/XML/Query">XML Query Working Group</a>
+  (both part of the <a href="http://www.w3.org/XML/Activity.html">XML Activity</a>).</p>
+
+  <p>Comments on this document should be sent to the W3C mailing
+  list <a href="mailto:public-qt-comments@w3.org">public-qt-comments@w3.org</a>
+  (archived at <a href="http://lists.w3.org/Archives/Public/public-qt-comments/">http://lists.w3.org/Archives/Public/public-qt-comments/</a>).</p>
+
+  <p>As of this publication, the Working Group expects to eventually
+  publish this document as a Working Group Note. It is not expected to
+  become a W3C Recommendation, and therefore it has no associated <a
+  href="http://www.w3.org/Consortium/Patent-Policy-20040205">W3C
+  Patent Policy licensing</a> obligations.</p>
+
+  <p>A list of current W3C Recommendations and other technical
+  documents can be found at <a href="http://www.w3.org/TR/">http://www.w3.org/TR/</a>.</p>
+
+  <h2><a name="contents" id="contents">Table of contents</a></h2>1
+  <a href="http://www.w3.org/TR/xpath20req#section-Goals">Goals</a><br />
+  2 <a href="http://www.w3.org/TR/xpath20req#section-Requirements">Requirements</a><br />
+
+  3 <a href="http://www.w3.org/TR/xpath20req#section-References">References</a><br />
+
+
+  <h3><a name="appendices" id="appendices"></a>Appendices</h3>
+  <hr />
+
+  <h2><a name="section-Goals" id="section-Goals"></a>1 Goals</h2>
+
+  <p>XPath 2.0 has the following goals:</p>
+
+  <ul>
+    <li>Simplify manipulation of XML Schema-typed content</li>
+
+    <li>Simplify manipulation of string content</li>
+
+    <li>Support related XML standards</li>
+
+    <li>Improve ease of use</li>
+
+    <li>Improve interoperability</li>
+
+    <li>Improve i18n support</li>
+
+    <li>Maintain backward compatibility</li>
+
+    <li>Enable improved processor efficiency</li>
+  </ul>
+
+  <h2><a name="section-Requirements" id="section-Requirements"></a>2 Requirements</h2>
+
+  <table summary="Presentation" border="0" cellspacing="0" width="100%">
+    <tbody>
+      <tr class="r1">
+        <td class="item" align="right" valign="top"><b>1</b></td>
+
+        <td colspan="3" class="item">
+          <span class="req-must">Must&nbsp;Support the XML "Family"
+          of Standards</span><br />
+
+          <p>As part of the evolving family of XML standards, XPath
+          2.0 MUST support the W3C XML architecture by integrating
+          well with other standards in the family.</p>
+        </td>
+      </tr>
+
+      <tr class="r0">
+        <td class="item" valign="top">&nbsp;</td>
+
+        <td class="item" align="right" valign="top"><b>1.1</b></td>
+
+        <td colspan="2" class="item">
+          <span class="req-must">Must&nbsp;Express Data model in
+          Terms of the Infoset</span><br />
+
+          <p>XPath 2.0 data model MUST be expressed in terms of the
+          <a href="#Infoset">XML Infoset</a>, including Post Schema
+          Validation Infoset contributions. Ideally, XSLT, XPath,
+          and XML Query should share a common data model.</p>
+
+          <p class="satisfied">Satisfied by the <a href="http://www.w3.org/TR/xpath-datamodel/#intro">Introduction</a>
+          section in <a href="#XQDM">[XQuery 1.0 and XPath 2.0 Data
+          Model]</a>.</p>
+        </td>
+      </tr>
+
+      <tr class="r1">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top"><b>1.2</b></td>
+
+        <td colspan="2" class="item">
+          <span class="req-must">Must&nbsp;Provide Common Core
+          Syntax and Semantics for XSLT 2.0 and XML Query
+          1.0</span><br />
+
+          <p>XSLT 2.0 contains an expression language which is
+          "XPath 2.0 plus XSLT 2.0 extensions". XML Query 1.0
+          contains an expression language which we believe should
+          be "XPath 2.0 plus XML Query 1.0 extensions." The scope
+          of XPath 2.0 must be the set of common functionality
+          between the expression language of XSLT 2.0 and the
+          expression language of XML Query 1.0. This will guarantee
+          for Web developers and users that any common
+          functionality are implemented with identical syntax and
+          semantics.</p>
+
+          <p class="satisfied">Satisfied by <a href="http://www.w3.org/TR/xpath20/#id-introduction">Introduction</a>
+          in <a href="#XPath2">[XPath 2.0]</a>.</p>
+        </td>
+      </tr>
+
+      <tr class="r0">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top"><b>1.3</b></td>
+
+        <td colspan="2" class="item">
+          <span class="req-must">Must&nbsp;Support Explicit "For
+          Any" or "For All" Comparison and Equality
+          Semantics</span><br />
+
+          <p>It MUST be possible for boolean expressions involving
+          node-sets to explicitly use "for any" or "for all"
+          semantics, otherwise known as explicit existential
+          quantification and explicit universal quantification,
+          respectively. Any <i>implicit</i> quantification should
+          be explained in terms of these explicit semantics.</p>
+
+          <p class="satisfied">Satisfied by section <a href="http://www.w3.org/TR/xpath20/#id-quantified-expressions">Quantified Expressions</a> in <a href="#XPath2">[XPath 2.0]</a>.</p>
+
+          <table summary="Presentation" border="0">
+            <tbody>
+              <tr>
+                <td><span class="title"><b>Use Case</b></span></td>
+              </tr>
+
+              <tr>
+                <td>
+                  <p>The following examples illustrate limitations
+                  of XPath 1.0 that can be addressed by the
+                  addition of existential and universal quantifiers
+                  to XPath 2.0:</p>
+
+                  <ol>
+                    <li>In XPath 1.0, the expression <code>5 &gt;
+                    $ns</code> evaluates to true if <code>5</code>
+                    is greater than the <code>number()</code> value
+                    of at least one node in the <code>$ns</code>
+                    node set. There is no way to test whether
+                    <code>5</code> is greater than the
+                    <code>number()</code> values of all nodes in
+                    <code>$ns</code>.</li>
+
+                    <li>In XPath 1.0, the expression <code>$ns1
+                    &gt; $ns2</code> evaluates to true if the
+                    <code>number()</code> value of at least one
+                    node in <code>$ns1</code> is greater than the
+                    <code>number()</code> value of at least one
+                    node in the <code>$ns2</code> node set. There
+                    is no way to test whether the
+                    <code>number()</code> values of all of the
+                    nodes in <code>$ns1</code> are greater than all
+                    the <code>number()</code> values of all nodes
+                    in <code>$ns2</code>.</li>
+
+                    <li>In XPath 1.0, the expression <code>5 =
+                    $ns</code> evaluates to true if <code>5</code>
+                    equals the <code>number()</code> value of at
+                    least one node in the <code>$ns</code> node
+                    set. There is no way to test whether
+                    <code>5</code> equals the <code>number()</code>
+                    value of all nodes in <code>$ns</code>.</li>
+
+                    <li>In XPath 1.0, the expression <code>$ns1 =
+                    $ns2</code> evaluates to true if the
+                    <code>number()</code> value of at least one
+                    node in <code>$ns1</code> equals the
+                    <code>number()</code> value of at least one
+                    node in the <code>$ns2</code> node set. There
+                    is no way to test whether the
+                    <code>number()</code> values of all of the
+                    nodes in <code>$ns1</code> are greater than all
+                    the <code>number()</code> values of all nodes
+                    in <code>$ns2</code>.</li>
+
+                    <li>In XPath 1.0, the expression <code>0 +
+                    LineItem/@UnitPrice &gt; 40</code> is
+                    equivalent to <code>0 +
+                    number(OrderDetail/@UnitPrice) &gt; 40</code>
+                    which will be true if the <i>first</i>
+                    <code>LineItem</code> element's
+                    <code>UnitPrice</code> attribute is greater
+                    than 40. However, the expression
+                    <code>LineItem/@UnitPrice &gt; 40</code> is
+                    true if <i>any</i> of the <code>LineItem</code>
+                    elements' <code>UnitPrice</code> attributes is
+                    greater than 40. This difference in behavior
+                    could be resolved through explicit
+                    quantification.</li>
+                  </ol>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+
+      <tr class="r1">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top"><b>1.4</b></td>
+
+        <td colspan="2" class="item">
+          <span class="req-must">Must&nbsp;Extend Set of
+          Aggregation Functions</span><br />
+
+          <p>XPath 1.0 currently supports <code>sum()</code> and
+          <code>count()</code>. XSLT users have frequently
+          requested the addition of <code>min()</code> and
+          <code>max()</code>. XPath 2.0 MUST address this by
+          extending its basic set of aggegration functions by
+          adopting some or all of the ones defined for XML
+          Query.</p>
+
+          <p class="satisfied">Satisfied by section <a href="http://www.w3.org/TR/xpath-functions/#aggregate.functions">Aggregate Functions</a> in <a href="#XPathFO">[XQuery 1.0 and XPath
+          2.0 Functions and Operators]</a>.</p>
+        </td>
+      </tr>
+
+      <tr class="r0">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top"><b>1.5</b></td>
+
+        <td colspan="2" class="item">
+          <span class="req-should">Should&nbsp;Maintain Backwards
+          Compatibility with XPath 1.0</span><br />
+
+          <p>Any valid XPath 1.0 expression SHOULD also be a valid
+          XPath 2.0 expression, and have the same semantics when
+          operating in the absence of XML Schema type information.
+          If not possible to achieve due to other requirements,
+          XPath 2.0 should minimize the number of changes to the
+          XPath 2.0 syntax to maximize backward compatibility with
+          XPath 1.0.</p>
+
+          <p class="satisfied">Satisfied by <a href="http://www.w3.org/TR/xpath20/#id-backwards-compatibility">Backwards Compatibility with XPath 1.0</a> in <a href="#XPath2">[XPath 2.0]</a>.</p>
+        </td>
+      </tr>
+
+      <tr class="r1">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top"><b>1.6</b></td>
+
+        <td colspan="2" class="item">
+          <span class="req-should">Should&nbsp;Provide Intersection
+          and Difference Functions</span><br />
+
+          <p>XPath 1.0 supports the union of two node sets. Set
+          functionality in XPath 2.0 SHOULD be expanded to include
+          intersection and difference functions, and should be
+          compatible with equivalent functions supported by XML
+          Query.</p>
+
+          <p class="satisfied">Satisfied by <em>union</em>,
+          <em>intersect</em>, and <em>except in</em> section
+          <a href="http://www.w3.org/TR/xpath20/#combining_seq">
+          Combining Node Sequences</a> in <a href="#XPath2">[XPath
+          2.0]</a>.</p>
+
+          <table summary="Presentation" border="0">
+            <tbody>
+              <tr>
+                <td><span class="title"><b>Use Case</b></span></td>
+              </tr>
+
+              <tr>
+                <td>
+                  <ol>
+                    <li>
+                      <p>Given an XML document like:</p>
+
+                      <div class="java-class">
+                        &lt;hr&gt;<br />
+                        &nbsp;&nbsp; &lt;teams&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;team
+                        id="t1"&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;members
+                        ref="e101 e103"/&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;/team&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;team
+                        id="t2"&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;members
+                        ref="e102"/&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;/team&gt;<br />
+                        &nbsp;&nbsp;&lt;/teams&gt;<br />
+                        &nbsp;&nbsp;&lt;departments&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;department&gt;<br />
+
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;employee
+                        id="e101" name="Steve"
+                        teams="t1"/&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;employee
+                        id="e102" name="Jonathan"
+                        teams="t2"/&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;employee
+                        id="e103" name="James"
+                        teams="t1"/&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;/department&gt;<br />
+
+                        &nbsp;&nbsp;&lt;/departments&gt;<br />
+                        &lt;/hr&gt;
+                      </div><br />
+
+                      <p>Format the list of employees that work in
+                      the same department as the
+                      <code>employee</code> with <code>id</code> =
+                      <code>e101</code> and that are on the same
+                      teams as that employee. To accomplish
+                      this:</p>
+
+                      <ul>
+                        <li>
+                          <p>Select the list of all employees in
+                          the employee's department:</p>
+
+                          <div class="java-class">
+                            id('e101')/parent::department/employee
+                          </div><br />
+                        </li>
+
+                        <li>
+                          <p>Intersect that set with the list of
+                          all employees who are members of the
+                          current employee's teams:</p>
+
+                          <div class="java-class">
+                            id('e101')/id(id(@teams)/members/@ref)
+                          </div><br />
+                        </li>
+
+                        <li>
+                          <p>Difference that set with the list
+                          containing the current employee so they
+                          don't appear in their own list of team
+                          members:</p>
+
+                          <div class="java-class">
+                            id('e101')
+                          </div><br />
+                        </li>
+                      </ul>
+
+                      <p>The result should be the employee
+                      "James".</p>
+                    </li>
+
+                    <li>
+                      <p>Given an XML document full of book
+                      information, a book with multiple authors
+                      appears like this:</p>
+
+                      <div class="java-class">
+                        &lt;books&gt;<br />
+                        &nbsp;&nbsp;&lt;book&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;title&gt;Exciting
+                        New Book&lt;/title&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;author&gt;Kay&lt;/author&gt;<br />
+
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;author&gt;Muench&lt;/author&gt;<br />
+
+                        &nbsp;&nbsp;&lt;/book&gt;<br />
+                        &nbsp;&nbsp;&lt;book&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;title&gt;Building
+                        Oracle XML Applications&lt;/title&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;author&gt;Muench&lt;/author&gt;<br />
+
+                        &nbsp;&nbsp;&lt;/book&gt;<br />
+                        &nbsp;&nbsp;&lt;book&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;title&gt;XSLT
+                        Programmer's Reference&lt;/title&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;author&gt;Kay&lt;/author&gt;<br />
+
+                        &nbsp;&nbsp;&lt;/book&gt;<br />
+                        &lt;/books&gt;
+                      </div><br />
+
+                      <p>Assuming an XSLT key is defined as
+                      follows:</p>
+
+                      <div class="java-class">
+                        &lt;xsl:key name="auth" match="book"
+                        use="author"/&gt;
+                      </div><br />
+
+                      <p>then, to find the list of books that have
+                      both Muench and Kay among their authors, you
+                      need to select the intersection of
+                      <code>key('auth','Muench')</code> and
+                      <code>key('auth','Kay')</code>.</p>
+
+                      <p>To find books authored by Muench but
+                      <i>not</i> by Kay, you need to select the
+                      difference of
+                      <code>key('auth','Muench')</code> and
+                      <code>key('auth','Kay')</code>.</p>
+                    </li>
+                  </ol>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+
+      <tr class="r0">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top"><b>1.7</b></td>
+
+        <td colspan="2" class="item">
+          <span class="req-should">Should&nbsp;Support Unary Plus
+          Operator</span><br />
+
+          <p>XML Schema allows decimals to have a leading plus. To
+          align better with this, XPath 2.0 SHOULD allow this by
+          providing a unary plus operator.</p>
+
+          <blockquote>
+            <p><b>Ed. Note:</b> There's a potential though rather
+            remote problem if there are nodes in the source
+            document containing a number with a leading plus sign.
+            Currently the defined behavior is to convert these
+            values to <code>NaN</code>, and this will change. A
+            stylesheet that is looking for phone-numbers beginning
+            with "+" might rely on this.</p>
+          </blockquote>
+
+          <p class="satisfied">Satisfied by section <a href="http://www.w3.org/TR/xpath-functions/#func-numeric-unary-plus">op:numeric-unary-plus</a> in <a href="#XPathFO">[XQuery 1.0 and XPath 2.0 Functions and Operators]</a>.</p>
+        </td>
+      </tr>
+
+      <tr class="r1">
+        <td class="item" align="right" valign="top"><b>2</b></td>
+
+        <td colspan="3" class="item">
+          <span class="req-must">Must&nbsp;Improve Ease of
+          Use</span><br />
+
+          <p>Users of XPath 1.0 have requested enhancements to
+          simplify expression of common XPath use cases. XPath 2.0
+          MUST address these frequently requested enhancements.</p>
+        </td>
+      </tr>
+
+      <tr class="r0">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top"><b>2.1</b></td>
+
+        <td colspan="2" class="item">
+          <span class="req-must">Must&nbsp;Loosen Restrictions on
+          Location Steps</span><br />
+
+          <p>To better align with <a href="#XPointer">XPointer</a>
+          and to simplify the use of XPath expressions in which
+          multiple alternatives are allowed for a given location
+          step, XPath 2.0 MUST relax current restrictions for what
+          can appear after a '<code>/</code>' in an XPath
+          expression. Neither unions nor node-set functions are
+          allowed to appear after a '<code>/</code>' in XPath
+          1.0.</p>
+
+          <p class="satisfied">Satisfied by section <a href="http://www.w3.org/TR/xpath20/#id-steps">Steps</a> which allow union and node-set functions in
+          <a href="#XPath2">[XPath 2.0]</a>.</p>
+
+          <table summary="Presentation" border="0">
+            <tbody>
+              <tr>
+                <td><span class="title"><b>Use Case</b></span></td>
+              </tr>
+
+              <tr>
+                <td>
+                  <ol>
+                    <li>
+                      <p>An XPointer's expression can use node-set
+                      functions on the right of the
+                      '<code>/</code>' in a path:</p>
+
+                      <div class="java-class">
+                        id("chap1")/range-to(id("chap2"))
+                      </div><br />
+                    </li>
+
+                    <li>
+                      <p>Allowing unions in a location step would
+                      allow expressions like:</p>
+
+                      <div class="java-class">
+                        /foo/(xxx|yyy)/li/(p|eg)
+                      </div><br />
+
+                      <p>instead of the more cumbersome:</p>
+
+                      <div class="java-class">
+                        /foo/xxx/li/p&nbsp;&nbsp;|<br />
+                        /foo/xxx/li/eg |<br />
+                        /foo/yyy/li/p&nbsp;&nbsp;|<br />
+                        /foo/yyy/li/eg
+                      </div><br />
+                    </li>
+
+                    <li>
+                      <p>Allowing node-set functions to appear in a
+                      location step would allow expressions
+                      like:</p>
+
+                      <div class="java-class">
+                        document("otherdoc.xml")/id("foo")/a/b
+                      </div><br />
+
+                      <p>and</p>
+
+                      <div class="java-class">
+                        document("otherdoc.xml")/key("x","foo")/a/b
+                      </div><br />
+                    </li>
+                  </ol>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+
+      <tr class="r1">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top"><b>2.2</b></td>
+
+        <td colspan="2" class="item">
+          <span class="req-must">Must&nbsp;Provide a Conditional
+          Expression</span><br />
+
+          <p>Many users have requested the ability to return a
+          conditional value based on a boolean expression. XPath
+          2.0 MUST provide a conditional expression which takes
+          three expressions:</p>
+
+          <ol>
+            <li><i>expression1 (boolean)</i></li>
+
+            <li><i>expression2</i></li>
+
+            <li><i>expression3</i></li>
+          </ol>
+
+          <p>and evaluates to <i>expression2</i> if
+          <i>expression1</i> is <code>true</code> and to
+          <i>expression3</i> if <code>expression1</code> is
+          <code>false</code>. Only <i>expression1</i> and the
+          expression to be returned must be evaluated.</p>
+
+          <p class="satisfied">Satisfied by section <a href="http://www.w3.org/TR/xpath20/#id-conditionals">Conditional Expressions</a> in <a href="#XPath2">[XPath
+          2.0]</a>.</p>
+
+          <table summary="Presentation" border="0">
+            <tbody>
+              <tr>
+                <td><span class="title"><b>Use Case</b></span></td>
+              </tr>
+
+              <tr>
+                <td>
+                  <p><b>XSLT Use Cases</b></p>
+
+                  <ol>
+                    <li>In a template, construct a
+                    <code>&lt;table&gt;</code> element with a
+                    <code>border</code> attribute whose value is
+                    provided by an <i>attribute value template</i>
+                    and is conditional depending on the value of
+                    the <code>frame</code> attribute of the current
+                    node. If <code>@frame = 'none'</code>, then the
+                    value of <code>border</code> should be
+                    <code>0</code>, otherwise the value of
+                    <code>border</code> should be
+                    <code>1</code>.</li>
+
+                    <li>Assign an XSLT variable a conditional value
+                    based on whether the current node has any
+                    <code>&lt;test&gt;</code> element children. If
+                    it does, assign the value "<code>is</code>" to
+                    the variable, otherwise assign the value
+                    "<code>is not</code>".</li>
+
+                    <li>
+                      <p>Given a source XML document like this:</p>
+
+                      <div class="java-class">
+                        &lt;Emps&gt;<br />
+                        &nbsp;&nbsp;&lt;Emp&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        &lt;LastName&gt;Smith&lt;/LastName&gt;<br />
+
+                        &nbsp;&nbsp;&lt;/Emp&gt;<br />
+                        &nbsp;&nbsp;&lt;Emp&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;CommonName&gt;Scott&lt;/CommonName&gt;<br />
+
+                        &nbsp;&nbsp;&lt;/Emp&gt;<br />
+                        &lt;/Emps&gt;
+                      </div><br />
+
+                      <p>provide an <code>&lt;xsl:sort&gt;</code>
+                      select expression to sort the list of
+                      employees on the value of their
+                      <code>&lt;LastName&gt;</code> if it's
+                      present, otherwise on the value of their
+                      <code>&lt;CommonName&gt;</code> element.</p>
+                    </li>
+                  </ol>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+
+      <tr class="r0">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top"><b>2.3</b></td>
+
+        <td colspan="2" class="item">
+          <span class="req-must">Must&nbsp;Define Consistent
+          Implicit Semantics for Collection-Valued
+          Subexpressions</span><br />
+
+          <p>In XPath 1.0, the use of a collection-valued
+          subexpression can introduce an implicit existential
+          quantification or choose-first-member operation into the
+          containing expression's semantics. XPath 2.0 MUST define
+          a consistent implicit semantics for expressions that have
+          collection-valued subexpressions. This may require that
+          XPath 2.0 expressions use explicit quantification or
+          indexing expressions to achieve the same implicit
+          semantics provided in XPath 1.0.</p>
+
+          <p class="satisfied">Satisfied by inclusion of implicit
+          existential quantification in <a href="http://www.w3.org/TR/xpath20/#id-general-comparisons">General Comparisons</a> in <a href="#XPath2">[XPath
+          2.0]</a>. Note that it is not included in Value
+          Comparisons. The first member semantics were dropped
+          except for Backwards Compatibility mode.</p>
+
+          <table summary="Presentation" border="0">
+            <tbody>
+              <tr>
+                <td><span class="title"><b>Use Case</b></span></td>
+              </tr>
+
+              <tr>
+                <td>
+                  <ol>
+                    <li>In XPath 1.0, the expression
+                    <code>a[b=5]</code> returns
+                    <code>&lt;a&gt;</code> elements that have ANY
+                    <code>&lt;b&gt;</code> element child with value
+                    5, where as the expression
+                    <code>a[b+1=6]</code> returns
+                    <code>&lt;a&gt;</code> elements whose FIRST
+                    <code>&lt;b&gt;</code> element child has value
+                    5. These results should be consistent for XPath
+                    2.0.
+
+                      <p class="satisfied">In 2.0 a[b+1=6] will
+                      return an error if more than one b where in
+                      1.0 it will ignore the other b's. This
+                      produces a less surprising result for our
+                      users.</p>
+                    </li>
+
+                    <li>Assume for this use case that the
+                    typed-value of an element or attribute is
+                    referenced using the syntax
+                    <code>typed-value(elt)</code> and
+                    <code>typed-value(@attr)</code>, respectively.
+                    In XPath 2.0, when working with the typed value
+                    of an element or attribute with
+                    <code>boolean</code> type, the expression
+                    <code>a[typed-value(b) = false()]</code> should
+                    return <code>&lt;a&gt;</code> elements having
+                    at least one <code>&lt;b&gt;</code> element
+                    child with <code>boolean</code> value
+                    <code>false</code>. Similarly, the expression
+                    <code>a[typed-value(@b) = false()]</code>
+                    should return &lt;a&gt; elements having a
+                    boolean attribute <code>b</code> with value
+                    <code>false</code>.</li>
+                  </ol>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+
+      <tr class="r1">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top"><b>2.4</b></td>
+
+        <td colspan="2" class="item">
+          <span class="req-should">Should&nbsp;Support Additional
+          String Functions</span><br />
+
+          <p>Users of XSLT 1.0 have requested additional string
+          manipulation functions. Common requests include string
+          padding (with spaces, dashes, or other characters),
+          string replacement, and converting strings to upper and
+          lower case. XPath 2.0 SHOULD provide additional string
+          functions. As with any string functions,
+          internationalization issues need to be addressed to
+          insure that the functionality is as broadly useful as
+          possible.</p>
+        </td>
+      </tr>
+
+      <tr class="r0">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top">
+        <b>2.4.1</b></td>
+
+        <td class="item">
+          <span class="req-should">Should&nbsp;Simplify String
+          Replacement</span><br />
+
+          <p>XPath 1.0 provides the <code>translate()</code>
+          function that allows each single character in a source
+          string to be translated to another single character in
+          the result string, or to be removed. Users of XPath 1.0
+          frequently want to replace <i>sequences</i> of
+          consecutive characters with other sequences of
+          characters, which <code>translate()</code> does not
+          support. XPath 2.0 SHOULD support a more flexible string
+          replacement function.</p>
+
+          <p class="satisfied">Satisfied by section <a href="http://www.w3.org/TR/xpath-functions/#string.match">String Functions that Use Pattern Matching</a> in <a href="#XPathFO">[XQuery 1.0 and
+          XPath 2.0 Functions and Operators]</a>.</p>
+
+          <table summary="Presentation" border="0">
+            <tbody>
+              <tr>
+                <td><span class="title"><b>Use Case</b></span></td>
+              </tr>
+
+              <tr>
+                <td>
+                  <p>Replace each occurrence of "<code>foo</code>"
+                  in a string with "<code>foobar</code>".</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+
+      <tr class="r1">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top">
+        <b>2.4.2</b></td>
+
+        <td class="item">
+          <span class="req-should">Should&nbsp;Simplify String
+          Padding</span><br />
+
+          <p>Often string values need to be padded on the left or
+          right to make the value occupy a fixed length. XPath 2.0
+          SHOULD support a string padding function that permits any
+          character as a padding character.</p>
+          
+          <p class="satisfied">Satisfied by <a href="http://www.w3.org/TR/xpath-functions/#string-pad">eg:string-pad</a> in <a href="#XPathFO">[XQuery 1.0 and
+          XPath 2.0 Functions and Operators]</a>.</p>
+
+          <table summary="Presentation" border="0">
+            <tbody>
+              <tr>
+                <td><span class="title"><b>Use Case</b></span></td>
+              </tr>
+
+              <tr>
+                <td>
+                  <ol>
+                    <li>Pad the value of a string on the right to
+                    ensure a length of 10 characters using
+                    spaces</li>
+
+                    <li>Pad the value of a string on the left to 10
+                    characters using asterisks</li>
+
+                    <li>Output a string containing as many dashes
+                    as the length of a section title</li>
+                  </ol>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+
+      <tr class="r0">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top">
+        <b>2.4.3</b></td>
+
+        <td class="item">
+          <span class="req-should">Should&nbsp;Simplify String Case
+          Conversions</span><br />
+
+          <p>XPath 2.0 SHOULD provide the ability to convert the
+          case of text to upper or lower case for presentation
+          and/or comparison.</p>
+
+          <p class="satisfied">Satisfied by section <a href="http://www.w3.org/TR/xpath-functions/#func-upper-case">fn:upper-case</a> and <a href="http://www.w3.org/TR/xpath-functions/#func-lower-case">fn:lower-case</a> in <a href="#XPathFO">[XQuery 1.0 and
+          XPath 2.0 Functions and Operators]</a>.</p>
+        </td>
+      </tr>
+
+      <tr class="r1">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top"><b>2.5</b></td>
+
+        <td colspan="2" class="item">
+          <span class="req-should">Should&nbsp;Support Aggregation
+          Functions Over Collection-Valued Expressions</span><br />
+
+          <p>Users of XPath 1.0 frequently request the ability to
+          apply an aggregate function, like <code>sum()</code>, to
+          the values of expressions applied to a node set. XPath
+          2.0 SHOULD support aggregation functions over expressions
+          applied to node sets.</p>
+
+          <p class="satisfied">Satisfied by <a href="http://www.w3.org/TR/xpath20/#id-for-expressions">For
+          Expressions</a> in <a href="#XPath2">[XPath2.0]</a>.</p>
+
+          <table summary="Presentation" border="0">
+            <tbody>
+              <tr>
+                <td><span class="title"><b>Use Case</b></span></td>
+              </tr>
+
+              <tr>
+                <td>
+                  <ol>
+                    <li>
+                      <p>Given a document like</p>
+
+                      <div class="java-class">
+                        &lt;sect title="Plan"&gt;<br />
+                        &nbsp;&nbsp; &lt;sect
+                        title="Overview"&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;sect
+                        title="Competitors"&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;sect
+                        title="SuperSoft"/&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;sect
+                        title="BarnWare"/&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/sect&gt;<br />
+
+                        &nbsp;&nbsp; &lt;/sect&gt;<br />
+                        &nbsp;&nbsp; &lt;sect
+                        title="Details"&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;sect
+                        title="Summary"/&gt;<br />
+                        &nbsp;&nbsp; &lt;/sect&gt;<br />
+                        &lt;/sect&gt;
+                      </div><br />
+
+                      <p>Calculate the maximum depth of the nesting
+                      of <code>&lt;sect&gt;</code> elements. The
+                      nodeset is identified by the expression
+                      <code>//sect</code> and the expression to
+                      maximize would be
+                      <code>count(ancestor-or-self::sect)</code>.</p>
+                    </li>
+
+                    <li>Given the same document above, calculate
+                    the average string length of section titles.
+                    The nodeset is identified by
+                    <code>//section/@title</code> and the
+                    expression to sum would be
+                    <code>string-length(.)</code>, divided by the
+                    <code>count(//section/@title)</code></li>
+
+                    <li>Given an XML document containing a purchase
+                    order and its line <code>&lt;item&gt;</code>
+                    elements, calculate the total amount of the
+                    purchase order by summing the price times the
+                    quantity of each item. The nodeset is
+                    identified by <code>item</code>, and the
+                    expression to sum would be <code>price *
+                    quantity</code>.</li>
+                  </ol>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+
+      <tr class="r0">
+        <td class="item" align="right" valign="top"><b>3</b></td>
+
+        <td colspan="3" class="item">
+          <span class="req-must">Must&nbsp;Support String Matching
+          Using Regular Expressions</span><br />
+
+          <p>Regular expressions provide a powerful way to specify
+          string pattern matching and now play an important role in
+          XML Schema as the mechanism by which pattern facets are
+          specified. XPath 2.0 MUST support regular expressions for
+          matching against strings using the regular expression
+          notation established in <a href="#XSchemaData">XML
+          Schema: Datatypes</a>.</p>
+
+          <p class="satisfied">Satisfied by section <a href="http://www.w3.org/TR/xpath-functions/#regex-syntax">Regular Expression Syntax</a> in <a href="#XPathFO">[XQuery 1.0 and XPath 2.0 Functions and
+          Operators]</a>.</p>
+
+          <table summary="Presentation" border="0">
+            <tbody>
+              <tr>
+                <td><span class="title"><b>Use Case</b></span></td>
+              </tr>
+
+              <tr>
+                <td>
+                  <ol>
+                    <li>
+                      <p>Given XML like:</p>
+
+                      <div class="java-class">
+                        &lt;Data&gt;<br />
+                        &nbsp;&nbsp;&lt;EmpRow&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp; :<br />
+                        &nbsp;&nbsp;&lt;/EmpRow&gt;<br />
+                        &nbsp;&nbsp;&lt;DeptRow&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        &lt;Deptno&gt;10&lt;/Deptno&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        &lt;Employees&gt;<br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;EmpRow&gt;<br />
+
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Empno&gt;1000&lt;/Empno&gt;<br />
+
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Ename&gt;1000&lt;/Ename&gt;<br />
+
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/Emprow&gt;<br />
+
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        &lt;/Employees&gt;<br />
+                        &nbsp;&nbsp;&lt;/DeptRow&gt;<br />
+                        &lt;/Data&gt;
+                      </div><br />
+
+                      <p>match elements that "end with
+                      <code>Row</code> or <code>row</code>"</p>
+
+                      <div class="java-class">
+                        *[local-name() =~ ".*[rR]ow"]
+                      </div><br />
+                    </li>
+
+                    <li>
+                      <p>Match phone numbers like 123-456-7890</p>
+
+                      <div class="java-class">
+                        field[ . =~ "\d\d\d-\d\d\d\-\d\d\d\d"]
+                      </div><br />
+                    </li>
+
+                    <li>
+                      <p>Match any element name with the string
+                      "Addr" contained within the name
+                      (case-insensitively)</p>
+
+                      <div class="java-class">
+                        *[local-name() =~ ".*[Aa][Dd][Dd][Rr].*"]
+                      </div><br />
+                    </li>
+
+                    <li>
+                      <p>Match a string from a dynamic regular
+                      expression</p>
+
+                      <div class="java-class">
+                        Department[Code =~
+                        concat("[0-9][0-9]",$v,".*")]
+                      </div><br />
+                    </li>
+                  </ol>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+
+      <tr class="r1">
+        <td class="item" align="right" valign="top"><b>4</b></td>
+
+        <td colspan="3" class="item">
+          <span class="req-must">Must&nbsp;Add Support for XML
+          Schema Primitive Datatypes</span><br />
+
+          <p><a href="#XSchemaData">[XML Schema: Datatypes]</a>
+          defines a set of primitive datatypes. In addition to the
+          types supported by the XPath 1.0 data model,
+          <code>string</code>, <code>number</code>,
+          <code>boolean</code>, and <code>node-set</code>, the
+          XPath 2.0 data model MUST support XML Schema primitive
+          types. XPath 2.0 will extend the XPath data model to
+          accommodate working with elements and attribute values
+          having an XML Schema primitive type.</p>
+        </td>
+      </tr>
+
+      <tr class="r0">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top"><b>4.1</b></td>
+
+        <td colspan="2" class="item">
+          <span class="req-must">Must&nbsp;Define the Operator
+          Matrix and Conversions</span><br />
+
+          <p>XPath 2.0 MUST support the operators and type-coercion
+          rules defined by the joint XSLT/Schema/Query task force
+          on operators.</p>
+
+          <p class="satisfied">Satisfied by sections</p>
+
+          <ul class="satisfied">
+            <li><a href="http://www.w3.org/TR/xpath-functions/#numeric-functions">Functions and Operators on Numerics</a></li>
+
+            <li><a href="http://www.w3.org/TR/xpath-functions/#d1e3606">Functions and Operators on Boolean Values</a></li>
+
+            <li><a href="http://www.w3.org/TR/xpath-functions/#durations-dates-times">Functions and Operators on Durations, Dates and
+            Times</a></li>
+
+            <li><a href="http://www.w3.org/TR/xpath-functions/#QName-funcs">Functions Related to QNames</a></li>
+          </ul>
+
+          <p class="satisfied">in <a href="#XPathFO">[XQuery 1.0
+          and XPath 2.0 Functions and Operators]</a>.</p>
+
+          <table summary="Presentation" border="0">
+            <tbody>
+              <tr>
+                <td><span class="title"><b>Use Case</b></span></td>
+              </tr>
+
+              <tr>
+                <td>
+                  <ul>
+                    <li>
+                      <p><b>General</b></p>
+
+                      <ol>
+                        <li>Use and create the type information of
+                        any datatype</li>
+
+                        <li>Do not require the user to respecify
+                        the datatype (i.e. number and boolean)</li>
+
+                        <li>Maintain the facet constraints of
+                        primitive datatypes while manipulating the
+                        value. For example, take a 14.4 number plus
+                        a 14.4 number and return a 14.4
+                        number.</li>
+                      </ol>
+                    </li>
+
+                    <li>
+                      <p><b>For DateTime</b></p>
+
+                      <ol>
+                        <li>Compare dates of documents and return a
+                        boolean</li>
+
+                        <li>Add a time or date interval and return
+                        the same type</li>
+
+                        <li>Add a scalar value to a time or date
+                        and return the same type</li>
+
+                        <li>
+                          <p>Calculate an end time from a start
+                          time+duration. For example, given:</p>
+
+                          <div class="java-class">
+                            &lt;appointment
+                            time="20001224-16:00:00"
+                            duration="1:00"/&gt;
+                          </div>
+
+                          <p>Produce the end-time:</p>
+
+                          <div class="java-class">
+                            End time: &lt;xsl:value-of
+                            select="@time + @duration"/&gt;
+                          </div><br />
+                        </li>
+
+                        <li>
+                          <p>Detect intersections between datetime
+                          durations</p>
+
+                          <div class="java-class">
+                            &lt;appointment
+                            time="20001224-16:00:00"
+                            duration="2:00" reminder="0:15"/&gt;
+                          </div><br />
+
+                          <div class="java-class">
+                            &lt;appointment
+                            time="20001224-17:00:00"
+                            duration="1:00" reminder="0:15"/&gt;
+                          </div><br />
+                        </li>
+                      </ol>
+                    </li>
+
+                    <li>
+                      <p><b>For Boolean</b></p>
+
+                      <p>Perform pattern matching on "yes" and
+                      "no"</p>
+                    </li>
+
+                    <li>
+                      <p><b>For QName</b></p>
+
+                      <ol>
+                        <li>Build a Namespace element from a
+                        QName</li>
+
+                        <li>Compare a Namespace URI from a QName
+                        with a string</li>
+                      </ol>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+
+      <tr class="r1">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top"><b>4.2</b></td>
+
+        <td colspan="2" class="item">
+          <span class="req-must">Must&nbsp;Allow Scientific
+          Notation for Numbers</span><br />
+
+          <p>XML Schema specifies a lexical representation for
+          doubles and floats that includes scientific notation as
+          well as <code>INF</code>, <code>-INF</code> or
+          <code>NaN</code>. XPath 2.0 MUST support the lexical
+          representations of floats and doubles supported by XML
+          Schema.</p>
+
+          <p class="satisfied">Satisfied by section <a href="http://www.w3.org/TR/xpath-functions/#d1e1156">Numeric Types</a> in <a href="#XPathFO">[XQuery 1.0 and XPath 2.0 Functions and
+          Operators]</a>.</p>
+        </td>
+      </tr>
+
+      <tr class="r0">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top"><b>4.3</b></td>
+
+        <td colspan="2" class="item">
+          <span class="req-must">Must&nbsp;Define Appropriate Cast
+          and Constructor Functions</span><br />
+
+          <p>XPath 2.0 MUST define an appropriate set of functions
+          to allow users to cast and construct instances of XML
+          Schema primitive types. At a minimum, this set MUST
+          include cast and constructor functions for URI and
+          date/time types.</p>
+
+          <p class="satisfied">Satisfied by section <a href="http://www.w3.org/TR/xpath-functions/#constructor-functions">Constructor Functions</a> and <a href="http://www.w3.org/TR/xpath-functions/#casting">Casting</a> in <a href="#XPathFO">[XQuery 1.0 and XPath
+          2.0 Functions and Operators]</a>.</p>
+
+          <table summary="Presentation" border="0">
+            <tbody>
+              <tr>
+                <td><span class="title"><b>Use Case</b></span></td>
+              </tr>
+
+              <tr>
+                <td>
+                  <p>Be able to compare an element or attribute
+                  with an XML Schema date or time type with a
+                  constant date or time value.</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+
+      <tr class="r1">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top"><b>4.4</b></td>
+
+        <td colspan="2" class="item">
+          <span class="req-should">Should&nbsp;Add List Data Type
+          to the Type System of the Expression
+          Langauge</span><br />
+
+          <p>XML Schema allows the definition of simple types
+          derived by list, including lists of unions of non-list
+          simple types. XPath 2.0 SHOULD support an ordered list of
+          simple-typed values.</p>
+
+          <p class="satisfied">Satisfied by section <a href="http://www.w3.org/TR/xpath-datamodel/#sequences">Sequences</a> in <a href="#XQDM">[XQuery 1.0 and
+          XPath 2.0 Data Model]</a>.</p>
+
+          <table summary="Presentation" border="0">
+            <tbody>
+              <tr>
+                <td><span class="title"><b>Use Case</b></span></td>
+              </tr>
+
+              <tr>
+                <td>
+                  <p>Create an XSLT transformation that converts an
+                  element structure like this:</p>
+
+                  <div class="java-class">
+                    &lt;xdr:attribute name="a1"
+                    dt:type="enumeration" dt:values="a1 a2 a3"/&gt;
+                  </div><br />
+
+                  <p>into an alternative structure like this:</p>
+
+                  <div class="java-class">
+                    &lt;xsd:attribute name="a1"&gt;<br />
+                    &nbsp;&nbsp;&lt;xsd:simpleType&gt;<br />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:restriction
+                    base="NMTOKEN"&gt;<br />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:enumeration
+                    value="a1"/&gt;<br />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:enumeration
+                    value="a2"/&gt;<br />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:enumeration
+                    value="a3"/&gt;<br />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;/xsd:restriction&gt;<br />
+
+                    &nbsp;&nbsp;&lt;/xsd:simpleType&gt;<br />
+                    &lt;/xsd:attribute&gt;
+                  </div><br />
+
+                  <p>This requires the ability in XPath to select
+                  the list of NMTOKENS values of the
+                  <code>dt:values</code> attribute for
+                  processing.</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+
+      <tr class="r0">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top"><b>4.5</b></td>
+
+        <td colspan="2" class="item">
+          <span class="req-must">Must&nbsp;Support Accessing
+          Simple-Typed Value of Elements and
+          Attributes</span><br />
+
+          <p>The XPath 1.0 type system supports the
+          <code>number</code>, <code>string</code>,
+          <code>boolean</code>, and <code>node-set</code> types.
+          <a href="#XSchemaData">XML Schema: Datatypes</a>
+          introduces many new types. XPath 1.0 supports conversion
+          of the simple-typed values of elements and attributes to
+          strings. In addition to this functionality, XPath 2.0
+          MUST support access to the native, simple-typed value of
+          an element or attribute.</p>
+
+          <p class="satisfied">Satisfied by <a href="http://www.w3.org/TR/xpath20/#id-typed-value">Typed Value and String Value</a>
+          in <a href="#XPath2">[XPath 2.0]</a>.</p>
+        </td>
+      </tr>
+
+      <tr class="r1">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top"><b>4.6</b></td>
+
+        <td colspan="2" class="item">
+          <span class="req-must">Must&nbsp;Define Behavior of
+          Operators for Null Arguments</span><br />
+
+          <p>Since the typed value of an element can be
+          <code>null</code>, XPath 2.0 MUST define how the behavior
+          of operations applies to null values.</p>
+
+          <p class="satisfied">Satisfied by the Empty Sequence
+          supported through the <a href="#XPath2">[XPath
+          2.0]</a> language.</p>
+
+          <table summary="Presentation" border="0">
+            <tbody>
+              <tr>
+                <td><span class="title"><b>Use Case</b></span></td>
+              </tr>
+
+              <tr>
+                <td>
+                  <p>Assuming the typed value of an element is
+                  addressed using a syntax like
+                  <code>typed-value(elementname)</code>, XPath
+                  needs to specify what <code>1.20 *
+                  typed-value(salary)</code> evaluates to when the
+                  typed value of the <code>&lt;salary&gt;</code> is
+                  <code>null</code>.</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+
+      <tr class="r0">
+        <td class="item" align="right" valign="top"><b>5</b></td>
+
+        <td colspan="3" class="item">
+          <span class="req-should">Should&nbsp;Add Support for XML
+          Schema: Structures</span><br />
+
+          <p><a href="#XSchemaStruc">XML Schema: Structures</a>
+          enables users to define structured types and associate
+          them to elements in a schema. XPath 2.0 SHOULD provide
+          support for the common operations needed for navigation
+          and selection of typed elements.</p>
+        </td>
+      </tr>
+
+      <tr class="r1">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top"><b>5.1</b></td>
+
+        <td colspan="2" class="item">
+          <span class="req-should">Should&nbsp;Select
+          Elements/Attributes Based on an Explicit XML Schema
+          Type</span><br />
+
+          <p>XML Schema : Structures provides the ability to define
+          the type of an element or attribute. XPath 2.0 SHOULD be
+          able to test whether an element or attribute is an
+          instance of a given type.</p>
+
+          <p class="satisfied">Satisfied by <a href="http://www.w3.org/TR/xpath20/#id-sequencetype-matching">SequenceType
+          Matching</a> in <a href="#XPath2">[XPath 2.0]</a>.</p>
+
+          <table summary="Presentation" border="0">
+            <tbody>
+              <tr>
+                <td><span class="title"><b>Use Case</b></span></td>
+              </tr>
+
+              <tr>
+                <td>
+                  <ol>
+                    <li>Select all elements that are instances of
+                    the complex type <code>Address</code>.</li>
+
+                    <li>Select all attributes that are instances of
+                    the simple-type <code>xsd:integer</code>.</li>
+
+                    <li>Select elements of type
+                    <code>Address</code> indicated in the instance
+                    with <code>xsi:type="Address"</code></li>
+                  </ol>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+
+      <tr class="r0">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top"><b>5.2</b></td>
+
+        <td colspan="2" class="item">
+          <span class="req-should">Should&nbsp;Select
+          Elements/Attributes Based on XML Schema Type
+          Hierarchy</span><br />
+
+          <p>XML Schema : Structures provides the ability to define
+          a hierarchy of types by derivation. XPath 2.0 SHOULD be
+          able to selects elements or attributes that are instances
+          of a type, also matching any types derived from it by
+          restriction or extension.</p>
+
+          <blockquote>
+            <p><b>Ed. Note:</b> This introduces some interesting
+            precedence decisions about how matches for an explicit
+            type would need to take precedence over matches for
+            compatible types. In other words, given a template
+            matching elements with types compatible to
+            <code>Address</code> and another template explicitly
+            matching type <code>USAddress</code>, one would expect
+            the explicit type match to take precedence. Also
+            consider the case where two templates exist, one that
+            matches the <code>Address</code> type and one that
+            matches the <code>USAddress</code> type. If an element
+            of type RuralRouteAddress (further derived from
+            USAddress) is considered for matching, one would expect
+            the template for the "closest inherited ancestor", that
+            is <code>USAddress</code>, to take precendence over a
+            template matching the type of a "more distant inherited
+            ancestor" like <code>Address</code>.</p>
+          </blockquote>
+
+          <p class="satisfied">Satisfied by <a href="http://www.w3.org/TR/xpath20/#id-sequencetype-matching">SequenceType
+          Matching</a> in <a href="#XPath2">[XPath 2.0]</a>.</p>
+
+          <table summary="Presentation" border="0">
+            <tbody>
+              <tr>
+                <td><span class="title"><b>Use Case</b></span></td>
+              </tr>
+
+              <tr>
+                <td>
+                  <p><b>Derivation by Restriction</b></p>
+
+                  <p>The <a href="#XSchemaPri">[XML Schema:
+                  Primer]</a> defines the <code>Items</code> type
+                  and the <code>ConfirmedItems</code> type which is
+                  derived by restriction from <code>Items</code>.
+                  Select purchase orders whose
+                  <code>&lt;items&gt;</code> member element is an
+                  instance of the <code>ConfirmedItems</code> type,
+                  which restricts the minimum number of
+                  <code>&lt;item&gt;</code> elements that can
+                  appear to be at least one.</p>
+
+                  <p><b>Derivation by Extension</b></p>
+
+                  <p>The <a href="#XSchemaPri">[XML Schema:
+                  Primer]</a> defines the <code>Address</code> type
+                  and the <code>UKAddress</code> and
+                  <code>USAddress</code> types which is derived by
+                  extension from <code>Address</code>, adding
+                  additional element content in the subtypes.</p>
+
+                  <ol>
+                    <li>Select all elements that are instances of
+                    complex type <code>Address</code>, matching
+                    elements of type <code>USAddress</code> and
+                    elements of type <code>UKAddress</code> as
+                    well.</li>
+
+                    <li>Select all elements that are instances of
+                    complex type <code>Address</code>, without
+                    selecting elements of types derived from
+                    <code>Address</code>.</li>
+
+                    <li>Select all attributes that are instances of
+                    the simple-type <code>xsd:integer</code>,
+                    matching attribute of type
+                    <code>SKU-Number</code> which derives from
+                    <code>xsd:integer</code>.</li>
+                  </ol>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+
+      <tr class="r1">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top"><b>5.3</b></td>
+
+        <td colspan="2" class="item">
+          <span class="req-should">Should&nbsp;Select Elements
+          Based on XML Schema Substitution Groups</span><br />
+
+          <p><a href="#XSchemaData">[XML Schema: Datatypes]</a>
+          provides the ability to include two or more element names
+          in a substitution group. XPath 2.0 SHOULD be able to test
+          whether an element is a member of an XML Schema
+          substitution group.</p>
+
+          <p class="satisfied">Satisfied by <a href="http://www.w3.org/TR/xpath20/#id-sequencetype-matching">SequenceType
+          Matching</a> in <a href="#XPath2">[XPath 2.0]</a>.</p>
+
+          <table summary="Presentation" border="0">
+            <tbody>
+              <tr>
+                <td><span class="title"><b>Use Case</b></span></td>
+              </tr>
+
+              <tr>
+                <td>
+                  <p>The <a href="#XSchemaPri">[XML Schema:
+                  Primer]</a> defines the global
+                  <code>&lt;ipo:comment&gt;</code> element as the
+                  head of a substitution group, whose substitutible
+                  member elements include
+                  <code>&lt;ipo:customerComment&gt;</code> and
+                  <code>&lt;ipo:shipComment&gt;</code>. Select the
+                  list of all elements that are
+                  <code>&lt;ipo:comment&gt;</code> elements,
+                  including any elements that are substitutible for
+                  <code>&lt;ipo:comment&gt;</code> through this
+                  substitution group.</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+
+      <tr class="r0">
+        <td class="item" valign="top">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+        <td class="item" align="right" valign="top"><b>5.4</b></td>
+
+        <td colspan="2" class="item">
+          <span class="req-should">Should&nbsp;Support Lookups
+          Based on Schema Unique Constraints and Keys</span><br />
+
+          <p><a href="#XSchemaData">[XML Schema: Datatypes]</a>
+          supports named, multi-part keys. XPath 2.0 SHOULD support
+          a mechanism for looking up the element to which a Schema
+          key refers. Similar mechanisms already exist, such as the
+          <code>id()</code> function in XPath 1.0 and the
+          <code>key()</code> function in XSLT.</p>
+
+          <p class="notsatisfied">Not Satisfied due to lack of use
+          cases and existing functionality in host languages to
+          create keys.</p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="div2">
+    <h2><a name="section-References" id="section-References"></a>3
+    References</h2>
+
+    <dl>
+      <dt class="label"><a id="XQDM" name="XQDM"></a>XQuery 1.0 and
+      XPath 2.0 Data Model</dt>
+
+      <dd>World-Wide Web Consortium <em>XQuery 1.0 and XPath 2.0
+      Data Model</em>. See <a href="http://www.w3.org/TR/xpath-datamodel/">http://www.w3.org/TR/xpath-datamodel/</a></dd>
+
+      <dt class="label"><a id="XPath" name="XPath"></a>XPath
+      1.0</dt>
+
+      <dd>World-Wide Web Consortium <em>XML Path Language
+      (XPath)</em>: Version 1.0. November, 1999. See <a href="http://www.w3.org/TR/xpath">http://www.w3.org/TR/xpath</a>.</dd>
+
+      <dt class="label"><a id="XPathReq" name="XPathReq"></a>XPath
+      Requirements Version 2.0</dt>
+
+      <dd>World Wide Web Consortium, <em>XPath Requirements Version
+      2.0</em>. See <a href="http://www.w3.org/TR/xpath20req">http://www.w3.org/TR/xpath20req</a>.</dd>
+
+      <dt class="label"><a id="XPath2" name="XPath2"></a>XPath
+      2.0</dt>
+
+      <dd>World-Wide Web Consortium <em>XML Path Language
+      (XPath)</em>: Version 2.0. See <a href="http://www.w3.org/TR/xpath20/">http://www.w3.org/TR/xpath20/</a>.</dd>
+
+      <dt class="label"><a id="XSLT2" name="XSLT2"></a>XSLT
+      2.0</dt>
+
+      <dd>World Wide Web Consortium, <em>XSL Transformations
+      Language (XSLT)</em>: Version 2.0. See <a href="http://www.w3.org/TR/xslt20/">http://www.w3.org/TR/xslt20/</a>.</dd>
+
+      <dt class="label"><a id="XQWG" name="XQWG"></a>XML Query
+      Working Group</dt>
+
+      <dd>World Wide Web Consortium, <em>XML Query Working
+      Group</em>. Home page: <a href="http://www.w3.org/XML/Query">http://www.w3.org/XML/Query</a>.</dd>
+
+      <dt class="label"><a id="XSLWG" name="XSLWG"></a>XSL Working
+      Group</dt>
+
+      <dd>World Wide Web Consortium, <em>XSL Working Group</em>.
+      Home page: <a href="http://www.w3.org/Style/XSL/">http://www.w3.org/Style/XSL/</a>.</dd>
+
+      <dt class="label"><a id="XQuery" name="XQuery"></a>XQuery
+      1.0: A Query Language for XML</dt>
+
+      <dd>World Wide Web Consortium, <em>XQuery 1.0: A Query
+      Language for XML</em>. See <a href="http://www.w3.org/TR/xquery/">http://www.w3.org/TR/xquery/</a>.</dd>
+
+      <dt class="label"><a id="XQueryReq" name="XQueryReq"></a>XML
+      Query Requirements</dt>
+
+      <dd>World Wide Web Consortium, <em>XML Query
+      Requirements</em>. See <a href="http://www.w3.org/TR/2005/WD-xquery-requirements-20050603/">http://www.w3.org/TR/2005/WD-xquery-requirements-20050603/</a>.</dd>
+
+      <dt class="label"><a id="XPointer" name="XPointer"></a>XPointer</dt>
+
+      <dd>World Wide Web Consortium, <em>XPointer xpointer()
+      Scheme</em>. See <a href="http://www.w3.org/TR/xptr-xpointer/">http://www.w3.org/TR/xptr-xpointer/</a>.</dd>
+
+      <dt class="label"><a id="XSchemaPri" name="XSchemaPri"></a>XML Schema: Primer</dt>
+
+      <dd>World Wide Web Consortium, <em>XML Schema Part 0:
+      Primer</em>. See <a href="http://www.w3.org/TR/xmlschema-0/">http://www.w3.org/TR/xmlschema-0/</a>.</dd>
+
+      <dt class="label"><a id="XSchemaStruc" name="XSchemaStruc"></a>XML Schema: Structures</dt>
+
+      <dd>World Wide Web Consortium, <em>XML Schema Part 1:
+      Structures</em>. See <a href="http://www.w3.org/TR/xmlschema-1/">http://www.w3.org/TR/xmlschema-1/</a>.</dd>
+
+      <dt class="label"><a id="XSchemaData" name="XSchemaData"></a>XML Schema: Datatypes</dt>
+
+      <dd>World Wide Web Consortium, <em>XML Schema Part 2:
+      Datatypes</em>. See <a href="http://www.w3.org/TR/xmlschema-2/">http://www.w3.org/TR/xmlschema-2/</a>.</dd>
+
+      <dt><a id="Infoset" name="Infoset"></a>XML Information
+      Set</dt>
+
+      <dd>World Wide Web Consortium, <em>XML Information Set</em>.
+      See <a href="http://www.w3.org/TR/xml-infoset/">http://www.w3.org/TR/xml-infoset/</a>.</dd>
+
+      <dt><a id="XPathFO" name="XPathFO"></a>XQuery 1.0 and XSLT
+      2.0 Functions and Operators</dt>
+
+      <dd>World Wide Web Consortium, <em>XQuery 1.0 and XSLT 2.0
+      Functions and Operators</em>. See <a href="http://www.w3.org/TR/xpath-functions/">http://www.w3.org/TR/xpath-functions/</a>.</dd>
+
+      <dt>&nbsp;</dt>
+
+      <dt>&nbsp;</dt>
+
+      <dt><a href="http://www.w3.org/TR/xptr-xpointer/"></a></dt>
+    </dl>
+  </div>
+</body></html>

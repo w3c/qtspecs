@@ -1,0 +1,321 @@
+<!--XSLT Processor: SAXON 9.1.0.2 from Saxonica SAXON SA 9.1.0.2--><?xml-stylesheet type="text/xsl" href="http://www.w3.org/2002/xmlspec/html/1.7/xmlspec.xsl"?><spec xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" w3c-doctype="wgnote"><header><title>XQuery and XPath Full Text 1.0 Requirements</title><w3c-designation>NOTE-xpath-full-text-10-requirements</w3c-designation><w3c-doctype>W3C Working Group Note</w3c-doctype><pubdate><day>25</day><month>January</month><year>2011</year></pubdate><publoc>
+<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/2011/NOTE-xpath-full-text-10-requirements-20110125/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://www.w3.org/TR/2011/NOTE-xpath-full-text-10-requirements-20110125/</loc>
+</publoc><latestloc>
+<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/xpath-full-text-10-requirements/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://www.w3.org/TR/xpath-full-text-10-requirements/</loc>
+</latestloc><prevlocs>
+<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/2008/WD-xpath-full-text-10-requirements-20080516/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://www.w3.org/TR/2008/WD-xpath-full-text-10-requirements-20080516/</loc>
+</prevlocs><authlist><author><name>Stephen Buxton</name><affiliation>Oracle Corp</affiliation><!-- <email href="mailto:stephen.buxton@oracle.com">stephen.buxton@oracle.com</email> --></author><author><name>Pat Case</name><affiliation>Library of Congress</affiliation><!-- <email href="mailto:PCASE@crs.loc.gov">PCASE@crs.loc.gov</email> --></author><author><name>Michael Rys</name><affiliation>Microsoft</affiliation><!-- <email href="mailto:mrys@microsoft.com">mrys@microsoft.com</email> --></author></authlist><abstract><p>The document specifies requirements for Full-Text Search for use in
+XQuery <bibref ref="xquery"/> and XPath <bibref ref="xpath20"/>.</p></abstract><!--* Common status section for QT specs.
+    * Use is currently not required, but it simplifies things.
+    * 
+    * Revisions:
+    * 2007-01-15 : CMSMcQ : made file, to simplify publication of Rec.
+    * 2008-02-15 : JimMelton : cloned from MSM's REC-only material
+                     to generalize for all stages
+    *--><status id="status"><!-- ************************************************************************** --><!-- * All Status sections must start with the standard boilerplate paragraph * --><!-- *   This entity is defined in status-entities.dtd                        * --><!-- ************************************************************************** --><p><emph>This section describes the status of this
+         document at the time of its publication.
+         Other documents may supersede this document.
+         A list of current W3C publications and the latest
+         revision of this technical report can be found in the
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">W3C technical reports index</loc>
+         at http://www.w3.org/TR/.</emph></p><!-- ************************************************************************** --><!-- * QT publishes suites of documents, which must be described in the       * --><!--     Status section of each document within such a suite.                 * --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><!-- ************************************************************************** --><!-- * There is a lot of detailed customization based on the document stage   * --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><p>This is a <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/2005/10/Process-20051014/tr.html#tr-end" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Working Group Note</loc> as described in the <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/2005/10/Process-20051014/tr.html" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Process Document</loc>. 
+It has been jointly developed by the W3C 
+<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/XML/Query/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XML Query Working Group</loc> and the W3C <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/Style/XSL/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XSL Working Group</loc>, each of which is part of the <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/XML/Activity" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XML Activity</loc>.
+This document is being published as a
+<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/2005/10/Process-20051014/tr.html#tr-end" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Working Group Note</loc>
+to persistently record the Requirements that guided the development of
+<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/xpath-full-text-10/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery and XPath Full Text 1.0</loc>
+as a W3C Recommendation.</p><!-- ************************************************************************** --><!-- * CR documents must cite features at risk                                * --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><!-- ************************************************************************** --><!-- * Every Status section must have a customized paragraph                  * --><!-- *   This entity is defined completely in the host document.              * --><!-- ************************************************************************** --><p>This document includes,
+for each requirement, a corresponding status, indicating the 
+current situation of the requirement in <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/xpath-full-text-10-requirements/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery and XPath Full Text 1.0</loc>
+at the time that it was issued as a final Recommendation on 22 February 2011. 
+Organizations and individuals should review this document to determine whether or not the 
+requirements provided meet the needs of the full-text community. </p><!-- ************************************************************************** --><!-- * CR docs should, and PR docs must, have a pointer to an implementation  * --><!-- *   report.  We also want to point to the test suite.                    * --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><!-- ************************************************************************** --><!-- * The Status section should point to a changelog                         * --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><p>No substantive changes have been made to this specification
+since its publication as a Last Call Working Draft.</p><!-- ************************************************************************** --><!-- * The Status section must tell readers where to send comments            * --><!-- *   This entity is defined in status-entities.dtd                        * --><!-- ************************************************************************** --><p>Please report errors in this document using W3C's
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/Bugs/Public/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">public Bugzilla system</loc>
+         (instructions can be found at
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/XML/2005/04/qt-bugzilla" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://www.w3.org/XML/2005/04/qt-bugzilla</loc>).
+         If access to that system is not feasible, you may send your comments
+         to the W3C XSLT/XPath/XQuery public comments mailing list,
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="mailto:public-qt-comments@w3.org" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">public-qt-comments@w3.org</loc>.
+         It will be very helpful if you include the string 
+         “[FTreq]”
+         in the subject line of your report, whether made in Bugzilla or in email.
+         Please use multiple Bugzilla entries (or, if necessary, multiple email messages)
+         if you have more than one comment to make.
+         Archives of the comments and responses are available at
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://lists.w3.org/Archives/Public/public-qt-comments/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://lists.w3.org/Archives/Public/public-qt-comments/</loc>. </p><!-- ************************************************************************** --><!-- Status sections must state the stability (not stable, or REC) of the document --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><p>Publication as a <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/2005/10/Process-20051014/tr.html#tr-end" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Working Group Note</loc>
+does not imply endorsement by the W3C Membership. 
+At the time of publication, work on this document
+was considered complete and no further revisions are anticipated. 
+It is a stable document and may be used as reference material or
+cited from another document. 
+However, this document may be updated, replaced, or made obsolete by
+other documents at any time.</p><!-- ************************************************************************** --><!-- * Finally, all Status sections must end with the appropriate IPR para    * --><!-- *   This entity is defined in status-entities.dtd                        * --><!-- ************************************************************************** --><p>This document was produced by groups operating under the
+   <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/Consortium/Patent-Policy-20040205/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">5 February 2004
+   W3C Patent Policy</loc>.
+   W3C maintains a <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/2004/01/pp-impl/18797/status#disclosures" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">public list of any 
+   patent disclosures</loc> made in connection with the deliverables of the 
+   XML Query Working Group and also maintains a <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/2004/01/pp-impl/19552/status#disclosures" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">public list of any patent 
+   disclosures</loc> made in connection with the deliverables of the XSL 
+   Working Group; those pages also include instructions for
+   disclosing a patent.
+   An individual who has actual knowledge of a patent which the individual believes
+   contains
+   <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/Consortium/Patent-Policy-20040205/#def-essential" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Essential Claim(s)</loc>
+   must disclose the information in accordance with
+   <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/Consortium/Patent-Policy-20040205/#sec-Disclosure" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">section 6 of the W3C Patent Policy</loc>. </p></status><langusage><language id="EN">English</language></langusage><revisiondesc><slist><sitem>
+          Strawman 1.0(SB; 2002-12-09)
+</sitem></slist></revisiondesc></header><body><div1 id="intro"><head>Introduction</head><p>"Full-Text Search" (FTS) is a large field which covers a vast array of
+functionality. In addition, there are many different ways one could
+combine FTS capabilities with XQuery and XPath.</p><p>The requirements are written without reference to any particular solution.</p></div1><div1 id="Terminology"><head>Terminology</head><div2><head>Terminology</head><p>The following key words are used throughout the document to specify the
+extent to which an item is a requirement for the work of the XML Query 
+Working Group:</p><glist><gitem><label id="terminology-must">MUST</label><def><p>This word means that the item is an absolute requirement.</p></def></gitem><gitem><label id="terminology-should">SHOULD</label><def><p>This word means that there may exist valid reasons not to treat this item
+as a requirement, but the full implications should be understood and the case
+carefully weighed before discarding this item.</p></def></gitem><gitem><label id="terminology-may">MAY</label><def><p>This word means that an item deserves attention, but further study is
+needed to determine whether the item should be treated as a 
+requirement.</p></def></gitem></glist><p>When the words  
+<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>,  
+<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-should" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">SHOULD</loc>, or  
+<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-may" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MAY</loc> are used in this technical sense, they
+occur as a hyperlink to these definitions. These words will also be used with
+their conventional English meaning, in which case there is no hyperlink. For
+instance, the phrase "the full implications should be understood" uses the
+word "should" in its conventional English sense, and therefore occurs without
+the hyperlink.</p><p id="req-status">Each requirement also includes a status section,
+indicating its current situation in the XML-Query family of specifications.
+Three status levels are available:</p><glist><gitem><label>"Green" status</label><def><p>
+<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/> This indicates that the requirement, according to its
+original formulation, has been completely met. Optional clarificatory text
+may follow.</p></def></gitem><gitem><label>"Yellow" status</label><def><p>
+<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/yellow-ball.gif" alt="yellow status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/> This indicates that the requirement has been partially met
+according to its original formulation. When this happens, explanatory text is
+provided to better clarify the current scope of the
+requirement.</p></def></gitem><gitem><label>"Red" status</label><def><p>
+<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/red-ball.gif" alt="red status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/> This indicates that the requirement, according to its
+original formulation, has not been met. If this is the case, explanatory text
+is provided.</p></def></gitem></glist></div2><div2 id="div-score"><head>SCORE</head><p><termdef id="terminology-score" term="SCORE"><term>SCORE</term> reflects relevance of matched material.</termdef></p></div2><div2 id="div-fts"><head>Full-Text Search</head><p><termdef id="terminology-FTS" term="Full-Text Search"><term>Full-Text Search</term> in this document is an extension
+to the XQuery and XPath language. It provides a way to query text which has been tokenized, i.e. broken into a sequence of words,
+units of punctuation, and spaces. Tokenization enables functions and operators which work with the relative positioning of words
+(e.g., proximity operators). Tokenization also enables functions and operators which operate on a part or the root of the word
+(e.g., wildcards, stemming).</termdef></p></div2></div1><div1 id="LanguageDesign"><head>Language Design</head><p>This section covers requirements for XQuery and XPath Full Text language
+design that are independent from, but related to, integration and
+scoping requirements.</p><div2 id="markupPrimary"><head>The Data Model</head><p>XQuery and XPath Full Text 1.0 functions <termref def="terminology-must">MUST</termref> operate on instances of the
+<bibref ref="xpath-datamodel"/>.
+</p><!-- <p>
+<specref ref="lang-markedup-text"/>
+</p> --><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>   
+<emph>Status:</emph> this requirement has been met.</p></div2><div2 id="lang-side-effects"><head>Side-effects on the data</head><p>
+XQuery and XPath Full Text 1.0 <termref def="terminology-must">MUST</termref> NOT introduce or rely on side-effects.</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div2><div2 id="lang-score-match-body"><head>Score Function and Full-Text Predicates</head><div3 id="div3-score-independent"><head>Predicate and Score Independence</head><p>XQuery and XPath Full Text 1.0 <termref def="terminology-must">MUST</termref> allow full-text predicates and <termref def="terminology-score">SCORE</termref> functions independently.</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div3><div3 id="div3-score-language"><head>Score language</head><p>XQuery and XPath Full Text 1.0 <termref def="terminology-must">MUST</termref> either</p><ulist><item><p>
+								use the same language for full-text predicates and <termref def="terminology-score">SCORE</termref> functions</p></item></ulist><p>or</p><ulist><item><p>
+								use a language for full-text predicates that is a proper subset of the language for <termref def="terminology-score">SCORE</termref> functions.
+</p></item></ulist><!-- <specref ref="scoreComb"/> --><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div3></div2><div2 id="score-algorithm"><head>Score algorithm</head><div3 id="div-return-score"><head>Return Score</head><p>XQuery and XPath Full Text 1.0 <termref def="terminology-must">MUST</termref> allow the user to return <termref def="terminology-score">SCORE</termref>. </p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div3><div3 id="div-sort-score"><head>Sort by Score</head><p>XQuery and XPath Full Text 1.0 <termref def="terminology-must">MUST</termref> allow the user to sort by <termref def="terminology-score">SCORE</termref>.</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div3><div3 id="div-typerange-score"><head>Type, Range of Score</head><p>XQuery and XPath Full Text 1.0 <termref def="terminology-must">MUST</termref> define the type and range of <termref def="terminology-score">SCORE</termref> values. The <termref def="terminology-score">SCORE</termref> <termref def="terminology-should">SHOULD</termref> be a float, in the range 0-1.</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/yellow-ball.gif" alt="yellow status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been partially met. Float has been changed to double because double is the maximal 
+promotion type.</p></div3><div3 id="div-score-stats"><head>Score Statistics</head><p>XQuery and XPath Full Text 1.0 <termref def="terminology-must">MUST</termref> NOT require an explicit definition of the global corpus statistics (statistics, such as word frequency, used in calculating <termref def="terminology-score">SCORE</termref>).</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div3><div3 id="div-score-semantics"><head>Semantics of Score</head><p>XQuery and XPath Full Text 1.0 <termref def="terminology-may">MAY</termref> partially define the semantics of <termref def="terminology-score">SCORE</termref>. </p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div3></div2><div2 id="scoreComb"><head>Combined score</head><div3 id="score-combination"><head>Score Combination</head><p>XQuery and XPath Full Text 1.0 <termref def="terminology-must">MUST</termref> be able to generate a <termref def="terminology-score">SCORE</termref> for a combination of full-text predicates. </p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div3><div3 id="score-alg-vendor"><head>Score algorithm vendor-provided</head><p>The algorithm to produce combined <termref def="terminology-score">SCORE</termref>s <termref def="terminology-must">MUST</termref> be vendor-provided.</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div3><div3 id="score-alg-override"><head>Score algorithm overridable</head><p>The algorithm to produce combined <termref def="terminology-score">SCORE</termref>s <termref def="terminology-should">SHOULD</termref> be overridable by users.</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/yellow-ball.gif" alt="yellow status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been partially met. Since SCORE is
+implementation-dependent, the recommendation is silent on this and all
+matters relating to implementation of scoring.</p></div3><div3 id="score-alg-influence"><head>Score influence</head><p>Users <termref def="terminology-must">MUST</termref> be able to influence individual components of complex score expressions.</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div3><!-- <p>
+<specref ref="scoreComb-user"/>
+</p> --></div2><div2 id="ext"><head>Extensibility</head><div3 id="div-extensible"><head>Extensible by vendors</head><p>XQuery and XPath Full Text 1.0 <termref def="terminology-must">MUST</termref> be extensible by vendors.</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div3><div3 id="div-extensible-users"><head>Extensible by users</head><p>XQuery and XPath Full Text 1.0 <termref def="terminology-may">MAY</termref> be extensible by users. </p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div3><!-- <p>
+<specref ref="lang-extensibility-user"/>
+</p> --></div2><div2 id="fastRight"><head>First, Future Versions</head><p>
+The first version of XQuery and XPath Full Text 1.0 <termref def="terminology-must">MUST</termref> provide a robust framework for future versions.
+</p><!-- <p>
+<specref ref="fastRight-irrelevant"/>
+</p> --><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div2><div2 id="lang-endUserLanguage"><head>End user language</head><p>
+It is not a requirement that XQuery and XPath Full Text 1.0 be designed as an end-user UI language.
+</p><!-- <p>
+<specref ref="lang-enduser"/>
+</p>  --><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div2><div2 id="searchable-query"><head>Searchable query</head><p>
+It <termref def="terminology-should">SHOULD</termref> be possible to search XQuery and XPath Full Text 1.0 queries.
+</p><!-- <p>
+<specref ref="lang-searchable"/>
+</p> --><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div2><div2 id="universality"><head>Universality</head><p>XQuery and XPath Full Text 1.0 <termref def="terminology-should">SHOULD</termref> be universal. As a minimum, XQuery and XPath Full Text 1.0 <termref def="terminology-must">MUST</termref> allow full-text search in any Unicode character-set and in all common written natural languages. </p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div2></div1><div1 id="Integration"><head>Integration</head><p>This section specifies requirements for the integration of XQuery and XPath Full Text 1.0 with XQuery and XPath.</p><div2 id="xpath"><head>XPath</head><p>
+Part, but not necessarily all, of XQuery and XPath Full Text 1.0 <termref def="terminology-must">MUST</termref> be
+usable as part of an XPath expression.
+</p><!-- <p>
+<specref ref="xpath-entire"/>
+</p> --><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div2><div2 id="ext-mech"><head>Extensibility Mechanisms</head><div3 id="div-int-xquery"><head>Integration into XQuery/XPath</head><p>XQuery and XPath Full Text 1.0 <termref def="terminology-should">SHOULD</termref> use the extensibility mechanisms that exist in XQuery and XPath for integration into XQuery and XPath.</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/yellow-ball.gif" alt="yellow  status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been partially met. XQuery and XPath Full Text 1.0 did not use functions because they were syntactically burdensome to users. The extensibility mechanisms were used in the XML syntax (XQueryX) for XQuery and XPath Full Text 1.0.</p></div3><div3 id="div-own-ext"><head>XQuery and XPath Full Text 1.0 Extensibility</head><p>XQuery and XPath Full Text 1.0 <termref def="terminology-must">MUST</termref> use the extensibility mechanisms that exist in XQuery and XPath for it's own extensibility. </p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div3><!-- <p>
+<specref ref="ext-mech-ft"/>
+</p> --></div2><div2 id="int-composability"><head>Composability</head><p>
+XQuery and XPath Full Text 1.0 <termref def="terminology-must">MUST</termref> be composable with XQuery, and <termref def="terminology-should">SHOULD</termref> be composable with itself.
+</p><!-- <p>
+<specref ref="int-composability-self"/>
+</p> --><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div2><div2 id="Human-readable"><head>Human-readable</head><p>XQuery and XPath Full Text 1.0 may have more than one syntax binding. One
+query language syntax must be convenient for humans to read and write.
+<!-- The following link has been forced to use the opaque id value d0e318
+       because the corresponding <div2> element in the XQuery/XPath sources
+       does not have an id attribute with an appropriate value, such as
+       section-General-Requirements
+-->
+See <bibref ref="xquery-requirements"/>. 
+</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div2><div2 id="XMLSyntax"><head>XML syntax</head><p>XQuery and XPath Full Text 1.0 <termref def="terminology-may">MAY</termref> have more than one syntax binding. One
+query language syntax <termref def="terminology-must">MUST</termref> be expressed in XML in a way that
+reflects the underlying structure of the query. See
+<!-- The following link has been forced to use the opaque id value d0e318
+       because the corresponding <div2> element in the XQuery/XPath sources
+       does not have an id attribute with an appropriate value, such as
+       section-General-Requirements
+-->
+<bibref ref="xquery-requirements"/>.
+</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div2></div1><div1 id="Implementation"><head>Implementation</head><div2 id="efficientExecution"><head>Declarativity</head><p>
+XQuery and XPath Full Text 1.0 <termref def="terminology-must">MUST</termref> be declarative. Notably, it <termref def="terminology-must">MUST</termref> not enforce a particular evaluation strategy.
+</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div2></div1><div1 id="Scope"><head>Functionality and Scope</head><p>This section defines requirements for the functionality in XQuery and XPath Full Text 1.0, and the scope of XQuery and XPath Full Text 1.0 queries.</p><div2 id="functionality"><head>Functionality</head><p>
+XQuery and XPath Full Text 1.0 <termref def="terminology-must">MUST</termref> provide, in the first release, the minimum set of full-text functionality that is useful. 
+</p><olist><item><p>single-word search</p></item><item><p>phrase search</p></item><item><p>support for stop words</p></item><item><p>single character suffix</p></item><item><p>0 or more character suffix</p></item><item><p>0 or more character prefix</p></item><item><p>0 or more character infix</p></item><item><p>proximity searching (unit: words)</p></item><item><p>specification of order in proximity searching</p></item><item><p>combination using AND</p></item><item><p>combination using OR</p></item><item><p>combination using NOT</p></item><item><p>word normalization, diacritics</p></item><item><p>ranking, relevance</p></item></olist><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p><p>Additional functionality represented in the <bibref ref="xpath-full-text-10-use-cases"/> <termref def="terminology-must">MUST</termref> be considered,
+but may be left to a future release.</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p><p>Additional functionality from other Full-Text Search contexts such as <bibref ref="SQLMMFT"/> <termref def="terminology-must">MUST</termref>
+be considered, but <termref def="terminology-should">SHOULD</termref> be left to a future release.</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div2><div2 id="func-searchScope"><head>Search Scope</head><div3 id="div-arbitrary"><head>Search within arbitrary structure</head><p>XQuery and XPath Full Text 1.0 <termref def="terminology-must">MUST</termref> allow search within an arbitrary structure (an arbitrary XPath expression).</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div3><div3 id="div-constructed"><head>Constructed Structures</head><p>XQuery and XPath Full Text 1.0 <termref def="terminology-must">MUST</termref> NOT preclude Full-Text Search within structures constructed during a query.</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div3><div3 id="div-return-arbitrary"><head>Return Arbitrary Nodes</head><p>XQuery and XPath Full Text 1.0 <termref def="terminology-must">MUST</termref> allow a query to return arbitrary nodes.</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div3><div3 id="div-comb-tree"><head>Parts of Search Tree</head><p>XQuery and XPath Full Text 1.0 <termref def="terminology-must">MUST</termref> allow the combination of predicates on different parts of the searched document 'tree'.</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div3><!-- <p>
+<specref ref="func-constructedNodes"/>
+</p> --></div2><div2 id="func-att"><head>Attributes</head><div3 id="div-att"><head>Search within attributes</head><p>XQuery and XPath Full Text 1.0 <termref def="terminology-must">MUST</termref> support Full-Text Search within attributes.</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div3><div3 id="div-att-content"><head>Search across attributes and content</head><p>XQuery and XPath Full Text 1.0 <termref def="terminology-may">MAY</termref> support Full-Text Search within attributes in conjunction with Full-Text Search within element content.</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div3><!-- <p>
+<specref ref="scope-att"/>
+</p> --></div2><div2 id="func-markup"><head>Markup</head><p>If XQuery and XPath Full Text 1.0 supports search within names of elements and attributes, then it <termref def="terminology-must">MUST</termref> distinguish between</p><ulist><item><p>element content and attribute values</p></item></ulist><p>and</p><ulist><item><p>names of elements and attributes</p></item></ulist><p>in any search.</p><!-- <p>
+<specref ref="scope-markup"/>
+</p> --><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div2><div2 id="elementBoundaries"><head>Element Boundaries</head><div3 id="div-element-boundary"><head>Search across element boundaries</head><p>XQuery and XPath Full Text 1.0 <termref def="terminology-must">MUST</termref> support search across element boundaries, at least for NEAR.</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div3><div3 id="div-token-boundary"><head>Element as a token boundary</head><p>XQuery and XPath Full Text 1.0 <termref def="terminology-must">MUST</termref> treat an element as a token boundary. This <termref def="terminology-may">MAY</termref> be user-defined.</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/yellow-ball.gif" alt="yellow status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been partially met. By default elements create token boundaries, but implementations may 
+override that for certain elements.
+</p></div3><!-- <p>
+<specref ref="scope-boundaries"/>
+</p> --></div2><div2 id="func-score"><head>Score</head><div3 id="div-score-accessible"><head>Score accessible</head><p><termref def="terminology-score">SCORE</termref> <termref def="terminology-must">MUST</termref> be accessible anywhere in the scope of the query.</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div3><div3 id="div-mplicit-ordering"><head>Implicit ordering</head><p><termref def="terminology-score">SCORE</termref> <termref def="terminology-should">SHOULD</termref> NOT be used for implicit ordering.</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div3><!-- <p>
+<specref ref="scope-order"/>
+</p> --><div3 id="div-score-extendable"><head>Score extendable</head><p><termref def="terminology-score">SCORE</termref> <termref def="terminology-may">MAY</termref> be extendable to a general distance-measure.</p><p>
+   <graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>     
+<emph>Status:</emph> this requirement has been met.</p></div3><!-- <p>
+<specref ref="score-general"/>
+</p> --></div2></div1></body><back><div1 id="biblio"><head>References</head><div2 id="non-normative-biblio"><head>Non-Normative</head><blist><bibl xmlns:xlink="http://www.w3.org/1999/xlink" id="xpath-datamodel" key="XQuery 1.0 and XPath 2.0 Data Model" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest"/><bibl xmlns:xlink="http://www.w3.org/1999/xlink" id="xquery" key="XQuery 1.0: An XML Query Language" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest"/><bibl xmlns:xlink="http://www.w3.org/1999/xlink" id="xpath20" key="XML Path Language (XPath) 2.0" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest"/><bibl xmlns:xlink="http://www.w3.org/1999/xlink" id="xquery-requirements" key="XML Query (XQuery) Requirements" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest"/><bibl xmlns:xlink="http://www.w3.org/1999/xlink" id="xpath-full-text-10-use-cases" key="XQuery and XPath Full Text 1.0 Use Cases" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest"/><bibl xmlns:xlink="http://www.w3.org/1999/xlink" id="SQLMMFT" key="SQL/MM Full-Text" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">ISO/IEC 13249-2:2000, Information technology —
+Database languages — SQL Multimedia and Application Packages —
+Part 2: Full-Text, International Organization For Standardization, 2000, available from http://www.iso.org/
+
+</bibl></blist></div2></div1><div1 id="changeLog"><head>Change Log</head><table border="0" summary="Changes"><tbody><tr><td rowspan="1" colspan="1">
+							Author
+</td><td rowspan="1" colspan="1">
+							Date
+</td><td rowspan="1" colspan="1">
+							Action
+</td><td rowspan="1" colspan="1">
+							Description
+</td></tr><tr><td rowspan="1" colspan="1">
+							Stephen Buxton
+</td><td rowspan="1" colspan="1">
+							2003-03-19
+</td><td rowspan="1" colspan="1">
+							Added a Change Log
+</td><td rowspan="1" colspan="1">
+</td></tr><tr><td rowspan="1" colspan="1">
+							Stephen Buxton
+</td><td rowspan="1" colspan="1">
+							2003-03-19
+</td><td rowspan="1" colspan="1">
+							Terminology definition changes
+</td><td rowspan="1" colspan="1">
+							Switched the definitions of <termref def="terminology-should">SHOULD</termref> and <termref def="terminology-may">MAY</termref>, to be consistent with <bibref ref="xquery-requirements"/>.
+              The rest of the document does not need to change, since the earlier versions of this document,
+              on which the text of the spec is based, referred to the definitions in <bibref ref="xquery-requirements"/>.
+</td></tr><tr><td rowspan="1" colspan="1">
+							Stephen Buxton
+</td><td rowspan="1" colspan="1">
+							2003-04-18
+</td><td rowspan="1" colspan="1">
+							Change XML Query Requirements link to external URI
+</td><td rowspan="1" colspan="1">
+							Changed links in the document body to point to external latest copy of XML Query Requirements.
+</td></tr><tr><td rowspan="1" colspan="1">
+							Pat Case
+</td><td rowspan="1" colspan="1">
+							2006-11-17
+</td><td rowspan="1" colspan="1">
+							Recorded that requirements were met
+</td><td rowspan="1" colspan="1">
+							Recorded that the XQuery and XPath Full Text 1.0 Requirements have been met (fully or paritially).
+</td></tr><tr><td rowspan="1" colspan="1">
+							Pat Case
+</td><td rowspan="1" colspan="1">
+							2007-12-04
+</td><td rowspan="1" colspan="1">
+							Title
+</td><td rowspan="1" colspan="1">
+							Updated title and title references to remove 1.0, 2.0, and the hyphen.
+</td></tr><tr><td rowspan="1" colspan="1">
+							Pat Case
+</td><td rowspan="1" colspan="1">
+							2008-04-04
+</td><td rowspan="1" colspan="1">
+							Requirement 4.2.1
+</td><td rowspan="1" colspan="1">
+							Changed the status on 4.2.1 from green to yellow with an explanation.
+</td></tr></tbody></table></div1></back></spec>

@@ -1,0 +1,1646 @@
+<?xml version="1.0" encoding="utf-8"?><!--XSLT Processor: SAXON 6.5.3 from Michael Kay-->
+<document-summary uri="http://www.w3.org/TR/xslt-21/">
+   <title>XSL Transformations (XSLT)</title>
+   <div1 id="introduction">
+      <head>
+1 Introduction</head>
+      <div2 id="what-is-xslt">
+         <head>
+1.1 What is XSLT?</head>
+      </div2>
+      <div2 id="whats-new-in-xslt2">
+         <head>
+1.2 What's New in XSLT 2.1?</head>
+      </div2>
+   </div1>
+   <div1 id="concepts">
+      <head>
+2 Concepts</head>
+      <div2 id="terminology">
+         <head>
+2.1 Terminology</head>
+      </div2>
+      <div2 id="notation">
+         <head>
+2.2 Notation</head>
+      </div2>
+      <div2 id="initiating">
+         <head>
+2.3 Initiating a Transformation</head>
+      </div2>
+      <div2 id="executing-a-transformation">
+         <head>
+2.4 Executing a Transformation</head>
+      </div2>
+      <div2 id="context">
+         <head>
+2.5 The Evaluation Context</head>
+      </div2>
+      <div2 id="parsing-and-serialization">
+         <head>
+2.6 Parsing and Serialization</head>
+      </div2>
+      <div2 id="extensibility">
+         <head>
+2.7 Extensibility</head>
+      </div2>
+      <div2 id="stylesheets-and-schemas">
+         <head>
+2.8 Stylesheets and XML Schemas</head>
+      </div2>
+      <div2 id="streaming-concepts">
+         <head>
+2.9 Streaming</head>
+      </div2>
+      <div2 id="errors">
+         <head>
+2.10 Error Handling</head>
+      </div2>
+   </div1>
+   <div1 id="stylesheet-structure">
+      <head>
+3 Stylesheet Structure</head>
+      <div2 id="xslt-namespace">
+         <head>
+3.1 XSLT Namespace</head>
+      </div2>
+      <div2 id="reserved-namespaces">
+         <head>
+3.2 Reserved Namespaces</head>
+      </div2>
+      <div2 id="extension-attributes">
+         <head>
+3.3 Extension Attributes</head>
+      </div2>
+      <div2 id="xslt-media-type">
+         <head>
+3.4 XSLT Media Type</head>
+      </div2>
+      <div2 id="standard-attributes">
+         <head>
+3.5 Standard Attributes</head>
+      </div2>
+      <div2 id="stylesheet-element">
+         <head>
+3.6 Stylesheet Element</head>
+         <div3 id="default-collation-attribute">
+            <head>
+3.6.1 The default-collation attribute</head>
+         </div3>
+         <div3 id="default-mode">
+            <head>
+3.6.2 The default-mode attribute</head>
+         </div3>
+         <div3 id="user-defined-top-level">
+            <head>
+3.6.3 User-defined Data Elements</head>
+         </div3>
+      </div2>
+      <div2 id="simplified-stylesheet">
+         <head>
+3.7 Simplified Stylesheet Modules</head>
+      </div2>
+      <div2 id="backwards">
+         <head>
+3.8 Backwards Compatible Processing</head>
+         <div3 id="backwards-1.0">
+            <head>
+3.8.1 XSLT 1.0 compatibility mode</head>
+         </div3>
+         <div3 id="backwards-2.0">
+            <head>
+3.8.2 XSLT 2.0 compatibility mode</head>
+         </div3>
+      </div2>
+      <div2 id="forwards">
+         <head>
+3.9 Forwards Compatible Processing</head>
+      </div2>
+      <div2 id="combining-modules">
+         <head>
+3.10 Combining Stylesheet Modules</head>
+         <div3 id="locating-modules">
+            <head>
+3.10.1 Locating Stylesheet Modules</head>
+         </div3>
+         <div3 id="include">
+            <head>
+3.10.2 Stylesheet Inclusion</head>
+         </div3>
+         <div3 id="import">
+            <head>
+3.10.3 Stylesheet Import</head>
+         </div3>
+      </div2>
+      <div2 id="embedded">
+         <head>
+3.11 Embedded Stylesheet Modules</head>
+      </div2>
+      <div2 id="conditional-inclusion">
+         <head>
+3.12 Conditional Element Inclusion</head>
+      </div2>
+      <div2 id="built-in-types">
+         <head>
+3.13 Built-in Types</head>
+      </div2>
+      <div2 id="import-schema">
+         <head>
+3.14 Importing Schema Components</head>
+      </div2>
+   </div1>
+   <div1 id="data-model">
+      <head>
+4 Data Model</head>
+      <div2 id="xml-versions">
+         <head>
+4.1 XML Versions</head>
+      </div2>
+      <div2 id="stylesheet-stripping">
+         <head>
+4.2 Stripping Whitespace from the Stylesheet</head>
+      </div2>
+      <div2 id="stripping-annotations">
+         <head>
+4.3 Stripping Type Annotations from a Source Tree</head>
+      </div2>
+      <div2 id="strip">
+         <head>
+4.4 Stripping Whitespace from a Source Tree</head>
+      </div2>
+      <div2 id="id-in-data-model">
+         <head>
+4.5 Attribute Types and DTD Validation</head>
+      </div2>
+      <div2 id="model-for-streaming">
+         <head>
+4.6 Data Model for Streaming</head>
+      </div2>
+      <div2 id="limits">
+         <head>
+4.7 Limits</head>
+      </div2>
+      <div2 id="d-o-e-in-data-model">
+         <head>
+4.8 Disable Output Escaping</head>
+      </div2>
+   </div1>
+   <div1 id="constructs">
+      <head>
+5 Features of the XSLT Language</head>
+      <div2 id="qname">
+         <head>
+5.1 Qualified Names</head>
+      </div2>
+      <div2 id="unprefixed-qnames">
+         <head>
+5.2 Unprefixed QNames in Expressions and Patterns</head>
+      </div2>
+      <div2 id="expressions">
+         <head>
+5.3 Expressions</head>
+      </div2>
+      <div2 id="static-and-dynamic-context">
+         <head>
+5.4 The Static and Dynamic Context</head>
+         <div3 id="static-context">
+            <head>
+5.4.1 Initializing the Static Context</head>
+         </div3>
+         <div3 id="additional-static-context">
+            <head>
+5.4.2 Additional Static Context Components used by XSLT</head>
+         </div3>
+         <div3 id="xpath-dynamic-context">
+            <head>
+5.4.3 Initializing the Dynamic Context</head>
+            <div4 id="focus">
+               <head>
+5.4.3.1 Maintaining Position: the Focus</head>
+            </div4>
+            <div4 id="evaluation-context">
+               <head>
+5.4.3.2 Other components of the XPath Dynamic Context</head>
+            </div4>
+         </div3>
+         <div3 id="additional-dynamic-context">
+            <head>
+5.4.4 Additional Dynamic Context Components used by XSLT</head>
+         </div3>
+      </div2>
+      <div2 id="patterns">
+         <head>
+5.5 Patterns</head>
+         <div3 id="pattern-examples">
+            <head>
+5.5.1 Examples of Patterns</head>
+         </div3>
+         <div3 id="pattern-syntax">
+            <head>
+5.5.2 Syntax of Patterns</head>
+         </div3>
+         <div3 id="pattern-semantics">
+            <head>
+5.5.3 The Meaning of a Pattern</head>
+         </div3>
+         <div3 id="pattern-errors">
+            <head>
+5.5.4 Errors in Patterns</head>
+         </div3>
+      </div2>
+      <div2 id="attribute-value-templates">
+         <head>
+5.6 Attribute Value Templates</head>
+      </div2>
+      <div2 id="sequence-constructors">
+         <head>
+5.7 Sequence Constructors</head>
+         <div3 id="constructing-complex-content">
+            <head>
+5.7.1 Constructing Complex Content</head>
+         </div3>
+         <div3 id="constructing-simple-content">
+            <head>
+5.7.2 Constructing Simple Content</head>
+         </div3>
+         <div3 id="namespace-fixup">
+            <head>
+5.7.3 Namespace Fixup</head>
+         </div3>
+      </div2>
+      <div2 id="uri-references">
+         <head>
+5.8 URI References</head>
+      </div2>
+   </div1>
+   <div1 id="rules">
+      <head>
+6 Template Rules</head>
+      <div2 id="defining-templates">
+         <head>
+6.1 Defining Templates</head>
+      </div2>
+      <div2 id="defining-template-rules">
+         <head>
+6.2 Defining Template Rules</head>
+      </div2>
+      <div2 id="applying-templates">
+         <head>
+6.3 Applying Template Rules</head>
+      </div2>
+      <div2 id="conflict">
+         <head>
+6.4 Conflict Resolution for Template Rules</head>
+      </div2>
+      <div2 id="default-priority">
+         <head>
+6.5 Default Priority for Template Rules</head>
+      </div2>
+      <div2 id="modes">
+         <head>
+6.6 Modes</head>
+         <div3 id="declaring-modes">
+            <head>
+6.6.1 Declaring Modes</head>
+         </div3>
+         <div3 id="initial-context-for-mode">
+            <head>
+6.6.2 Declaring the initial context item for a mode</head>
+         </div3>
+         <div3 id="using-modes">
+            <head>
+6.6.3 Using Modes</head>
+         </div3>
+      </div2>
+      <div2 id="built-in-rule">
+         <head>
+6.7 Built-in Template Rules</head>
+         <div3 id="built-in-templates-stringify">
+            <head>
+6.7.1 Built-in Templates: stringify</head>
+         </div3>
+         <div3 id="built-in-templates-discard">
+            <head>
+6.7.2 Built-in Templates: discard</head>
+         </div3>
+         <div3 id="built-in-templates-copy">
+            <head>
+6.7.3 Built-in Templates: copy</head>
+         </div3>
+         <div3 id="built-in-templates-fail">
+            <head>
+6.7.4 Built-in Templates: fail</head>
+         </div3>
+      </div2>
+      <div2 id="apply-imports">
+         <head>
+6.8 Overriding Template Rules</head>
+      </div2>
+      <div2 id="parameters-to-template-rules">
+         <head>
+6.9 Passing Parameters to Template Rules</head>
+      </div2>
+   </div1>
+   <div1 id="repetition">
+      <head>
+7 Repetition</head>
+      <div2 id="for-each">
+         <head>
+7.1 The xsl:for-each instruction</head>
+      </div2>
+      <div2 id="iterate">
+         <head>
+7.2 The xsl:iterate instruction</head>
+      </div2>
+   </div1>
+   <div1 id="conditionals">
+      <head>
+8 Conditional Processing</head>
+      <div2 id="xsl-if">
+         <head>
+8.1 Conditional Processing with 
+            </head>
+      </div2>
+      <div2 id="xsl-choose">
+         <head>
+8.2 Conditional Processing with 
+            </head>
+      </div2>
+      <div2 id="try-catch">
+         <head>
+8.3 Try/Catch</head>
+         <div3 id="try-catch-examples">
+            <head>
+8.3.1 Try/Catch Examples</head>
+         </div3>
+      </div2>
+   </div1>
+   <div1 id="variables-and-parameters">
+      <head>
+9 Variables and Parameters</head>
+      <div2 id="variables">
+         <head>
+9.1 Variables</head>
+      </div2>
+      <div2 id="parameters">
+         <head>
+9.2 Parameters</head>
+      </div2>
+      <div2 id="variable-values">
+         <head>
+9.3 Values of Variables and Parameters</head>
+      </div2>
+      <div2 id="temporary-trees">
+         <head>
+9.4 Creating implicit document nodes</head>
+      </div2>
+      <div2 id="global-variables">
+         <head>
+9.5 Global Variables and Parameters</head>
+      </div2>
+      <div2 id="local-variables">
+         <head>
+9.6 Local Variables and Parameters</head>
+      </div2>
+      <div2 id="scope-of-variables">
+         <head>
+9.7 Scope of Variables</head>
+      </div2>
+      <div2 id="with-param">
+         <head>
+9.8 Setting Parameter Values</head>
+      </div2>
+      <div2 id="circularity">
+         <head>
+9.9 Circular Definitions</head>
+      </div2>
+   </div1>
+   <div1 id="callable-components">
+      <head>
+10 Callable Components</head>
+      <div2 id="named-templates">
+         <head>
+10.1 Named Templates</head>
+         <div3 id="call-template-params">
+            <head>
+10.1.1 Passing Parameters to Named Templates</head>
+         </div3>
+         <div3 id="tunnel-params">
+            <head>
+10.1.2 Tunnel Parameters</head>
+         </div3>
+      </div2>
+      <div2 id="attribute-sets">
+         <head>
+10.2 Named Attribute Sets</head>
+      </div2>
+      <div2 id="stylesheet-functions">
+         <head>
+10.3 Stylesheet Functions</head>
+      </div2>
+      <div2 id="dynamic-xpath">
+         <head>
+10.4 Dynamic XPath Evaluation</head>
+      </div2>
+   </div1>
+   <div1 id="creating-new-nodes">
+      <head>
+11 Creating Nodes and Sequences</head>
+      <div2 id="literal-result-element">
+         <head>
+11.1 Literal Result Elements</head>
+         <div3 id="setting-annotation-for-lre">
+            <head>
+11.1.1 Setting the Type Annotation for Literal Result Elements</head>
+         </div3>
+         <div3 id="attributes-for-lres">
+            <head>
+11.1.2 Attribute Nodes for Literal Result Elements</head>
+         </div3>
+         <div3 id="lre-namespaces">
+            <head>
+11.1.3 Namespace Nodes for Literal Result Elements</head>
+         </div3>
+         <div3 id="namespace-aliasing">
+            <head>
+11.1.4 Namespace Aliasing</head>
+         </div3>
+      </div2>
+      <div2 id="xsl-element">
+         <head>
+11.2 Creating Element Nodes Using xsl:element
+            </head>
+         <div3 id="annotation-for-constructed-element">
+            <head>
+11.2.1 Setting the Type Annotation for a Constructed Element Node</head>
+         </div3>
+      </div2>
+      <div2 id="creating-attributes">
+         <head>
+11.3 Creating Attribute Nodes Using xsl:attribute
+            </head>
+         <div3 id="annotation-for-constructed-attribute">
+            <head>
+11.3.1 Setting the Type Annotation for a Constructed Attribute Node</head>
+         </div3>
+      </div2>
+      <div2 id="creating-text-nodes">
+         <head>
+11.4 Creating Text Nodes</head>
+         <div3 id="literal-text-nodes">
+            <head>
+11.4.1 Literal Text Nodes</head>
+         </div3>
+         <div3 id="xsl-text">
+            <head>
+11.4.2 Creating Text Nodes Using xsl:text
+               </head>
+         </div3>
+         <div3 id="value-of">
+            <head>
+11.4.3 Generating Text with 
+               </head>
+         </div3>
+      </div2>
+      <div2 id="creating-document-nodes">
+         <head>
+11.5 Creating Document Nodes</head>
+      </div2>
+      <div2 id="creating-processing-instructions">
+         <head>
+11.6 Creating Processing Instructions</head>
+      </div2>
+      <div2 id="creating-namespace-nodes">
+         <head>
+11.7 Creating Namespace Nodes</head>
+      </div2>
+      <div2 id="creating-comments">
+         <head>
+11.8 Creating Comments</head>
+      </div2>
+      <div2 id="copying">
+         <head>
+11.9 Copying Nodes</head>
+         <div3 id="shallow-copy">
+            <head>
+11.9.1 Shallow Copy</head>
+         </div3>
+         <div3 id="copy-of">
+            <head>
+11.9.2 Deep Copy</head>
+         </div3>
+      </div2>
+      <div2 id="constructing-sequences">
+         <head>
+11.10 Constructing Sequences</head>
+      </div2>
+   </div1>
+   <div1 id="number">
+      <head>
+12 Numbering</head>
+      <div2 id="formatting-supplied-number">
+         <head>
+12.1 Formatting a Supplied Number</head>
+      </div2>
+      <div2 id="numbering-based-on-position">
+         <head>
+12.2 Numbering based on Position in a Document </head>
+      </div2>
+      <div2 id="convert">
+         <head>
+12.3 Number to String Conversion Attributes</head>
+      </div2>
+   </div1>
+   <div1 id="sorting">
+      <head>
+13 Sorting</head>
+      <div2 id="xsl-sort">
+         <head>
+13.1 The  Element</head>
+         <div3 id="sorting-process">
+            <head>
+13.1.1 The Sorting Process</head>
+         </div3>
+         <div3 id="comparing-sort-keys">
+            <head>
+13.1.2 Comparing Sort Key Values</head>
+         </div3>
+         <div3 id="collating-sequences">
+            <head>
+13.1.3 Sorting Using Collations</head>
+         </div3>
+      </div2>
+      <div2 id="creating-sorted-sequence">
+         <head>
+13.2 Creating a Sorted Sequence</head>
+      </div2>
+      <div2 id="sorted-iteration">
+         <head>
+13.3 Processing a Sequence in Sorted Order</head>
+      </div2>
+   </div1>
+   <div1 id="grouping">
+      <head>
+14 Grouping</head>
+      <div2 id="current-group">
+         <head>
+14.1 The Current Group</head>
+      </div2>
+      <div2 id="current-grouping-key">
+         <head>
+14.2 The Current Grouping Key</head>
+      </div2>
+      <div2 id="xsl-for-each-group">
+         <head>
+14.3 The xsl:for-each-group Element</head>
+      </div2>
+      <div2 id="grouping-examples">
+         <head>
+14.4 Examples of Grouping</head>
+      </div2>
+      <div2 id="non-transitivity">
+         <head>
+14.5 Non-Transitivity</head>
+      </div2>
+   </div1>
+   <div1 id="merging">
+      <head>
+15 Merging</head>
+      <div2 id="merge-terminology">
+         <head>
+15.1 Terminology for merging</head>
+      </div2>
+      <div2 id="merge-instruction">
+         <head>
+15.2 The  instruction</head>
+      </div2>
+      <div2 id="merge-input-sequences">
+         <head>
+15.3 Selecting the sequences to be merged</head>
+      </div2>
+      <div2 id="merge-keys">
+         <head>
+15.4 Defining the merge keys</head>
+      </div2>
+      <div2 id="merge-action">
+         <head>
+15.5 The  element</head>
+      </div2>
+      <div2 id="selective-processing-of-merge-inputs">
+         <head>
+15.6 Selective processing of merge inputs</head>
+      </div2>
+      <div2 id="merging-streamed-inputs">
+         <head>
+15.7 Merging streamed input documents</head>
+      </div2>
+      <div2 id="merge-examples">
+         <head>
+15.8 Examples of xsl:merge</head>
+      </div2>
+   </div1>
+   <div1 id="splitting">
+      <head>
+16 Splitting</head>
+      <div2 id="splitting-introduction">
+         <head>
+16.1 Introduction</head>
+      </div2>
+      <div2 id="fork-instruction">
+         <head>
+16.2 The xsl:fork instruction</head>
+      </div2>
+      <div2 id="splitting-examples">
+         <head>
+16.3 Examples of splitting with streamed data</head>
+      </div2>
+   </div1>
+   <div1 id="regular-expressions">
+      <head>
+17 Regular Expressions</head>
+      <div2 id="analyze-string">
+         <head>
+17.1 The xsl:analyze-string instruction</head>
+      </div2>
+      <div2 id="regex-group">
+         <head>
+17.2 Captured Substrings</head>
+      </div2>
+      <div2 id="regex-examples">
+         <head>
+17.3 Examples of Regular Expression Matching</head>
+      </div2>
+   </div1>
+   <div1 id="streaming">
+      <head>
+18 Streaming</head>
+      <div2 id="stream-instruction">
+         <head>
+18.1 The xsl:stream instruction</head>
+         <div3 id="stream-examples">
+            <head>
+18.1.1 Examples of xsl:stream
+               </head>
+         </div3>
+      </div2>
+      <div2 id="streamable-templates">
+         <head>
+18.2 Streamable Templates</head>
+      </div2>
+      <div2 id="streamable-patterns">
+         <head>
+18.3 Streamable patterns</head>
+      </div2>
+      <div2 id="streamability">
+         <head>
+18.4 Streamability Analysis</head>
+         <div3 id="building-expression-tree">
+            <head>
+18.4.1 Building an Expression Tree</head>
+         </div3>
+         <div3 id="expanding-expr-tree">
+            <head>
+18.4.2 Expanding the Expression Tree</head>
+            <div4 id="expanding-xsl-number">
+               <head>
+18.4.2.1 Expanding the xsl:number instruction</head>
+            </div4>
+            <div4 id="expanding-xsl-merge">
+               <head>
+18.4.2.2 Expanding the xsl:merge instruction</head>
+            </div4>
+         </div3>
+         <div3 id="analyzing-navigation">
+            <head>
+18.4.3 Analyzing Navigation</head>
+            <div4 id="marking-contributing-expr">
+               <head>
+18.4.3.1 Marking contributing child constructs</head>
+            </div4>
+            <div4 id="tracing-variable-references">
+               <head>
+18.4.3.2 Analyzing variable references</head>
+            </div4>
+            <div4 id="tracing-context-path">
+               <head>
+18.4.3.3 Tracing the Context of an Expression</head>
+            </div4>
+         </div3>
+         <div3 id="streamability-choice-and-repetition">
+            <head>
+18.4.4 Analyzing choices, repetition, and calls</head>
+            <div4 id="expr-tree-choices">
+               <head>
+18.4.4.1 Analyzing conditional constructs</head>
+            </div4>
+            <div4 id="expr-parallel-branches">
+               <head>
+18.4.4.2 Analyzing parallel branches</head>
+            </div4>
+            <div4 id="expr-tree-loops">
+               <head>
+18.4.4.3 Analyzing looping constructs</head>
+            </div4>
+            <div4 id="expr-tree-sorting">
+               <head>
+18.4.4.4 Analyzing sorting constructs</head>
+            </div4>
+            <div4 id="streamability-of-dynamic-invocation">
+               <head>
+18.4.4.5 Analyzing dynamic invocation</head>
+            </div4>
+            <div4 id="streamability-of-static-invocation">
+               <head>
+18.4.4.6 Analyzing calls to functions, templates, and attribute sets</head>
+            </div4>
+            <div4 id="streamability-iterate">
+               <head>
+18.4.4.7 Analyzing the streamability of </head>
+            </div4>
+         </div3>
+         <div3 id="streamability-conditions">
+            <head>
+18.4.5 Streamability Conditions</head>
+         </div3>
+         <div3 id="notes-on-descendant-axis-streamability">
+            <head>
+18.4.6 Notes on the streamability of paths using the descendant axis</head>
+         </div3>
+         <div3 id="streamability-examples">
+            <head>
+18.4.7 Examples of streamability analysis</head>
+         </div3>
+         <div3 id="streamability-analysis-notes">
+            <head>
+18.4.8 Notes on the streamability algorithm</head>
+         </div3>
+      </div2>
+      <div2 id="copy-of-function">
+         <head>
+18.5 The copy-of function</head>
+      </div2>
+      <div2 id="snapshot">
+         <head>
+18.6 The snapshot function</head>
+      </div2>
+      <div2 id="outermost">
+         <head>
+18.7 The outermost function</head>
+      </div2>
+      <div2 id="innermost">
+         <head>
+18.8 The innermost function</head>
+      </div2>
+      <div2 id="has-children">
+         <head>
+18.9 The has-children function</head>
+      </div2>
+   </div1>
+   <div1 id="add-func">
+      <head>
+19 Additional Functions</head>
+      <div2 id="multiple-source-documents">
+         <head>
+19.1 Multiple Source Documents</head>
+         <div3 id="document">
+            <head>
+19.1.1 The document function</head>
+         </div3>
+         <div3 id="uri-collection">
+            <head>
+19.1.2 The uri-collection function</head>
+         </div3>
+      </div2>
+      <div2 id="unparsed-text">
+         <head>
+19.2 Reading Text Files</head>
+         <div3 id="unparsed-text-function">
+            <head>
+19.2.1 The unparsed-text function</head>
+         </div3>
+         <div3 id="unparsed-text-lines">
+            <head>
+19.2.2 The unparsed-text-lines function</head>
+         </div3>
+         <div3 id="unparsed-text-available">
+            <head>
+19.2.3 The unparsed-text-available function</head>
+         </div3>
+      </div2>
+      <div2 id="key">
+         <head>
+19.3 Keys</head>
+         <div3 id="xsl-key">
+            <head>
+19.3.1 The  Declaration</head>
+         </div3>
+         <div3 id="keys">
+            <head>
+19.3.2 The key Function</head>
+         </div3>
+      </div2>
+      <div2 id="defining-decimal-format">
+         <head>
+19.4 Defining a Decimal Format</head>
+         <div3 id="processing-picture-string">
+            <head>
+19.4.1 Processing the Picture String</head>
+         </div3>
+         <div3 id="analyzing-picture-string">
+            <head>
+19.4.2 Analyzing the Picture String</head>
+         </div3>
+         <div3 id="formatting-the-number">
+            <head>
+19.4.3 Formatting the Number</head>
+         </div3>
+      </div2>
+      <div2 id="misc-func">
+         <head>
+19.5 Miscellaneous Additional Functions</head>
+         <div3 id="current-function">
+            <head>
+19.5.1 current</head>
+         </div3>
+         <div3 id="unparsed-entity-uri">
+            <head>
+19.5.2 unparsed-entity-uri</head>
+         </div3>
+         <div3 id="unparsed-entity-public-id">
+            <head>
+19.5.3 unparsed-entity-public-id</head>
+         </div3>
+         <div3 id="system-property">
+            <head>
+19.5.4 system-property</head>
+         </div3>
+      </div2>
+      <div2 id="format-date">
+         <head>
+19.6 Formatting Dates and Times</head>
+         <div3 id="date-picture-string">
+            <head>
+19.6.1 The Picture String</head>
+         </div3>
+         <div3 id="lang-cal-country">
+            <head>
+19.6.2 The Language, Calendar, and Country Arguments</head>
+         </div3>
+         <div3 id="date-time-examples">
+            <head>
+19.6.3 Examples of Date and Time Formatting</head>
+         </div3>
+      </div2>
+      <div2 id="context-dependent-functions">
+         <head>
+19.7 Function items and context-dependency</head>
+      </div2>
+   </div1>
+   <div1 id="message">
+      <head>
+20 Messages</head>
+   </div1>
+   <div1 id="extension">
+      <head>
+21 Extensibility and Fallback</head>
+      <div2 id="extension-functions">
+         <head>
+21.1 Extension Functions</head>
+         <div3 id="testing-function-availability">
+            <head>
+21.1.1 Testing Availability of Functions</head>
+         </div3>
+         <div3 id="calling-extension-functions">
+            <head>
+21.1.2 Calling Extension Functions</head>
+         </div3>
+         <div3 id="external-objects">
+            <head>
+21.1.3 External Objects</head>
+         </div3>
+         <div3 id="testing-type-availability">
+            <head>
+21.1.4 Testing Availability of Types</head>
+         </div3>
+      </div2>
+      <div2 id="extension-instruction">
+         <head>
+21.2 Extension Instructions</head>
+         <div3 id="designating-extension-namespace">
+            <head>
+21.2.1 Designating an Extension Namespace</head>
+         </div3>
+         <div3 id="testing-instruction-available">
+            <head>
+21.2.2 Testing Availability of Instructions</head>
+         </div3>
+         <div3 id="fallback">
+            <head>
+21.2.3 Fallback</head>
+         </div3>
+      </div2>
+   </div1>
+   <div1 id="result-trees">
+      <head>
+22 Final Result Trees</head>
+      <div2 id="creating-result-trees">
+         <head>
+22.1 Creating Final Result Trees</head>
+      </div2>
+      <div2 id="validation">
+         <head>
+22.2 Validation</head>
+         <div3 id="validating-constructed-nodes">
+            <head>
+22.2.1 Validating Constructed Elements and Attributes</head>
+            <div4 id="validating-using-validation-attribute">
+               <head>
+22.2.1.1 Validation using the [xsl:]validation Attribute</head>
+            </div4>
+            <div4 id="validation-xsl-type">
+               <head>
+22.2.1.2 Validation using the [xsl:]type Attribute</head>
+            </div4>
+            <div4 id="validation-process">
+               <head>
+22.2.1.3 The Validation Process</head>
+            </div4>
+         </div3>
+         <div3 id="validating-document-nodes">
+            <head>
+22.2.2 Validating Document Nodes</head>
+         </div3>
+      </div2>
+   </div1>
+   <div1 id="serialization">
+      <head>
+23 Serialization</head>
+      <div2 id="character-maps">
+         <head>
+23.1 Character Maps</head>
+      </div2>
+      <div2 id="disable-output-escaping">
+         <head>
+23.2 Disabling Output Escaping</head>
+      </div2>
+   </div1>
+   <div1 id="conformance">
+      <head>
+24 Conformance</head>
+      <div2 id="basic-conformance">
+         <head>
+24.1 Basic XSLT Processor</head>
+      </div2>
+      <div2 id="schema-aware-conformance">
+         <head>
+24.2 Schema-Aware XSLT Processor</head>
+      </div2>
+      <div2 id="serialization-feature">
+         <head>
+24.3 Serialization Feature</head>
+      </div2>
+      <div2 id="backwards-compatibility-feature">
+         <head>
+24.4 Compatibility Features</head>
+      </div2>
+      <div2 id="streaming-feature">
+         <head>
+24.5 Streaming Feature</head>
+      </div2>
+   </div1>
+   <div1 id="references">
+      <head>
+A References</head>
+      <div2 id="normative-references">
+         <head>
+A.1 Normative References</head>
+      </div2>
+      <div2 id="other-references">
+         <head>
+A.2 Other References</head>
+      </div2>
+   </div1>
+   <inform-div1 id="glossary">
+      <head>
+B Glossary (Non-Normative)</head>
+   </inform-div1>
+   <inform-div1 id="element-syntax-summary">
+      <head>
+C Element Syntax Summary (Non-Normative)</head>
+   </inform-div1>
+   <inform-div1 id="error-summary">
+      <head>
+D Summary of Error Conditions (Non-Normative)</head>
+   </inform-div1>
+   <inform-div1 id="implementation-defined-features">
+      <head>
+E Checklist of Implementation-Defined Features (Non-Normative)</head>
+   </inform-div1>
+   <inform-div1 id="XSLT-defined-functions">
+      <head>
+F List of XSLT-defined functions (Non-Normative)</head>
+   </inform-div1>
+   <inform-div1 id="schema-for-xslt">
+      <head>
+G Schema for XSLT Stylesheets (Non-Normative)</head>
+   </inform-div1>
+   <inform-div1 id="acknowledgements">
+      <head>
+H Acknowledgements (Non-Normative)</head>
+   </inform-div1>
+   <inform-div1 id="open-issues">
+      <head>
+I Summary of Open Issues (Non-Normative)</head>
+   </inform-div1>
+   <inform-div1 id="changes-since-2.0">
+      <head>
+J Changes since XSLT 2.0 (Non-Normative)</head>
+   </inform-div1>
+   <inform-div1 id="incompatibilities">
+      <head>
+K Incompatibilities with XSLT 2.0 (Non-Normative)</head>
+   </inform-div1>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-stylesheet" term="stylesheet"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-principal-stylesheet-module" term="principal stylesheet module"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-processor" term="processor"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-implementation" term="implementation"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-result-tree" term="result tree"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-final-result-tree" term="final result tree"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-source-tree" term="source tree"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-temporary-tree" term="temporary tree"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-implementation-defined" term="implementation-defined"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-implementation-dependent" term="implementation-dependent"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-atomization" term="atomize"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-typed-value" term="typed value"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-string-value" term="string value"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-xpath-compat-mode" term="XPath 1.0 compatibility mode"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-core-function" term="core function"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-xslt-element" term="XSLT element"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-deprecated" term="deprecated"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-initial-context-item" term="initial context item"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-initial-mode" term="initial mode"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-base-output-uri" term="base output URI"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-initial-template" term="initial template"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-template-rule" term="template rule"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-instruction" term="instruction"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-xslt-instruction" term="XSLT instruction"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-serialization" term="serialization"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-schema-component" term="schema component"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-in-scope-schema-component" term="in-scope schema component"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-streaming" term="streaming"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-streamed-document" term="streamed document"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-streamed-document-node" term="streamed node"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-static-error" term="static error"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-dynamic-error" term="dynamic error"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-recoverable-error" term="recoverable error"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-optional-recovery-action" term="optional recovery action"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-nonrec-dynamic-error" term="non-recoverable dynamic error"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-type-error" term="type errors"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-serialization-error" term="serialization error"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-stylesheet-module" term="stylesheet module"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-standard-stylesheet-module" term="standard stylesheet module"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-simplified-stylesheet-module" term="simplified stylesheet module"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-standalone-stylesheet-module" term="standalone stylesheet module"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-embedded-stylesheet-module" term="embedded stylesheet module"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-xslt-namespace" term="XSLT namespace"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-reserved-namespace" term="reserved namespace"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-standard-function-namespace" term="standard function namespace"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="xml-namespace" term="XML namespace"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-schema-namespace" term="schema namespace"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-schema-instance-namespace" term="schema instance namespace"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-standard-error-namespace" term="standard error namespace"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-extension-attribute" term="extension attribute"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-standard-attributes" term="standard attributes"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-top-level" term="top-level"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-declaration" term="declaration"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-data-element" term="user-defined data element"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-effective-version" term="effective version"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-backwards-compatible-behavior" term="backwards compatible behavior"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-xslt-10-behavior" term="XSLT 1.0 behavior"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-xslt-20-behavior" term="XSLT 2.0 behavior"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-forwards-compatible-behavior" term="forwards compatible behavior"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-stylesheet-level" term="stylesheet level"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-declaration-order" term="declaration order"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-import-tree" term="import tree"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-import-precedence" term="import precedence"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-whitespace-text-node" term="whitespace text node"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-annotation" term="type annotation"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-qname" term="QName"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-lexical-qname" term="lexical QName"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-defining-element" term="defining element"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-expanded-qname" term="expanded-QName"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-expression" term="expression"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-required-type" term="required type"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-function-conversion-rules" term="function conversion rules"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-default-collation" term="default collation"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-focus" term="focus"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-context-item" term="context item"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-context-position" term="context position"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-context-size" term="context size"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-context-node" term="context node"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-singleton-focus" term="singleton focus"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-non-contextual-function-call" term="non-contextual function call"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-pattern" term="pattern"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-attribute-value-template" term="attribute value template"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-effective-value" term="effective value"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-sequence-constructor" term="sequence constructor"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-namespace-fixup" term="namespace fixup"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-uri-reference" term="URI Reference"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-template" term="template"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" term="priority" id="dt-priority"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-default-priority" term="default priority"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-mode" term="mode"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-unnamed-mode" term="unnamed mode"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-mode-definition" term="mode definition"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-streamable-mode" term="streamable mode"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-current-mode" term="current mode"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-current-template-rule" term="current template rule"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-tail-position" term="tail position"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-variable-binding-element" term="variable-binding element"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-variable" term="variable"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-parameter" term="parameter"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-value" term="value"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-supplied-value" term="supplied value"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-global-variable" term="global variable"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-stylesheet-parameter" term="stylesheet parameter"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-local-variable" term="local variable"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-template-parameter" term="template parameter"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-function-parameter" term="function parameter"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-shadows" term="shadows"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-circularity" term="circularity"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-named-template" term="named template"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-tunnel-parameter" term="tunnel parameter"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-attribute-set" term="attribute set"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-stylesheet-function" term="stylesheet function"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-arity" term="arity"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-target-expression" term="target expression"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-literal-result-element" term="literal result element"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-literal-namespace-uri" term="literal namespace URI"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-target-namespace-uri" term="target namespace URI"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-alias" term="alias"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-place-marker" term="place marker"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-sort-key-specification" term="sort key specification"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-sort-key-component" term="sort key component"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-stable" term="stable"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-initial-sequence" term="initial sequence"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-sorted-sequence" term="sorted sequence"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-sort-key-value" term="sort key value"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-collation" term="collation"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-current-group" term="current group"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-current-grouping-key" term="current grouping key"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-group" term="group"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-population" term="population"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-population-order" term="population order"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-grouping-key" term="grouping key"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-initial-item" term="initial item"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-first-appearance" term="order of first appearance"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-processing-order" term="processing order"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-merge-source-definition" term="merge source definition"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-merge-input-sequence" term="merge input sequence"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-merge-key-specification" term="merge key specification"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-merge-key-component" term="merge key component"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-merge-key-value" term="merge key value"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-composite-merge-key-value" term="composite merge key value"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-current-merge-activation" term="current merge activation"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-dependent-instruction" term="dependent (instruction)"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-independent-instruction" term="independent (instruction)"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-current-captured-substrings" term="current captured substrings"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-guaranteed-streamable" term="guaranteed-streamable"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-streamable-template" term="streamable template"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-streamable-pattern" term="streamable pattern"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-e-node" term="e-node"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-construct" term="construct"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-mutually-exclusive" term="mutually exclusive"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-mutually-independent" term="mutually independent"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-repeating-arc" term="repeating arc"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-reordering-construct" term="reordering construct"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-common-prefix" term="common prefix"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-motionless" term="motionless"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-snapshot" term="snapshot"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-key" term="key"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-key-specifier" term="key specifier"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-picture-string" term="picture string"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-decimal-format" term="decimal format"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-date-formatting-function" term="date formatting function"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-extension-instruction" term="extension instruction"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-extension-function" term="extension function"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-extension-namespace" term="extension namespace"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-output-state" term="output state"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-final-output-state" term="final output state"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-temporary-output-state" term="temporary output state"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-output-definition" term="output definition"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-character-map" term="character map"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-basic-xslt-processor" term="basic XSLT processor"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-schema-aware-xslt-processor" term="schema-aware XSLT processor"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-serialization-feature" term="serialization feature"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-1.0-compatibility-feature" term="XSLT 1.0 compatibility feature"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-2.0-compatibility-feature" term="XSLT 2.0 compatibility feature"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" id="dt-streaming-feature" term="streaming feature"/>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-Pattern" xlink:type="simple">
+      <nt def="NT-Pattern" xlink:type="simple">Pattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-Pattern" xlink:type="simple">
+      <nt def="NT-Pattern" xlink:type="simple">Pattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-Pattern" xlink:type="simple">
+      <nt def="NT-Pattern" xlink:type="simple">Pattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PatternTerm" xlink:type="simple">
+      <nt def="NT-PatternTerm" xlink:type="simple">PatternTerm</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-Pattern" xlink:type="simple">
+      <nt def="NT-Pattern" xlink:type="simple">PatternTerm</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-BasicPattern" xlink:type="simple">
+      <nt def="NT-BasicPattern" xlink:type="simple">BasicPattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-Pattern" xlink:type="simple">
+      <nt def="NT-Pattern" xlink:type="simple">BasicPattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-TypePattern" xlink:type="simple">
+      <nt def="NT-TypePattern" xlink:type="simple">TypePattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-TypePattern" xlink:type="simple">
+      <nt def="NT-TypePattern" xlink:type="simple">PathPattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-QualifiedPattern" xlink:type="simple">
+      <nt def="NT-QualifiedPattern" xlink:type="simple">QualifiedPattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-Pattern" xlink:type="simple">
+      <nt def="NT-Pattern" xlink:type="simple">Pattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-RelativePathPattern" xlink:type="simple">
+      <nt def="NT-RelativePathPattern" xlink:type="simple">RelativePathPattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-RelativePathPattern" xlink:type="simple">
+      <nt def="NT-RelativePathPattern" xlink:type="simple">RelativePathPattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-RelativePathPattern" xlink:type="simple">
+      <nt def="NT-RelativePathPattern" xlink:type="simple">RelativePathPattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-RootedPattern" xlink:type="simple">
+      <nt def="NT-RootedPattern" xlink:type="simple">RootedPattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-VarRefRoot" xlink:type="simple">
+      <nt def="NT-VarRefRoot" xlink:type="simple">VarRefRoot</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-DocCall" xlink:type="simple">
+      <nt def="NT-DocCall" xlink:type="simple">DocCall</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-IdCall" xlink:type="simple">
+      <nt def="NT-IdCall" xlink:type="simple">IdCall</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-ElementWithIdCall" xlink:type="simple">
+      <nt def="NT-ElementWithIdCall" xlink:type="simple">ElementWithIdCall</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-KeyCall" xlink:type="simple">
+      <nt def="NT-KeyCall" xlink:type="simple">KeyCall</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-RelativePathPattern" xlink:type="simple">
+      <nt def="NT-RelativePathPattern" xlink:type="simple">RelativePathPattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PatternStep" xlink:type="simple">
+      <nt def="NT-PatternStep" xlink:type="simple">PatternStep</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PatternStep" xlink:type="simple">
+      <nt def="NT-PatternStep" xlink:type="simple">PatternStep</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PatternAxis" xlink:type="simple">
+      <nt def="NT-PatternAxis" xlink:type="simple">PatternAxis</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-ArgValue" xlink:type="simple">
+      <nt def="NT-ArgValue" xlink:type="simple">ArgValue</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-ArgValue" xlink:type="simple">
+      <nt def="NT-ArgValue" xlink:type="simple">ArgValue</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-ArgValue" xlink:type="simple">
+      <nt def="NT-ArgValue" xlink:type="simple">ArgValue</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-ArgValue" xlink:type="simple">
+      <nt def="NT-ArgValue" xlink:type="simple">ArgValue</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-ArgValue" xlink:type="simple">
+      <nt def="NT-ArgValue" xlink:type="simple">ArgValue</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-ArgValue" xlink:type="simple">
+      <nt def="NT-ArgValue" xlink:type="simple">ArgValue</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-ArgValue" xlink:type="simple">
+      <nt def="NT-ArgValue" xlink:type="simple">ArgValue</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-ArgValue" xlink:type="simple">
+      <nt def="NT-ArgValue" xlink:type="simple">ArgValue</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-Pattern" xlink:type="simple">
+      <nt def="NT-Pattern" xlink:type="simple">Pattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PatternTerm" xlink:type="simple">
+      <nt def="NT-PatternTerm" xlink:type="simple">PatternTerm</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PatternTerm" xlink:type="simple">
+      <nt def="NT-PatternTerm" xlink:type="simple">PatternTerm</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-QualifiedPattern" xlink:type="simple">
+      <nt def="NT-QualifiedPattern" xlink:type="simple">QualifiedPattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-Pattern" xlink:type="simple">
+      <nt def="NT-Pattern" xlink:type="simple">Pattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-TypePattern" xlink:type="simple">
+      <nt def="NT-TypePattern" xlink:type="simple">TypePattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PathPattern" xlink:type="simple">
+      <nt def="NT-PathPattern" xlink:type="simple">PathPattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PathPattern" xlink:type="simple">
+      <nt def="NT-PathPattern" xlink:type="simple">PathPattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PathPattern" xlink:type="simple">
+      <nt def="NT-PathPattern" xlink:type="simple">PathPattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PathPattern" xlink:type="simple">
+      <nt def="NT-PathPattern" xlink:type="simple">PathPattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PathPattern" xlink:type="simple">
+      <nt def="NT-PathPattern" xlink:type="simple">PathPattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-Pattern" xlink:type="simple">
+      <nt def="NT-Pattern" xlink:type="simple">Pattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PathPattern" xlink:type="simple">
+      <nt def="NT-PathPattern" xlink:type="simple">PathPattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-Pattern" xlink:type="simple">
+      <nt def="NT-Pattern" xlink:type="simple">Pattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PatternTerm" xlink:type="simple">
+      <nt def="NT-PatternTerm" xlink:type="simple">PatternTerm</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-BasicPattern" xlink:type="simple">
+      <nt def="NT-BasicPattern" xlink:type="simple">BasicPatterns</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-BasicPattern" xlink:type="simple">
+      <nt def="NT-BasicPattern" xlink:type="simple">BasicPattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-TypePattern" xlink:type="simple">
+      <nt def="NT-TypePattern" xlink:type="simple">TypePattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-TypePattern" xlink:type="simple">
+      <nt def="NT-TypePattern" xlink:type="simple">TypePattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PathPattern" xlink:type="simple">
+      <nt def="NT-PathPattern" xlink:type="simple">PathPattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PathPattern" xlink:type="simple">
+      <nt def="NT-PathPattern" xlink:type="simple">PathPattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PatternAxis" xlink:type="simple">
+      <nt def="NT-PatternAxis" xlink:type="simple">PatternAxis</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PatternAxis" xlink:type="simple">
+      <nt def="NT-PatternAxis" xlink:type="simple">PatternAxis</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PathPattern" xlink:type="simple">
+      <nt def="NT-PathPattern" xlink:type="simple">PathPattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PatternAxis" xlink:type="simple">
+      <nt def="NT-PatternAxis" xlink:type="simple">PatternAxis</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PathPattern" xlink:type="simple">
+      <nt def="NT-PathPattern" xlink:type="simple">PathPattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PathPattern" xlink:type="simple">
+      <nt def="NT-PathPattern" xlink:type="simple">PathPattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PatternAxis" xlink:type="simple">
+      <nt def="NT-PatternAxis" xlink:type="simple">PatternAxis</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PathPattern" xlink:type="simple">
+      <nt def="NT-PathPattern" xlink:type="simple">PathPattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PatternAxis" xlink:type="simple">
+      <nt def="NT-PatternAxis" xlink:type="simple">PatternAxis</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-TypePattern" xlink:type="simple">
+      <nt def="NT-TypePattern" xlink:type="simple">TypePattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-Pattern" xlink:type="simple">
+      <nt def="NT-Pattern" xlink:type="simple">pattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-Pattern" xlink:type="simple">
+      <nt def="NT-Pattern" xlink:type="simple">pattern</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-VarRefRoot" xlink:type="simple">
+      <nt def="NT-VarRefRoot" xlink:type="simple">VarRefRoot</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-IdCall" xlink:type="simple">
+      <nt def="NT-IdCall" xlink:type="simple">IdCall</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-ElementWithIdCall" xlink:type="simple">
+      <nt def="NT-ElementWithIdCall" xlink:type="simple">ElementWithIdCall</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-KeyCall" xlink:type="simple">
+      <nt def="NT-KeyCall" xlink:type="simple">KeyCall</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-PatternStep" xlink:type="simple">
+      <nt def="NT-PatternStep" xlink:type="simple">PatternStep</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-VarRefRoot" xlink:type="simple">
+      <nt def="NT-VarRefRoot" xlink:type="simple">VarRefRoot</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-IdCall" xlink:type="simple">
+      <nt def="NT-IdCall" xlink:type="simple">IdCall</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-ElementWithIdCall" xlink:type="simple">
+      <nt def="NT-ElementWithIdCall" xlink:type="simple">ElementWithIdCall</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-KeyCall" xlink:type="simple">
+      <nt def="NT-KeyCall" xlink:type="simple">KeyCall</nt>
+   </nt>
+   <nt xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" def="NT-Pattern" xlink:type="simple">
+      <nt def="NT-Pattern" xlink:type="simple">Pattern</nt>
+   </nt>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0010"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0020"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0030"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0040"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0045"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0047"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0050"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0060"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0080"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0090"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0110"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0120"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0125"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0130"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0150"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0160"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0165"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0170"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0180"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0190"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0200"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0210"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0215"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0220"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0260"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0265"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="RE" code="0270"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0280"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0290"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0340"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0350"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0370"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0410"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0420"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0430"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0440"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0450"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0500"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="type" class="TE" code="0505"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="type" class="TE" code="0510"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="type" class="TE" code="0520"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0530"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="RE" code="0540"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0542"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0545"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0548"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0550"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0555"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0560"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0700"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="2110"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="2120"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="2130"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="2140"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="type" class="TE" code="0570"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0580"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="type" class="TE" code="0590"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="type" class="TE" code="0600"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0610"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0620"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0630"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0670"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0640"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0650"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0660"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0680"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0690"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0710"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0720"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0740"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0760"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0770"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="type" class="TE" code="0780"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="type" class="TE" code="0790"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="2150"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="type" class="TE" code="2160"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="RE" code="0795"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0805"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" class="SE" type="static" code="0808"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" class="SE" type="static" code="0809"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0810"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0812"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0820"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0830"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0835"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0840"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0850"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0855"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0860"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0865"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0870"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0880"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0890"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0905"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0910"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0920"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0925"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0930"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0940"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="type" class="TE" code="2170"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="TE" code="0950"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="0975"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="0980"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="type" class="TE" code="0990"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="type" class="TE" code="1000"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1015"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1017"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="type" class="TE" code="1020"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1030"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1035"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1040"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1060"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1070"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1080"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1090"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="type" class="TE" code="1100" diff="chg" at="F"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1110"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="type" class="TE" code="1120"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="2185"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="2190"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="2200"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="2210"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="DE" code="2220"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="TE" code="2230"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="2240"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1130"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1140"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1145"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1150"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="RE" code="1160"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1170"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1190"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1200"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1205"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1210"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1220"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1260"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1270"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1280"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1290"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1295"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1300"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1310"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1360"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1370"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1380"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1390"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1340"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1350"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="MM" code="9000"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1400"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1420"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1425"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1428"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1430"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1440"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1450"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1460"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1480"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1490"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="RE" code="1495"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="RE" code="1500"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1505"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="type" class="TE" code="1510"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="type" class="TE" code="1512"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="type" class="TE" code="1515"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1520"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1530"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="type" class="TE" code="1540"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="type" class="TE" code="1545"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="type" class="TE" code="1550"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="type" class="TE" code="1555"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1560"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1570"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1580"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1590"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1600"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="RE" code="1620"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="RE" code="1630"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1650"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="static" class="SE" code="1660"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xmlns:t="http://www.w3.org/2008/XSL/Spec/TreeDiagram" xmlns:g="http://www.martin-loetzsch.de/DOTML" spec="XT" type="dynamic" class="DE" code="1665"/>
+</document-summary>

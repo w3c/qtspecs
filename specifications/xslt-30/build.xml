@@ -1,0 +1,434 @@
+<?xml version="1.0"?>
+<project name="xslt" default="all" >
+
+  <!-- Needs the ant-contrib library from http://ant-contrib.sourceforge.net/ -->
+  
+  <!-- Command line for use on MHK's Mac laptop:
+    ~/bin/apache-ant-1.8.2/bin/ant -lib ~/downloads/ant-contrib-1/ant-contrib-1.0b3.jar
+  -->
+  
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+
+  <dirname property="etc.dir" file="../../etc/*"/>
+  <import file="${etc.dir}/build-constants.xml"/>
+
+  <property name="pubdate" value="2017-06-08"/>
+  <property name="baseline-date" value="2017-04-18"/>
+  <property name="baseline" value="V"/>
+  
+  <property name="shortname" value="xslt-30"/>
+  <property name="spec.uri" value="http://www.w3.org/TR/${shortname}/"/>
+  <property name="spec.xml" value="${src.dir}/xslt.xml"/>
+  <property name="merged-spec0.xml" value="${build.dir}/xslt-expanded0.xml"/>
+  <property name="merged-spec1.xml" value="${build.dir}/xslt-expanded1.xml"/>
+  <property name="merged-spec.xml" value="${build.dir}/xslt-expanded.xml"/>
+  <property name="errata.xml" value="${src.dir}/xslt20-errata.xml"/>
+  <property name="spec.code" value="XT30"/>
+
+  <property name="merge.functions.style" value="style/merge-xslt-function-specs.xsl"/>
+  <property name="merge.elements.style" value="style/merge-element-specs.xsl"/>
+  <property name="spec.style" value="style/xslt.xsl"/>
+  
+  <property name="grammar-file" value="../grammar-30/xpath-grammar.xml"/>
+  <property name="strip-grammar-file" value="../grammar-30/parser/strip.xsl"/>
+  <property name="extract-tokens-file" value="${shared.style.dir}/extract-tokens.xsl"/>
+  <property name="assemble-spec-file" value="${local.style.dir}/convert-grammar.xsl"/>
+  <property name="elim-dups-file" value="${shared.style.dir}/elim-dup-tokens.xsl"/>
+  
+  <property name="skiptidy" value="true"/>
+  <property name="use.local.css" value="0"/>
+
+  <import file="../../etc/build-impl.xml"/>
+  
+  <xmlcatalog id="common">
+    <catalogpath>
+      <pathelement location="../../schema/common/catalog.xml"/>
+    </catalogpath>
+  </xmlcatalog>
+
+  <target name="all"
+          depends="diagrams,spec,diffspec,errata"
+          description="This is the default target."/>
+  
+  <!-- removed "namespaces" -->
+
+  <!-- ====================================================================== -->
+  
+  <target name="build-grammar" depends="init, chk.spec, validate-spec"
+    if="build.spec" unless="spec.exists">
+    
+    <!-- Creation of the temp grammar files is needed for assembling the        -->
+    <!--   "complete" document, including grammar and extensions                -->
+
+    <echo message="Creating temp-${shortname}-grammar.xml"/>
+    <xslt in="${grammar-file}" out="${build.dir}/temp-${shortname}-grammar.xml"
+      style="${strip-grammar-file}" force="yes">
+      <param name="spec1" expression="xslt30-patterns"/>
+    </xslt>
+
+    <echo message="Creating tokens.xml"/>
+    <xslt style="${extract-tokens-file}" in="${build.dir}/temp-${shortname}-grammar.xml"
+      out="${build.dir}/tokens-with-dups.xml"
+      force="yes" extension=".xml"
+      destdir=".">
+      <param name="spec" expression="${shortname}"/>
+      <param name="grammar-file"
+        expression="${build.dir}/temp-${shortname}-grammar.xml"/>
+    </xslt>
+    <xslt style="${elim-dups-file}" in="${build.dir}/tokens-with-dups.xml"
+      out="${build.dir}/tokens.xml"
+      force="yes" extension=".xml"
+      destdir=".">
+    </xslt>
+    
+    <!-- The assembly step is used to         -->
+    <!--   transform grammar-related productions into XML elements that can be  -->
+    <!--   readily rendered into a form needed in the HTML document.            -->
+    <echo/>
+    <echo message="Creating ${shortname}-assembled.xml"/>
+    <xslt in="${spec.xml}"
+      out="${build.dir}/${shortname}-assembled.xml"
+      style="${assemble-spec-file}" force="yes"
+      classpathref="saxon9.classpath">
+      <param name="grammar-file" expression="${build.dir}/temp-${shortname}-grammar.xml"/>
+      <param name="tokens-file" expression="${build.dir}/tokens.xml"/>
+      <param name="spec" expression="${shortname}"/>
+    </xslt>
+  </target>
+  
+  <!-- ======================================================================== -->
+  
+  <!-- Subroutine to add syntax highlighting to examples (and serialize as HTML5) -->
+  
+  <!-- Parameters:  highlight.input - the input XML file
+                    highlight.output - the output HTML5 file -->
+  
+  <target name="highlighter">
+    <xslt
+      in="${highlight.input}" 
+      out="${highlight.output}" 
+      style="style/highlighter.xsl" 
+      force="yes" 
+      classpathref="saxon9.classpath"/>
+  </target>
+  
+  
+  <!-- ======================================================================== -->
+  
+
+  <!-- ====================================================================== -->
+  
+  <target name="function-streamability-rules" depends="validate-spec"
+    if="build.spec" unless="spec.exists">
+    
+    <echo message="Expanding streamability rules for built-in functions ..."/>
+    
+    <!-- XSLT 2.0 -->
+    <!-- Merge the xmlspec fragment containing streamability rules for built-in functions -->
+    
+    <xslt in="src/function-catalog.xml" 
+      out="${build.dir}/built-in-streamability-expanded.xml" 
+      style="style/function-streamability.xsl" 
+      force="yes" 
+      classpathref="saxon9.classpath">
+    </xslt>
+    
+  </target>
+  
+  <target name="merge-catalog" depends="init, chk.spec, validate-spec, build-grammar, function-streamability-rules"
+    if="build.spec" unless="spec.exists">
+    <echo message="Merging function catalog ${shortname}/src/function-catalog.xml ..."/>
+    
+    <!-- XSLT 2.0 -->
+    <!-- Merge the function definitions from the function catalog into the narrative spec -->
+ 
+    <xslt in="${build.dir}/${shortname}-assembled.xml" 
+      out="${merged-spec0.xml}" 
+      style="${merge.functions.style}" 
+      force="yes" 
+      classpathref="saxon9.classpath">
+      <param name="function-catalog" expression="../src/function-catalog.xml"/>
+    </xslt>
+    
+    <!-- Merge the element definitions from the element catalog into the narrative spec -->
+    
+    <xslt in="${merged-spec0.xml}" 
+      out="${merged-spec1.xml}" 
+      style="${merge.elements.style}" 
+      force="yes" 
+      classpathref="saxon9.classpath">
+      <param name="catalog" expression="../src/element-catalog.xml"/>
+    </xslt>
+    
+    <xslt in="${merged-spec1.xml}" out="${merged-spec.xml}" style="style/check-internal-links.xsl" force="yes" classpathref="saxon9.classpath"/>
+    
+    <xslt in="${merged-spec1.xml}" out="${merged-spec.xml}" style="style/table-cleanup.xsl" force="yes" classpathref="saxon9.classpath"/>
+        
+  </target>
+  
+  
+  
+  <!-- ====================================================================== -->
+  
+  <target name="dot-files" depends="merge-catalog" if="build.spec" unless="spec.exists">
+    <xslt in="${merged-spec.xml}" out="${dist.dir}/Overview.html" style="style/xslt-diff.xsl" 
+      force="yes" classpathref="saxon9.classpath">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/initialMode" value="make-dot-files"/>
+      </factory>
+      <param name="baseline" expression="${baseline}"/>
+      <param name="show.diff.markup.string" expression="0"/>
+      <xmlcatalog refid="common"/>
+    </xslt>
+    
+  </target>
+  
+  <target name="diagrams" description="Process all the diagrams in the img directory"
+    depends="dot-files">
+    <foreach target="diagram" param="diagram">
+      <path>
+        <fileset dir="${dist.dir}/img">
+          <include name="*.dot"/>
+        </fileset>
+      </path>
+    </foreach>
+  </target>
+  
+  <target name="diagram">
+    <echo message="Converting diagram ${diagram}"/>
+    <basename property="name" file="${diagram}" suffix=".dot"/>
+    <echo message="  to ${dist.dir}/img/${name}.svg"/>
+    <!-- Requires "dot" to be on the path. dot is part of GraphViz. Location might be GraphViz2.24/bin/dot-->
+    <exec executable="dot">
+      <arg line="-o${dist.dir}/img/${name}.raw.svg -Tsvg ${diagram} "/>
+    </exec>
+
+    <!--<xslt in="${dist.dir}/img/${name}.raw.svg" out="${dist.dir}/img/${name}.svg" style="style/tidy-graphviz-svg.xsl" 
+      force="yes" classpathref="saxon9.classpath">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <!-\- This attribute means that Saxon, rather than Ant, control the XML parsing, which
+             enables Saxon to use its own copy of the XHTML and SVG DTDs, without relying
+             on the Ant catalog resolver mechanism. Requires a recent Saxon release, e.g. 9.6 -\->
+        <attribute name="http://saxon.sf.net/feature/ignoreSAXSourceParser" value="true"/>
+      </factory>
+    </xslt>-->
+    
+  </target>
+  
+  
+  <!-- ====================================================================== -->
+
+  <!-- Overrides internal template -->
+  <target name="-style-spec" depends="init,chk.spec, diagrams, function-streamability-rules"
+	  if="build.spec" unless="spec.exists">
+    <echo message="Building XSLT 3.0 ..." />
+
+    <!-- XSLT 2.0 -->
+    
+    <xslt in="${merged-spec.xml}" out="${build.dir}/rendered.xml" style="style/xslt-diff.xsl" 
+      force="yes" classpathref="saxon9.classpath">
+      <param name="baseline" expression="${baseline}"/>
+      <param name="show.diff.markup.string" expression="0"/>
+      <param name="date" expression="${pubdate}"/>
+      <param name="diff.baseline.date.string" expression="2012-07-10"/>
+      <param name="use-local-css" expression="${use.local.css}"/>
+      <param name="back.to.top.link" expression="1"/>
+      <xmlcatalog refid="common"/>
+    </xslt>
+    
+    <echo message="Highlighting XSLT 3.0 ..." />
+    
+    <antcall target="highlighter">
+      <param name="highlight.input" value="${build.dir}/rendered.xml"/>
+      <param name="highlight.output" value="${build.dir}/highlighted.xml"/>
+    </antcall>
+    
+    <echo message="Serializing XSLT 3.0 as HTML5 ..."/>
+    
+    <antcall target="xml-to-html5">
+      <param name="xml-to-html5.input" value="${build.dir}/highlighted.xml"/>
+      <param name="xml-to-html5.output" value="${dist.dir}/Overview.html"/>
+    </antcall>
+    
+  </target>
+
+  <target name="chk.xsltdiff" depends="init">
+    <uptodate property="xsltdiff.exists"
+              srcfile="${merged-spec.xml}"
+              targetfile="${dist.dir}/Overview-diff.html"/>
+  </target>
+
+  <target name="diffspec" depends="init,chk.xsltdiff,tidy-diff-spec"
+	  unless="xsltdiff.exists"/>
+
+  <target name="tidy-diff-spec" depends="init,style-diff-spec,chk.runtidy"
+	  if="run.tidy">
+    <copy file="${dist.dir}/Overview-diff.html" tofile="${dist.dir}/Overview-diff-untidy.html"/>
+    <antcall target="tidy">
+      <param name="html.file" value="${dist.dir}/Overview-diff.html"/>
+    </antcall>
+  </target>    
+
+  <target name="style-diff-spec" depends="init,validate-spec, function-streamability-rules">
+    <echo message="Building XSLT 3.0 (Diff) with baseline=${baseline} ..." />
+    
+    <xslt in="${merged-spec.xml}" out="${build.dir}/rendered-diff.xml" style="style/xslt-diff.xsl" 
+      force="yes" classpathref="saxon9.classpath">
+      <param name="baseline" expression="${baseline}"/>
+      <param name="diff.baseline.date.string" expression="${baseline-date}"/>
+      <param name="specdoc" expression="XT"/>
+      <param name="date" expression="${pubdate}"/>
+      <param name="use-local-css" expression="${use.local.css}"/>
+      <param name="back.to.top.link" expression="1"/>
+    </xslt>
+
+    <xslt in="${build.dir}/rendered-diff.xml" out="${build.dir}/cleaned-up-diff.xml" style="style/xsltdiff-cleanup.xsl" 
+      force="yes" classpathref="saxon9.classpath"/>
+    
+    <echo message="Highlighting XSLT 3.0 diff ..." />
+    
+    <antcall target="highlighter">
+      <param name="highlight.input" value="${build.dir}/cleaned-up-diff.xml"/>
+      <param name="highlight.output" value="${build.dir}/highlighted-diff.xml"/>
+    </antcall>
+    
+    <echo message="Serializing XSLT 3.0 diff as HTML5 ..."/>
+      
+      <antcall target="xml-to-html5">
+        <param name="xml-to-html5.input" value="${build.dir}/highlighted-diff.xml"/>
+        <param name="xml-to-html5.output" value="${dist.dir}/Overview-diff.html"/>
+      </antcall>
+    
+  </target>
+
+  <!-- Overrides internal template -->
+  <target name="-style-errata" depends="init,chk.errata"
+	  if="build.errata" unless="errata.exists">
+    <echo message="Formating ${shortname} errata..." />
+    
+    <xslt in="${errata.xml}" out="${dist.dir}/errata.html" style="${spec.style}" 
+      force="yes" classpathref="saxon9.classpath"/>
+  </target>
+  
+  
+ 
+
+  <!-- ======================================================================== -->
+  
+  
+  
+  <!-- ======================================================================== -->
+  
+  <target name="chk.uri-uca-collation" depends="init">
+    <uptodate property="uri-uca-collation.exists"
+      srcfile="${src.dir}/uri-uca-collation.xml"
+      targetfile="${dist.dir}/uri-uca-collation.html"/>
+  </target>
+  
+  <!-- ======================================================================== -->
+  
+  <target name="uri-uca-collation"
+    depends="init, chk.uri-uca-collation"
+    unless="uri-uca-collation.exists">
+    <echo message="Building namespace document for UCA collation URI..." />
+    
+    <echo message="Transforming namespace XML source to HTML with RDDL"/>
+    <xslt in="${src.dir}/uri-uca-collation.xml"
+      out="${build.dir}/uri-uca-collation.html"
+      style="${shared.style.dir}/ns-blank.xsl"
+      force="yes" classpathref="saxon9.classpath"/>
+    
+    <echo message="Generating RDF from HTML with RDDL"/>
+    <xslt in="${build.dir}/uri-uca-collation.html"
+      out="${dist.dir}/uri-uca-collation.rdf"
+      style="${shared.style.dir}/qt-ns-grddl.xsl"
+      force="yes" classpathref="saxon9.classpath">
+      <param name="doc" expression="http://www.w3.org/2013/collation/UCA"/>
+    </xslt>
+    
+    <echo message="Fixing up HTML namespace document by removing traces of RDDL"/>
+    <xslt in="${build.dir}/uri-uca-collation.html"
+      out="${dist.dir}/uri-uca-collation.html"
+      style="${shared.style.dir}/html-namespace-fixup.xsl" force="yes"
+      classpathref="saxon9.classpath"/>
+    
+    <echo message="Fixing up RDDL namespace document to add xhtml namespace"/>
+    <xslt in="${build.dir}/uri-uca-collation.html"
+      out="${dist.dir}/uri-uca-collation.xhtml"
+      style="${shared.style.dir}/rddl-namespace-fixup.xsl" force="yes"
+      classpathref="saxon9.classpath"/>
+    
+    <echo message="Tidy up the HTML file for pubrules"/>
+    <exec executable="tidy">
+      <arg value="--doctype"/>
+      <arg value="transitional"/>
+      <arg value="-utf8"/>
+      <arg value="-mnq"/>
+      <arg value="-asxml"/>
+      <arg value="${dist.dir}/uri-uca-collation.html"/>
+    </exec>
+    
+  </target>
+  
+  <!-- ======================================================================== -->
+  
+  <!--<target name="chk.ns-json-xml" depends="init">
+    <uptodate property="ns-json-xml.exists"
+      srcfile="${src.dir}/ns-json-xml.xml"
+      targetfile="${dist.dir}/ns-json-xml.html"/>
+  </target>-->
+  
+  <!-- ======================================================================== -->
+  
+  <!--<target name="ns-json-xml"
+    depends="init, chk.ns-json-xml"
+    unless="ns-json-xml.exists">
+    <echo message="Building namespace document for json-xml namespace..." />
+    
+    <echo message="Transforming namespace XML source to HTML with RDDL"/>
+    
+    
+    <xslt in="${src.dir}/ns-json-to-xml.xml"
+      out="${build.dir}/ns-json-to-xml.html"
+      style="${local.style.dir}/ns-json-to-xml.xsl" force="yes"
+      classpathref="saxon9.classpath"/>
+    
+    <echo message="Generating RDF from HTML with RDDL"/>
+    
+    <xslt in="${build.dir}/ns-json-to-xml.html"
+      out="${dist.dir}/ns-json-to-xml.rdf"
+      style="${shared.style.dir}/qt-ns-grddl.xsl" force="yes"
+      classpathref="saxon9.classpath">
+      <param name="doc" expression="http://www.w3.org/2013/XSL/json"/>
+    </xslt>
+    
+    <echo message="Fixing up HTML namespace document by removing traces of RDDL"/>
+    <xslt in="${build.dir}/ns-json-to-xml.html"
+      out="${dist.dir}/ns-json-to-xml.html"
+      style="${shared.style.dir}/html-namespace-fixup.xsl" force="yes"
+      classpathref="saxon9.classpath"/>
+    
+    <echo message="Fixing up RDDL namespace document to add xhtml namespace"/>
+    <xslt in="${build.dir}/ns-json-to-xml.html"
+      out="${dist.dir}/ns-json-to-xml.xhtml"
+      style="${shared.style.dir}/rddl-namespace-fixup.xsl" force="yes"
+      classpathref="saxon9.classpath"/>
+    
+    <echo message="Tidy up the HTML file for pubrules"/>
+    <exec executable="tidy">
+      <arg value="-\-doctype"/>
+      <arg value="transitional"/>
+      <arg value="-utf8"/>
+      <arg value="-mnq"/>
+      <arg value="-asxml"/>
+      <arg value="${dist.dir}/ns-errors.html"/>
+    </exec>
+    
+  </target>
+  -->
+ <!-- <target name="namespaces" depends="ns-json-xml, uri-uca-collation"></target>
+  -->
+  
+  
+
+</project>

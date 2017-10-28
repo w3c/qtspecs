@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--XSLT Processor: Saxonica SAXON HE 9.6.0.7--><html xmlns="http://www.w3.org/1999/xhtml" lang="EN">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <title>Namespace Document </title><style type="text/css"> </style><link rel="stylesheet" type="text/css" href="http://www.w3.org/StyleSheets/TR/base.css" />
+   </head>
+   <body>
+      <div class="head">
+         <p><a href="http://www.w3.org/"><img src="http://www.w3.org/Icons/w3c_home" alt="W3C" height="48" width="72" /></a></p>
+         <h1><a name="title" id="title"></a>Namespace Document
+         </h1>
+      </div>
+      <div class="toc">
+         
+         <h2><a name="contents" id="contents"></a>Table of Contents
+         </h2>
+         <p class="toc">1 <a href="#intro">Introduction</a><br />
+            2 <a href="#schemas">XML Schema</a><br />
+            3 <a href="#normrefs">Normative References</a><br />
+            4 <a href="#nonnormrefs">Non-Normative References</a><br />
+            
+         </p>
+      </div>
+      <hr />
+      <div class="body">
+         <div>
+            
+            <h2><a name="intro" id="intro"></a>1 Introduction
+            </h2>
+            <p>This document describes the namespace
+               <code>http://www.w3.org/2013/XSL/json/</code>. This namespace
+               is used in the XSLT 3.0 specification as the target namespace of an XML vocabulary
+               used for a faithful representation of the information content of a JSON text.
+            </p>
+            <p>This document describes the names that are defined in this
+               namespace at the time of publication. The W3C reserves the right to
+               define additional names in this namespace in the future.
+               For updated information, please refer to the latest version of
+               the relevant specification.
+            </p>
+            <p>
+               This document contains a directory of links to related resources, using RDDL
+               (as defined in <a href="#rddl-ref">[Resource Directory Description Language (RDDL)]</a>). 
+               
+            </p>
+            <p>
+               It is GRDDL-enabled (as defined in <a href="#grddl-ref">[Gleaning Resource Descriptions from Dialects of Languages (GRDDL)]</a>), that is to
+               say that a GRDDL-compliant processor can extract useful RDF
+               (as defined in <a href="#rdf-ref">[Resource Description Framework (RDF): Concepts and Abstract Syntax]</a>)
+               representations of the information contained herein.
+               
+            </p>
+         </div>
+         <div class="resource">
+            
+            <h2><a name="schemas" id="schemas"></a>2 XML Schema
+            </h2>
+            <p>
+               The function <code>fn:json-to-xml()</code> converts a JSON text to an XML representation,
+               whose results that are always valid according to an XML Schema specified in <a href="#xslt-30-ref">[XSLT 3.0]</a>.
+               
+            </p>
+            <p>The schema is reproduced below:</p><pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified"
+    targetNamespace="http://www.w3.org/2005/xpath-functions"
+    xmlns:j="http://www.w3.org/2005/xpath-functions"&gt;
+    
+    &lt;!-- 
+     * This is a schema for the XML representation of JSON used as the target for the
+     * function fn:json-to-xml()
+     *
+     * The schema is made available under the terms of the W3C software notice and license
+     * at http://www.w3.org/Consortium/Legal/copyright-software-19980720
+     *
+    --&gt;
+    
+    &lt;xs:element name="map" type="j:mapType"&gt;
+        &lt;xs:unique name="unique-key"&gt;
+            &lt;xs:selector xpath="*"/&gt;
+            &lt;xs:field xpath="@key"/&gt;
+            &lt;xs:field xpath="@escaped-key"/&gt;
+        &lt;/xs:unique&gt;
+    &lt;/xs:element&gt;
+    
+    &lt;xs:element name="array" type="j:arrayType"/&gt;
+    
+    &lt;xs:element name="string" type="j:stringType"/&gt;
+    
+    &lt;xs:element name="number" type="j:numberType"/&gt;
+    
+    &lt;xs:element name="boolean" type="xs:boolean"/&gt;
+    
+    &lt;xs:element name="null" type="j:nullType"/&gt;
+    
+    &lt;xs:complexType name="nullType"&gt;
+        &lt;xs:sequence/&gt;
+    &lt;/xs:complexType&gt;
+    
+    &lt;xs:complexType name="stringType"&gt;
+        &lt;xs:simpleContent&gt;
+            &lt;xs:extension base="xs:string"&gt;
+                &lt;xs:attribute name="escaped" type="xs:boolean" use="optional" default="false"/&gt;
+            &lt;/xs:extension&gt;
+        &lt;/xs:simpleContent&gt;
+    &lt;/xs:complexType&gt;
+    
+    &lt;xs:simpleType name="numberType"&gt;
+        &lt;xs:restriction base="xs:double"&gt;
+            &lt;!-- exclude positive and negative infinity, and NaN --&gt;
+            &lt;xs:minExclusive value="-INF"/&gt;
+            &lt;xs:maxExclusive value="INF"/&gt;
+        &lt;/xs:restriction&gt;
+    &lt;/xs:simpleType&gt;
+    
+    &lt;xs:complexType name="arrayType"&gt;
+        &lt;xs:choice minOccurs="0" maxOccurs="unbounded"&gt;
+            &lt;xs:element ref="j:map"/&gt;
+            &lt;xs:element ref="j:array"/&gt;
+            &lt;xs:element ref="j:string"/&gt;
+            &lt;xs:element ref="j:number"/&gt;
+            &lt;xs:element ref="j:boolean"/&gt;
+            &lt;xs:element ref="j:null"/&gt;
+        &lt;/xs:choice&gt;       
+    &lt;/xs:complexType&gt;
+    
+    &lt;xs:complexType name="mapType"&gt;
+        &lt;xs:choice minOccurs="0" maxOccurs="unbounded"&gt;
+            &lt;xs:element name="map"&gt;
+                &lt;xs:complexType&gt;
+                    &lt;xs:complexContent&gt;
+                        &lt;xs:extension base="j:mapType"&gt;
+                            &lt;xs:attribute name="key" type="xs:string"/&gt;
+                        &lt;/xs:extension&gt;
+                    &lt;/xs:complexContent&gt;
+                &lt;/xs:complexType&gt;
+                &lt;xs:unique name="unique-key-2"&gt;
+                    &lt;xs:selector xpath="*"/&gt;
+                    &lt;xs:field xpath="@key"/&gt;
+                &lt;/xs:unique&gt;
+            &lt;/xs:element&gt;
+            &lt;xs:element name="array"&gt;
+                &lt;xs:complexType&gt;
+                    &lt;xs:complexContent&gt;
+                        &lt;xs:extension base="j:arrayType"&gt;
+                            &lt;xs:attributeGroup ref="j:key-group"/&gt;
+                        &lt;/xs:extension&gt;
+                    &lt;/xs:complexContent&gt;
+                &lt;/xs:complexType&gt;
+            &lt;/xs:element&gt;
+            &lt;xs:element name="string"&gt;
+                &lt;xs:complexType&gt;
+                    &lt;xs:simpleContent&gt;
+                        &lt;xs:extension base="j:stringType"&gt;
+                            &lt;xs:attributeGroup ref="j:key-group"/&gt;
+                        &lt;/xs:extension&gt;
+                    &lt;/xs:simpleContent&gt;
+                &lt;/xs:complexType&gt;
+            &lt;/xs:element&gt;
+            &lt;xs:element name="number"&gt;
+                &lt;xs:complexType&gt;
+                    &lt;xs:simpleContent&gt;
+                        &lt;xs:extension base="j:numberType"&gt;
+                            &lt;xs:attributeGroup ref="j:key-group"/&gt;
+                        &lt;/xs:extension&gt;
+                    &lt;/xs:simpleContent&gt;
+                &lt;/xs:complexType&gt;
+            &lt;/xs:element&gt;
+            &lt;xs:element name="boolean"&gt;
+                &lt;xs:complexType&gt;
+                    &lt;xs:simpleContent&gt;
+                        &lt;xs:extension base="xs:boolean"&gt;
+                            &lt;xs:attributeGroup ref="j:key-group"/&gt;
+                        &lt;/xs:extension&gt;
+                    &lt;/xs:simpleContent&gt;
+                &lt;/xs:complexType&gt;
+            &lt;/xs:element&gt;
+            &lt;xs:element name="null"&gt;
+                &lt;xs:complexType&gt;
+                    &lt;xs:attributeGroup ref="j:key-group"/&gt;
+                &lt;/xs:complexType&gt;
+            &lt;/xs:element&gt;
+        &lt;/xs:choice&gt;
+    &lt;/xs:complexType&gt;
+    
+    &lt;xs:attributeGroup name="key-group"&gt;
+        &lt;xs:attribute name="key" type="xs:string" use="required"/&gt;
+        &lt;xs:attribute name="escaped-key" type="xs:boolean" use="optional" default="false"/&gt;
+    &lt;/xs:attributeGroup&gt;
+    
+&lt;/xs:schema&gt;
+</pre>
+            <p>
+               This schema specifies the XML syntax of the result returned by <code>fn:json-to-xml</code> as defined in
+               <a href="#xslt-30-ref">[XSLT 3.0]</a>. 
+               It is located at
+               <a href="http://www.w3.org/TR/2013/WD-xslt-30-20131212/schema-for-json.xsd">http://www.w3.org/TR/2013/WD-xslt-30-20131212/schema-for-json.xsd</a>. 
+               
+            </p>
+            
+         </div>
+         <div>
+            
+            <h2><a name="normrefs" id="normrefs"></a>3 Normative References
+            </h2>
+            <p>These documents describe the names that are defined in this namespace at the time
+               of publication. 
+               The W3C reserves the right to define additional names in this namespace in the future.
+               
+               
+            </p>
+            <dl>
+               <dt class="label"><span><a name="xslt-30-ref" id="xslt-30-ref"></a>XSLT 3.0</span></dt>
+               <dd>
+                  <div class="resource">
+                     
+                     
+                     <p><a href="http://www.w3.org/TR/2013/WD-xslt-30-20131212/">XSLT 3.0</a>
+                        (12 December 2013 version)
+                     </p>
+                     
+                     
+                  </div>
+               </dd>
+            </dl>
+         </div>
+         <div>
+            
+            <h2><a name="nonnormrefs" id="nonnormrefs"></a>4 Non-Normative References
+            </h2>
+            <dl>
+               <dt class="label"><span><a name="rddl-ref" id="rddl-ref"></a>Resource Directory Description Language (RDDL)</span></dt>
+               <dd>
+                  <div class="resource">
+                     
+                     
+                     <p><a href="http://www.rddl.org/">Resource Directory Description Language (RDDL)</a> (4 July 2007)
+                     </p>
+                     
+                     
+                  </div>
+               </dd>
+               <dt class="label"><span><a name="grddl-ref" id="grddl-ref"></a>Gleaning Resource Descriptions from Dialects of Languages (GRDDL)</span></dt>
+               <dd>
+                  <div class="resource">
+                     
+                     
+                     <p><a href="http://www.w3.org/TR/grddl/">Gleaning Resource Descriptions from Dialects of Languages (GRDDL)</a>
+                        (Recommendation of 11 September 2007)
+                     </p>
+                     
+                     
+                  </div>
+               </dd>
+               <dt class="label"><span><a name="rdf-ref" id="rdf-ref"></a>Resource Description Framework (RDF): Concepts and Abstract Syntax</span></dt>
+               <dd>
+                  <div class="resource">
+                     
+                     
+                     <p><a href="http://www.w3.org/TR/rdf-concepts/">Resource Description Framework (RDF):
+                           Concepts and Abstract Syntax</a> (Recommendation of 10 February 2004)
+                     </p>
+                     
+                     
+                  </div>
+               </dd>
+            </dl>
+         </div>
+      </div>
+   </body>
+</html>

@@ -1,0 +1,369 @@
+<!-- This stub exists purely in order to add things to some content models
+     from the official XML spec DTD -->
+
+<!--* to provide better and more stable hyperlinking, let's require
+    * all divs to have IDs.  This avoids having the link to a section
+    * change from version to version. *-->
+<!ATTLIST div1 id ID #REQUIRED>
+<!ATTLIST div2 id ID #REQUIRED>
+<!ATTLIST div3 id ID #REQUIRED>
+<!ATTLIST div4 id ID #REQUIRED>
+<!ATTLIST div5 id ID #REQUIRED>
+
+<!ENTITY % head.element "IGNORE" >  <!-- davep -->
+
+<!ENTITY reqs "reqs.html">
+
+<!ENTITY aacute   "&#225;" > <!-- small a, acute accent -->
+<!ENTITY eacute   "&#233;" > <!-- small e, acute accent -->
+<!ENTITY rsquo    "&#8217;"> <!-- right single quote -->
+<!ENTITY sect     "&#xa7;" > <!-- section sign, U+00A7 -->
+<!ENTITY nbsp     "&#160;" > <!-- no-break space, U+00A0 -->
+<!ENTITY alpha    "&#x3B1;"> <!--=small alpha, Greek-->
+<!ENTITY beta     "&#x3B2;"> <!--=small beta, Greek-->
+<!ENTITY gamma    "&#x3B3;"> <!--=small gamma, Greek-->
+<!ENTITY delta    "&#x3B4;"> <!--=small delta, Greek-->
+
+<!ENTITY SchemaWG "<loc
+href='http://www.w3.org/XML/Activity#schema-wg'>W3C XML Schema Working
+Group</loc>">
+
+<!ENTITY xmlspec "http://www.w3.org/TR/xml11/">
+<!ENTITY old-dated-xmlspec "http://www.w3.org/TR/2004/REC-xml-20040204">
+<!ENTITY old-xmlspec "http://www.w3.org/TR/xml/"><!--* silently changed 2009-10-30 MSM *-->
+<!ENTITY old-xmlspec "http://www.w3.org/TR/REC-xml/">
+<!ENTITY old-xmlnsspec "http://www.w3.org/TR/xml-names/"><!--* silently changed 2009-10-30 MSM *-->
+<!ENTITY old-xmlnsspec "http://www.w3.org/TR/REC-xml-names/">
+<!ENTITY xmlnsspec "http://www.w3.org/TR/xml-names11/">
+
+<!--* Hmm.  These seem to be proliferating; are they all listed in
+    * the spec?
+    *-->
+<!ENTITY vcNS "http://www.w3.org/2007/XMLSchema-versioning">
+<!ENTITY assertionsNS "http://www.w3.org/2007/XMLSchema-assertions">
+<!ENTITY transformationsNS "http://www.w3.org/2008/05/XMLSchema-misc">
+<!--* MK suggests http://www.w3.org/2008/XMLSchema/Stylesheet/Override *-->
+
+<!ENTITY constraint "identity-constraint">
+<!ENTITY Constraint "Identity-constraint"> <!-- for replacement later? -->
+<!ENTITY raw-PSVI 'post-schema-validation infoset'>
+<!ENTITY should '<rfc2119>should</rfc2119>'>
+<!ENTITY shouldnot '<rfc2119>should not</rfc2119>'>
+<!ENTITY may '<rfc2119>may</rfc2119>'>
+<!ENTITY must '<rfc2119>must</rfc2119>'>
+<!ENTITY mustnot '<rfc2119>must not</rfc2119>'>
+<!--* warning:  most of the following need to be different in datatypes
+    * (where 'derived' and 'constructed' are defined) and structures.
+    * So these entities are almost certainly overridden by ones in 
+    * structures/local.dtd and/or datatypes/local.dtd.
+    * A word to the wise. 
+    *--> 
+<!ENTITY derive 'derive'>
+<!--* <!ENTITY derived 'derived'> *-->
+<!ENTITY Derived 'derived'>
+<!ENTITY deriving 'deriving'>
+<!--* <!ENTITY derivation 'derivation'> *-->
+<!ENTITY derivations 'derivations'>
+<!ENTITY Derivation 'Derivation'>
+<!ENTITY constructedDiff '<phrase diff="del" dg="derive-1913">derived</phrase><phrase diff="add" dg="derive-1913"><xtermref href="http://www.w3.org/TR/2012/REC-xmlschema11-2-20120405/datatypes.html#dt-constructed">constructed</xtermref></phrase>'>
+<!ENTITY constructing 'constructing'>
+<!--* <!ENTITY literal "<phrase>literal</phrase>" > *-->
+<!--* <!ENTITY literals "<phrase>literals</phrase>" > *-->
+<!ENTITY PSVI '<termref def="key-psvi">&raw-PSVI;</termref>'>
+
+<!ENTITY % id.att 'id ID #IMPLIED' >
+<!-- for diff grouping -->
+<!ENTITY % diff.att "diff (chg | add | del | tag | untag | hither | hence) #IMPLIED
+                     dg   IDREF             #IMPLIED" >
+<!--* diff="chg" means: this material is different, changed in change @dg, 
+    *                   but I won't say how. 
+    *                   By and large, we avoid.
+    * diff="add" means: this material was added by change @dg
+    * diff="del" means: this material was deleted by change @dg
+    * diff="tag" means: the contents of this element were here before change @dg,
+    *                   but it wasn't tagged as an element then.
+    *                   (used for new subsections, for example)
+    * diff="untag" means: this element was here before change @dg,
+    *                   but that change untagged it.
+    * diff="hither" means: this element was in the document before change @dg,
+    *                   but at a different location.  That change move it
+    *                   hither (='to this place').  Any element tagged this
+    *                   way MUST also have an ID, so it can be retrieved
+    *                   and placed in its old spot if needed.
+    * diff="hence" means: there was an element here before change @dg,
+    *                   but that change moved it hence (='from here').
+    *                   This should appear only on 'ghost' elements.
+    *-->
+
+<!ELEMENT ghost EMPTY> <!-- used to mark locations where things used to be -->
+<!ATTLIST ghost %id.att;
+                refid IDREF #REQUIRED
+                diff (hence) #REQUIRED 
+                dg   IDREF #REQUIRED 
+>
+<!--*
+<!ATTLIST ghost id ID #IMPLIED
+                refid IDREF #REQUIRED
+                %diff.att;>
+*-->
+
+
+<!ATTLIST spec xml:lang CDATA #IMPLIED>
+<!ATTLIST loc target CDATA #IMPLIED>
+<!ATTLIST eg text CDATA #IMPLIED> <!-- experimental pointer to out-of-line
+				       example text -->
+<!ELEMENT propdef ANY> <!-- best we can do without editing xml-spec -->
+<!ATTLIST propdef id ID #REQUIRED
+		  name CDATA #REQUIRED
+                  %diff.att;>
+<!ELEMENT propref EMPTY>
+<!ATTLIST propref %id.att;
+	          ref IDREF #IMPLIED
+		  comp IDREF #IMPLIED
+		  prop CDATA #IMPLIED
+		  role (psvi|generic) #IMPLIED
+                  %diff.att;>
+<!ELEMENT xpropref (#PCDATA|phrase)*>
+<!ATTLIST xpropref href CDATA #IMPLIED
+		   role (anon|psviAnon|psvi|comp) #IMPLIED>
+<!ELEMENT compref EMPTY>
+<!ATTLIST compref ref IDREF #REQUIRED
+                  name CDATA #IMPLIED 
+                  %diff.att;>
+
+<!ELEMENT proplist (propdef*)>
+<!ATTLIST proplist %id.att;
+	           role (psvi) #IMPLIED
+		   item CDATA #IMPLIED
+                   %diff.att;>
+<!--* reprdef:  Definition of XML Representation *-->
+<!ELEMENT reprdef (reprelt|reprcomp|p|note|ghost)*>
+<!ATTLIST reprdef %id.att;
+                  %diff.att;>
+
+<!--* reprelt:  Definition of XML Representation for a given element *-->
+<!ELEMENT reprelt EMPTY>
+<!ATTLIST reprelt %id.att;
+                  eltname NMTOKENS #REQUIRED
+		  type NMTOKEN #IMPLIED
+		  local NMTOKEN #IMPLIED
+		  %diff.att;>
+
+<!--* reprcomp:  Definition of XML Mapping Rules for a given component *-->
+<!ELEMENT reprcomp (reprdep?,(propmap|ghost)*)>
+<!ATTLIST reprcomp %id.att;
+                   ref IDREF #REQUIRED
+		   abstract CDATA #REQUIRED
+		   %diff.att;>
+
+<!--* reprdep:  Constraint on XML representation (dep for dependency?) *-->
+<!--* reprdep is currently used only in Datatypes *-->
+
+<!ELEMENT reprdep ANY> <!-- best we can do without editing xml-spec -->
+<!ELEMENT propmap ANY> <!-- best we can do without editing xml-spec -->
+<!ATTLIST propmap %id.att;
+                  comp IDREF #REQUIRED
+		  prop CDATA #REQUIRED
+                  %diff.att;>
+<!ELEMENT eltref EMPTY>
+<!ATTLIST eltref ref NMTOKEN #REQUIRED
+		 inside NMTOKEN #IMPLIED>
+<!ELEMENT schemaComp (head,pvlist+)>
+<!ATTLIST schemaComp id ID #REQUIRED
+		     %diff.att;>
+<!ELEMENT pvlist (pvpair+)>
+<!ATTLIST pvlist %id.att;
+                 %diff.att;>
+<!ELEMENT pvpair ANY>
+<!ATTLIST pvpair %id.att;
+                 comp IDREF #REQUIRED
+		 prop CDATA #REQUIRED
+                 %diff.att;>
+<!ATTLIST graphic map IDREF #IMPLIED>
+<!ELEMENT imagemap EMPTY>
+<!ATTLIST imagemap source CDATA #REQUIRED
+		   id     ID    #REQUIRED
+                   %diff.att;
+>
+<!ELEMENT local (#PCDATA)>
+<!ATTLIST local %diff.att;>
+
+<!ELEMENT iiName (#PCDATA)>
+
+<!ENTITY % local.list.class " | display" >
+<!ENTITY % local.p.class " | defset | facets | subtypes |
+                             open-issues | revisions |
+                             fundamental-facets | applicable-facets" >
+<!ENTITY % local.term.class "|pt"><!-- ht: for pre-terminal -->
+<!ENTITY % local.tech.class "|pt|pvlist|string"><!-- ht: for pre-terminal,
+                                              prop/val display -->
+<!-- the above used in content model of LHS -->
+   <!-- "preterminal":  arbitrary enumerated constants; enum in the C/C++ sense -->
+<!ELEMENT pt (#PCDATA)>
+<!ATTLIST pt %diff.att;>
+<!-- subset of full compDescr elts etc. -->
+<!--* With the addition of role="termdef", compdef appears to be
+    * required to fill a new role.  Virtually all occurrences of
+    * compdef except the ones now with role="termdef" are empty.
+    * But since the sample component definition in Structures 
+    * still has a 'property' child,  we can't just lose the old
+    * declaration. 
+    * As a temporary hack to achieve validity, MSM changes from
+    * (property?) to (#PCDATA | property)*
+    * 2005-08-29
+    *-->
+
+<!ENTITY % include.compdef.ss "INCLUDE">
+<![%include.compdef.ss;[
+<!ELEMENT compdef (#PCDATA | property)*>
+<!ATTLIST compdef 
+                  name CDATA #IMPLIED
+		  abbrev ID #REQUIRED
+                  showAKO (true|false) 'true'
+                  role CDATA #IMPLIED
+                  %diff.att;>
+]]>
+
+<!ENTITY % include.microCompdef.ss "INCLUDE">
+<![%include.microCompdef.ss;[
+<!ELEMENT microCompdef EMPTY>
+<!ATTLIST microCompdef 
+                       name CDATA #IMPLIED
+		       abbrev ID #REQUIRED
+                       %diff.att;>
+]]>
+<!ELEMENT property (switched?, (description, switched?)?)>
+<!ATTLIST property 
+      name CDATA #REQUIRED
+      arity (singleton|set|sequence) #REQUIRED
+      required (true|false | unspecified-in-1.0) #REQUIRED
+      type CDATA #IMPLIED
+      typefilter CDATA #IMPLIED
+      valueType (literal|micro-component|component|infoitem) #REQUIRED     
+>
+<!--* 2010-06-04:  MSM adds 'unspecified-in-1.0' as a rather ugly
+    * hack to make it possible to generate a clean copy of 1.0
+    * from the 1.1 tool chain.  The value 'unspecified' should
+    * NOT be used except for recreating 1.0 text. *-->
+<!--* 2011-01-27: MSM adds typefilter attribute to handle
+    * cases like {member type definition} where the value is 
+    * not just any component of a given kind but only those
+    * accepted by some filter (primitive or ordinary simple type
+    * definitions, not any old simple type definitions).
+    * Hack with low hack value, but it seems the least invasive
+    * option.
+    *-->
+
+<!ENTITY % local.termdef.class "|propdef">
+<!--* MSM adds ulist to local.termdef.mix in a desperate attempt to
+    * allow the definitions of PSVI subsets to be legible.
+    * Experimental (but if you roll it back, be prepared to help
+    * fix breakage in the back matter of structures).
+    * HST removes space, which causes IE to barf -->
+<!ENTITY % local.termdef.mix "|olist|ulist|glist">
+<!ENTITY % local.ref.class "|compref|propref|xpropref">
+
+<!--* msm adds codeScrap as part of LP experiment *-->
+<!ENTITY % local.illus.class "|compdef|microCompdef|reprdef|proplist|imagemap|schemaComp
+           |codeScrap" >
+
+<!ENTITY expanded-name '<xspecref 
+         href="http://www.w3.org/TR/2004/REC-xml-names11-20040204/#dt-expname"
+         >expanded name</xspecref>' >
+<!ENTITY expanded-names '<xspecref 
+         href="http://www.w3.org/TR/2004/REC-xml-names11-20040204/#dt-expname"
+         >expanded names</xspecref>' >
+<!ENTITY i-attribute "<xpropref href='http://www.w3.org/TR/xml-infoset/#infoitem.element'>attribute</xpropref>">
+<!ENTITY i-attributes "<xpropref href='http://www.w3.org/TR/xml-infoset/#infoitem.element'>attributes</xpropref>">
+<!ENTITY i-children "<xpropref href='http://www.w3.org/TR/xml-infoset/#infoitem.element'>children</xpropref>">
+<!ENTITY i-child "<xpropref href='http://www.w3.org/TR/xml-infoset/#infoitem.element'>child</xpropref>">
+<!ENTITY i-attributes "<xpropref href='http://www.w3.org/TR/xml-infoset/#infoitem.element'>attributes</xpropref>">
+<!ENTITY i-ccode "<xpropref
+href='http://www.w3.org/TR/xml-infoset/#infoitem.character'>character code</xpropref>">
+<!ENTITY i-owner "<xpropref href='http://www.w3.org/TR/xml-infoset/#infoitem.attribute'>owner element</xpropref>">
+<!ENTITY i-ans "<xpropref href='http://www.w3.org/TR/xml-infoset/#infoitem.attribute'>namespace name</xpropref>">
+<!ENTITY i-aln "<xpropref href='http://www.w3.org/TR/xml-infoset/#infoitem.attribute'>local name</xpropref>">
+<!ENTITY i-ens "<xpropref href='http://www.w3.org/TR/xml-infoset/#infoitem.element'>namespace name</xpropref>">
+<!ENTITY i-eln "<xpropref href='http://www.w3.org/TR/xml-infoset/#infoitem.element'>local name</xpropref>">
+<!ENTITY insnss '&in-scope_namespaces;' >
+<!ENTITY in-scope_namespaces '<xpropref href="http://www.w3.org/TR/xml-infoset/#infoitem.element">in-scope namespaces</xpropref>'>
+<!ENTITY ii-a "http://www.w3.org/TR/xml-infoset/#infoitem.attribute">
+<!ENTITY ii-c "http://www.w3.org/TR/xml-infoset/#infoitem.comment">
+<!ENTITY ii-ch "http://www.w3.org/TR/xml-infoset/#infoitem.character">
+<!ENTITY ii-d "http://www.w3.org/TR/xml-infoset/#infoitem.document">
+<!ENTITY ii-e "http://www.w3.org/TR/xml-infoset/#infoitem.element">
+<!ENTITY ii-eu "http://www.w3.org/TR/xml-infoset/#infoitem.entity.unparsed">
+<!ENTITY ii-n "http://www.w3.org/TR/xml-infoset/#infoitem.namespace">
+<!ENTITY ii-p "http://www.w3.org/TR/xml-infoset/#infoitem.pi">
+
+<!--* allow ghosts in member list. *-->
+<!--    orglist: Organization member list. -->
+<!ENTITY % orglist.element "IGNORE">
+<!ELEMENT orglist (member|ghost)+>
+<!ATTLIST member %diff.att; >
+
+
+<!--* remove '#FIXED' from schemaDump and schemaProper attributes, as it seems to serve
+    * only to create validity problems. *-->
+<!ATTLIST spec 
+     dgdf_desc CDATA #IMPLIED
+     schemaProper CDATA "./XMLSchema.xsd"
+     schemaDump CDATA "./XMLSchema.xsd.dmp"
+     docStatus CDATA #FIXED "final">
+<!ENTITY % xmlspecdtd SYSTEM "xmlspec.dtd">
+<!ENTITY % local.p.pcd.mix " | ghost"> 
+<!ENTITY % local.obj.mix " | ghost">
+<!ENTITY % local.div.mix " | ghost">
+<!ENTITY % local.ref.class " ">
+<!ENTITY % local.label.pcd.mix " |bibref|specref|termref|titleref
+                                |xspecref|xtermref%local.ref.class;">
+                               <!-- add refs %ref.class -->
+<!ENTITY % authlist.element 'IGNORE'><!--* We override authlist *-->
+
+
+
+%xmlspecdtd;                                     <!-- load the official DTD -->
+
+
+
+<!ELEMENT display (%p.pcd.mix;)* > <!-- something displayed on a separate line for emphasis, alternate to mention, displayed math, etc. -->
+<!ATTLIST display %common.att; >
+
+<!ENTITY % schema.authlist.element "INCLUDE">
+<![%schema.authlist.element;[
+<!ELEMENT authlist (author+|authlist+)>
+]]>
+
+<!--* msm adds codeScrap etc. as part of LP experiment *-->
+<!ELEMENT codeScrap (head, codeBlock) >
+<!ATTLIST codeScrap 
+          id ID #REQUIRED
+          lang NMTOKEN #IMPLIED
+          file CDATA #IMPLIED
+          %diff.att;
+>
+<!ELEMENT codeBlock (#PCDATA | scrapref | scraplink | phrase)* 
+>
+<!ELEMENT scrapref  (#PCDATA) >
+<!ATTLIST scrapref 
+          scrap IDREF #REQUIRED
+          %diff.att;
+>
+<!ELEMENT scraplink  (#PCDATA) >
+<!ATTLIST scraplink
+          scrap IDREF #REQUIRED
+>
+<!--* MSM moves these decls into common DTD, in a quick and dirty attempt
+    * to make structures.xml valid. 
+    * 2005-08-29 *-->
+<!ELEMENT head (%head.pcd.mix; | %ref.class;)* >  <!-- davep: added ref.class -->
+<!ATTLIST head alt CDATA #IMPLIED >
+
+<!ELEMENT string (#PCDATA)>  <!-- "code" string that is mentioned, not used -->
+
+<!ELEMENT description (%div.mix;)*>
+
+<!--* 2009-07-17 : CMSMcQ : experimentally add cool-uris notation, to flag
+    *                       PIs that preserve old section IDs, etc.
+    *-->
+<!NOTATION cool-uris SYSTEM "http://www.w3.org/XML/2009/07/xsde/cool-uris.html" >

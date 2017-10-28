@@ -1,0 +1,578 @@
+<!DOCTYPE HTML>
+
+<!--XSLT Processor: Saxonica SAXON HE 9.6.0.7--><html lang="en">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <title>XQuery Scripting Extension 1.0 Requirements</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><style type="text/css">
+/* from xsl:query.xsl (C) */          
+code           { font-family: monospace; }
+
+div.constraint,
+div.issue,
+div.note,
+div.notice     { margin-left: 2em; }
+
+div.issue
+p.title        { margin-left: -2em; }
+
+ol.enumar      { list-style-type: decimal; }
+ol.enumla      { list-style-type: lower-alpha; }
+ol.enumlr      { list-style-type: lower-roman; }
+ol.enumua      { list-style-type: upper-alpha; }
+ol.enumur      { list-style-type: upper-roman; }
+
+li p           { margin-top: 0.3em;
+                 margin-bottom: 0.3em; }
+
+sup small      { font-style: italic;
+                 color: #8F8F8F;
+               }
+    
+/* from xsl:query.xsl (D) */          
+div.exampleInner pre { margin-left: 1em;
+                       margin-top: 0em; margin-bottom: 0em}
+                       
+pre.small { font-size: small }                       
+div.exampleOuter {border: 4px double gray;
+                  margin: 0em; padding: 0em}
+div.exampleInner { background-color: #d5dee3;
+                   padding: 4px; margin: 0em }
+                   
+div.exampleInner table { border: 0;
+                         border-spacing: 0;
+                       }
+                   
+div.exampleInner td { vertical-align: baseline;
+                      padding: 0;
+                    }
+                   
+div.exampleWrapper { margin: 4px }
+div.exampleHeader { font-weight: bold;
+                    margin: 4px}
+                    
+div.proto { border: 0;
+            border-spacing: 0; 
+          }
+
+div.issue { border-bottom-color: black;
+            border-bottom-style: solid;
+	    border-bottom-width: 1pt;
+	    margin-bottom: 20pt;
+}
+
+th.issue-toc-head { border-bottom-color: black;
+                    border-bottom-style: solid;
+                    border-bottom-width: 1pt;
+}
+
+      
+/* from xsl-query.xsl (B) */    
+table.small                             { 
+                                          font-size: x-small; 
+                                          border-collapse: collapse;
+                                        }
+table.small td                          { 
+                                          border: 1px solid #000000;
+                                          padding: 5px;
+                                        }
+table.small th                          { 
+                                          border: 1px solid #000000;
+                                          padding: 5px;
+                                          text-align: center;
+                                        }
+
+table.medium                            { 
+                                          font-size: smaller;
+                                          border-collapse: collapse; 
+                                        }
+table.medium td                         { 
+                                          border: 1px solid #000000;
+                                          padding: 5px;
+                                        }
+table.medium th                         { 
+                                          border: 1px solid #000000;
+                                          padding: 5px;
+                                          text-align: center;
+                                        }
+                                        
+table.no-code-break code {
+  white-space: nowrap;
+}
+
+table.longlastcol td {
+  vertical-align: baseline;
+  text-align: left;
+}
+
+a.judgment:visited, a.judgment:link     { font-family: sans-serif;
+                              	          color: black; 
+                              	          text-decoration: none }
+a.processing:visited, a.processing:link { color: black; 
+                              		        text-decoration: none }
+a.env:visited, a.env:link               { color: black; 
+                                          text-decoration: none }</style><link rel="stylesheet" type="text/css" href="https://www.w3.org/StyleSheets/TR/2016/W3C-WG-NOTE.css">
+   </head>
+   <body>
+      <div class="head">
+         <p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt="W3C" height="48" width="72"></a></p>
+         
+         <h1><a id="title"></a>XQuery Scripting Extension 1.0 Requirements
+         </h1>
+         
+         <h2><a id="w3c-doctype"></a>W3C Working Group Note 20 June 2017
+         </h2>
+         <dl>
+            <dt>This version:</dt>
+            <dd>
+               <a href="https://www.w3.org/TR/2017/NOTE-xquery-sx-10-requirements-20170620/">https://www.w3.org/TR/2017/NOTE-xquery-sx-10-requirements-20170620/</a>
+               
+            </dd>
+            <dt>Latest version:</dt>
+            <dd>
+               <a href="https://www.w3.org/TR/xquery-sx-10-requirements/">https://www.w3.org/TR/xquery-sx-10-requirements/</a>
+               
+            </dd>
+            <dt>Previous version:</dt>
+            <dd><a href="https://www.w3.org/TR/2007/WD-xquery-sx-10-requirements-20070323/">https://www.w3.org/TR/2007/WD-xquery-sx-10-requirements-20070323/</a></dd>
+            <dt>Editors:</dt>
+            <dd>Daniel Engovatov, BEA <a href="mailto:dengovatov@bea.com">&lt;dengovatov@bea.com&gt;</a></dd>
+            <dd>Daniela Florescu, Oracle Corporation <a href="mailto:dana.florescu@oracle.com">&lt;dana.florescu@oracle.com&gt;</a></dd>
+            <dd>Giorgio Ghelli, Pisa University <a href="mailto:ghelli@di.unipi.it">&lt;ghelli@di.unipi.it&gt;</a></dd>
+         </dl>
+         <p class="copyright"><a href="https://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a>&nbsp;©&nbsp;2017&nbsp;<a href="https://www.w3.org/"><abbr title="World Wide Web Consortium">W3C</abbr></a><sup>®</sup> (<a href="https://www.csail.mit.edu/"><abbr title="Massachusetts Institute of Technology">MIT</abbr></a>, <a href="https://www.ercim.eu/"><abbr title="European Research Consortium for Informatics and Mathematics">ERCIM</abbr></a>, <a href="https://www.keio.ac.jp/">Keio</a>, <a href="http://ev.buaa.edu.cn/">Beihang</a>). W3C <a href="https://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="https://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="https://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.
+         </p>
+         <hr>
+      </div>
+      <div>
+         
+         <h2><a id="abstract"></a>Abstract
+         </h2>
+         <p>This document specifies goals and requirements for the XQuery Scripting Extension.</p>
+      </div>
+      <div>
+         
+         <h2><a id="status"></a>Status of this Document
+         </h2>
+         <p><em>This section describes the status of this
+               document at the time of its publication.
+               Other documents may supersede this document.
+               A list of current W3C publications and the latest
+               revision of this technical report can be found in the
+               <a href="https://www.w3.org/TR/">W3C technical reports index</a>
+               at https://www.w3.org/TR/.</em></p>
+         <p>This document is governed by the
+            <a id="w3c_process_revision" href="https://www.w3.org/2017/Process-20170301/">1 March 2017 W3C Process Document</a>. 
+         </p>
+         <p>This is a <a href="https://www.w3.org/2015/Process-20150901/#Note">Working Group Note</a> as described in the <a href="https://www.w3.org/2015/Process-20150901/">Process Document</a>. 
+            It was developed by the W3C <a href="https://www.w3.org/XML/Query/">XML Query Working Group</a>,
+            which is part of the <a href="https://www.w3.org/XML/Activity">XML Activity</a>.
+            
+         </p>
+         <p>This Working Group Note has been published in order to
+            document the work that the XML Query Working Group has done in the area of providing
+            an
+            imperative extension to XQuery.  The WG was unable to achieve consensus on several
+            significant aspects of this technology and determined to terminate work on the project
+            in mid-2014. 
+         </p>
+         <p>Please report errors in this document using W3C's
+            <a href="https://www.w3.org/Bugs/Public/">public Bugzilla system</a>
+            (instructions can be found at
+            <a href="https://www.w3.org/XML/2005/04/qt-bugzilla">https://www.w3.org/XML/2005/04/qt-bugzilla</a>).
+            If access to that system is not feasible, you may send your comments
+            to the W3C XSLT/XPath/XQuery public comments mailing list,
+            <a href="mailto:public-qt-comments@w3.org">public-qt-comments@w3.org</a>.
+            It will be very helpful if you include the string 
+            “[SXReq]”
+            in the subject line of your report, whether made in Bugzilla or in email.
+            Please use multiple Bugzilla entries (or, if necessary, multiple email messages)
+            if you have more than one comment to make.
+            Archives of the comments and responses are available at
+            <a href="https://lists.w3.org/Archives/Public/public-qt-comments/">https://lists.w3.org/Archives/Public/public-qt-comments/</a>. 
+         </p>
+         <p>Publication as a <a href="https://www.w3.org/2015/Process-20150901/#Note">Working Group Note</a>
+            does not imply endorsement by the W3C Membership. 
+            This is a draft document and may be updated, replaced or obsoleted
+            by other documents at any time. 
+            It is inappropriate to cite this document as other than work in progress.
+         </p>
+         <p>This document was produced by a group operating under the
+            <a href="https://www.w3.org/Consortium/Patent-Policy-20040205/">5 February 2004
+               W3C Patent Policy</a>.
+            W3C maintains a 
+            <a href="https://www.w3.org/2004/01/pp-impl/18797/status#disclosures" rel="disclosure">public list of any patent disclosures</a>
+            made in connection with the deliverables of the group; 
+            that page also includes instructions for disclosing a patent.
+            An individual who has actual knowledge of a patent 
+            which the individual believes contains
+            <a href="https://www.w3.org/Consortium/Patent-Policy-20040205/#def-essential">Essential Claim(s)</a>
+            must disclose the information in accordance with
+            <a href="https://www.w3.org/Consortium/Patent-Policy-20040205/#sec-Disclosure">
+               section 6 of the W3C Patent Policy</a>. 
+         </p>
+      </div>
+      <nav id="toc">
+         
+         <h2><a id="contents"></a>Table of Contents
+         </h2>
+         <ol class="toc">
+            <li><a href="#goals"><span class="secno">1 </span><span class="content">Goals</span></a>
+               
+               <ol class="toc"></ol>
+            </li>
+            <li><a href="#usage-scenarios"><span class="secno">2 </span><span class="content">Usage Scenarios</span></a>
+               
+               <ol class="toc"></ol>
+            </li>
+            <li><a href="#requirements"><span class="secno">3 </span><span class="content">Requirements</span></a>
+               
+               <ol class="toc">
+                  <li><a href="#terminology"><span class="secno">3.1 </span><span class="content">Terminology</span></a></li>
+                  <li><a href="#general-requiremens"><span class="secno">3.2 </span><span class="content">General Requirements</span></a></li>
+                  <li><a href="#relationship-to-xquery"><span class="secno">3.3 </span><span class="content">Relationship to XQuery</span></a></li>
+                  <li><a href="#functionalities"><span class="secno">3.4 </span><span class="content">Functionalities</span></a></li>
+               </ol>
+            </li>
+            <li><a href="#references"><span class="secno">A </span><span class="content">References</span></a>
+               
+               <ol class="toc"></ol>
+            </li>
+         </ol>
+      </nav>
+      <hr>
+      <div class="body">
+         <div class="div1">
+            
+            <h2><a id="goals"></a>1 Goals
+            </h2>
+            <p>This document describes the requirements for the XQuery Scripting
+               Extensions.
+               XQuery <a href="#xquery">[XQuery 1.0]</a>
+               is a functional language that is Turing-complete and well suited
+               to write code that ranges from simple queries to complete
+               applications. However, some categories of applications are more easily
+               implemented by combining <a href="#xquery">XQuery</a>
+               capabilities with some imperative
+               features, such as the ability to explicitly manage internal
+               states. The same issue stands for <a href="#xquery">XQuery</a>
+               enriched with the <a href="#updatef">[XQuery Update Facility 1.0]</a>
+               (hereafter,
+               				<a href="#terminology-XQU">XQuery With Updates</a>).
+               
+               The scripting extension is intended to overcome this problem, and allow
+               programmers to write such applications without relying on embedding
+               				<a href="#xquery">XQuery</a> into an external language.
+            </p>
+         </div>
+         <div class="div1">
+            
+            <h2><a id="usage-scenarios"></a>2 Usage Scenarios
+            </h2>
+            <p>The following usage scenarios describe ways in which the  
+               XQuery Scripting Extension may be used in various environments, and
+               represent a wide 
+               range of activities and needs that illustrate the problem space to be
+               addressed. They are intended to be used as design cases during the
+               development of the XQuery Scripting Extension, and should be reviewed when
+               critical decisions are made. These usage scenarios should also prove
+               useful in helping non-members of the XML Query Working Group understand
+               the intent and goals of the
+               project.
+            </p>
+            <p>While <a href="#xquery">XQuery</a> is very well suited to
+               perform the main tasks of XML exploration and transformation that are
+               common to most of these cases, some limited extensions would make it
+               easier to use <a href="#xquery">XQuery</a> to write some complex
+               applications that belong to the following usage scenarios.
+            </p>
+            <dl>
+               <dt class="label">2.1 Applications that perform complex manipulations on
+                  	  persistent XML data
+               </dt>
+               <dd>
+                  <p>Writing applications that modify persistent data,
+                     	    stored in files or in databases. Such applications may
+                     	    need to operate on data in stages, and may need to verify
+                     	    that the modified data meet some constraints.
+                  </p>
+               </dd>
+               <dt class="label">2.2 Complex XML to XML transformations</dt>
+               <dd>
+                  <p>Writing code that performs complex XML to XML transformations.</p>
+               </dd>
+               <dt class="label">2.3 Implementation of web services</dt>
+               <dd>
+                  <p>Writing code that implements a web service, with the
+                     	    ability to access and modify persistent XML data.
+                  </p>
+               </dd>
+               <dt class="label">2.4 Processing RSS feeds</dt>
+               <dd>
+                  <p>Writing code that generates or aggregates RSS feeds.</p>
+               </dd>
+               <dt class="label">2.5 Web service message composition and orchestration</dt>
+               <dd>
+                  <p>Writing code that orchestrates web services.</p>
+               </dd>
+               <dt class="label">2.6 XML application integration</dt>
+               <dd>
+                  <p>Writing scripting code that calls both
+                     							<a href="#terminology-XQU">XQuery
+                        							With
+                        							Updates</a> and external
+                     	    functions, which may manipulate state and perform
+                     							<a href="#side-effects">side-effects</a>.
+                  </p>
+               </dd>
+               <dt class="label">2.7 XML data cleaning or normalization</dt>
+               <dd>
+                  <p>Writing code that performs data cleaning
+                     operations.
+                  </p>
+               </dd>
+               <dt class="label">2.8 XML data integration</dt>
+               <dd>
+                  <p>Writing code that accesses multiple data sources with
+                     the ability of reflecting updates from the integrated data
+                     to the data sources.
+                  </p>
+               </dd>
+               <dt class="label">2.9 XML data verification</dt>
+               <dd>
+                  <p>Expressing complex constraints on XML data.</p>
+               </dd>
+            </dl>
+         </div>
+         <div class="div1">
+            
+            <h2><a id="requirements"></a>3 Requirements
+            </h2>
+            <div class="div2">
+               
+               <h3><a id="terminology"></a>3.1 Terminology
+               </h3>
+               <p>In this specification the words
+                  					
+                  					<a href="#RFC2119">must</a>,
+                  					<a href="#RFC2119">must not</a>,
+                  					<a href="#RFC2119">should</a>,
+                  					<a href="#RFC2119">should not</a>,
+                  					<a href="#RFC2119">may</a>
+                  					and
+                  					<a href="#RFC2119">recommended</a>, when 
+                  are to be interpreted as described in <a href="#RFC2119">[RFC 2119]</a>.
+                  When these words
+                  					
+                  are used in this technical sense, they occur as a hyperlink to <a href="#RFC2119">[RFC 2119]</a>. These words will also be used with their conventional English
+                  meaning, in which case there is no hyperlink.
+               </p>
+               <dl>
+                  <dt class="label"><a id="terminology-XQU"></a>XQuery With Updates
+                  </dt>
+                  <dd>
+                     <p>This term identifies
+                        								<a href="#xquery">XQuery</a>
+                        								extended with the
+                        								<a href="#updatef">[XQuery Update Facility 1.0]</a>.
+                     </p>
+                  </dd>
+                  <dt class="label"><a id="side-effects"></a>Side-effects
+                  </dt>
+                  <dd>
+                     <p>We say that an expression has side-effects if its evaluation may affect the external
+                        environment or may affect the result of the subsequent evaluation of another expression.
+                     </p>
+                  </dd>
+               </dl>
+            </div>
+            <div class="div2">
+               
+               <h3><a id="general-requiremens"></a>3.2 General Requirements
+               </h3>
+               <dl>
+                  <dt class="label">3.2.1 Compatibility with other extensions</dt>
+                  <dd>
+                     <p>The XQuery Scripting Extension
+                        								<a href="#RFC2119">must
+                           								not</a>
+                        								preclude the use of the 
+                        other XQuery extensions developed by the Working Group.
+                     </p>
+                  </dd>
+                  <dt class="label">3.2.2 Protocol Independence</dt>
+                  <dd>
+                     <p>The XQuery Scripting Extension
+                        								<a href="#RFC2119">must</a>
+                        								be defined independently
+                        of any protocols with which it is used.
+                     </p>
+                  </dd>
+                  <dt class="label">3.2.3 Language Syntax</dt>
+                  <dd>
+                     <p>The XQuery Scripting Extension <a href="#RFC2119">must</a> have
+                        more than one syntax binding. One syntax <a href="#RFC2119">must</a> 
+                        				be convenient for humans to
+                        read and write. One syntax <a href="#RFC2119">must</a>
+                        be expressed in XML in a way that reflects the underlying structure
+                        of the operations.
+                     </p>
+                  </dd>
+                  <dt class="label">3.2.4 Static Type Checking</dt>
+                  <dd>
+                     <p>The XQuery Scripting Extension
+                        								<a href="#RFC2119">should</a>
+                        								provide an optional
+                        static type checking feature.
+                     </p>
+                  </dd>
+                  <dt class="label">3.2.5 Ease of programming</dt>
+                  <dd>
+                     <p>The XQuery Scripting Extension
+                        								<a href="#RFC2119">may</a>
+                        								include syntactic
+                        constructs to facilitate common programming tasks.
+                     </p>
+                  </dd>
+               </dl>
+            </div>
+            <div class="div2">
+               
+               <h3><a id="relationship-to-xquery"></a>3.3 Relationship to <a href="#xquery">XQuery</a></h3>
+               <dl>
+                  <dt class="label">3.3.1 Based on Data Model</dt>
+                  <dd>
+                     <p>The XQuery Scripting Extension <a href="#RFC2119">must</a>
+                        be defined on the <a href="#datamodel">[XQuery 1.0 and XPath 2.0 Data Model]</a>.
+                     </p>
+                  </dd>
+                  <dt class="label">3.3.2 Based on <a href="#xquery">XQuery</a></dt>
+                  <dd>
+                     <p>The XQuery Scripting Extension <a href="#RFC2119">must</a> be based on <a href="#xquery">XQuery</a>. The Scripting Extension may constrain the evaluation order more than <a href="#xquery">XQuery</a> evaluation model, but the evaluation of an expression that belongs to the syntax
+                        of <a href="#xquery">XQuery</a> <a href="#RFC2119">must</a> result in a value, or in an error, that is one of those allowed by
+                        								<a href="#xquery">XQuery</a>
+                        								semantics.
+                     </p>
+                  </dd>
+                  <dt class="label">3.3.3 Based on <a href="#terminology-XQU">XQuery With Updates</a></dt>
+                  <dd>
+                     <p>The XQuery Scripting Extension
+                        								<a href="#RFC2119">should</a> be based on
+                        								<a href="#terminology-XQU">XQuery With Updates</a>.
+                        If it is based on <a href="#terminology-XQU">XQuery With Updates</a>,
+                        it may constrain the evaluation order in ways that are not required by  
+                        								<a href="#terminology-XQU">XQuery With Updates</a> evaluation model. However, 
+                        								 if both 
+                        								<a href="#terminology-XQU">XQuery With Updates</a>
+                        								and the XQuery Scripting Extension specify a result value for a given expression,
+                        
+                        								they <a href="#RFC2119">must</a> specify the same result value. 
+                        
+                     </p>
+                  </dd>
+                  <dt class="label">3.3.4 Optimization</dt>
+                  <dd>
+                     <p>The XQuery Scripting Extension <a href="#RFC2119">should</a> be designed in such a way that the ability of a processor to optimize queries or
+                        parts of a query that make no use of the extension is not compromised.
+                     </p>
+                  </dd>
+               </dl>
+            </div>
+            <div class="div2">
+               
+               <h3><a id="functionalities"></a>3.4 Functionalities
+               </h3>
+               <dl>
+                  <dt class="label">3.4.1 Controlling the order of evaluation of functions
+                     and expressions that have <a href="#side-effects">side-effects</a></dt>
+                  <dd>
+                     <p>It <a href="#RFC2119">must</a> be possible for the
+                        programmer to control the evaluation order of expressions and function
+                        calls that perform <a href="#side-effects">side-effects</a>.
+                     </p>
+                  </dd>
+                  <dt class="label">3.4.2 Preserving state during computation</dt>
+                  <dd>
+                     <p>It <a href="#RFC2119">must</a> be possible to write code where pieces of data are bound to
+                        variables which are passed to further stages of the computation, and it
+                        								<a href="#RFC2119">must</a> be possible to modify the value associated to such variables.
+                     </p>
+                  </dd>
+                  <dt class="label">3.4.3 Returning values from expressions that have <a href="#side-effects">side-effects</a></dt>
+                  <dd>
+                     <p>It <a href="#RFC2119">must</a> be possible to write code that has <a href="#side-effects">side-effects</a> and returns a value.
+                     </p>
+                  </dd>
+                  <dt class="label">3.4.4 Ability to see <a href="#side-effects">side-effects</a> during computation
+                  </dt>
+                  <dd>
+                     <p>It <a href="#RFC2119">must</a> 
+                        be possible for an expression to observe some <a href="#side-effects">side-effects</a> caused by other expressions.
+                     </p>
+                  </dd>
+                  <dt class="label">3.4.5 Error handling</dt>
+                  <dd>
+                     <p>It <a href="#RFC2119">must</a> be possible to control
+                        error propagation and to perform 
+                        alternative actions when the evaluation of an expression raises an error.
+                     </p>
+                  </dd>
+                  <dt class="label">3.4.6 Controlling the scope of snapshot, isolation, atomicity</dt>
+                  <dd>
+                     <p>The extension <a href="#RFC2119">may</a> provide the
+                        ability to control the scope of snapshots.
+                        The extension <a href="#RFC2119">may</a> provide the
+                        ability to identify pieces of code whose execution should be isolated
+                        from the outer environment. It
+                        								<a href="#RFC2119">may</a> be possible
+                        to indicate that some pieces of code must be executed atomically, with
+                        respect to failures.
+                     </p>
+                  </dd>
+               </dl>
+            </div>
+         </div>
+      </div>
+      <div class="back">
+         <div class="div1">
+            
+            <h2><a id="references"></a>A References
+            </h2>
+            <dl>
+               <dt class="label"><span><a id="RFC2119"></a>RFC 2119</span></dt>
+               <dd>
+                  <div>S. Bradner.
+                     					<em>Key Words for use in
+                        					RFCs to Indicate Requirement
+                        					Levels.</em> IETF RFC 2119. 
+                     See <a href="http://www.ietf.org/rfc/rfc2119.txt">http://www.ietf.org/rfc/rfc2119.txt</a>.
+                  </div>
+               </dd>
+               <dt class="label"><span><a id="datamodel"></a>XQuery 1.0 and XPath 2.0 Data Model</span></dt>
+               <dd>
+                  <div>World Wide Web
+                     Consortium. <em>XQuery 1.0 and XPath 2.0 Data Model</em>. 
+                     W3C Recommendation, 23 January 2007. 
+                     See <a href="http://www.w3.org/TR/xpath-datamodel/">http://www.w3.org/TR/xpath-datamodel/</a>.
+                  </div>
+               </dd>
+               <dt class="label"><span><a id="xquery"></a>XQuery 1.0</span></dt>
+               <dd>
+                  <div>World Wide Web Consortium. <em>XQuery
+                        1.0</em>. 
+                     W3C Recommendation, 23 January 2007. 
+                     See <a href="http://www.w3.org/TR/xquery/">http://www.w3.org/TR/xquery/</a>.
+                  </div>
+               </dd>
+               <dt class="label"><span><a id="updatef"></a>XQuery Update Facility 1.0</span></dt>
+               <dd>
+                  <div>World Wide Web Consortium. 
+                     				<em>XQuery Update Facility1.0 </em>. W3C Candidate Recommendation, 14 March 2008. 
+                     				See <a href="http://www.w3.org/TR/xqupdate/">http://www.w3.org/TR/xquery-update-10/</a>.
+                  </div>
+               </dd>
+            </dl>
+         </div>
+      </div><script src="//www.w3.org/scripts/TR/2016/fixup.js"></script>
+      <p role="navigation" id="back-to-top"><a href="#toc"><abbr title="Back to top">↑</abbr></a></p></body>
+</html>

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding='utf-8'?>
+
+<!-- Build file for use with Ant (http://jakarta.apache.org/ant). -->
+<project name="language documents" default="all" basedir=".">
+
+  <description>
+This buildfile is used to build the XPath family of grammar descriptions,
+specifications, and parser tests.
+
+Properties (first value given is the default):
+--------------------------------------
+Property name: spec
+Property values: xquery|xpath|pathx1
+Description: Specifies the desired grammar subset for many targets.
+--------------------------------------
+Property name: debug
+Property values: false|true
+Description: Turns debugging trace on for the parsers.
+--------------------------------------
+
+You can set a property from the command line via -Dpropname=propvalue.
+
+Keep in mind that you can use multiple targets.
+Example:  build jars test
+</description>
+
+  <property name="grammar-file" value="../grammar-11/xpath-grammar.xml"/>
+  <property name="strip-grammar-file" value="../../style/strip.xsl"/>
+  <property name="assemble-spec-file" value="../../style/assemble-parser-note.xsl"/>
+  <property name="grammar2spec-file" value="../../style/grammar2spec.xsl"/>
+  <property name="style-spec-file" value="../../style/xmlspec-override.xsl"/>
+  <property name="style-shared-file" value="../../style/lexnote-shared.xsl"/>
+  <property name="spec-file" value="XPathXQuery.xml"/>
+  <property name="issues-file" value="../issues/issues.xml"/>
+  <property name="doc-pub-location-name" value="."/>
+  <property name="spectype" value="html"/>
+  <property name="xquery-spec-out-name"
+      value="${doc-pub-location-name}/xquery.${spectype}"/>
+  <property name="xpath-spec-out-name"
+      value="${doc-pub-location-name}/xpath.${spectype}"/>
+  <property name="shared-out-name"
+      value="${doc-pub-location-name}/shared.${spectype}"/>
+
+  <property name="xpath-spec-out-name" value="xpath"/>
+  <property name="xquery-spec-out-name" value="xquery"/>
+
+  <property name="specxsl" value="shared.xsl"/>
+
+  <property name="xpath-temp-dir" value="temp-xpath"/>
+  <property name="xquery-temp-dir" value="temp-xquery"/>
+  <property name="shared-temp-dir" value="temp-shared"/>
+
+  <property name="xslt-processor" value="xalan"/>
+
+  <path id="saxon.classpath">
+    <pathelement location="../lib/saxon.jar"/>
+    <pathelement location="../lib/resolver.jar"/>
+    <pathelement location="../lib/xml-apis.jar"/>
+    <pathelement location="../lib/xercesImpl.jar"/>
+  </path>
+
+  <path id="xalan.classpath">
+    <pathelement location="../lib/xalan.jar"/>
+    <pathelement location="../lib/resolver.jar"/>
+    <pathelement location="../lib/xml-apis.jar"/>
+    <pathelement location="../lib/xercesImpl.jar"/>
+  </path>
+
+  <!-- Turns debugging trace on for the parsers. -->
+  <property name="debug" value="false"/>
+
+  <!-- The value of this depends on how well color-changes works for a spec.  -->
+  <property name="color-changes" value="yes"/>
+
+  <!--============= Build everything important ===============-->
+  <target name="all" depends="validate,xquery,xpath,shared,xpath1,tidy-xpqlexnote.html"
+    description="Build xpqlexnote.html">
+  </target>
+
+  <!-- ============= Spec targets =============== -->
+
+  <target name="tidy-xpqlexnote.html" description="Tidy xpqlexnote.html"
+	  depends="xpqlexnote.html">
+    <exec executable="tidy">
+      <arg value="-q"/>
+      <arg value="-latin1"/>
+      <arg value="-mn"/>
+      <arg value="-asxml"/>
+      <arg value="xpqlexnote.html"/>
+    </exec>
+  </target>
+
+  <target name="validate" description="Validate xpath-grammar.xml">
+    <xmlvalidate file="${grammar-file}" 
+           failonerror="yes" lenient="no" warn="yes"
+             classname="org.apache.xerces.parsers.SAXParser"
+             classpath="../lib/xerces.jar">
+    </xmlvalidate>
+  </target>
+
+  <target name="xpath" description="Build temp-xpath-grammar.xml">
+   <xslt style="${strip-grammar-file}" in="${grammar-file}"
+      out="temp-xpath-grammar.xml"
+      force="yes" extension=".xml" destdir=".">
+      <param name="spec1" expression="xpath"/>
+			<!-- param name="spec2" expression="xquery"/ -->
+			<param name="grammar-file" expression="${grammar-file}"/>
+    </xslt>
+  </target>
+
+  <target name="xpath1" description="Build xpath 1.0 temp grammar">
+    <xslt style="${strip-grammar-file}" in="${grammar-file}"
+	  out="temp-pathx1-grammar.xml"
+	  force="yes" extension=".xml" destdir=".">
+      <param name="spec1" expression="pathx1"/>
+      <param name="grammar-file" expression="${grammar-file}"/>
+    </xslt>
+  </target>
+
+  <target name="xquery" description="Build temp-xquery-grammar.xml">
+    <xslt style="${strip-grammar-file}" in="${grammar-file}"
+      out="temp-xquery-grammar.xml"
+      force="yes" extension=".xml" destdir=".">
+      <param name="spec1" expression="xquery11"/>
+      <param name="grammar-file" expression="${grammar-file}"/>
+    </xslt>
+  </target>
+
+  <target name="shared" description="Build shared grammar (temp-grammar.xml)">
+    <xslt style="${assemble-spec-file}" in="xpqlexnote.xml"
+      out="${shared-temp-dir}/xquery-assembled.xml"
+      force="yes" extension=".xml"
+      destdir=".">
+      <param name="spec" expression="shared"/>
+      <param name="grammar-file"
+        expression="../grammar-11/${shared-temp-dir}/temp-grammar.xml"/>
+    </xslt>
+  </target>
+
+  <target name="xpqlexnote.html" description="Build xpqlexnote.html">
+    <mkdir dir="${shared-temp-dir}"/>
+
+    <xslt style="${style-shared-file}"
+	   in="${shared-temp-dir}/xquery-assembled.xml"
+	   out="temp_xpqlexnote.xml"
+	   force="yes" extension=".html" destdir=".">
+      <param name="color" expression="${color-changes}"/>
+      <param name="spec" expression="shared"/>
+      <param name="kwFull" expression="brief"/>
+      <param name="kwSort" expression="cluster"/>
+      <param name="issues-file" expression="${issues-file}"/>
+    </xslt>
+
+    <xslt style="../../style/reduce-shared-spans.xsl"
+	   in="../grammar-11/temp_xpqlexnote.xml"
+	   out="xpqlexnote.html"
+	   force="yes" extension=".html" destdir=".">
+      <param name="color" expression="${color-changes}"/>
+      <param name="spec" expression="shared"/>
+      <param name="kwFull" expression="brief"/>
+      <param name="kwSort" expression="cluster"/>
+      <param name="issues-file" expression="${issues-file}"/>
+    </xslt>
+  </target>
+
+<!--
+
+Is this stuff used anywhere?
+
+It does not appear to work, so I'm commenting it out rather than
+trying to fix it (since I do not know what it is for )
+
+  <target name="ebnf" description="Build ebnf.html" depends="xpath1">
+    <mkdir dir="${shared-temp-dir}"/>
+
+    <xslt style="${assemble-spec-file}" in="ebnf.xml"
+	  out="${shared-temp-dir}/bnf-assembled.xml"
+	  force="yes" extension=".xml"
+	  destdir=".">
+      <param name="spec" expression="pathx1"/>
+      <param name="grammar-file"
+	     expression="../grammar-11/${shared-temp-dir}/temp-pathx1-grammar.xml"/>
+    </xslt>
+
+    <xslt style="${style-shared-file}"
+	  in="${shared-temp-dir}/bnf-assembled.xml"
+	  out="temp_bnf.xml"
+	  force="yes" extension=".html" destdir=".">
+      <param name="color" expression="${color-changes}"/>
+      <param name="spec" expression="pathx1"/>
+      <param name="kwFull" expression="brief"/>
+      <param name="kwSort" expression="cluster"/>
+      <param name="issues-file" expression="${issues-file}"/>
+    </xslt>
+
+    <xslt style="../../style/non-w3c.xsl"
+	  in="../grammar-11/temp_bnf.xml"
+	  out="xpath1-ebnf.html"
+	  force="yes" extension=".html" destdir=".">
+      <param name="color" expression="${color-changes}"/>
+      <param name="spec" expression="shared"/>
+      <param name="kwFull" expression="brief"/>
+      <param name="kwSort" expression="cluster"/>
+      <param name="issues-file" expression="${issues-file}"/>
+    </xslt>
+
+	    <!- - style style="../../style/html-fix.xsl"
+		   in="${shared-temp-dir}/xquery-html.html"
+		   out="${xquery-spec-out-name}"
+		   force="yes" extension=".html" destdir="."/>
+	    <ant dir="../etc" antfile="build.xml" target="XQ"/ - ->
+  </target>
+-->
+
+</project>

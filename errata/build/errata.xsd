@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           elementFormDefault="qualified" 
+		   targetNamespace="http://www.w3.org/2007/04/qt-errata" 
+		   xmlns:er="http://www.w3.org/2007/04/qt-errata">
+
+  <xs:element name="errata">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="er:base-documents"/>
+		<xs:element ref="er:authlist"/>
+        <xs:element maxOccurs="unbounded" ref="er:erratum"/>
+      </xs:sequence>
+      <xs:attribute name="spec" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="base-documents">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="er:document"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="document">
+    <xs:complexType>
+      <xs:attribute name="href" use="required" type="xs:anyURI"/>
+      <xs:attribute name="media-type" use="required"/>
+      <xs:attribute name="name" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="authlist">
+    <xs:complexType>
+	  <xs:sequence>
+	    <xs:element ref="er:author" minOccurs="1" maxOccurs="unbounded"/>
+	  </xs:sequence>
+	</xs:complexType>
+  </xs:element>
+
+  <xs:element name="author">
+    <xs:complexType>
+	  <xs:sequence>
+	    <xs:element ref="er:author-name"/>
+		<xs:element ref="er:author-affiliation"/>
+		<xs:element ref="er:author-uri"/>
+	  </xs:sequence>
+	</xs:complexType>
+  </xs:element>
+
+  <xs:element name="author-name" type="xs:string"/>
+
+  <xs:element name="author-affiliation" type="xs:string"/>
+
+  <xs:element name="author-uri" type="xs:string"/>
+
+  <xs:element name="erratum">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="er:description"/>
+        <xs:element ref="er:bugzilla" minOccurs="1" maxOccurs="unbounded"/>
+        <xs:element ref="er:history" minOccurs="0"/>
+        <xs:element ref="er:impact" minOccurs="0"/>
+        <xs:element ref="er:abstract-change" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="category" use="required" type="er:categoryType"/>
+      <xs:attribute name="id" use="required" type="xs:ID"/>
+      <xs:attribute name="apply" type="er:applyType" default="true"/>
+	  <xs:attribute name="superseded" type="xs:IDREF" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="description">
+    <xs:complexType>
+	  <xs:group ref="er:existingTextGroup"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="bugzilla">
+    <xs:complexType>
+      <xs:attribute name="bug" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="history">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="er:event" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="event">
+    <xs:complexType>
+      <xs:attribute name="author" use="required" type="er:emailAddressType"/>
+      <xs:attribute name="date" use="required" type="xs:date"/>
+      <xs:attribute name="status" use="required" type="er:statusType"/>
+	    <xs:attribute name="note" use="optional" type="xs:string"/>
+	    <xs:attribute name="href" use="optional" type="xs:anyURI"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="impact">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="er:affects"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="affects">
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="xs:token"/>
+      <xs:attribute name="object" use="required" type="xs:NMTOKEN"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="abstract-change" abstract="true"/>
+
+  <xs:element name="change" substitutionGroup="er:abstract-change">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="er:old-text"/>
+		<xs:element ref="er:old-generated-text" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="er:new-text" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="apply" type="er:applyType" default="true"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="manual-change" substitutionGroup="er:abstract-change">
+    <xs:complexType>
+	  <xs:group ref="er:existingTextGroup"/>
+	  <xs:attribute name="affects" type="xs:NCName" use="optional"/>
+	</xs:complexType>
+  </xs:element>
+
+  <xs:element name="old-text">
+    <xs:complexType>
+      <xs:attribute name="action" type="er:actionType" default="replace"/>
+      <xs:attribute name="ref" use="required" type="xs:NCName"/>
+      <xs:attribute name="select" use="required" type="er:pathType"/>
+    </xs:complexType>
+  </xs:element>
+
+ <xs:element name="old-generated-text">
+    <xs:complexType>
+      <xs:attribute name="section" type="xs:string" use="optional" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="new-text">
+    <xs:complexType>
+      <xs:group ref="er:existingTextGroup"/>
+      <xs:attribute name="version" use="required" type="xs:NMTOKEN"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:group name="existingTextGroup">
+    <xs:annotation>
+	  <xs:documentation>
+	    Content model for content in the base specification. This must conform to the
+		xml-spec DTD, with local modification appropriate to the specific base document.
+	  </xs:documentation>
+	</xs:annotation>
+    <xs:sequence>
+	  <xs:any namespace="##local" processContents="lax" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:group>
+  
+  <xs:simpleType name="actionType">
+    <xs:annotation>
+	  <xs:documentation>
+	    Action effected by a change
+	  </xs:documentation>
+	</xs:annotation>
+	<xs:restriction base="xs:NMTOKEN">
+	  <xs:enumeration value="replace"/>
+	  <xs:enumeration value="delete"/>
+	  <xs:enumeration value="insert-as-first"/>
+	  <xs:enumeration value="insert-as-last"/>
+	  <xs:enumeration value="insert-before"/>
+	  <xs:enumeration value="insert-after"/>
+	</xs:restriction>
+  </xs:simpleType>
+
+<xs:simpleType name="applyType">
+    <xs:annotation>
+	  <xs:documentation>
+	    Whether or not a particular change is to be automatically applied to a new edition
+	  </xs:documentation>
+	</xs:annotation>
+	<xs:restriction base="xs:NMTOKEN">
+	  <xs:enumeration value="true"/>
+	  <!-- apply=false means that the change is published in the errata document, but does not
+	       cause an update to the base text (use for example for changes to generated appendices) -->
+	  <xs:enumeration value="false"/>
+	  <!-- a silent erratum or change is applied to the base document when creating the new edition,
+	       but is not published in the errata (use for example for changes to text that does not
+	       appear literally in the published HTML) -->
+	  <xs:enumeration value="silent"/>
+	</xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="categoryType">
+    <xs:annotation>
+	  <xs:documentation>
+	    Category of the erratum
+	  </xs:documentation>
+	</xs:annotation>
+	<xs:restriction base="xs:NCName">
+	  <xs:enumeration value="substantive"/>
+	  <xs:enumeration value="editorial"/>
+	  <xs:enumeration value="markup"/>
+	</xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="emailAddressType">
+    <xs:annotation>
+	  <xs:documentation>
+	    Identifies the author of a change
+	  </xs:documentation>
+	</xs:annotation>
+	<xs:restriction base="xs:token">
+	  <xs:pattern value="[A-Za-z0-9_\-\.]+@[A-Za-z0-9_\-\.]+"/>
+	</xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="pathType">
+    <xs:annotation>
+	  <xs:documentation>
+	    Path expression giving the location of a change. The type currently performs no validation.
+	  </xs:documentation>
+	</xs:annotation>
+	<xs:restriction base="xs:string"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="statusType">
+    <xs:annotation>
+	  <xs:documentation>
+	    Identifies the status of an erratum
+	  </xs:documentation>
+	</xs:annotation>
+	<xs:restriction base="xs:NCName">
+	  <xs:enumeration value="proposed"/>
+	  <xs:enumeration value="reviewed"/>
+	  <xs:enumeration value="accepted"/>
+	  <xs:enumeration value="corrected"/>	
+	  <xs:enumeration value="amended"/>	  
+	  <xs:enumeration value="decided"/>
+	  <xs:enumeration value="issued"/>
+	  <xs:enumeration value="superseded"/>
+	</xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

@@ -1,0 +1,74 @@
+<!-- XML Spec 2.2 modified for XSLT 2.0 -->
+
+<!-- add the "at" attribute to indicate when a change was last made to an element -->
+
+<!ENTITY % diff.att
+        'diff                   (chg
+                                |add
+                                |del
+                                |off)           #IMPLIED
+         at                     CDATA           #IMPLIED'>
+
+<!ENTITY % local.p.class  "|change">
+<!ENTITY % local.illus.class "|e:element-syntax|imp-def-feature|requirements|error.extra|error.action">
+<!ATTLIST spec
+  xmlns:e CDATA #FIXED "http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+>
+
+<!ENTITY % local.tech.class "|errorref|xerrorref|elcode|error|xfunction">
+
+<!ENTITY % issue.element "IGNORE">
+<!ENTITY % code.element "IGNORE">
+
+<!ENTITY % local.proto.att "
+         class                 NMTOKEN   #REQUIRED
+         returnSeq             (yes|no)  #IMPLIED
+         returnEmptyOk         (yes|no)  #IMPLIED">
+         
+<!ENTITY % local.arg.att "
+         name                  NMTOKEN   #REQUIRED
+         seq                   (yes|no)  #IMPLIED
+         emptyOk               (yes|no)  #IMPLIED">
+                           
+<!ENTITY % argtypes 'CDATA'>
+
+<!ENTITY % xsl-query-spec SYSTEM "xsl-query.dtd">
+%xsl-query-spec;
+
+<!-- A 'change' element surrounds a sequence of paragraphs with common diff/at attributes -->
+
+<!ELEMENT change (%div.mix;)*>
+<!ATTLIST change %common.att;>
+
+<!-- Allow a 'code' element to contain a 'var' element for italicised code -->
+
+<!ELEMENT code (%tech.pcd.mix;|var)*>
+
+<!-- The 'elcode' element is used for all references to XSLT elements (e.g. xsl:param, xsl:choose) -->
+
+<!ELEMENT elcode (#PCDATA)>
+ 
+<!-- In XSLT, 'issue' elements have no content: they are references to the separate issues list -->
+
+<!ELEMENT issue EMPTY>
+
+<!-- The 'xfunction' element is used for references to XPath function names -->
+
+<!ELEMENT xfunction (#PCDATA)>
+<!ATTLIST xfunction spec (%specAbbreviations;) #IMPLIED>
+
+
+<!-- Content model for markup to indicate error conditions -->
+<!--
+<!ELEMENT zerror (%p.pcd.mix;|zerror.extra|zerror.action)* >
+<!ATTLIST zerror
+  %common.att; 
+  type (static|dynamic|type|serialization) #REQUIRED
+>-->
+<!ELEMENT error.extra (%p.pcd.mix;)* >
+<!ELEMENT error.action (%p.pcd.mix;)* >
+
+
+
+
+<!-- End of XML Spec 2.2 modified for XSLT 2.0 -->

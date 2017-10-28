@@ -1,0 +1,12 @@
+<![CDATA[  
+<results>{
+ let $a:=doc("http://bstore1.example.com/bib.xml")/descendant-or-self::node()/child::author
+ for $last in distinct-values($a/child::last), $first in distinct-values($a[(./child::last = $last)]/child::first)
+ order by $last , $first 
+ return <result><author><last>{$last}</last><first>{$first}</first></author>{
+ for $b in doc("http://bstore1.example.com/bib.xml")/child::bib/child::book
+ where (some $ba in $b/child::author satisfies (($ba/child::last = $last) and ($ba/child::first = $first)))
+ return $b/child::title
+}</result>
+}</results>
+]]>

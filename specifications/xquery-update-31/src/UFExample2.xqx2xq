@@ -1,0 +1,12 @@
+ xquery version "1.0";
+
+( for $keyword at $i in ("car",
+"skateboard",
+"canoe"), $parent in fn:doc("part-tree.xml")/descendant-or-self::part[(attribute::name = $keyword)]
+ let $descendants:=$parent/descendant-or-self::part
+ for $p in ($parent,
+$descendants)
+ return transform copy $p := 42, $q := 666, $r := 13
+        modify  ( ) 
+        return "I think it is finished"
+)

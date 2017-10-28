@@ -1,0 +1,3614 @@
+<div1 id="sec_special_functions">
+  <head>Additional Semantics of Functions</head>
+
+  <p>This section defines the auxiliary functions required to define
+  the formal semantics of &language;, and gives special normalization
+  and static typing rules for some functions in &xq_functions;.</p>
+
+  <p>Remember from <specref ref="id-function-calls"/> that the
+  following rules operate after namespace resolution for the function
+  name, and directly over the input type of the parameters. In the
+  rest of the section, we will use the following shortcuts notations
+  for specific relevant URIs:</p>
+
+  <ulist>
+    <item><p>&FN; for functions from the &xq_functions;
+    document.</p></item>
+    <item><p>&OP; for operators from the &xq_functions;
+    document.</p></item>
+    <item><p>&FS; for formal semantics functions.</p></item>
+  </ulist>
+
+  <div2 id="sec_special_fs_functions">
+    <head>Formal Semantics Functions</head>
+
+    <smintro>
+      <p>This section gives the definition and semantics of functions
+      that are used in the formal semantics but are not in
+      &xq_functions;.  Their dynamic semantics are defined in the same
+      informal style as in the &xq_functions; document.  The static
+      semantics of some formal-semantics functions require custom
+      static typing rules.</p>
+    </smintro>
+
+    <div3 id="sec_convert_operand">
+      <head><phrase>The &fs_convert_operand; function</phrase></head>
+
+	<example role="signature">
+		<proto name="convert-operand" return-type="xs:anyAtomicType ?" >
+			<arg name="actual"
+			type="xs:anyAtomicType?"/>
+			<arg name="expected"
+			type="xs:anyAtomicType"/>
+		</proto>
+	</example>
+
+      <p>The formal-semantics function &fs_convert_operand; converts
+      the operands of arithmetic and comparison operators as
+      follows:</p>
+
+      <olist>
+        <item>
+          <p>If <code>$actual</code> is the empty sequence, returns the
+          empty sequence.</p>
+        </item>
+
+        <item>
+          <p>If <code>$actual</code> is an instance of type
+          &xs_untypedAtomic;, then</p>
+          <olist>
+            <item>
+              <p>if <code>$expected</code> is an instance of type
+              &xs_untypedAtomic; or &xs_string;, returns
+              <code>$actual</code> cast to &xs_string;;</p>
+            </item>
+            <item>
+              <p>if <code>$expected</code> is of numeric type, returns
+              <code>$actual</code> cast to &xs_double;</p>
+            </item>
+            <item>
+              <p>otherwise returns <code>$actual</code> cast to the
+              type of <code>$expected</code>.</p>
+            </item>
+          </olist>
+        </item>
+
+        <item>
+          <p>Otherwise, returns <code>$actual</code>.</p>
+        </item>
+
+      </olist>
+
+      <smtype>
+        <p>No conversion is needed unless $actual is an instance of
+        type &xs_untypedAtomic;.</p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause>
+                  <environment> &xq_stat_env; </environment>
+                  <expression>
+                    not(&gr_Type1; &jd_subtype_of; &xs_untypedAtomic;?)
+                  </expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <clause><environment>&xq_stat_env;</environment>
+                <expression>
+                  &fs_uri_convert_operand;(&gr_Type1;, &gr_Type2;) &jd_has_type; &gr_Type1;
+                </expression>
+              </clause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <p>Pairs of untyped atomic operands are converted to
+        strings.</p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_Type1; &jd_subtype_of;
+                  &xs_untypedAtomic; ?</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_Type2; &jd_subtype_of; (&xs_untypedAtomic;|&xs_string;)</expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <clause><environment>&xq_stat_env;</environment>
+                <expression>
+                  &fs_uri_convert_operand;(&gr_Type1;, &gr_Type2;) &jd_has_type;
+                  &xs_string; &type_occurs_product; &jd_quantifier; (&gr_Type1;)
+                </expression>
+              </clause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <p>When an untyped operand is paired with a numeric operand,
+        it is converted to xs:double.</p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_Type1; &jd_subtype_of;
+                  &xs_untypedAtomic; ?</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_Type2; &jd_subtype_of; &fs_numeric;</expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <clause><environment>&xq_stat_env;</environment>
+                <expression>
+                  &fs_uri_convert_operand;(&gr_Type1;, &gr_Type2;) &jd_has_type;
+                  &xs_double; &type_occurs_product; &jd_quantifier; (&gr_Type1;)
+                </expression>
+              </clause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <p>Finally, an untyped atomic operand not dealt with by the
+        above rules is converted to the type of the other operand.</p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_Type1; &jd_subtype_of;
+                  &xs_untypedAtomic; ?</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_Type2; &jd_subtype_of;
+                  &xs_anyAtomicType;</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment> &xq_stat_env; </environment>
+                  <expression>
+                    &jd_not;(&gr_Type2; &jd_subtype_of; (&xs_untypedAtomic;|&xs_string;|&fs_numeric;))
+                  </expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <clause><environment>&xq_stat_env;</environment>
+                <expression>
+                  &fs_uri_convert_operand;(&gr_Type1;, &gr_Type2;) &jd_has_type;
+                  &gr_Type2; &type_occurs_product; &jd_quantifier;(&gr_Type1;)
+                </expression>
+              </clause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+      </smtype>
+    </div3>
+
+    <div3  id="sec_convert_simple_operand">
+      <head><phrase>The &fs_convert_simple_argument; function</phrase></head>
+
+      <example role="signature">
+	<proto name="convert-simple-operand" return-type="xs:anyAtomicType *" diff='chg' at='E004'>
+  	 <arg name="actual" type="xs:anyAtomicType *"/>
+	 <arg name="expected" type="xs:anyAtomicType"/>
+	</proto>
+      </example>
+
+      <p>The formal-semantics function &fs_convert_simple_argument; is
+      used to convert the value of the <code>$actual</code> argument
+      such that it matches the type of the <code>$expected</code>
+      argument (or matches a sequence of that type).</p>
+
+      <p>The dynamic semantics of this function are as follows:</p>
+
+      <ulist>
+        <item>
+          <p>For each item in <code>$actual</code> argument that is of
+          type xs:untypedAtomic, that item is cast to the type of the
+          <code>$expected</code> argument, and the resulting sequence
+          is returned.</p>
+        </item>
+      </ulist>
+
+      <smtype>
+        <p>The following static typing rules correspond to the dynamic
+        semantics rules given above.</p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_Type2; &jd_subtype_of; &xs_anyAtomicType;</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <expression>&gr_Type3; =
+                  &jd_convert_untypedAtomic;(&jd_prime;(&gr_Type1;), &gr_Type2;)</expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <clause><environment>&xq_stat_env;</environment>
+                <expression>
+                  &fs_uri_convert_simple_argument;(&gr_Type1;, &gr_Type2;)
+                  &jd_has_type; &gr_Type3; &type_occurs_product; &jd_quantifier;(&gr_Type1;)
+                </expression>
+              </clause>
+            </postjudge>
+          </infer>
+        </infergr>
+      </smtype>
+
+    </div3>
+
+    <div3 id="sec_distinct_docorder">
+      <head><phrase>The &fs_distinctdocorder; function</phrase></head>
+
+				<example role="signature">
+					<proto
+name="distinct-doc-order" return-type="node *" >
+						<arg name="nodes"
+						type="node *"/>
+					</proto>
+				</example>
+
+
+      <p>The &fs_distinctdocorder; function sorts its input sequence
+      of nodes by document order
+      and removes duplicates.</p>
+
+      <smtype>
+        <p>The &fs_distinctdocorder; function expects a sequence of
+        nodes as input. The resulting type is computed using
+        &jd_prime; and &jd_quantifier;, which are defined in <specref
+        ref="sec_factor"/>.</p>
+
+	<infergr>
+	  <infer>
+       
+	    <prejudge>
+	      <multiclause>
+                <clause>
+                  <environment> &xq_stat_env; </environment>
+                  <expression>
+                    &gr_Type; &jd_subtype_of; node*
+                  </expression>
+                </clause>
+	      </multiclause>
+	    </prejudge>
+	    <postjudge>
+	      <multiclause>
+		<clause><environment> &xq_stat_env;</environment>
+			<expression>&fs_uri_distinctdocorder; ( &gr_Type;
+			) &jd_has_type; &jd_prime;(&gr_Type;) &type_occurs_product;
+			&jd_quantifier;(&gr_Type;)</expression>
+		</clause>
+	      </multiclause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+
+</smtype>
+    </div3>
+
+    <div3 id="sec_distinct_docorder_or_atomic_sequence">
+      <head><phrase>The &fs_distinctdocorderoratomicsequence; function</phrase></head>
+
+				<example role="signature">
+					<proto
+name="distinct-doc-order-or-atomic-sequence" return-type="item()*" >
+						<arg name="item"
+						type="item()*"/>
+					</proto>
+				</example>
+
+
+      <p>The &fs_distinctdocorderoratomicsequence; function operates
+      on either an homogeneous sequence of nodes or an homogeneous
+      sequence of atomic values. If the input is a sequence of nodes,
+      is sorts those nodes by document order and removes duplicates,
+      using the fs:distinct-doc-order function. If it is a sequence of
+      atomic values, it returns it unchanged.</p>
+
+      <smtype>
+
+        <p>The &fs_distinctdocorder; function expects either a
+        sequence of nodes as input or a sequence of atomic values. The
+        resulting type is computed using &jd_prime; and
+        &jd_quantifier;, which are defined in <specref
+        ref="sec_factor"/>.</p>
+
+	<infergr>
+	  <infer>
+       
+	    <prejudge>
+	      <multiclause>
+                <clause>
+                  <environment> &xq_stat_env; </environment>
+                  <expression>
+                    &gr_Type; &jd_subtype_of; <map>node()</map>&jd_map_sequencetype;*
+                  </expression>
+                </clause>
+	      </multiclause>
+	    </prejudge>
+	    <postjudge>
+	      <multiclause>
+		<clause><environment> &xq_stat_env;</environment>
+			<expression>&fs_uri_distinctdocorderoratomicsequence; ( &gr_Type;
+			) &jd_has_type; &jd_prime;(&gr_Type;) &type_occurs_product;
+			&jd_quantifier;(&gr_Type;)</expression>
+		</clause>
+	      </multiclause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+
+	<infergr>
+	  <infer>
+       
+	    <prejudge>
+	      <multiclause>
+                <clause>
+                  <environment> &xq_stat_env; </environment>
+                  <expression>
+                    &gr_Type; &jd_subtype_of; &xs_anyAtomicType;*
+                  </expression>
+                </clause>
+	      </multiclause>
+	    </prejudge>
+	    <postjudge>
+	      <multiclause>
+		<clause><environment> &xq_stat_env;</environment>
+		<expression>&fs_uri_distinctdocorderoratomicsequence; ( &gr_Type;
+			) &jd_has_type; &gr_Type;</expression>
+		</clause>
+	      </multiclause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+
+</smtype>
+    </div3>
+
+    <div3 id="sec_items_to_nodes">
+      <head><phrase>The &fs_item_seq_to_node_seq; function</phrase></head>
+
+				<example role="signature">
+					<proto
+name="item-sequence-to-node-sequence" return-type="node()*" >
+						<arg name="items"
+						type="item()*"/>
+					</proto>
+				</example>
+
+      <p>The &fs_item_seq_to_node_seq; function converts a sequence of
+      item values to nodes by applying the normative rules numbered
+      <phrase diff='del' at='E029'>
+      <code>1</code>, <code>2</code>, <code>3</code> after the
+      sentence <quote>Processing of the computed element constructor
+      proceeds as follows:</quote> in <xspecref spec="XQ"
+      ref="id-computedElements"/>.
+      </phrase>
+      <phrase diff='add' at='E029'>
+      <code>1e</code> and <code>2</code> in <xspecref spec="XQ" ref="id-content"/>
+      (with the value bound to <code>$items</code> playing the role of "the value of an enclosed expression").
+      </phrase>
+      </p>
+
+      <p diff='add' at='E012'>
+        If the input sequence contains any attribute nodes,
+        they must precede any other items<phrase diff='del' at='E029'>,
+        with the exception that text nodes are allowed throughout.
+        This exception results in looser type checking,
+        but it is necessitated by the possible presence of empty text nodes
+        introduced by normalization of direct element constructors
+        (see <specref ref="id_element_constructor"/>)</phrase>.
+      </p>
+
+      <smtype>
+
+        <infergr diff='add' at='E029'>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>
+                    &gr_Type; &jd_subtype_of;
+                    attribute**
+                  </expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>
+                    &fs_uri_item_seq_to_node_seq;(&gr_Type;)
+                    &jd_has_type;
+                    attribute**
+                  </expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <infergr diff='add' at='E029'>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>
+                    &gr_Type; &jd_subtype_of;
+                    (element*|text|processing-instruction*|comment|document|&xs_anyAtomicType;)*
+                  </expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>
+                    &fs_uri_item_seq_to_node_seq;(&gr_Type;)
+                    &jd_has_type;
+                    (element*|text|processing-instruction*|comment)*
+                  </expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+	<infergr>
+	  <infer>
+	    <prejudge>
+	      <multiclause>
+		<clause><environment> &xq_stat_env;</environment>
+			<expression>&gr_Type; &jd_subtype_of;
+                        <phrase diff='del' at='E029'>
+                          <phrase diff='chg' at='E012'>
+                          (
+                            attribute<phrase diff='add' at='E023'>*</phrase>*,
+                            (element<phrase diff='add' at='E023'> *</phrase>|document|processing-instruction<phrase diff='add' at='E022'> *</phrase>|comment|&xs_string;|&xs_float;|...|&xs_NOTATION;)*
+                          ) &amp; text*
+                          </phrase>
+                        </phrase>
+                        <phrase diff='add' at='E029'><!-- effectively back to pre-E012 state -->
+                          attribute<phrase diff='add' at='E023'>*</phrase>*,
+                          (element<phrase diff='add' at='E023'> *</phrase>|text|processing-instruction<phrase diff='add' at='E022'> *</phrase>|comment|document|&xs_anyAtomicType;)*
+                        </phrase>
+                        </expression>
+		</clause>
+	      </multiclause>
+	    </prejudge>
+	    <postjudge>
+	      <multiclause>
+		<clause><environment> &xq_stat_env;</environment>
+			<expression>&fs_uri_item_seq_to_node_seq;
+			(&gr_Type;) &jd_has_type; attribute<phrase diff='add' at='E023'>*</phrase>*, (element<phrase diff='add' at='E023'> *</phrase>|text|processing-instruction<phrase diff='add' at='E022'> *</phrase>|comment)*</expression>
+		</clause>
+	      </multiclause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+
+      </smtype>
+    </div3>
+
+    <div3 id="sec_items_to_nodes_doc" diff='del' at='E029'>
+      <head><phrase>The &fs_item_seq_to_node_seq_doc; function</phrase></head>
+
+				<example role="signature">
+					<proto
+name="item-sequence-to-node-sequence-doc" return-type="node()*" >
+						<arg name="items"
+						type="item()*"/>
+					</proto>
+				</example>
+
+      <p>The &fs_item_seq_to_node_seq_doc; function converts a
+      sequence of item values to nodes by applying the normative rules
+      numbered <code>1</code>, <code>2</code>, <code>3</code> after
+      the sentence <quote>Processing of the document node constructor
+      then proceeds as follows:</quote> in <xspecref spec="XQ"
+      ref="id-documentConstructors"/>.</p>
+
+      <smtype>
+	<infergr>
+	  <infer>
+	    <prejudge>
+	      <multiclause>
+		<clause><environment> &xq_stat_env;</environment>
+			<expression>&gr_Type; &jd_subtype_of;
+			(element<phrase diff='add' at='E023'> *</phrase>|document|text|processing-instruction<phrase diff='add' at='E022'> *</phrase>|comment|&xs_string;|&xs_float;|
+			...|&xs_NOTATION;)*</expression>
+		</clause>
+	      </multiclause>
+	    </prejudge>
+	    <postjudge>
+	      <multiclause>
+		<clause><environment> &xq_stat_env;</environment>
+			<expression>&fs_uri_item_seq_to_node_seq_doc;
+			(&gr_Type;) &jd_has_type; (element<phrase diff='add' at='E023'> *</phrase>|text|processing-instruction<phrase diff='add' at='E022'> *</phrase>|comment)*</expression>
+		</clause>
+	      </multiclause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+
+      </smtype>
+    </div3>
+
+    <div3 id="sec_item_seq_to_string">
+      <head><phrase>The 
+        <phrase diff='del' at='E031' id="sec_item_seq_to_untypedAtomic">&fs_item_seq_to_untypedAtomic;</phrase>
+        <phrase diff='add' at='E031'>&fs_item_seq_to_string;</phrase>
+        function</phrase></head>
+
+      <smintro> 
+	<example role="signature">
+ 	    <proto name="item-sequence-to-untypedAtomic" return-type="xs:untypedAtomic" diff='del' at='E031'>
+	      <arg name="items" type="item()*"/>
+	    </proto>
+ 	    <proto name="item-sequence-to-string" return-type="xs:string" diff='add' at='E031'>
+	      <arg name="items" type="item()*"/>
+	    </proto>
+	</example>
+
+        <p>The 
+        <phrase diff='del' at='E031'>&fs_item_seq_to_untypedAtomic;</phrase>
+        <phrase diff='add' at='E031'>&fs_item_seq_to_string;</phrase>
+        function converts a
+        sequence of item values to a string <phrase diff='del' at='E031'>of type &xs_untypedAtomic;</phrase>
+        by applying the normative rules in <xspecref spec="XQ"
+        ref="id-computedAttributes"/> for processing the content
+        expression.</p>
+      </smintro>
+
+      <smeval>
+        <p>If the input of the 
+        <phrase diff='del' at='E031'>&fs_item_seq_to_untypedAtomic;</phrase>
+        <phrase diff='add' at='E031'>&fs_item_seq_to_string;</phrase>
+        function
+        is an empty sequence, it returns a zero-length
+        string. Otherwise, each atomic value in the input sequence is
+        cast into a string. The individual strings resulting from the
+        previous step are merged into a single string by concatenating
+        them with a single space character between each pair.</p>
+      </smeval>
+
+      <smtype>
+        <p>There are no special static typing rules for this
+        function. Static type analysis for this function should be
+        performed as for a built-in function declared with the given
+        signature.</p>
+      </smtype>
+
+    </div3>
+
+    <div3 id="sec_item_seq_to_untypedAtomic_PI">
+      <head><phrase>The &fs_item_seq_to_untypedAtomic_PI; function</phrase></head>
+ 
+      <smintro>
+
+	<example role="signature">
+       <proto name="item-sequence-to-untypedAtomic-PI" return-type="xs:untypedAtomic">
+       <arg name="items" type="item()*"/>
+       </proto>
+	</example>
+
+        <p>The &fs_item_seq_to_untypedAtomic_PI; function converts a
+        sequence of item values to a string of type &xs_untypedAtomic;
+        by applying the normative rules in <xspecref spec="XQ"
+        ref="id-computed-pis"/> for processing the content
+        expression.</p>
+      </smintro>
+
+      <smeval>
+        <p>If the input is an empty sequence, the
+        &fs_item_seq_to_untypedAtomic_PI; function returns a
+        zero-length string. Otherwise, each atomic value in the input
+        sequence is cast into a string. If any of the resulting
+        strings contains the string "?>", a dynamic error is
+        raised. The individual strings resulting from the previous
+        step are merged into a single string by concatenating them
+        with a single space character between each pair. Leading
+        whitespace is removed from the resulting string.</p>
+      </smeval>
+
+     <smtype>
+       <p>There are no special static typing rules for this
+       function. Static type analysis for this function should be
+       performed as for a built-in function declared with the given
+       signature.</p>
+     </smtype>
+
+    </div3>
+
+    <div3 id="sec_item_seq_to_untypedAtomic_text">
+      <head><phrase>The &fs_item_seq_to_untypedAtomic_text; function</phrase></head>
+
+      <smintro> 
+	<example role="signature">
+ 	 <proto name="item-sequence-to-untypedAtomic-text" return-type="xs:untypedAtomic?" >
+	  <arg name="items" type="item()*"/>
+	 </proto>
+	</example>
+
+        <p>The &fs_item_seq_to_untypedAtomic_text; function converts a
+        sequence of item values to a string of type
+        &xs_untypedAtomic;, or empty, by applying the rules in
+        <xspecref spec="XQ" ref="id-textConstructors"/> for processing
+        the content expression.</p>
+      </smintro>
+
+      <smeval>
+        <p>If the input is the empty sequence, the
+        &fs_item_seq_to_untypedAtomic_text; function returns the empty
+        sequence. Otherwise, each atomic value in the input sequence
+        is cast into a string. The individual strings resulting from
+        the previous step are merged into a single string by
+        concatenating them with a single space character between each
+        pair.</p>
+      </smeval>
+
+      <smtype>
+        <p>There are no special static typing rules for this
+        function. Static type analysis for this function should be
+        performed as for a built-in function declared with the given
+        signature.</p>
+      </smtype>
+    </div3>
+
+    <div3 id="sec_item_seq_to_untypedAtomic_comment">
+      <head><phrase>The &fs_item_seq_to_untypedAtomic_comment; function</phrase></head>
+
+      <smintro> 
+	<example role="signature">
+ 	 <proto name="item-sequence-to-untypedAtomic-comment" return-type="xs:untypedAtomic" >
+	  <arg name="items" type="item()*"/>
+	 </proto>
+	</example>
+
+        <p>The &fs_item_seq_to_untypedAtomic_comment; function
+        converts a sequence of item values to a string of type
+        &xs_untypedAtomic; by applying the normative rules in
+        <xspecref spec="XQ" ref="id-computed-comments"/> for
+        processing the content expression.</p>
+      </smintro>
+
+      <smeval> 
+        <p>If the input is the empty sequence, the
+        &fs_item_seq_to_untypedAtomic_comment; function returns a
+        zero-length string. Otherwise, each atomic value in the input
+        sequence is cast into a string. The individual strings
+        resulting from the previous step are merged into a single
+        string by concatenating them with a single space character
+        between each pair. It is a dynamic error if the result of the
+        content expression of a computed comment constructor contains
+        two adjacent hyphens or ends with a hyphen.</p>
+      </smeval> 
+
+      <smtype>
+        <p>There are no special static typing rules for this
+        function. Static type analysis for this function should be
+        performed as for a built-in function declared with the given
+        signature.</p>
+      </smtype>
+
+    </div3>
+
+    <div3 id="sec_apply_ordering_mode">
+      <head><phrase>The &fs_apply_ordering_mode;
+      function</phrase></head>
+ 
+      <example role="signature">
+       <proto name="apply-ordering-mode" return-type="item()*">
+        <arg name="items" type="item()*"/>
+       </proto>
+      </example>
+
+      <smeval>
+        <p>If the &xq_ordering_mode_env; is set to ordered, the
+        &fs_apply_ordering_mode; function is the identity function,
+        returning its input sequence in its original order.</p>
+
+	<infergr>
+	  <infer>
+	    <prejudge>
+	      <clause><expression>&xq_ordering_mode_env; = <code>ordered</code></expression>
+	      </clause>
+  	      <clause><environment>&xq_dyn_env; </environment>
+		      <expression>&gr_Expr; &jd_yields; &gr_Value;</expression>
+              </clause>
+	    </prejudge>
+	    <postjudge>
+  	      <clause><environment>&xq_dyn_env; </environment>
+		      <expression>&fs_apply_ordering_mode;(&gr_Expr;)
+		      &jd_yields; &gr_Value;</expression>
+              </clause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+
+        <p>If the &xq_ordering_mode_env; is set to unordered, the
+        &fs_apply_ordering_mode; is equivalent to the &fn_unordered;
+        function, returning the items from its input sequence in
+        arbitrary order.</p>
+
+	<infergr>
+	  <infer>
+	    <prejudge>
+	      <clause><expression>&xq_ordering_mode_env; = <code>unordered</code></expression>
+	      </clause>
+  	      <clause><environment>&xq_dyn_env; </environment>
+		      <expression>&fn_unordered;(&gr_Expr;) &jd_yields; &gr_Value;</expression>
+              </clause>
+	    </prejudge>
+	    <postjudge>
+  	      <clause><environment>&xq_dyn_env; </environment>
+		      <expression>&fs_apply_ordering_mode;(&gr_Expr;)
+		      &jd_yields; &gr_Value;</expression>
+              </clause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+
+      </smeval>
+
+      <smtype>
+        <p>If the ordering context is set to <code>ordered</code>, the
+        static type of the input expression of the
+        &fs_apply_ordering_mode; function is left unchanged.</p>
+
+	<infergr>
+	  <infer>
+	    <prejudge>
+	      <clause><expression>&xq_ordering_mode_env; = <code>ordered</code></expression>
+	      </clause>
+	    </prejudge>
+	    <postjudge>
+  	      <clause><environment>&xq_stat_env; </environment>
+		      <expression>&fs_uri_apply_ordering_mode;(&gr_Type;)
+		     &jd_has_type; &gr_Type;</expression>
+              </clause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+
+        <p>If the ordering context is set to <code>unordered</code>,
+        the static type of the input expression of the
+        &fs_apply_ordering_mode; function is computed using the
+        &jd_prime; and &jd_quantifier; judgments, as for the
+        &fn_unordered; function.</p>
+
+	<infergr>
+	  <infer>
+	    <prejudge>
+	      <clause><expression>&xq_ordering_mode_env; = <code>unordered</code></expression>
+	      </clause>
+	    </prejudge>
+	    <postjudge>
+  	      <clause><environment>&xq_stat_env; </environment>
+		      <expression>&fs_uri_apply_ordering_mode;(&gr_Type;)
+		     &jd_has_type; &jd_prime;(&gr_Type;) &type_occurs_product;
+		     &jd_quantifier;(&gr_Type;)</expression>
+              </clause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+      </smtype>
+    </div3>
+
+    <div3 id="sec_fs_to">
+      <head>The &fs_to; function</head>
+
+      <example role="signature">
+	<proto name="to" return-type="xs:integer*" >
+	  <arg name="firstval" type="xs:integer?"/>
+	  <arg name="lastval" type="xs:integer?"/>
+	</proto>
+      </example>
+
+      <p>The formal semantics function &fs_to; is a wrapper function
+      for the &op_to; operator, taking the semantics of the range
+      expression over empty sequences into account.</p>
+
+      <smeval>
+        <p>If one of the input parameters for &fs_to; is the empty
+        sequence, the function returns the empty sequence, otherwise
+        it returns the result of calling the &op_to; operator. This
+        semantics is equivalent to the following user-defined
+        function.</p>
+
+<eg><![CDATA[
+declare function fs:to($firstval as xs:integer?, $lastval as xs:integer?) as xs:integer* {
+  if (fn:empty($firstval) or fn:empty($lastval)
+  then ()
+  else op:to($firstval,$lastval)
+};
+]]></eg>
+      </smeval>
+
+      <smtype>
+        <p>The static type of &fs_to; does not require any additional
+        static typing rule, and is typed as a function call based on
+        the above signature.</p>
+      </smtype>
+    </div3>
+
+    <div3 id="sec_node_sequence" diff='add' at='E021'>
+      <head><phrase>The &fs_node_sequence; function</phrase></head>
+
+      <example role="signature">
+	<proto name="node-sequence" return-type="node()*" >
+	  <arg name="nodes" type="node()*"/>
+	</proto>
+      </example>
+
+      <p>
+      If the input is a (possibly empty) sequence of nodes,
+      &fs_node_sequence; simply returns that sequence.
+      Otherwise, it raises a type error.
+      </p>
+
+      <smtype>
+        <p>
+        The static type of a call to &fs_node_sequence;
+        is that of its argument,
+        as long as that type is a subtype of <code>node()*</code>.
+        </p>
+
+	<infergr>
+	  <infer>
+	    <prejudge>
+	      <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>
+                  &gr_Type;
+                  &jd_subtype_of;
+                  <map>node()*</map>&jd_map_sequencetype;
+                </expression>
+	      </clause>
+	    </prejudge>
+	    <postjudge>
+  	      <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>
+                  &fs_uri_node_sequence;(&gr_Type;)
+		  &jd_has_type;
+                  &gr_Type;
+                </expression>
+              </clause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+      
+      </smtype>
+    </div3>
+
+    <div3 id="sec_item_at" diff='add' at='E024'>
+      <head><phrase>The &fs_item_at; function</phrase></head>
+
+      <example role="signature">
+        <proto name="item-at" return-type="item()?">
+          <arg name="sourceSeq" type="item()*"/>
+          <arg name="loc" type="xs:double"/>
+        </proto>
+      </example>
+
+      <p>
+      The &fs_item_at; function returns the item at a specified position in a sequence.
+      </p>
+
+      <smeval>
+        <p>
+        If <code>$loc</code> is numeric-equal to
+        the position of some item in <code>$sourceSeq</code>,
+        that item is returned.
+        (This implies that <code>$sourceSeq</code> is non-empty,
+        and <code>$loc</code> is numeric-equal to an integer between 1 and <code>n</code> inclusive,
+        where <code>n</code> is the number of items in <code>$sourceSeq</code>.)
+        </p>
+
+        <p>
+        Otherwise, the empty sequence is returned.
+        </p>
+
+        <p>
+        The function is roughly equivalent to the following user-defined function.
+        </p>
+
+<eg><![CDATA[
+  declare function fs:item-at(
+      $sourceSeq as item()*,
+      $loc as xs:double) as item()?
+  {
+      if ($loc mod 1 eq 0) then
+          fn:subsequence($sourceSeq,$loc,1)
+      else
+          ()
+  };
+]]></eg>
+      </smeval>
+
+      <smtype>
+        <p>
+        The static typing rules for invocations of &fs_item_at;
+        depend on the syntactic form of the second argument.
+        If it is the IntegerLiteral 1,
+        then we can be relatively precise about the resulting type.
+        </p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_QName; &jd_func_qname_expands_to; &fs_uri_item_at;</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_Expr1; &jd_has_type; &gr_Type1;</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <expression>&jd_quantifier;(&gr_Type1;) &jd_isin; { 1, + }</expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_QName;(&gr_Expr1;, 1) &jd_has_type; &jd_prime;(&gr_Type1;)</expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <p>
+        Otherwise, the following less precise rule is used.
+        </p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_QName; &jd_func_qname_expands_to; &fs_uri_item_at;</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_Expr1; &jd_has_type; &gr_Type1;</expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_QName;(&gr_Expr1;, &gr_Expr2;) &jd_has_type; &jd_prime;(&gr_Type1;) ?</expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <p>
+        (Since invocations of &fs_item_at;
+        arise only as the result of particular normalization rules,
+        <emph>Expr2</emph> in the above rule
+        must be either <code>$fs:last</code>, <code>$fs:position</code>, or a NumericLiteral.
+        Thus, there is no need to check its type.)
+        </p>
+      </smtype>
+    </div3>
+
+  </div2>
+
+  <div2 id="function_rules">
+    <head>Standard functions with specific static typing rules</head>
+
+    <smintro>
+      <p>This section gives special normalization and static typing
+      rules for functions in &xq_functions; for which the standard
+      normalization or static typing rules are not appropriate. All
+      functions that are not mentioned behave as described in Section
+      <specref ref="id-function-calls"/>. When given, the static
+      typing rules in this section always give more precise type
+      information than the generic rule based on the function's
+      signature.</p>
+    </smintro>
+
+    <div3 id="sec_fn_last">
+      <head>The &fn_last; context function</head>
+
+      <p>As explained in <specref ref="eval_context"/>, the
+      <code>fn:last()</code> context function is modeled using the
+      Formal Semantics variable &fs_last;. For that function the
+      following static typing and dynamic evaluation rules apply.</p>
+
+      <smtype>
+        <infergr>
+          <infer>
+            <prejudge>
+ 	      <multiclause>
+ 	        <clause>
+ 	          <expression>&xq_type_env;(&fs_uri_last;) = &gr_Type;</expression>
+ 	        </clause>
+ 	      </multiclause>
+            </prejudge>
+            <postjudge>
+              <clause><environment>&xq_stat_env;</environment>
+                <expression>
+                  &fn_uri_last;() &jd_has_type; &gr_Type;
+                </expression>
+              </clause>
+            </postjudge>
+          </infer>
+        </infergr>
+      </smtype>
+
+      <smeval>
+        <infergr>
+          <infer>
+            <prejudge>
+ 	      <multiclause>
+ 	        <clause>
+ 	          <expression>&xq_val_env;(&fs_uri_last;) = &gr_Value;</expression>
+ 	        </clause>
+ 	      </multiclause>
+            </prejudge>
+            <postjudge>
+              <clause><environment>&xq_dyn_env;</environment>
+                <expression>
+                  &jd_function_with_types; &fn_uri_last;<phrase diff='del' at='E013'>()</phrase> &jd_function_with_types_with;
+           &jd_function_with_types_on_values;
+           &jd_function_with_types_yields; &gr_Value;
+                </expression>
+              </clause>
+            </postjudge>
+          </infer>
+        </infergr>
+      </smeval>
+
+    </div3>
+
+    <div3 id="sec_fn_position">
+      <head>The &fn_position; context function</head>
+
+      <p>As explained in <specref ref="eval_context"/>, the
+      <code>fn:position()</code> context function is modeled using the
+      Formal Semantics variable &fs_position;. For that function the
+      following static typing and dynamic evaluation rules apply.</p>
+
+      <smtype>
+        <infergr>
+          <infer>
+            <prejudge>
+ 	      <multiclause>
+ 	        <clause>
+ 	          <expression>&xq_type_env;(&fs_uri_position;) = &gr_Type;</expression>
+ 	        </clause>
+ 	      </multiclause>
+            </prejudge>
+            <postjudge>
+              <clause><environment>&xq_stat_env;</environment>
+                <expression>
+                  &fn_uri_position;() &jd_has_type; &gr_Type;
+                </expression>
+              </clause>
+            </postjudge>
+          </infer>
+        </infergr>
+      </smtype>
+
+      <smeval>
+        <infergr>
+          <infer>
+            <prejudge>
+ 	      <multiclause>
+ 	        <clause>
+ 	          <expression>&xq_val_env;(&fs_uri_position;) = &gr_Value;</expression>
+ 	        </clause>
+ 	      </multiclause>
+            </prejudge>
+            <postjudge>
+              <clause><environment>&xq_dyn_env;</environment>
+                <expression>
+                  &jd_function_with_types; &fn_uri_position;<phrase diff='del' at='E013'>()</phrase> &jd_function_with_types_with;
+           &jd_function_with_types_on_values;
+           &jd_function_with_types_yields; &gr_Value;
+                </expression>
+              </clause>
+            </postjudge>
+          </infer>
+        </infergr>
+      </smeval>
+
+    </div3>
+
+    <div3 id="sec_fn_abs_ceil_floor_round" >
+      <head><phrase>The &fn_abs;, &fn_ceiling;, &fn_floor;,
+      &fn_round;, and &fn_round_half; functions</phrase></head>
+
+      <smtype diff='del' at='E033'>
+        <p>The static typing rules for the &fn_abs;, &fn_ceiling;,
+        &fn_floor;, &fn_round;, and &fn_round_half; functions promote
+        their input type to the (least) base primitive numeric type
+        from which the input type is derived. Note that the fact that
+        the type should be the least is <phrase diff='chg' at='E014'>not</phrase> expressed by the
+        inference rule notation used here. Parameters of type
+        &xs_untypedAtomic; are always promoted to &xs_double;.
+        <phrase diff='del' at='E014'>
+        Instead of writing a separate judgment for each function, we
+        write one rule for the functions whose name is either
+        &fn_uri_abs;, &fn_uri_ceiling;, &fn_uri_floor;,
+        &fn_uri_round;, or &fn_uri_round_half; functions.</phrase></p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause>
+                  <expression>&gr_Type1; &jd_isin; { &xs_integer;,
+                  &xs_decimal;, &xs_float;, &xs_double; } </expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_Type; &jd_subtype_of; &xs_anyAtomicType; ?</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <expression>&gr_Type2; = &jd_convert_untypedAtomic;(&gr_Type;,  &xs_double;)</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_Type2; &jd_can_be_promoted_to; &gr_Type1;</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <expression>&xd_qname; &jd_isin; { <phrase diff='add' at='E014'>&fn_uri_abs;, </phrase> &fn_uri_ceiling;, &fn_uri_floor;,
+        &fn_uri_round;, &fn_uri_round_half; } </expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+ 	    <postjudge>
+ 	      <clause><environment>&xq_stat_env;</environment>
+ 		<expression>
+                  &xd_qname; (&gr_Type;) &jd_has_type; &gr_Type1; &type_occurs_product; &jd_quantifier;(&gr_Type;)
+ 		</expression>
+ 	      </clause>
+            </postjudge>
+          </infer>
+        </infergr>
+      </smtype>
+
+      <smnotation diff='add' at='E033'>
+        <p id="jd_has_base_atomic_type">
+        The auxiliary judgment &jd_has_base_atomic_type;
+        is used in the next subsection
+        and also in <specref ref="sec_fn_aggregates"/>.
+        </p>
+
+        <display>
+   	  <clause>
+                  <environment>&xq_stat_env;</environment>
+            <expression>&gr_AtomicTypeName1; &jd_has_base_atomic_type; &gr_AtomicTypeName2;</expression>
+   	  </clause>
+   	</display>
+
+        <p>
+        To a first approximation, this judgment holds when
+        &gr_AtomicTypeName1; is (or is derived from) primitive atomic type &gr_AtomicTypeName2;.
+        However,
+        for the purpose of typing the functions that use this judgment,
+        there are three non-primitive atomic types
+        that are treated similarly to primitive types:
+        &xs_integer;
+        (derived from &xs_decimal;),
+        and
+        &xs_yearMonthDuration; and &xs_dayTimeDuration;
+        (derived from &xs_duration;).
+        </p>
+
+
+        <p>
+        If &gr_AtomicTypeName1; is (or is a subtype of) any primitive atomic type
+        other than &xs_decimal; or &xs_duration;,
+        then that type is its base atomic type.
+        </p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_AtomicTypeName1; &jd_subtype_of; &gr_AtomicTypeName2;</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <expression>&gr_AtomicTypeName2; is a primitive atomic type</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <expression>&jd_not;(&gr_AtomicTypeName2; &jd_isin; { &xs_decimal;, &xs_duration; })</expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_AtomicTypeName1; &jd_has_base_atomic_type; &gr_AtomicTypeName2;</expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <p>
+        Similarly for &xs_integer;, &xs_yearMonthDuration;, and &xs_dayTimeDuration;.
+        </p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_AtomicTypeName1; &jd_subtype_of; &gr_AtomicTypeName2;</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <expression>
+                    &gr_AtomicTypeName2; &jd_isin;
+                    { &xs_integer;, &xs_yearMonthDuration;, &xs_dayTimeDuration; }
+                  </expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_AtomicTypeName1; &jd_has_base_atomic_type; &gr_AtomicTypeName2;</expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <p>
+        For &xs_decimal;, we exclude &xs_integer; and its subtypes:
+        </p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_AtomicTypeName1; &jd_subtype_of; &xs_decimal;</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&jd_not;( &gr_AtomicTypeName1; &jd_subtype_of; &xs_integer; )</expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_AtomicTypeName1; &jd_has_base_atomic_type; &xs_decimal;</expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <p>
+        And finally, for &xs_duration;,
+        we exclude &xs_yearMonthDuration; and &xs_dayTimeDuration;,
+        and their subtypes.
+        </p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_AtomicTypeName1; &jd_subtype_of; &xs_duration;</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&jd_not;( &gr_AtomicTypeName1; &jd_subtype_of; &xs_yearMonthDuration; )</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&jd_not;( &gr_AtomicTypeName1; &jd_subtype_of; &xs_dayTimeDuration; )</expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_AtomicTypeName1; &jd_has_base_atomic_type; &xs_duration;</expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+      </smnotation>
+
+      <smtype diff='add' at='E033'>
+
+        <p>
+        Note that, in the declarations for the built-in functions
+        &fn_abs;,
+        &fn_ceiling;,
+        &fn_floor;,
+        &fn_round;, and
+        &fn_round_half;,
+        the (first) parameter is declared with type "<code>numeric?</code>".
+        Thus, for a call to one of these functions,
+        the normalization rules of <specref ref="id-function-calls"/>
+        will have wrapped the argument in calls to
+        &fn_data;() and &fs_convert_simple_argument;()
+        (with a 'prototypical value' of type &xs_double;).
+        Thus, static analysis of the call is guaranteed that
+        the argument type is a subtype of &xs_anyAtomicType;*,
+        with no occurrences of &xs_untypedAtomic;.
+        </p>
+
+        <p>
+        In the static typing rule for these functions,
+        we check that the argument type is numeric,
+        extract its prime type
+        (which must be a choice of atomic types),
+        find the base atomic type for each,
+        and then form the choice of those results.
+        </p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause>
+                  <expression>
+                    &xd_qname; &jd_isin; {
+                      &fn_uri_abs;,
+                      &fn_uri_ceiling;,
+                      &fn_uri_floor;,
+                      &fn_uri_round;,
+                      &fn_uri_round_half;
+                    }
+                  </expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_Type1; &jd_subtype_of; &fs_numeric; ?</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <expression>&jd_prime;(&gr_Type1;) = &gr_AtomicTypeName1; | ... | &gr_AtomicTypeNamen;</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_AtomicTypeName1; &jd_has_base_atomic_type; &gr_AtomicTypeName1;'</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <expression>...</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_AtomicTypeNamen; &jd_has_base_atomic_type; &gr_AtomicTypeNamen;'</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <expression>&gr_Type3; = &gr_AtomicTypeName1;' | ... | &gr_AtomicTypeNamen;'</expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&xd_qname;(&gr_Type1;) &jd_has_type; &gr_Type3; &middot; &jd_quantifier;(&gr_Type1;)</expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <p>
+        The &fn_round_half; function also has a two-parameter version.
+        Its static type-checking can be reduced to that of the one-parameter
+        version.
+        </p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_Type2; &jd_subtype_of; &xs_integer;</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&xd_qname;(&gr_Type1;) &jd_has_type; &gr_Type3;</expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&fn_uri_round_half;(&gr_Type1;, &gr_Type2;) &jd_has_type; &gr_Type3;</expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+      </smtype>
+
+    </div3>
+
+    <div3 id="sec_fn_boolean">
+      <head><phrase>The &fn_boolean;<phrase diff='add' at='E027'> and &fn_not;</phrase> functions</phrase></head>
+
+      <smtype>
+        <p>The &fn_boolean; function as described in the
+        &xq_functions; document takes an empty sequence, a sequence
+        <phrase diff='chg' at='E026'>whose first item is a node</phrase>,
+        or a singleton value of type &xs_boolean;,
+        &xs_string;,<phrase diff='add' at='E026'> &xs_anyURI;,</phrase> &xs_untypedAtomic; or some numeric type.  All
+        other values are illegal.
+        <phrase diff='add' at='E026'>
+        The static typing of &fn_boolean; reflects these restrictions,
+        but further constrains "a sequence whose first item is a node"
+        to "a sequence of nodes".
+        </phrase>
+        </p>
+
+        <p diff='add' at='E027'>
+        The &fn_not; function has an implicit call to &fn_boolean;,
+        and raises type errors for the same cases,
+        so its static typing is the same as &fn_boolean;.
+        </p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause diff='add' at='E027'>
+                <clause>
+                  <expression>
+                    &xd_qname; &jd_isin; { &fn_uri_boolean;, &fn_uri_not; }
+                  </expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+              <clause><environment>&xq_stat_env;</environment>
+                <expression>&gr_Type; &jd_subtype_of; (empty |
+                <phrase diff='chg' at='E026'><map>node()+</map>&jd_map_sequencetype;</phrase>
+                | &xs_boolean; | &xs_string; |
+                &xs_untypedAtomic; | &fs_numeric; | &xs_anyURI;)</expression>
+              </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <clause><environment>&xq_stat_env; </environment>
+                <expression><phrase diff='chg' at='E027'>&xd_qname;</phrase>(&gr_Type;) &jd_has_type; &xs_boolean;</expression>
+              </clause>
+            </postjudge>
+          </infer>
+        </infergr>
+      </smtype>
+    </div3> 
+
+    <div3 id="sec_fn_doc_collection">
+      <head><phrase>The &fn_collection; and &fn_doc; functions</phrase></head>
+
+      <smintro>
+        <p>The static typing rules for &fn_collection; and &fn_doc;
+        depend on the syntactic form of their input expression. As a
+        result, the corresponding static typing rules must be written
+        directly over the input expression, unlike the other functions
+        in this section.</p>
+      </smintro>
+
+      <smtype>
+        <p>The &fn_collection; function as described in the
+        &xq_functions; document, takes a string-valued expression,
+        which denotes a URI, and returns a value.</p>
+
+        <p>If the &fn_collection; function has no parameter, the
+        result type is given by the implementation for the default
+        sequence if it exists.</p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+             <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_QName;
+                  &jd_func_qname_expands_to; &fn_uri_collection;</expression>
+                </clause>
+             </multiclause>
+             <multiclause>
+              <clause><environment>&xq_stat_env; </environment>
+                <expression>Implementation-defined default sequence
+                has type &gr_Type;</expression>
+              </clause>
+             </multiclause>
+            </prejudge>
+            <postjudge>
+              <clause><environment>&xq_stat_env; </environment>
+                <expression>&gr_QName;() &jd_has_type; &gr_Type;</expression>
+              </clause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <p>If the argument to &fn_collection; is a &gr_URILiteral;
+        expression which is defined in &xq_collection_type_env;, then
+        the result type is the type corresponding to the
+        &gr_URILiteral; in &xq_collection_type_env;. </p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+             <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_QName;
+                  &jd_func_qname_expands_to; &fn_uri_collection;</expression>
+                </clause>
+             </multiclause>
+             <multiclause>
+              <clause>
+                <expression>&xq_collection_type_env;(&gr_URILiteral;) = &gr_Type;</expression>
+              </clause>
+             </multiclause>
+            </prejudge>
+            <postjudge>
+              <clause><environment>&xq_stat_env; </environment>
+                <expression>&gr_QName;(&gr_URILiteral;) &jd_has_type; &gr_Type;</expression>
+              </clause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <p>Otherwise, if the argument is a URI literal but is not
+        defined in &xq_collection_type_env;, or if it is not a URI
+        literal, then we don't know anything about the URI and the
+        static type is a collection of nodes.</p>
+
+         <infergr>
+          <infer>
+            <prejudge>
+             <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_QName;
+                  &jd_func_qname_expands_to; &fn_uri_collection;</expression>
+                </clause>
+             </multiclause>
+             <multiclause>
+              <clause>
+                <expression>&xq_collection_type_env;(&gr_URILiteral;) undefined</expression>
+              </clause>
+             </multiclause>
+            </prejudge>
+            <postjudge>
+              <clause><environment>&xq_stat_env; </environment>
+                <expression>&gr_QName;(&gr_URILiteral;) &jd_has_type;
+                (element<phrase diff='add' at='E023'> *</phrase> | attribute<phrase diff='add' at='E023'> *</phrase> | processing-instruction<phrase diff='add' at='E022'> *</phrase> | text |
+                comment | document ) *</expression>
+              </clause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+         <infergr>
+          <infer>
+            <prejudge>
+             <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_QName;
+                  &jd_func_qname_expands_to; &fn_uri_collection;</expression>
+                </clause>
+             </multiclause>
+             <multiclause>
+              <clause>
+                <expression>&gr_Expr; is not a &gr_URILiteral;</expression>
+              </clause>
+             </multiclause>
+            </prejudge>
+            <postjudge>
+              <clause><environment>&xq_stat_env; </environment>
+                <expression>&gr_QName;(&gr_Expr;) &jd_has_type; (element<phrase diff='add' at='E023'> *</phrase> | attribute<phrase diff='add' at='E023'> *</phrase> | processing-instruction<phrase diff='add' at='E022'> *</phrase> | text |
+                comment | document ) *</expression>
+              </clause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <p>The &fn_doc; function has similar static typing rules, but,
+        in addition, the static type must be a document node.</p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+             <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_QName;
+                  &jd_func_qname_expands_to; &fn_uri_doc;</expression>
+                </clause>
+             </multiclause>
+             <multiclause>
+              <clause>
+                <expression>&xq_doc_type_env;(&gr_URILiteral;) = &gr_Type;</expression>
+              </clause>
+             </multiclause>
+             <multiclause>
+              <clause><environment>&xq_stat_env; </environment>
+                <expression>&gr_Type; &jd_subtype_of; document </expression>
+              </clause>
+             </multiclause>
+            </prejudge>
+            <postjudge>
+              <clause><environment>&xq_stat_env; </environment>
+                <expression>&gr_QName;(&gr_URILiteral;) &jd_has_type; &gr_Type;</expression>
+              </clause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <p>Otherwise, if the argument is a URI literal not defined in
+        the domain of &xq_doc_type_env; or if it is not a URI literal,
+        then we don't know anything about the URI, and the static type
+        is document.</p>
+
+         <infergr>
+          <infer>
+            <prejudge>
+             <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_QName;
+                  &jd_func_qname_expands_to; &fn_uri_doc;</expression>
+                </clause>
+             </multiclause>
+             <multiclause>
+              <clause>
+                <expression>&xq_doc_type_env;(&gr_URILiteral;) undefined</expression>
+              </clause>
+             </multiclause>
+            </prejudge>
+            <postjudge>
+              <clause><environment>&xq_stat_env; </environment>
+              <expression>&gr_QName;(&gr_URILiteral;) &jd_has_type; document?</expression>
+              </clause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+         <infergr>
+          <infer>
+            <prejudge>
+             <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_QName;
+                  &jd_func_qname_expands_to; &fn_uri_doc;</expression>
+                </clause>
+             </multiclause>
+             <multiclause>
+              <clause>
+                <expression>&gr_Expr; is not a &gr_URILiteral;</expression>
+              </clause>
+             </multiclause>
+            </prejudge>
+            <postjudge>
+              <clause><environment>&xq_stat_env; </environment>
+                <expression>&gr_QName;(&gr_Expr;) &jd_has_type; document?</expression>
+              </clause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+      </smtype>
+
+    </div3>
+    <div3 id="sec_fn_data">
+      <head>The &fn_data; function</head>
+
+      <smintro>
+        <p>The &fn_data; function converts a sequence of items to a
+        sequence of atomic values.</p>
+      </smintro>
+
+      <smnotation>
+        <p id="jd_data">Inferring the type for the &fn_data; function
+        is done by applying the &jd_data; auxiliary judgment, using
+        the same approach as for the XPath steps.</p>
+
+        <display>
+   	  <clause>
+            <environment>&xq_stat_env;</environment>
+            <expression>&jd_data; &gr_Type1; &jd_has_type; &gr_Type2;</expression>
+   	  </clause>
+   	</display>
+
+      </smnotation>
+
+      <smtype>
+        <p>The general rule for &fn_data; is to apply the filter
+        &jd_data; to the prime type of its argument type, then
+        apply the quantifier to the result:</p>
+
+      	<infergr>
+ 	  <infer>
+ 	    <prejudge>
+              <multiclause>
+ 	      	<clause><environment>&xq_stat_env;</environment>
+                  <expression>
+                    &jd_data; &jd_prime;(&gr_Type;) &jd_has_type; &gr_Type1;
+                  </expression>
+ 	      	</clause>
+              </multiclause>
+ 	    </prejudge>
+ 	    <postjudge>
+ 	      <clause><environment>&xq_stat_env;</environment>
+ 		<expression>
+                  &fn_uri_data;(&gr_Type;) &jd_has_type;
+                  &gr_Type1; &type_occurs_product; &jd_quantifier;(&gr_Type;)
+ 		</expression>
+ 	      </clause>
+ 	    </postjudge>
+ 	  </infer>
+      	</infergr>
+
+        <p>When applied to none, &jd_data; yields none.</p>
+
+      	<infergr>
+ 	  <infer>
+ 	    <postjudge>
+ 	      <clause><environment>&xq_stat_env;</environment>
+ 		<expression>
+                  &jd_data; &xt_none; &jd_has_type; &xt_none;
+ 		</expression>
+ 	      </clause>
+ 	    </postjudge>
+ 	  </infer>
+      	</infergr>
+
+        <p>When applied to empty, &jd_data; yields empty.</p>
+
+      	<infergr>
+ 	  <infer>
+ 	    <postjudge>
+ 	      <clause><environment>&xq_stat_env;</environment>
+ 		<expression>
+                  &jd_data; &xt_empty; &jd_has_type; &xt_empty;
+ 		</expression>
+ 	      </clause>
+ 	    </postjudge>
+ 	  </infer>
+      	</infergr>
+
+        <p>When applied to the union of two types, &jd_data; is
+        applied to each of the two types. The resulting type is
+        computed using &jd_prime; and &jd_quantifier;, which are
+        defined in <specref ref="sec_factor"/>.  This rule is
+        necessary because &jd_data; may return a sequence of atomic
+        types.</p>
+
+      	<infergr>
+ 	  <infer>
+ 	    <prejudge>
+              <multiclause>
+  	        <clause><environment>&xq_stat_env;</environment>
+                  <expression>&jd_data; &gr_Type1; &jd_has_type; &gr_Type1;'</expression>
+ 	        </clause>
+              </multiclause>
+              <multiclause>
+  	        <clause><environment>&xq_stat_env;</environment>
+                  <expression>&jd_data; &gr_Type2; &jd_has_type; &gr_Type2;'</expression>
+ 	        </clause>
+              </multiclause>
+ 	    </prejudge>
+ 	    <postjudge>
+ 	      <clause><environment>&xq_stat_env;</environment>
+ 		<expression>
+                  &jd_data; (&gr_Type1;|&gr_Type2;) &jd_has_type;
+                  &jd_prime;(&gr_Type1;'|&gr_Type2;')
+                  &type_occurs_product; &jd_quantifier;(&gr_Type1;'|&gr_Type2;')
+ 		</expression>
+ 	      </clause>
+ 	    </postjudge>
+ 	  </infer>
+      	</infergr>
+
+        <p>When applied to an atomic type, &jd_data; simply
+        returns the atomic type:</p>
+
+      	<infergr>
+ 	  <infer>
+ 	    <prejudge>
+              <multiclause>
+  	        <clause>
+                  <environment> &xq_stat_env; </environment>
+                  <expression>&gr_Type; &jd_subtype_of; &xs_anyAtomicType;</expression>
+ 	        </clause>
+              </multiclause>
+ 	    </prejudge>
+ 	    <postjudge>
+ 	      <clause><environment>&xq_stat_env;</environment>
+ 		<expression>
+                  &jd_data; &gr_Type; &jd_has_type; &gr_Type;
+ 		</expression>
+ 	      </clause>
+ 	    </postjudge>
+ 	  </infer>
+      	</infergr>
+
+        <p>When applied to comment or processing instruction node types, &jd_data; returns
+        &xs_string;</p>
+
+      	<infergr>
+ 	  <infer>
+ 	    <prejudge>
+              <multiclause>
+  	        <clause>
+                  <environment> &xq_stat_env; </environment>
+                  <expression>
+                    &gr_Type; &jd_subtype_of; comment | processing-instruction<phrase diff='add' at='E022'> *</phrase>
+                  </expression>
+ 	        </clause>
+              </multiclause>
+ 	    </prejudge>
+ 	    <postjudge>
+ 	      <clause><environment>&xq_stat_env;</environment>
+ 		<expression>
+                  &jd_data; &gr_Type; &jd_has_type; &xs_string;
+ 		</expression>
+ 	      </clause>
+ 	    </postjudge>
+ 	  </infer>
+      	</infergr>
+
+        <p>When applied to text or document node types, &jd_data;
+        returns &xs_untypedAtomic;</p>
+
+      	<infergr>
+ 	  <infer>
+ 	    <prejudge>
+              <multiclause>
+  	        <clause>
+                  <environment> &xq_stat_env; </environment>
+                  <expression>
+                    &gr_Type; &jd_subtype_of; text | document
+                  </expression>
+ 	        </clause>
+              </multiclause>
+ 	    </prejudge>
+ 	    <postjudge>
+ 	      <clause><environment>&xq_stat_env;</environment>
+ 		<expression>
+                  &jd_data; &gr_Type; &jd_has_type; &xs_untypedAtomic;
+ 		</expression>
+ 	      </clause>
+ 	    </postjudge>
+ 	  </infer>
+      	</infergr>
+
+        <p>When applied to element node types with <xtermref spec="XQ"
+        ref="dt-type-annotation"/> &xs_untyped;, the &jd_data; filter
+        returns &xs_untypedAtomic;.</p>
+
+<!--
+      	<infergr>
+ 	  <infer>
+ 	    <prejudge>
+              <multiclause>
+  	        <clause><environment>&xq_stat_env;</environment>
+                  <expression>
+                    &gr_AttributeType; &jd_static_lookup; of type &xs_untypedAtomic;
+                  </expression>
+ 	        </clause>
+              </multiclause>
+ 	    </prejudge>
+ 	    <postjudge>
+ 	      <clause><environment>&xq_stat_env;</environment>
+ 		<expression>
+                  &jd_data; &gr_AttributeType; &jd_has_type; &xs_untypedAtomic;
+ 		</expression>
+ 	      </clause>
+ 	    </postjudge>
+ 	  </infer>
+      	</infergr>
+-->
+      	<infergr>
+ 	  <infer>
+ 	    <prejudge>
+              <multiclause>
+  	        <clause><environment>&xq_stat_env;</environment>
+                  <expression>
+                    &gr_ElementType; &jd_static_lookup; of type &xs_untyped;
+                  </expression>
+ 	        </clause>
+              </multiclause>
+ 	    </prejudge>
+ 	    <postjudge>
+ 	      <clause><environment>&xq_stat_env;</environment>
+ 		<expression>
+                  &jd_data; &gr_ElementType; &jd_has_type; &xs_untypedAtomic;
+ 		</expression>
+ 	      </clause>
+ 	    </postjudge>
+ 	  </infer>
+      	</infergr>
+
+        <p>When applied to an attribute node type, the &jd_data; filter returns the
+        attribute's simple type.</p>
+
+      	<infergr>
+ 	  <infer>
+ 	    <prejudge>
+              <multiclause>
+  	        <clause><environment>&xq_stat_env;</environment>
+                  <expression>
+                    &gr_AttributeType; &jd_static_lookup; of type &gr_TypeName;
+                  </expression>
+ 	        </clause>
+              </multiclause>
+              <multiclause>
+  	        <clause><environment>&xq_stat_env;</environment>
+                  <expression>
+                    of type &gr_TypeName; &jd_expands_to; &gr_Type;
+                  </expression>
+ 	        </clause>
+              </multiclause>
+ 	    </prejudge>
+ 	    <postjudge>
+ 	      <clause><environment>&xq_stat_env;</environment>
+ 		<expression>
+                  &jd_data; &gr_AttributeType; &jd_has_type; &gr_Type;
+ 		</expression>
+ 	      </clause>
+ 	    </postjudge>
+ 	  </infer>
+      	</infergr>
+
+        <p>When applied to an element type whose <xtermref spec="XQ"
+        ref="dt-type-annotation"/> denotes a simple type or a complex
+        type of simple content, &jd_data; returns the element's simple
+        type.</p>
+
+      	<infergr>
+ 	  <infer>
+ 	    <prejudge>
+              <multiclause>
+  	        <clause><environment>&xq_stat_env;</environment>
+                  <expression>
+                    &gr_ElementType; &jd_static_lookup; &gr_TypeReference;
+                  </expression>
+ 	        </clause>
+              </multiclause>
+              <multiclause>
+  	        <clause><environment>&xq_stat_env;</environment>
+                  <expression>
+                     &gr_TypeReference; &jd_expands_to; &gr_Type;
+                  </expression>
+ 	        </clause>
+              </multiclause>
+              <multiclause>
+  	        <clause>
+                  <environment> &xq_stat_env; </environment>
+                  <expression>
+                     &gr_Type; &jd_subtype_of; (attribute<phrase diff='add' at='E023'>*</phrase>*, &gr_Type1;)
+                  </expression>
+ 	        </clause>
+  	        <clause>
+                  <environment> &xq_stat_env; </environment>
+                  <expression>
+                     &gr_Type1; &jd_subtype_of; &xs_anyAtomicType;*
+                  </expression>
+ 	        </clause>
+              </multiclause>
+ 	    </prejudge>
+ 	    <postjudge>
+ 	      <clause><environment>&xq_stat_env;</environment>
+ 		<expression>
+                  &jd_data; &gr_ElementType; &jd_has_type; &gr_Type1;
+ 		</expression>
+ 	      </clause>
+ 	    </postjudge>
+ 	  </infer>
+      	</infergr>
+
+        <p>When applied to an element type whose <xtermref spec="XQ"
+        ref="dt-type-annotation"/> denotes a complex type of mixed
+        content, the &jd_data; filter returns &xs_untypedAtomic;.</p>
+
+      	<infergr>
+ 	  <infer>
+ 	    <prejudge>
+              <multiclause>
+  	        <clause><environment>&xq_stat_env;</environment>
+                  <expression>
+                    &gr_ElementType; &jd_static_lookup; of type &gr_TypeName;
+                  </expression>
+ 	        </clause>
+              </multiclause>
+              <multiclause>
+          <clause>
+           <environment>&xq_stat_env;</environment>
+           <expression>
+             &gr_TypeName; &jd_elem_qname_expands_to; &xd_qname;
+           </expression>
+          </clause>
+  	        <clause>
+                  <expression>
+                    &xq_type_defn;(&xd_qname;) =
+                    define type &gr_TypeName; &gr_Derivation; mixed { &gr_Type1; }
+                  </expression>
+ 	        </clause>
+              </multiclause>
+ 	    </prejudge>
+ 	    <postjudge>
+ 	      <clause><environment>&xq_stat_env;</environment>
+ 		<expression>
+                  &jd_data; &gr_ElementType; &jd_has_type; xs:untypedAtomic
+ 		</expression>
+ 	      </clause>
+ 	    </postjudge>
+ 	  </infer>
+      	</infergr>
+
+        <p>The &jd_data; filter is not defined on any element type
+        whose <xtermref spec="XQ" ref="dt-type-annotation"/> denotes a
+        complex type of complex content and therefore applying
+        &jd_data; to such a node raises a static error.</p>
+      </smtype>
+
+      <smexample>
+        <p>Consider the following variable and its corresponding
+        static type.</p>
+      
+<eg><![CDATA[
+    $x : (element price { attribute currency { xs:string }, xs:decimal }
+         | element price_code { xs:integer })
+]]></eg>
+
+        <p>Applying the &fn_data; function on that variable results in
+        the following type.</p>
+      
+<eg><![CDATA[
+    fn:data($x) : (xs:decimal | xs:integer)
+]]></eg>
+
+        <p>Because the input type is a choice, applying the
+        &jd_data; filter results in a choice of simple types for the
+        output of the &fn_data; function.</p>
+      </smexample>
+
+    </div3>
+
+    <div3 id="sec_fn_distinct_node_vals">
+      <head><phrase>The &fn_distinct_values; function</phrase></head>
+
+      <smtype>
+        <p>The &fn_distinct_values; function expects a sequence of atomic
+        values as input and returns a sequence of prime types, which
+        are defined in <specref ref="sec_factor"/>.</p>
+
+	<infergr>
+	  <infer>
+	    <prejudge>
+	      <multiclause>
+		 <clause><environment>&xq_stat_env; </environment>
+			 <expression>&gr_Type; &jd_subtype_of; &xs_anyAtomicType;*</expression>
+		 </clause>
+	      </multiclause>
+	    </prejudge>
+	    <postjudge>
+		 <clause><environment>&xq_stat_env; </environment>
+			 <expression>&fn_uri_distinct_values;(&gr_Type;) &jd_has_type; &jd_prime;(&gr_Type;) &type_occurs_product; &jd_quantifier;(&gr_Type;)</expression>
+		 </clause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+
+      </smtype>
+    </div3>
+
+    <div3 id="sec_fn_unordered">
+      <head><phrase>The &fn_unordered; function</phrase></head>
+
+      <smtype>
+        <p>The static semantics for &fn_unordered; is computed using
+        &jd_prime; and &jd_quantifier;, which are defined in <specref
+        ref="sec_factor"/>. The type of the argument is determined,
+        and then &jd_prime;(.) and &jd_quantifier;(.)  are applied to
+        that type.</p>
+
+	<infergr>
+	  <infer>
+	    <prejudge>
+	    </prejudge>
+	    <postjudge>
+		 <clause><environment>&xq_stat_env; </environment>
+			 <expression>&fn_uri_unordered;(&gr_Type1;)
+			 &jd_has_type; &jd_prime;(&gr_Type1;) &type_occurs_product;
+			 &jd_quantifier;(&gr_Type1;)</expression>
+		 </clause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+      </smtype>
+    </div3>
+
+    <div3 id="sec_fnerror">
+      <head><phrase>The &fn_error; function</phrase></head>
+
+      <smtype>
+        <p>The fn:error function always has the &xt_none; type.</p>
+
+	<infergr>
+	  <infer>
+	    <prejudge>
+	    </prejudge>
+	    <postjudge>
+	      <multiclause>
+		 <clause><environment>&xq_stat_env; </environment>
+			 <expression>&fn_uri_error;() &jd_has_type; &xt_none;</expression>
+		 </clause>
+	      </multiclause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+
+	<infergr>
+	  <infer>
+	    <prejudge>
+            <clause><environment>&xq_stat_env; </environment>
+			 <expression>&gr_Type; &jd_subtype_of; &xs_QName;</expression></clause>
+	    </prejudge>
+	    <postjudge>
+	      <multiclause>
+		 <clause><environment>&xq_stat_env; </environment>
+			 <expression>&fn_uri_error;(&gr_Type;) &jd_has_type; &xt_none;</expression>
+		 </clause>
+	      </multiclause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+
+	<infergr>
+	  <infer>
+	    <prejudge>
+            <clause><environment>&xq_stat_env; </environment>
+			 <expression>&gr_Type1; &jd_subtype_of; &xs_QName;?</expression></clause>
+            <clause><environment>&xq_stat_env; </environment>
+			 <expression>&gr_Type2; &jd_subtype_of; &xs_string;</expression></clause>
+	    </prejudge>
+	    <postjudge>
+	      <multiclause>
+		 <clause><environment>&xq_stat_env; </environment>
+			 <expression>&fn_uri_error;(&gr_Type1;,&gr_Type2;) &jd_has_type; &xt_none;</expression>
+		 </clause>
+	      </multiclause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+
+	<infergr>
+	  <infer>
+	    <prejudge>
+            <clause><environment>&xq_stat_env; </environment>
+			 <expression>&gr_Type1; &jd_subtype_of; &xs_QName;?</expression></clause>
+            <clause><environment>&xq_stat_env; </environment>
+			 <expression>&gr_Type2; &jd_subtype_of; &xs_string;</expression></clause>
+	    </prejudge>
+	    <postjudge>
+	      <multiclause>
+		 <clause><environment>&xq_stat_env; </environment>
+			 <expression>&fn_uri_error;(&gr_Type1;,&gr_Type2;,&gr_Type3;) &jd_has_type; &xt_none;</expression>
+		 </clause>
+	      </multiclause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+
+      </smtype>
+    </div3>
+
+    <div3 id="sec_fn_aggregates">
+      <head><phrase>The &fn_min;, &fn_max;, &fn_avg;, and &fn_sum;
+      functions</phrase></head>
+
+     <smintro>
+       <p>The semantics of aggregate functions convert any item of
+       type &xs_untypedAtomic; in the input sequence to &xs_double;,
+       then attempt to promote all values in the input sequence to
+       values that are comparable.  The static typing rules reflect
+       the dynamic evaluation rules.</p>
+
+      <p>The &fn_sum; function has two forms.  The first form takes
+      two arguments: The first argument is the input sequence and the
+      second argument is the value that should be returned if the
+      input sequence is empty. In case there is no second argument,
+      the value returned for an empty sequence is the &xs_integer;
+      value 0. The following static typing rule applies in the case
+      there is no second argument.</p>
+     </smintro>
+
+     <smtype>
+        <infergr>
+          <infer>
+            <prejudge>
+ 	      <multiclause>
+              <clause><environment>&xq_stat_env;</environment>
+                <expression>
+                  &fn_uri_sum;(
+                  <phrase diff='del' at='E033'>&gr_Expr;,0</phrase>
+                  <phrase diff='add' at='E033'>&gr_Type1;, &xs_integer;</phrase>
+                  ) &jd_has_type;
+                  <phrase diff='del' at='E033'>&gr_Type;</phrase>
+                  <phrase diff='add' at='E033'>&gr_Type2;</phrase>
+                </expression>
+              </clause>
+ 	      </multiclause>
+            </prejudge>
+            <postjudge>
+              <clause><environment>&xq_stat_env;</environment>
+                <expression>
+                  &fn_uri_sum;(
+                  <phrase diff='del' at='E033'>&gr_Expr;</phrase>
+                  <phrase diff='add' at='E033'>&gr_Type1;</phrase>
+                  ) &jd_has_type;
+                  <phrase diff='del' at='E033'>&gr_Type;</phrase>
+                  <phrase diff='add' at='E033'>&gr_Type2;</phrase>
+                </expression>
+              </clause>
+            </postjudge>
+          </infer>
+        </infergr>
+     </smtype>
+
+     <smnotation>
+       <p id="jd_convert_untypedAtomic">The type function
+       &jd_convert_untypedAtomic; takes a prime type and converts all
+       occurrences of the type &xs_untypedAtomic; to a target type.
+       It is defined recursively as follows.</p>
+    
+      <table summary="" role="figure">
+        <col align="left"/>
+        <col align="left"/>
+        <col align="center"/>
+        <col align="left"/>
+        <col align="left"/>
+        <tbody>
+        <tr><td></td>
+            <td>&jd_convert_untypedAtomic;(&xs_untypedAtomic;, &gr_Type;)</td>
+            <td>&sp2;=&sp2;</td>
+            <td>&gr_Type;</td>
+        </tr>
+        <tr><td>if not(&gr_FormalItemType; = &xs_untypedAtomic;)</td>
+            <td>&jd_convert_untypedAtomic;(&gr_FormalItemType;, &gr_Type;)</td>
+            <td>&sp2;=&sp2;</td>
+            <td>&gr_FormalItemType;</td>      
+        </tr>
+        <tr><td></td>
+            <td>&jd_convert_untypedAtomic;(&xt_empty;, &gr_Type;)</td>
+            <td>&sp2;=&sp2;</td>
+            <td>&xt_empty;</td>
+        </tr>
+          <tr>
+            <td></td>
+            <td>&jd_convert_untypedAtomic;(&xt_none;, &gr_Type;)</td>
+            <td>&sp2;=&sp2;</td>
+            <td>&xt_none;</td>
+        </tr>
+        <tr><td></td>
+            <td>&jd_convert_untypedAtomic;(&gr_Type1; | &gr_Type2;, &gr_Type;)</td>
+            <td>&sp2;=&sp2;</td>
+            <td>&jd_convert_untypedAtomic;(&gr_Type1;, &gr_Type;) | &jd_convert_untypedAtomic;(&gr_Type2;, &gr_Type;)</td>
+        </tr>
+        </tbody>
+      </table>
+
+     </smnotation>
+
+     <smnotation>
+
+       <p id="jd_agg_quantifier">The function &jd_agg_quantifier;
+       converts the input type quantifier zero-or-more or zero-or-one
+       to the result type quantifier zero-or-one, and converts the
+       input type quantifier one or one-or-more, to the result type
+       quantifier one.</p>
+
+      <table summary="" role="figure">
+        <col align="left"/> <col align="center"/> <col align="left"/>
+        <tbody>
+        <tr><td>&jd_agg_quantifier;(<code>?</code>)</td>
+            <td>&sp2;=&sp2;</td>
+            <td><code>?</code></td>
+        </tr>
+        <tr><td>&jd_agg_quantifier;(<code>*</code>)</td>
+            <td>&sp2;=&sp2;</td>
+            <td><code>?</code></td>
+        </tr>
+        <tr><td>&jd_agg_quantifier;(<code>1</code>)</td>
+            <td>&sp2;=&sp2;</td>
+            <td><code>1</code></td>
+        </tr>
+        <tr><td>&jd_agg_quantifier;(<code>+</code>)</td>
+            <td>&sp2;=&sp2;</td>
+            <td><code>1</code></td>
+        </tr>
+        </tbody>
+      </table>
+     </smnotation>
+
+     <smtype diff='del' at='E033'>
+       <p>Now we can define the static typing rules for the aggregate
+       functions.  First, the input type is converted to a prime type.
+       Second, the type function &jd_convert_untypedAtomic; is applied
+       to the prime type, yielding a new prime type, in which
+       occurrences of &xs_untypedAtomic; are converted to
+       &xs_double;.  Third, the judgment &jd_can_be_promoted_to; is
+       applied to the new prime type and target type. The result type
+       is combined with the aggregate quantifier of the input
+       type.</p>
+
+       <p>For a given aggregate function, instead of writing a
+       separate judgment for each target type, we write one rule using
+       a target type &gr_Type0;.</p>
+
+       <p>For &fn_min; and &fn_max;, the target type &gr_Type0; is
+       either &xs_string;, &xs_integer;, &xs_decimal;, &xs_float;,
+       &xs_double;, &xs_date;, &xs_time;, &xs_dateTime;,
+       &xs_yearMonthDuration;, or &xs_dayTimeDuration;.</p>
+
+      <infergr>
+        <infer>
+          <prejudge>
+            <multiclause>
+              <clause>
+                <expression>&gr_Type1; = &jd_prime;(&gr_Type;)</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause>
+                <expression>&gr_Type2; =
+           &jd_convert_untypedAtomic;(&gr_Type1;, &xs_double;)</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause>
+               <expression>&gr_Type2; = empty</expression>
+              </clause>
+            </multiclause>
+          </prejudge>
+          <postjudge>
+            <clause><environment>&xq_stat_env;</environment>
+             <expression>
+              &fn_uri_min;(&gr_Type;) &jd_has_type; empty
+      	     </expression>
+            </clause>
+          </postjudge>
+        </infer>
+      </infergr>
+
+      <infergr>
+        <infer>
+          <prejudge>
+            <multiclause>
+              <clause>
+                <expression>&gr_Type1; = &jd_prime;(&gr_Type;)</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause>
+                <expression>&gr_Type2; =
+           &jd_convert_untypedAtomic;(&gr_Type1;, &xs_double;)</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause>
+               <expression>&gr_FormalItemType1;, ...,&gr_FormalItemTypen; = &gr_Type2;</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause><environment>&xq_stat_env;</environment>
+            <expression>&gr_FormalItemType1; &jd_can_be_promoted_to; &gr_Type0;</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause>
+            <expression>...</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause><environment>&xq_stat_env;</environment>
+            <expression>&gr_FormalItemTypen; &jd_can_be_promoted_to; &gr_Type0;</expression>
+              </clause>
+            </multiclause>
+       <multiclause>
+        <clause>
+         <expression>
+          &gr_Type0;
+          &jd_isin;
+          { &xs_string;, &xs_integer;, &xs_decimal;, &xs_float;,
+       &xs_double;, &xs_date;, &xs_time;, &xs_dateTime;,
+       &xs_yearMonthDuration;, &xs_dayTimeDuration; }
+         </expression>
+        </clause>
+       </multiclause>
+          </prejudge>
+          <postjudge>
+            <clause><environment>&xq_stat_env;</environment>
+             <expression>
+              &fn_uri_min;(&gr_Type;) &jd_has_type; &gr_Type0; &type_occurs_product; &jd_agg_quantifier;(&jd_quantifier;(&gr_Type;))
+      	     </expression>
+            </clause>
+          </postjudge>
+        </infer>
+      </infergr>
+
+      <infergr>
+        <infer>
+          <prejudge>
+            <multiclause>
+              <clause>
+                <expression>&gr_Type1; = &jd_prime;(&gr_Type;)</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause>
+                <expression>&gr_Type2; =
+           &jd_convert_untypedAtomic;(&gr_Type1;, &xs_double;)</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause>
+               <expression>&gr_Type2; = empty</expression>
+              </clause>
+            </multiclause>
+          </prejudge>
+          <postjudge>
+            <clause><environment>&xq_stat_env;</environment>
+             <expression>
+              &fn_uri_max;(&gr_Type;) &jd_has_type; empty
+      	     </expression>
+            </clause>
+          </postjudge>
+        </infer>
+      </infergr>
+
+      <infergr>
+        <infer>
+          <prejudge>
+            <multiclause>
+              <clause>
+                <expression>&gr_Type1; = &jd_prime;(&gr_Type;)</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause>
+                <expression>&gr_Type2; =
+           &jd_convert_untypedAtomic;(&gr_Type1;, &xs_double;)</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause>
+               <expression>&gr_Type2; = &gr_FormalItemType1;, ...,&gr_FormalItemTypen;</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause><environment>&xq_stat_env;</environment>
+            <expression>&gr_FormalItemType1; &jd_can_be_promoted_to; &gr_Type0;</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause>
+            <expression>...</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause><environment>&xq_stat_env;</environment>
+            <expression>&gr_FormalItemTypen; &jd_can_be_promoted_to; &gr_Type0;</expression>
+              </clause>
+            </multiclause>
+       <multiclause>
+        <clause>
+         <expression>
+          &gr_Type0;
+          &jd_isin;
+          { &xs_string;, &xs_integer;, &xs_decimal;, &xs_float;,
+       &xs_double;, &xs_date;, &xs_time;, &xs_dateTime;,
+       &xs_yearMonthDuration;, &xs_dayTimeDuration; }
+         </expression>
+        </clause>
+       </multiclause>
+          </prejudge>
+          <postjudge>
+            <clause><environment>&xq_stat_env;</environment>
+             <expression>
+              &fn_uri_max;(&gr_Type;) &jd_has_type; &gr_Type0; &type_occurs_product; &jd_agg_quantifier;(&jd_quantifier;(&gr_Type;))
+      	     </expression>
+            </clause>
+          </postjudge>
+        </infer>
+      </infergr>
+
+      <p>For &fn_avg;, the target type &gr_Type0; is either
+      &xs_decimal;, &xs_float;, &xs_double;, &xs_yearMonthDuration;,
+      or &xs_dayTimeDuration;.</p>
+
+      <infergr>
+        <infer>
+          <prejudge>
+            <multiclause>
+              <clause>
+                <expression>&gr_Type1; = &jd_prime;(&gr_Type;)</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause>
+                <expression>&gr_Type2; =
+           &jd_convert_untypedAtomic;(&gr_Type1;, &xs_double;)</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause>
+               <expression>&gr_Type2; = empty</expression>
+              </clause>
+            </multiclause>
+          </prejudge>
+          <postjudge>
+            <clause><environment>&xq_stat_env;</environment>
+             <expression>
+              &fn_uri_avg;(&gr_Type;) &jd_has_type; empty
+      	     </expression>
+            </clause>
+          </postjudge>
+        </infer>
+      </infergr>
+
+      <infergr>
+        <infer>
+          <prejudge>
+            <multiclause>
+              <clause>
+                <expression>&gr_Type1; = &jd_prime;(&gr_Type;)</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause>
+                <expression>&gr_Type2; =
+           &jd_convert_untypedAtomic;(&gr_Type1;, &xs_double;)</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause>
+               <expression>&gr_FormalItemType1;, ...,&gr_FormalItemTypen; = &gr_Type2;</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause><environment>&xq_stat_env;</environment>
+            <expression>&gr_FormalItemType1; &jd_can_be_promoted_to; &gr_Type0;</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause>
+            <expression>...</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause><environment>&xq_stat_env;</environment>
+            <expression>&gr_FormalItemTypen; &jd_can_be_promoted_to; &gr_Type0;</expression>
+              </clause>
+            </multiclause>
+       <multiclause>
+        <clause>
+         <expression>
+          &gr_Type0;
+          &jd_isin;
+          { &xs_decimal;, &xs_float;, &xs_double;, &xs_yearMonthDuration;,
+      &xs_dayTimeDuration; }
+         </expression>
+        </clause>
+       </multiclause>
+          </prejudge>
+          <postjudge>
+            <clause><environment>&xq_stat_env;</environment>
+             <expression>
+              &fn_uri_avg;(&gr_Type;) &jd_has_type; &gr_Type0; &type_occurs_product; &jd_agg_quantifier;(&jd_quantifier;(&gr_Type;))
+      	     </expression>
+            </clause>
+          </postjudge>
+        </infer>
+      </infergr>
+
+      <p>For &fn_sum;, the target type &gr_Type0; is either
+      &xs_integer;, &xs_decimal;, &xs_float;, &xs_double;,
+      &xs_yearMonthDuration;, or &xs_dayTimeDuration;. The second
+      argument in &fn_sum; is the value that should be returned if the
+      input sequence is empty. The result type is the union of the
+      target type and the type of the second argument. Note that the
+      rule checks that the type for the zero value is consistent with
+      the type of the input sequence.</p>
+
+      <infergr>
+        <infer>
+          <prejudge>
+            <multiclause>
+              <clause>
+                <expression>&gr_Type1; = &jd_prime;(&gr_Type;)</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause>
+                <expression>&gr_Type2; =
+           &jd_convert_untypedAtomic;(&gr_Type1;, &xs_double;)</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause>
+               <expression>&gr_Type2; = empty</expression>
+              </clause>
+            </multiclause>
+          </prejudge>
+          <postjudge>
+            <clause><environment>&xq_stat_env;</environment>
+             <expression>
+              &fn_uri_sum;(&gr_Type;) &jd_has_type; &xs_integer;
+      	     </expression>
+            </clause>
+          </postjudge>
+        </infer>
+      </infergr>
+
+      <infergr>
+        <infer>
+          <prejudge>
+            <multiclause>
+              <clause><environment>&xq_stat_env;</environment>
+                <expression>&gr_Type2; &jd_subtype_of; &xs_anyAtomicType; ?</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause>
+                <expression>&gr_Type3; = &jd_prime;(&gr_Type1;)</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause>
+                <expression>&gr_Type4; =
+           &jd_convert_untypedAtomic;(&gr_Type3;, &xs_double;)</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause>
+               <expression>&gr_FormalItemType1;, ...,&gr_FormalItemTypen; = &gr_Type4;</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause><environment>&xq_stat_env;</environment>
+            <expression>&gr_FormalItemType1; &jd_can_be_promoted_to; &gr_Type0;</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause>
+            <expression>...</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause><environment>&xq_stat_env;</environment>
+            <expression>&gr_FormalItemTypen; &jd_can_be_promoted_to; &gr_Type0;</expression>
+              </clause>
+            </multiclause>
+            <multiclause>
+              <clause><environment>&xq_stat_env;</environment>
+            <expression>&gr_Type2; &jd_subtype_of; &gr_Type0;</expression></clause>
+            </multiclause>
+       <multiclause>
+        <clause>
+         <expression>
+          &gr_Type0;
+          &jd_isin;
+          { &xs_integer;, &xs_decimal;, &xs_float;, &xs_double;, &xs_yearMonthDuration; }
+         </expression>
+        </clause>
+       </multiclause>
+          </prejudge>
+          <postjudge>
+            <clause><environment>&xq_stat_env;</environment>
+             <expression>
+              &fn_uri_sum;(&gr_Type1;,&gr_Type2;) &jd_has_type; &gr_Type0;
+              &type_occurs_product;
+              &jd_agg_quantifier;(&jd_quantifier;(&gr_Type1;))
+      	     </expression>
+            </clause>
+          </postjudge>
+        </infer>
+      </infergr>
+
+    </smtype>
+
+      <smtype diff='add' at='E033'>
+
+        <p>
+        Now we can define the static typing rules for the aggregate functions.
+        Note that the normalization rules of <specref ref="id-function-calls"/>
+        will have wrapped each argument
+        in calls to &fn_data;() and &fs_convert_simple_argument;()
+        (with a 'prototypical value' of type &xs_double;).
+        Thus, static analysis of the call to an aggregate function
+        is guaranteed that any argument type is a subtype of &xs_anyAtomicType;*,
+        with no occurrences of &xs_untypedAtomic;.
+        </p>
+
+        <p>
+        First, we can quickly deal with &fn_avg;.
+        For the purposes of static type analysis,
+            <code>fn:avg($arg)</code>
+        is equivalent to
+            <code>fs:div( fn:sum($arg,()), fn:count($arg) )</code>
+        Thus, we have the rule:
+        </p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&fn_uri_sum;(&gr_Type1;, empty) &jd_has_type; &gr_Type2;</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&fs_uri_div;(&gr_Type2;, &xs_integer;) &jd_has_type; &gr_Type3;</expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&fn_uri_avg;(&gr_Type1;) &jd_has_type; &gr_Type3;</expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <p>
+        For the remaining aggregate functions
+        (&fn_min;, &fn_max;, and &fn_sum;),
+        the general approach is as follows.
+        First, we check that the input type(s) are acceptable for the function.
+        Then we construct the (first) argument's prime type,
+        a union of AtomicTypeNames.
+        For each of the latter,
+        we find the 'base atomic type'.
+        The union of these base atomic types
+        is the basis for the result type,
+        which may finally be adjusted
+        for cardinality (&fn_min; and &fn_max;)
+        or for the effect of the second argument (&fn_sum;).
+        In addition, we provide a rule for the special case
+        when the (first) argument has type 'empty'.
+        </p>
+
+        <p>
+        For &fn_min; and &fn_max;,
+        the permitted input types
+        are all those for which ge(T,T) and le(T,T) are defined.
+        An empty input sequence yields an empty result.
+        </p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause>
+                  <expression>&xd_qname; &jd_isin; { &fn_uri_min;, &fn_uri_max; }</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <expression>&gr_Type; = empty</expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&xd_qname;(&gr_Type;) &jd_has_type; empty</expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause>
+                  <expression>&xd_qname; &jd_isin; { &fn_uri_min;, &fn_uri_max; }</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_Type1; &jd_subtype_of; &gr_Type3;*</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <expression>
+                    &gr_Type3; &jd_isin; {
+                      &fs_numeric;,
+                      &xs_anyURI;|&xs_string;,
+                      &xs_yearMonthDuration;, &xs_dayTimeDuration;,
+                      &xs_date;, &xs_time;, &xs_dateTime;, &xs_boolean;
+                    }
+                  </expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <expression>&jd_prime;(&gr_Type1;) = &gr_AtomicTypeName1; | ... | &gr_AtomicTypeNamen;</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_AtomicTypeName1; &jd_has_base_atomic_type; &gr_AtomicTypeName1;'</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <expression>...</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_AtomicTypeNamen; &jd_has_base_atomic_type; &gr_AtomicTypeNamen;'</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <expression>&gr_AtomicTypeName1;' | ...  | &gr_AtomicTypeNamen;' = &gr_Type4;</expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>
+                    &xd_qname;(&gr_Type1;)
+                    &jd_has_type;
+                    &gr_Type4; &middot; &jd_agg_quantifier;(&jd_quantifier;(&gr_Type1;))
+                  </expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <p>
+        For &fn_sum;,
+        the permitted input types for the first argument
+        are all those for which plus(T,T) is defined.
+        If you pass an empty sequence as the first argument,
+        the function returns the value of the second argument.
+        </p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause>
+                  <expression>&gr_Type1; = empty</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_Type2; &jd_subtype_of; &xs_anyAtomicType;?</expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&fn_uri_sum;(&gr_Type1;,&gr_Type2;) &jd_has_type; &gr_Type2;</expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_Type1; &jd_subtype_of; &gr_Type3;*</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <expression>&gr_Type3; &jd_isin; {&fs_numeric;, &xs_yearMonthDuration;, &xs_dayTimeDuration;}</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_Type2; &jd_subtype_of; &xs_anyAtomicType;?</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <expression>&jd_prime;(&gr_Type1;) = &gr_AtomicTypeName1; | ... | &gr_AtomicTypeNamen;</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_AtomicTypeName1; &jd_has_base_atomic_type; &gr_AtomicTypeName1;'</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <expression>...</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&gr_AtomicTypeNamen; &jd_has_base_atomic_type; &gr_AtomicTypeNamen;'</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <expression>&gr_AtomicTypeName1;' | ...  | &gr_AtomicTypeNamen;' = &gr_Type4;</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&jd_sacfsw; &gr_Type1; &jd_sacfsw_and; &gr_Type2; &jd_sacfsw_is; &gr_Type2;'</expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&fn_uri_sum;(&gr_Type1;,&gr_Type2;) &jd_has_type; &gr_Type4; | &gr_Type2;'</expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <p id='jd_sacfsw'>
+        The second argument's contribution (if any) to the above result type
+        is determined as follows.  If the first argument could be the empty
+        sequence, we add the type of the second argument to the result type.
+        Otherwise, the type of the second argument is ignored.
+        </p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>empty &jd_subtype_of; &gr_Type1;</expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&jd_sacfsw; &gr_Type1; &jd_sacfsw_and; &gr_Type2; &jd_sacfsw_is; &gr_Type2;</expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&jd_not; (empty &jd_subtype_of; &gr_Type1;)</expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <multiclause>
+                <clause>
+                  <environment>&xq_stat_env;</environment>
+                  <expression>&jd_sacfsw; &gr_Type1; &jd_sacfsw_and; &gr_Type2; &jd_sacfsw_is; none</expression>
+                </clause>
+              </multiclause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+      </smtype>
+
+    </div3>
+
+    <div3 id="sec_fn_remove">
+      <head><phrase>The &fn_remove; function</phrase></head>
+
+      <smtype>
+        <p>The static type for the &fn_remove; function is computed
+        using &jd_prime; and &jd_quantifier;, which are defined in
+        <specref ref="sec_factor"/>. Since one item may be removed
+        from the sequence, the resulting type is made optional.</p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_Type1; &jd_subtype_of; &xs_integer;</expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+ 	    <postjudge>
+ 	      <clause><environment>&xq_stat_env;</environment>
+ 		<expression>
+                  &fn_uri_remove;(&gr_Type;, &gr_Type1;) &jd_has_type;
+                  &jd_prime;(&gr_Type;) &type_occurs_product;
+                  &jd_quantifier;(&gr_Type;) &type_occurs_product; ?
+ 		</expression>
+ 	      </clause>
+            </postjudge>
+          </infer>
+        </infergr>
+      </smtype>
+    </div3>
+
+    <div3 id="sec_fn_reverse">
+      <head><phrase>The &fn_reverse; function</phrase></head>
+
+      <smtype>
+        <p>The static type for the &fn_reverse; function is computed
+        using &jd_prime; and &jd_quantifier;, which are defined in
+        <specref ref="sec_factor"/>.</p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+            </prejudge>
+ 	    <postjudge>
+ 	      <clause><environment>&xq_stat_env;</environment>
+ 		<expression>
+                  &fn_uri_reverse;(&gr_Type;) &jd_has_type; &jd_prime;(&gr_Type;) &type_occurs_product; &jd_quantifier;(&gr_Type;)
+ 		</expression>
+ 	      </clause>
+            </postjudge>
+          </infer>
+        </infergr>
+      </smtype>
+
+    </div3>
+
+    <div3 id="sec_fn_subsequence">
+      <head><phrase>The &fn_subsequence; function</phrase></head>
+
+      <smintro diff='del' at='E024'>
+        <p>The &fn_subsequence; function has special static typing
+        rules when its second argument is the numeric literal value 1
+        or the built-in variable &fs_last;.  These rules provide
+        better typing for path expressions such as &gr_Expr;[1] and
+        &gr_Expr;[&fn_last;()].</p>
+
+        <p>The static typing rules for &fn_subsequence; depends on the
+        syntactic form of their input expression. As a result, the
+        corresponding static typing rules must be written directly
+        over the input expression, unlike the other functions in this
+        section.</p>
+      </smintro>
+
+      <smtype>
+
+        <p diff='del' at='E024'>If the type of the input expression has exactly one or
+        one-or-more items, then the type inferred for &fn_subsequence;
+        is the prime type of the input type.</p>
+
+	<infergr diff='del' at='E024'>
+	  <infer>
+	    <prejudge>
+              <multiclause>
+                 <clause><environment>&xq_stat_env;</environment>
+                   <expression>&gr_QName;
+                   &jd_func_qname_expands_to; &fn_uri_subsequence;</expression>
+                 </clause>
+              </multiclause>
+	      <multiclause>
+		 <clause><environment>&xq_stat_env;</environment>
+ 		<expression>&gr_Expr; &jd_has_type;
+ 		&gr_Type;</expression>
+                </clause>
+                <clause><expression>&jd_quantifier;(&gr_Type;) &jd_isin;
+                { <code>1</code>, <code>+</code> }</expression></clause>
+              </multiclause>
+	    </prejudge>
+	    <postjudge>
+	      <multiclause>
+		 <clause><environment>&xq_stat_env; </environment>
+			 <expression>&gr_QName;(&gr_Expr;,
+			 1, 1) &jd_has_type; &jd_prime;(&gr_Type;)</expression>
+		 </clause>
+	      </multiclause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+
+        <p diff='del' at='E024'>If the type of the input expression has zero or more items,
+        &fn_subsequence; is applied on a numeric literal,
+        &fs_position;, or &fs_last;, then the static type is
+        zero-or-one of the prime type of the input type. Those static
+        typing rules are intended to support more precise typing for
+        the cases where &fn_subsequence; is the result of normalizing
+        an XPath predicate of the form &gr_Expr;[&gr_NumericLiteral;]
+        of &gr_Expr;[last()], see <specref ref="id-axis-steps"/>.</p>
+
+	<infergr diff='del' at='E024'>
+	  <infer>
+	    <prejudge>
+              <multiclause>
+                 <clause><environment>&xq_stat_env;</environment>
+                   <expression>&gr_QName;
+                   &jd_func_qname_expands_to; &fn_uri_subsequence;</expression>
+                 </clause>
+              </multiclause>
+	      <multiclause>
+		 <clause><environment>&xq_stat_env;</environment>
+ 		<expression>&gr_Expr; &jd_has_type;
+ 		&gr_Type;</expression>
+                </clause>
+                <clause><expression>&jd_quantifier;(&gr_Type;) &jd_isin;
+                { <code>*</code>, <code>+</code> }</expression></clause>
+              </multiclause>
+	    </prejudge>
+	    <postjudge>
+	      <multiclause>
+		 <clause><environment>&xq_stat_env; </environment>
+			 <expression>&gr_QName;(&gr_Expr;,
+			 &gr_NumericLiteral;, 1) &jd_has_type; &jd_prime;(&gr_Type;) <code>?</code></expression>
+		 </clause>
+	      </multiclause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+
+        <p diff='del' at='E024'>The same rule applies when the last item in the input
+        sequence is selected.</p>
+
+	<infergr diff='del' at='E024'>
+	  <infer>
+	    <prejudge>
+              <multiclause>
+                 <clause><environment>&xq_stat_env;</environment>
+                   <expression>&gr_QName;
+                   &jd_func_qname_expands_to; &fn_uri_subsequence;</expression>
+                 </clause>
+              </multiclause>
+	      <multiclause>
+		 <clause><environment>&xq_stat_env;</environment>
+ 		<expression>&gr_Expr; &jd_has_type;
+ 		&gr_Type;</expression>
+                </clause>
+                <clause><expression>&jd_quantifier;(&gr_Type;) &jd_isin;
+                { <code>*</code>, <code>+</code> }</expression></clause>
+              </multiclause>
+	    </prejudge>
+	    <postjudge>
+	      <multiclause>
+		 <clause><environment>&xq_stat_env; </environment>
+			 <expression>&gr_QName;(&gr_Expr;,
+			 &fs_last;, 1) &jd_has_type; &jd_prime;(&gr_Type;) <code>?</code></expression>
+		 </clause>
+	      </multiclause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+
+        <p diff='del' at='E024'>The same rule applies when an item is selected based on its
+        position in the input sequence.</p>
+
+	<infergr diff='del' at='E024'>
+	  <infer>
+	    <prejudge>
+              <multiclause>
+                 <clause><environment>&xq_stat_env;</environment>
+                   <expression>&gr_QName;
+                   &jd_func_qname_expands_to; &fn_uri_subsequence;</expression>
+                 </clause>
+              </multiclause>
+	      <multiclause>
+		 <clause><environment>&xq_stat_env;</environment>
+ 		<expression>&gr_Expr; &jd_has_type;
+ 		&gr_Type;</expression>
+                </clause>
+                <clause><expression>&jd_quantifier;(&gr_Type;) &jd_isin;
+                { <code>*</code>, <code>+</code> }</expression></clause>
+              </multiclause>
+	    </prejudge>
+	    <postjudge>
+	      <multiclause>
+		 <clause><environment>&xq_stat_env; </environment>
+			 <expression>&gr_QName;(&gr_Expr;,
+			 &fs_position;, 1) &jd_has_type; &jd_prime;(&gr_Type;) <code>?</code></expression>
+		 </clause>
+	      </multiclause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+
+        <p diff='del' at='E024'>The last rule applies to all other applications of the
+        &fn_subsequence; function. </p>
+        <infergr diff='del' at='E024'>
+
+          <infer>
+            <prejudge>
+              <multiclause>
+                 <clause><environment>&xq_stat_env;</environment>
+                   <expression>&gr_QName;
+                   &jd_func_qname_expands_to; &fn_uri_subsequence;</expression>
+                 </clause>
+              </multiclause>
+              <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_Expr; &jd_has_type; &gr_Type;</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_Expr1; &jd_has_type; &xs_double;</expression>
+                </clause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_Expr2; &jd_has_type; &xs_double;</expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+ 	    <postjudge>
+ 	      <clause><environment>&xq_stat_env;</environment>
+ 		<expression>
+                  &gr_QName;(&gr_Expr;, &gr_Expr1;, &gr_Expr2;)
+                  &jd_has_type; &jd_prime;(&gr_Type;)
+                  &type_occurs_product; &jd_quantifier;(&gr_Type;) &type_occurs_product; ?
+ 		</expression>
+ 	      </clause>
+            </postjudge>
+          </infer>
+</infergr>
+
+        <p diff='add' at='E024'>
+        The static type of a call to &fn_subsequence;
+        is computed using &jd_prime;() and &jd_quantifier;(),
+        which are defined in <specref ref="sec_factor"/>.
+        </p>
+
+        <infergr diff='add' at='E024'>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_Type2; &jd_subtype_of; &fs_numeric;</expression>
+                </clause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_Type3; &jd_subtype_of; &fs_numeric;</expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+            <postjudge>
+              <clause><environment>&xq_stat_env;</environment>
+                <expression>
+                  &fn_uri_subsequence;(&gr_Type1;, &gr_Type2;, &gr_Type3;)
+                  &jd_has_type; &jd_prime;(&gr_Type1;)
+                  &type_occurs_product; &jd_quantifier;(&gr_Type1;) &type_occurs_product; ?
+                </expression>
+              </clause>
+            </postjudge>
+          </infer>
+        </infergr>
+
+      </smtype>
+    </div3>
+
+    <div3 id="sec_op_union_intersect_except">
+      <head><phrase>The &op_union;, &op_intersect;, and
+      &op_except; operators</phrase></head>
+
+      <smtype>
+        <p>The static semantics for &op_union; is computed using
+        &jd_prime; and &jd_quantifier;, which are defined in <specref
+        ref="sec_factor"/>.  The type of each argument is determined,
+        and then &jd_prime;(.) and &jd_quantifier;(.)  are applied to
+        the sequence type (&gr_Type1;, &gr_Type2;).</p>
+
+	<infergr>
+	  <infer>
+	    <prejudge>
+	    </prejudge>
+	    <postjudge>
+	      <multiclause>
+		 <clause><environment>&xq_stat_env; </environment>
+			 <expression>&op_uri_union;(&gr_Type1;, &gr_Type2;)
+			 &jd_has_type; &jd_prime;(&gr_Type1; , &gr_Type2;)
+			 &type_occurs_product; &jd_quantifier;(&gr_Type1; , &gr_Type2;)</expression>
+		 </clause>
+	      </multiclause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+
+        <p>The static semantics of &op_intersect; is analogous to that
+        for &op_union;. Because an intersection may be empty, the
+        result type is optional.</p>
+
+	<infergr>
+	  <infer>
+	    <prejudge>
+	    </prejudge>
+	    <postjudge>
+	      <multiclause>
+		<clause><environment>&xq_stat_env; </environment>
+		        <expression>&op_uri_intersect;(&gr_Type1;,
+		        &gr_Type2;) &jd_has_type; &jd_prime;(&gr_Type1;, &gr_Type2;) &type_occurs_product;
+		        &jd_quantifier;(&gr_Type1;,&gr_Type2;) &type_occurs_product; ?</expression>
+		</clause>
+	      </multiclause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+
+        <p>The static semantics of &op_except; follows.  The type of
+        the second argument is ignored as it does not contribute to
+        the result type.  As with &op_intersect;, the result of
+        &op_except; may be the empty sequence.</p>
+
+	<infergr>
+	  <infer>
+	    <prejudge>
+	    </prejudge>
+	    <postjudge>
+	      <multiclause>
+		 <clause><environment>&xq_stat_env; </environment>
+			 <expression>&op_uri_except;(&gr_Type1;, &gr_Type2;)
+			 &jd_has_type; &jd_prime;(&gr_Type1;) &type_occurs_product;
+			 &jd_quantifier;(&gr_Type1;) &type_occurs_product;
+			 ?</expression>
+		 </clause>
+	      </multiclause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+      </smtype>
+
+    </div3>   
+
+    <div3 id="sec_fn_insert_before">
+      <head><phrase>The &fn_insert_before; function</phrase></head>
+
+      <smtype>
+        <p>The static type for the &fn_insert_before; function is
+        computed using &jd_prime; and &jd_quantifier;, which are
+        defined in <specref ref="sec_factor"/>.</p>
+
+        <infergr>
+          <infer>
+            <prejudge>
+              <multiclause>
+                <clause><environment>&xq_stat_env;</environment>
+                  <expression>&gr_Type2; &jd_subtype_of; &xs_integer;</expression>
+                </clause>
+              </multiclause>
+              <multiclause>
+                <clause>
+                  <expression>&gr_Type4; = (&gr_Type1;,&gr_Type3;)</expression>
+                </clause>
+              </multiclause>
+            </prejudge>
+ 	    <postjudge>
+ 	      <clause><environment>&xq_stat_env;</environment>
+ 		<expression>
+                  &fn_uri_insert_before;(&gr_Type1;,&gr_Type2;,&gr_Type3;) &jd_has_type; &jd_prime;(&gr_Type4;) &type_occurs_product; &jd_quantifier;(&gr_Type4;)
+ 		</expression>
+ 	      </clause>
+            </postjudge>
+          </infer>
+        </infergr>
+      </smtype>
+
+    </div3>
+
+    <div3 id="sec_fn_cardinality_funcs">
+      <head><phrase>The &fn_zero_or_one;, &fn_one_or_more;, and
+      &fn_exactly_one; functions</phrase></head>
+
+      <p>The functions &fn_zero_or_one;, &fn_one_or_more;, and
+      &fn_exactly_one; check that the cardinality of a sequence is in
+      the expected range.  They are useful to override the static type
+      inferred for a given query.</p>
+
+      <p>For example, in the following query, the user may know that
+      all ISBN numbers are unique and therefore that the function
+      always returns at most one book element. However, the static
+      typing feature cannot infer a precise enough type and will raise
+      a type error during static type analysis.</p>
+
+<eg><![CDATA[
+  declare function book_with_isbn($isbn as xs:string) as schema-element(book)? {
+    //book[@isbn=$isbn]
+  }
+]]></eg>
+
+      <p>In that query, the &fn_zero_or_one; function can be used to
+      tell the type system that the cardinality is known to be zero or
+      one.</p>
+
+<eg><![CDATA[
+  declare function book_with_isbn($isbn as xs:string) as schema-element(book)? {
+    fn:zero-or-one(//book[@isbn=$isbn])
+  }
+]]></eg>
+
+      <smtype>
+        <p>The static typing rules for those functions always infer a
+        type with the cardinality indicated by that function.</p>
+
+	<infergr>
+	  <infer>
+	    <prejudge>
+	    </prejudge>
+	    <postjudge>
+	      <multiclause>
+		 <clause><environment>&xq_stat_env; </environment>
+			 <expression>&fn_uri_zero_or_one;(&gr_Type;)
+			 &jd_has_type;
+			 &jd_prime;(&gr_Type;)?</expression>
+		 </clause>
+	      </multiclause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+
+	<infergr>
+	  <infer>
+	    <prejudge>
+	    </prejudge>
+	    <postjudge>
+	      <multiclause>
+		 <clause><environment>&xq_stat_env; </environment>
+			 <expression>&fn_uri_one_or_more;(&gr_Type;)
+			 &jd_has_type;
+			 &jd_prime;(&gr_Type;)+</expression>
+		 </clause>
+	      </multiclause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+
+	<infergr>
+	  <infer>
+	    <prejudge>
+	    </prejudge>
+	    <postjudge>
+	      <multiclause>
+		 <clause><environment>&xq_stat_env; </environment>
+			 <expression>&fn_uri_exactly_one;(&gr_Type;)
+			 &jd_has_type;
+			 &jd_prime;(&gr_Type;)</expression>
+		 </clause>
+	      </multiclause>
+	    </postjudge>
+	  </infer>
+	</infergr>
+
+      </smtype>
+    </div3>
+
+  </div2>
+
+</div1>
+
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: xml
+sgml-indent-step:2
+indent-tabs-mode:nil
+sgml-parent-document:("XPathXQuerySemantics.xml" "body" "div1")
+End:
+-->

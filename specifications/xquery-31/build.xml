@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding='utf-8'?>
+<project name="xquery-xpath" default="all" basedir=".">
+
+  <dirname property="etc.dir" file="../../etc/*"/>
+<!-- Import target, etc. definitions that work globally -->
+  <import file="${etc.dir}/build-constants.xml"/>
+
+  <!-- ====================================================================== -->
+
+  <!-- The "help" template displays on the message medium the names of the    -->
+  <!--   various targets in this project and their purposes.                  -->
+  <target name="help">
+    <echo message="This project to build ${shortname} includes a number of targets."/>
+    <echo message="To invoke any of these targets from the command line, use 'ant target-name'"/>
+    <echo message="  all -- the default target (target-name not required); builds 'everything'"/>
+    <echo message="  xquery -- causes the XQuery spec to be built (uses build-xquery.xml)"/>
+    <echo message="  xpath -- causes the XPath spec to be built (uses build-xpath.xml)"/>
+    <echo message="  shared -- causes the combined XPath/XQuery spec to be built (uses build-shared.xml)"/>
+    <echo message="  clean -- deletes build directory and removes generated files from distribution directory"/>
+    <echo message="  stage -- stages the contents of the .../html/ directory for publication"/>
+    <echo message="  stage-nsdocs -- stages the namespace document contents of the .../html/ directory for publication"/>
+    <echo message="Each of these targets are suitable for direct invocation from the command line."/>
+  </target>
+
+  <!-- ============================================================ -->
+
+  <target name="all"
+          depends="xquery, xpath, shared"
+          description="This is the default target. "/>
+
+  <!-- ============================================================ -->
+
+  <target name="stage"
+          depends="stage-xquery, stage-xpath"
+          description="Stage XQuery and XPath (but not the shared document). "/>
+
+  <!-- ============================================================ -->
+
+  <target name="stage-nsdocs"
+          depends="stage-xquery-nsdocs, stage-xpath-nsdocs"
+          description="Stage XQuery namespace documents. "/>
+
+  <!-- ============================================================ -->
+
+  <target name="xquery">
+    <echo message="Calling build-xquery.xml"/>
+    <ant antfile="build-xquery.xml" inheritAll="true" inheritRefs="true" target="build.xquery"/>
+  </target>
+
+  <target name="stage-xquery">
+    <ant antfile="build-xquery.xml" target="stage"/>
+  </target>
+
+  <target name="stage-xquery-nsdocs">
+    <ant antfile="build-xquery.xml" target="stage-nsdocs"/>
+  </target>
+
+  <!-- ============================================================ -->
+
+  <target name="xpath">
+    <echo message="Calling build-xpath.xml"/>
+    <ant antfile="build-xpath.xml" inheritAll="true" inheritRefs="true" target="build.xpath"/>
+  </target>
+
+  <target name="stage-xpath">
+    <ant antfile="build-xpath.xml" target="stage"/>
+  </target>
+
+  <target name="stage-xpath-nsdocs">
+    <ant antfile="build-xpath.xml" target="stage-nsdocs"/>
+  </target>
+
+  <!-- ============================================================ -->
+
+  <target name="shared">
+    <echo message="Calling build-shared.xml"/>
+    <ant antfile="build-shared.xml" inheritAll="true" inheritRefs="true" target="build.shared"/>
+  </target>
+
+</project>

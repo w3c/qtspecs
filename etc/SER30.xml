@@ -1,0 +1,691 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--XSLT Processor: SAXON 9.3.0.5 from Saxonica SAXON EE 9.3.0.5--><document-summary uri="http://www.w3.org/TR/xslt-xquery-serialization-30/">
+   <title>XSLT and XQuery Serialization 3.0</title>
+   <div1 id="intro">
+      <head>
+         <h2>
+            <a name="intro" id="intro"/>1 Introduction</h2>
+      </head>
+      <div2 id="terminology">
+         <head>
+            <h3>
+               <a name="terminology" id="terminology"/>1.1 Terminology</h3>
+         </head>
+      </div2>
+      <div2 id="namespaces">
+         <head>
+            <h3>
+               <a name="namespaces" id="namespaces"/>1.2 Namespaces</h3>
+         </head>
+      </div2>
+   </div1>
+   <div1 id="serdm">
+      <head>
+         <h2>
+            <a name="serdm" id="serdm"/>2 Sequence Normalization</h2>
+      </head>
+   </div1>
+   <div1 id="serparam">
+      <head>
+         <h2>
+            <a name="serparam" id="serparam"/>3 Serialization Parameters</h2>
+      </head>
+      <div2 id="serparams-in-xdm-instance">
+         <head>
+            <h3>
+               <a name="serparams-in-xdm-instance" id="serparams-in-xdm-instance"/>3.1 Setting Serialization Parameters by Means of a Data Model Instance</h3>
+         </head>
+      </div2>
+   </div1>
+   <div1 id="serphases">
+      <head>
+         <h2>
+            <a name="serphases" id="serphases"/>4 Phases of Serialization</h2>
+      </head>
+   </div1>
+   <div1 id="xml-output">
+      <head>
+         <h2>
+            <a name="xml-output" id="xml-output"/>5 XML Output Method</h2>
+      </head>
+      <div2 id="XML_PARAMS">
+         <head>
+            <h3>
+               <a name="XML_PARAMS" id="XML_PARAMS"/>5.1 The Influence of Serialization Parameters upon the XML Output Method</h3>
+         </head>
+         <div3 id="XML_VERSION">
+            <head>
+               <h4>
+                  <a name="XML_VERSION" id="XML_VERSION"/>5.1.1 XML Output Method: the <code>version</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="XML_HTML_VERSION">
+            <head>
+               <h4>
+                  <a name="XML_HTML_VERSION" id="XML_HTML_VERSION"/>5.1.2 XML Output Method:  the <code>html-version</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="XML_ENCODING">
+            <head>
+               <h4>
+                  <a name="XML_ENCODING" id="XML_ENCODING"/>5.1.3 XML Output Method: the <code>encoding</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="xml-indent">
+            <head>
+               <h4>
+                  <a name="xml-indent" id="xml-indent"/>5.1.4 XML Output Method: the <code>indent</code> 
+                  <span>and <code>suppress-indentation</code>
+                  </span> Parameters</h4>
+            </head>
+         </div3>
+         <div3 id="XML_CDATA-SECTION-ELEMENTS">
+            <head>
+               <h4>
+                  <a name="XML_CDATA-SECTION-ELEMENTS" id="XML_CDATA-SECTION-ELEMENTS"/>5.1.5 XML Output Method: the <code>cdata-section-elements</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="XML_OMIT-XML-DECLARATION">
+            <head>
+               <h4>
+                  <a name="XML_OMIT-XML-DECLARATION" id="XML_OMIT-XML-DECLARATION"/>5.1.6 XML Output Method: the <code>omit-xml-declaration</code> and <code>standalone</code> Parameters</h4>
+            </head>
+         </div3>
+         <div3 id="XML_DOCTYPE">
+            <head>
+               <h4>
+                  <a name="XML_DOCTYPE" id="XML_DOCTYPE"/>5.1.7 XML Output Method: the <code>doctype-system</code> and <code>doctype-public</code> Parameters</h4>
+            </head>
+         </div3>
+         <div3 id="xml-undeclare-NS">
+            <head>
+               <h4>
+                  <a name="xml-undeclare-NS" id="xml-undeclare-NS"/>5.1.8 XML Output Method: the <code>undeclare-prefixes</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="XML_NORMALIZATION-FORM">
+            <head>
+               <h4>
+                  <a name="XML_NORMALIZATION-FORM" id="XML_NORMALIZATION-FORM"/>5.1.9 XML Output Method: the <code>normalization-form</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="XML_MEDIA-TYPE">
+            <head>
+               <h4>
+                  <a name="XML_MEDIA-TYPE" id="XML_MEDIA-TYPE"/>5.1.10 XML Output Method: the <code>media-type</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="XML_USE-CHARACTER-MAPS">
+            <head>
+               <h4>
+                  <a name="XML_USE-CHARACTER-MAPS" id="XML_USE-CHARACTER-MAPS"/>5.1.11 XML Output Method: the <code>use-character-maps</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="XML_BYTE-ORDER-MARK">
+            <head>
+               <h4>
+                  <a name="XML_BYTE-ORDER-MARK" id="XML_BYTE-ORDER-MARK"/>5.1.12 XML Output Method: the <code>byte-order-mark</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="XML_ESCAPE-URI-ATTRIBUTES">
+            <head>
+               <h4>
+                  <a name="XML_ESCAPE-URI-ATTRIBUTES" id="XML_ESCAPE-URI-ATTRIBUTES"/>5.1.13 XML Output Method: the <code>escape-uri-attributes</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="XML_INCLUDE-CONTENT-TYPE">
+            <head>
+               <h4>
+                  <a name="XML_INCLUDE-CONTENT-TYPE" id="XML_INCLUDE-CONTENT-TYPE"/>5.1.14 XML Output Method: the <code>include-content-type</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="XML_ITEM-SEPARATOR">
+            <head>
+               <h4>
+                  <a name="XML_ITEM-SEPARATOR" id="XML_ITEM-SEPARATOR"/>5.1.15 XML Output Method: the <code>item-separator</code> Parameter</h4>
+            </head>
+         </div3>
+      </div2>
+   </div1>
+   <div1 id="xhtml-output">
+      <head>
+         <h2>
+            <a name="xhtml-output" id="xhtml-output"/>6 XHTML Output Method</h2>
+      </head>
+      <div2 id="XHTML_PARAMS">
+         <head>
+            <h3>
+               <a name="XHTML_PARAMS" id="XHTML_PARAMS"/>6.1 The Influence of Serialization Parameters upon the XHTML Output Method</h3>
+         </head>
+         <div3 id="XHTML_VERSION">
+            <head>
+               <h4>
+                  <a name="XHTML_VERSION" id="XHTML_VERSION"/>6.1.1 XHTML Output Method: the <code>version</code>
+Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="XHTML_HTML_VERSION">
+            <head>
+               <h4>
+                  <a name="XHTML_HTML_VERSION" id="XHTML_HTML_VERSION"/>6.1.2 XHTML Output Method: the <code>html-version</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="XHTML_ENCODING">
+            <head>
+               <h4>
+                  <a name="XHTML_ENCODING" id="XHTML_ENCODING"/>6.1.3 XHTML Output Method: the <code>encoding</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="XHTML_INDENT">
+            <head>
+               <h4>
+                  <a name="XHTML_INDENT" id="XHTML_INDENT"/>6.1.4 XHTML Output Method: the <code>indent</code> 
+                  <span>and <code>suppress-indentation</code>
+                  </span> Parameters</h4>
+            </head>
+         </div3>
+         <div3 id="XHTML_CDATA-SECTION-ELEMENTS">
+            <head>
+               <h4>
+                  <a name="XHTML_CDATA-SECTION-ELEMENTS" id="XHTML_CDATA-SECTION-ELEMENTS"/>6.1.5 XHTML Output Method: the <code>cdata-section-elements</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="XHTML_OMIT-XML-DECLARATION">
+            <head>
+               <h4>
+                  <a name="XHTML_OMIT-XML-DECLARATION" id="XHTML_OMIT-XML-DECLARATION"/>6.1.6 XHTML Output Method: the <code>omit-xml-declaration</code> and <code>standalone</code> Parameters</h4>
+            </head>
+         </div3>
+         <div3 id="XHTML_DOCTYPE">
+            <head>
+               <h4>
+                  <a name="XHTML_DOCTYPE" id="XHTML_DOCTYPE"/>6.1.7 XHTML Output Method: the <code>doctype-system</code> and <code>doctype-public</code> Parameters</h4>
+            </head>
+         </div3>
+         <div3 id="XHTML_UNDECLARE-PREFIXES">
+            <head>
+               <h4>
+                  <a name="XHTML_UNDECLARE-PREFIXES" id="XHTML_UNDECLARE-PREFIXES"/>6.1.8 XHTML Output Method: the <code>undeclare-prefixes</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="XHTML_NORMALIZATION-FORM">
+            <head>
+               <h4>
+                  <a name="XHTML_NORMALIZATION-FORM" id="XHTML_NORMALIZATION-FORM"/>6.1.9 XHTML Output Method: the <code>normalization-form</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="XHTML_MEDIA-TYPE">
+            <head>
+               <h4>
+                  <a name="XHTML_MEDIA-TYPE" id="XHTML_MEDIA-TYPE"/>6.1.10 XHTML Output Method: the <code>media-type</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="XHTML_USE-CHARACTER-MAPS">
+            <head>
+               <h4>
+                  <a name="XHTML_USE-CHARACTER-MAPS" id="XHTML_USE-CHARACTER-MAPS"/>6.1.11 XHTML Output Method: the <code>use-character-maps</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="XHTML_BYTE-ORDER-MARK">
+            <head>
+               <h4>
+                  <a name="XHTML_BYTE-ORDER-MARK" id="XHTML_BYTE-ORDER-MARK"/>6.1.12 XHTML Output Method: the <code>byte-order-mark</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="XHTML_ESCAPE-URI-ATTRIBUTES">
+            <head>
+               <h4>
+                  <a name="XHTML_ESCAPE-URI-ATTRIBUTES" id="XHTML_ESCAPE-URI-ATTRIBUTES"/>6.1.13 XHTML Output Method: the <code>escape-uri-attributes</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="XHTML_INCLUDE-CONTENT-TYPE">
+            <head>
+               <h4>
+                  <a name="XHTML_INCLUDE-CONTENT-TYPE" id="XHTML_INCLUDE-CONTENT-TYPE"/>6.1.14 XHTML Output Method: the <code>include-content-type</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="XHTML_ITEM-SEPARATOR">
+            <head>
+               <h4>
+                  <a name="XHTML_ITEM-SEPARATOR" id="XHTML_ITEM-SEPARATOR"/>6.1.15 XHTML Output Method: the <code>item-separator</code> Parameter</h4>
+            </head>
+         </div3>
+      </div2>
+      <div2 id="xhtml-polyglot-markup">
+         <head>
+            <h3>
+               <a name="xhtml-polyglot-markup" id="xhtml-polyglot-markup"/>6.2 Polyglot markup and namespace declarations</h3>
+         </head>
+      </div2>
+   </div1>
+   <div1 id="html-output">
+      <head>
+         <h2>
+            <a name="html-output" id="html-output"/>7 HTML Output Method</h2>
+      </head>
+      <div2 id="HTML_MARKUP">
+         <head>
+            <h3>
+               <a name="HTML_MARKUP" id="HTML_MARKUP"/>7.1 Markup for Elements</h3>
+         </head>
+      </div2>
+      <div2 id="HTML_ATTRIBS">
+         <head>
+            <h3>
+               <a name="HTML_ATTRIBS" id="HTML_ATTRIBS"/>7.2 Writing Attributes</h3>
+         </head>
+      </div2>
+      <div2 id="HTML_CHARDATA">
+         <head>
+            <h3>
+               <a name="HTML_CHARDATA" id="HTML_CHARDATA"/>7.3 Writing Character Data</h3>
+         </head>
+      </div2>
+      <div2 id="HTML_PARAMS">
+         <head>
+            <h3>
+               <a name="HTML_PARAMS" id="HTML_PARAMS"/>7.4 The Influence of Serialization Parameters upon the HTML Output Method</h3>
+         </head>
+         <div3 id="HTML_VERSION">
+            <head>
+               <h4>
+                  <a name="HTML_VERSION" id="HTML_VERSION"/>7.4.1 HTML Output Method: the <code>version</code>
+                  <span>and <code>html-version</code>
+                  </span>
+                  <span>Parameters</span>
+               </h4>
+            </head>
+         </div3>
+         <div3 id="HTML_ENCODING">
+            <head>
+               <h4>
+                  <a name="HTML_ENCODING" id="HTML_ENCODING"/>7.4.2 HTML Output Method: the <code>encoding</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="HTML_INDENT">
+            <head>
+               <h4>
+                  <a name="HTML_INDENT" id="HTML_INDENT"/>7.4.3 HTML Output Method: the <code>indent</code> 
+                  <span>and <code>suppress-indentation</code>
+                  </span> Parameters</h4>
+            </head>
+         </div3>
+         <div3 id="HTML_CDATA-SECTION-ELEMENTS">
+            <head>
+               <h4>
+                  <a name="HTML_CDATA-SECTION-ELEMENTS" id="HTML_CDATA-SECTION-ELEMENTS"/>7.4.4 HTML Output Method: the <code>cdata-section-elements</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="HTML_OMIT-XML-DECLARATION">
+            <head>
+               <h4>
+                  <a name="HTML_OMIT-XML-DECLARATION" id="HTML_OMIT-XML-DECLARATION"/>7.4.5 HTML Output Method: the <code>omit-xml-declaration</code> and <code>standalone</code> Parameters</h4>
+            </head>
+         </div3>
+         <div3 id="HTML_DOCTYPE">
+            <head>
+               <h4>
+                  <a name="HTML_DOCTYPE" id="HTML_DOCTYPE"/>7.4.6 HTML Output Method: the <code>doctype-system</code> and <code>doctype-public</code> Parameters</h4>
+            </head>
+         </div3>
+         <div3 id="HTML_UNDECLARE-PREFIXES">
+            <head>
+               <h4>
+                  <a name="HTML_UNDECLARE-PREFIXES" id="HTML_UNDECLARE-PREFIXES"/>7.4.7 HTML Output Method: the <code>undeclare-prefixes</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="HTML_NORMALIZATION-FORM">
+            <head>
+               <h4>
+                  <a name="HTML_NORMALIZATION-FORM" id="HTML_NORMALIZATION-FORM"/>7.4.8 HTML Output Method: the <code>normalization-form</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="HTML_MEDIA-TYPE">
+            <head>
+               <h4>
+                  <a name="HTML_MEDIA-TYPE" id="HTML_MEDIA-TYPE"/>7.4.9 HTML Output Method: the <code>media-type</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="HTML_USE-CHARACTER-MAPS">
+            <head>
+               <h4>
+                  <a name="HTML_USE-CHARACTER-MAPS" id="HTML_USE-CHARACTER-MAPS"/>7.4.10 HTML Output Method: the <code>use-character-maps</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="HTML_BYTE-ORDER-MARK">
+            <head>
+               <h4>
+                  <a name="HTML_BYTE-ORDER-MARK" id="HTML_BYTE-ORDER-MARK"/>7.4.11 HTML Output Method: the <code>byte-order-mark</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="HTML_ESCAPE-URI-ATTRIBUTES">
+            <head>
+               <h4>
+                  <a name="HTML_ESCAPE-URI-ATTRIBUTES" id="HTML_ESCAPE-URI-ATTRIBUTES"/>7.4.12 HTML Output Method: the <code>escape-uri-attributes</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="HTML_INCLUDE-CONTENT-TYPE">
+            <head>
+               <h4>
+                  <a name="HTML_INCLUDE-CONTENT-TYPE" id="HTML_INCLUDE-CONTENT-TYPE"/>7.4.13 HTML Output Method: the <code>include-content-type</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="HTML_ITEM-SEPARATOR">
+            <head>
+               <h4>
+                  <a name="HTML_ITEM-SEPARATOR" id="HTML_ITEM-SEPARATOR"/>7.4.14 HTML Output Method: the <code>item-separator</code> Parameter</h4>
+            </head>
+         </div3>
+      </div2>
+   </div1>
+   <div1 id="text-output">
+      <head>
+         <h2>
+            <a name="text-output" id="text-output"/>8 Text Output Method</h2>
+      </head>
+      <div2 id="TEXT_PARAMS">
+         <head>
+            <h3>
+               <a name="TEXT_PARAMS" id="TEXT_PARAMS"/>8.1 The Influence of Serialization Parameters upon the Text Output Method</h3>
+         </head>
+         <div3 id="TEXT_VERSION">
+            <head>
+               <h4>
+                  <a name="TEXT_VERSION" id="TEXT_VERSION"/>8.1.1 Text Output Method: the <code>version</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="TEXT_HTML_VERSION">
+            <head>
+               <h4>
+                  <a name="TEXT_HTML_VERSION" id="TEXT_HTML_VERSION"/>8.1.2 Text Output Method:  the <code>html-version</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="TEXT_ENCODING">
+            <head>
+               <h4>
+                  <a name="TEXT_ENCODING" id="TEXT_ENCODING"/>8.1.3 Text Output Method: the <code>encoding</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="TEXT_INDENT">
+            <head>
+               <h4>
+                  <a name="TEXT_INDENT" id="TEXT_INDENT"/>8.1.4 Text Output Method: the <code>indent</code> 
+                  <span>and <code>suppress-indentation</code>
+                  </span> Parameters</h4>
+            </head>
+         </div3>
+         <div3 id="TEXT_CDATA-SECTION-ELEMENTS">
+            <head>
+               <h4>
+                  <a name="TEXT_CDATA-SECTION-ELEMENTS" id="TEXT_CDATA-SECTION-ELEMENTS"/>8.1.5 Text Output Method: the <code>cdata-section-elements</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="TEXT_OMIT-XML-DECLARATION">
+            <head>
+               <h4>
+                  <a name="TEXT_OMIT-XML-DECLARATION" id="TEXT_OMIT-XML-DECLARATION"/>8.1.6 Text Output Method: the <code>omit-xml-declaration</code> and <code>standalone</code> Parameters</h4>
+            </head>
+         </div3>
+         <div3 id="TEXT_DOCTYPE">
+            <head>
+               <h4>
+                  <a name="TEXT_DOCTYPE" id="TEXT_DOCTYPE"/>8.1.7 Text Output Method: the <code>doctype-system</code> and <code>doctype-public</code> Parameters</h4>
+            </head>
+         </div3>
+         <div3 id="TEXT_UNDECLARE-PREFIXES">
+            <head>
+               <h4>
+                  <a name="TEXT_UNDECLARE-PREFIXES" id="TEXT_UNDECLARE-PREFIXES"/>8.1.8 Text Output Method: the <code>undeclare-prefixes</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="TEXT_NORMALIZATION-FORM">
+            <head>
+               <h4>
+                  <a name="TEXT_NORMALIZATION-FORM" id="TEXT_NORMALIZATION-FORM"/>8.1.9 Text Output Method: the <code>normalization-form</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="TEXT_MEDIA-TYPE">
+            <head>
+               <h4>
+                  <a name="TEXT_MEDIA-TYPE" id="TEXT_MEDIA-TYPE"/>8.1.10 Text Output Method: the <code>media-type</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="TEXT_USE-CHARACTER-MAPS">
+            <head>
+               <h4>
+                  <a name="TEXT_USE-CHARACTER-MAPS" id="TEXT_USE-CHARACTER-MAPS"/>8.1.11 Text Output Method: the <code>use-character-maps</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="TEXT_BYTE-ORDER-MARK">
+            <head>
+               <h4>
+                  <a name="TEXT_BYTE-ORDER-MARK" id="TEXT_BYTE-ORDER-MARK"/>8.1.12 Text Output Method: the <code>byte-order-mark</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="TEXT_ESCAPE-URI-ATTRIBUTES">
+            <head>
+               <h4>
+                  <a name="TEXT_ESCAPE-URI-ATTRIBUTES" id="TEXT_ESCAPE-URI-ATTRIBUTES"/>8.1.13 Text Output Method: the <code>escape-uri-attributes</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="TEXT_INCLUDE-CONTENT-TYPE">
+            <head>
+               <h4>
+                  <a name="TEXT_INCLUDE-CONTENT-TYPE" id="TEXT_INCLUDE-CONTENT-TYPE"/>8.1.14 Text Output Method: the <code>include-content-type</code> Parameter</h4>
+            </head>
+         </div3>
+         <div3 id="TEXT_ITEM-SEPARATOR">
+            <head>
+               <h4>
+                  <a name="TEXT_ITEM-SEPARATOR" id="TEXT_ITEM-SEPARATOR"/>8.1.15 Text Output Method: the <code>item-separator</code> Parameter</h4>
+            </head>
+         </div3>
+      </div2>
+   </div1>
+   <div1 id="character-maps">
+      <head>
+         <h2>
+            <a name="character-maps" id="character-maps"/>9 Character Maps</h2>
+      </head>
+   </div1>
+   <div1 id="conformance">
+      <head>
+         <h2>
+            <a name="conformance" id="conformance"/>10 Conformance</h2>
+      </head>
+   </div1>
+   <div1 id="references">
+      <head>
+         <h2>
+            <a name="references" id="references"/>A References</h2>
+      </head>
+      <div2 id="normative-references">
+         <head>
+            <h3>
+               <a name="normative-references" id="normative-references"/>A.1 Normative References</h3>
+         </head>
+      </div2>
+      <div2 id="informative-references">
+         <head>
+            <h3>
+               <a name="informative-references" id="informative-references"/>A.2 Informative References</h3>
+         </head>
+      </div2>
+   </div1>
+   <div1 id="serparams-schema">
+      <head>
+         <h2>
+            <a name="serparams-schema" id="serparams-schema"/>B Schema for Serialization Parameters</h2>
+      </head>
+   </div1>
+   <div1 id="id-errors">
+      <head>
+         <h2>
+            <a name="id-errors" id="id-errors"/>C Summary of Error Conditions</h2>
+      </head>
+   </div1>
+   <div1 id="list-of-uri-attributes">
+      <head>
+         <h2>
+            <a name="list-of-uri-attributes" id="list-of-uri-attributes"/>D List of URI Attributes</h2>
+      </head>
+   </div1>
+   <inform-div1 id="implementation-defined-features">
+      <head>
+         <h2>
+            <a name="implementation-defined-features" id="implementation-defined-features"/>E Checklist of Implementation-Defined Features (Non-Normative)</h2>
+      </head>
+   </inform-div1>
+   <inform-div1 id="revision-log">
+      <head>
+         <h2>
+            <a name="revision-log" id="revision-log"/>F Change Log (Non-Normative)</h2>
+      </head>
+   </inform-div1>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="serializer"
+            term="serializer"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="impdef"
+            term="implementation-defined"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="impdep"
+            term="implementation-dependent"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="serial-err"
+            term="serialization error"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="caseless-compare"
+            term="without regard to case"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-atomization"
+            term="atomize"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-node" term="node"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-sequence"
+            term="sequence"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-function-item"
+            term="function item"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-string-value"
+            term="string value"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-expanded-qname"
+            term="expanded QName"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="null-namespace-URI"
+            term="null namespace URI"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="non-null-namespace-URI"
+            term="non-null namespace URI"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="whitespace-char"
+            term="whitespace character"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="output-namespace"
+            term="Output declaration namespace"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="xml-namespace"
+            term="XML namespace"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="xhtml-namespace"
+            term="XHTML namespace"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="svg-namespace"
+            term="SVG namespace"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="mathml-namespace"
+            term="MathML namespace"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="sequence-normalization"
+            term="sequence normalization"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="result tree"
+            id="result-tree"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="URI Escaping"
+            id="uri-escaping"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            term="URI attribute values"
+            id="uri-attribute-values"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            term="Unicode Normalization"
+            id="unicode-normalization"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="reconstructed-tree"
+            term="reconstructed tree"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="content"
+            id="content"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="immediate content"
+            id="immediate-content"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="recognized-as-HTML"
+            term="recognized as an HTML element"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            term="PREFIXNORMALIZATION"
+            id="PREFIXNORMALIZATION"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="EMPTY"
+            id="XHTMLEMPTY"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="void"
+            id="XHTMLVOID"
+            diff="add"
+            at="2012-07-10"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="expected-empty"
+            id="XHTMLEXPECTEDEMPTY"
+            diff="add"
+            at="2013-01-14"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="XHTMLPHRASING"
+            term="phrasing content"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="quirk-compatible"
+            term="quirk-compatible"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="XML-ISLAND"
+            term="XML Island"
+            diff="chg"
+            at="2011-11-15"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="serialize-as-HTML"
+            term="serialized as an HTML element"
+            diff="add"
+            at="2012-07-10"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="XHTMLBOOLEANS"
+            term="Boolean attribute"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="req-html-ver"
+            term="requested HTML version"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="host language"
+            id="host-language"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="SE" code="0001"
+          class="NR"
+          type="serialization"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="SE" code="0003"
+          class="RE"
+          type="serialization"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="SE" code="0004"
+          class="PM"
+          type="serialization"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="SE" code="0005"
+          class="RE"
+          type="serialization"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="SE" code="0006"
+          class="RE"
+          type="serialization"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="SE" code="0007"
+          class="SU"
+          type="serialization"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="SE" code="0008"
+          class="RE"
+          type="serialization"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="SE" code="0009"
+          class="PM"
+          type="serialization"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="SE" code="0010"
+          class="PM"
+          type="serialization"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="SE" code="0011"
+          class="SU"
+          type="serialization"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="SE" code="0012"
+          class="RE"
+          type="serialization"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="SE" code="0013"
+          class="SU"
+          type="serialization"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="SE" code="0014"
+          class="RE"
+          type="serialization"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="SE" code="0015"
+          class="RE"
+          type="serialization"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="SE" code="0016"
+          class="PM"
+          type="serialization"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="SE" code="0017"
+          class="PM"
+          type="serialization"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="SE" code="0018"
+          class="PM"
+          type="serialization"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="SE" code="0019"
+          class="PM"
+          type="serialization"/>
+   <error xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" spec="SE" code="0020"
+          class="RE"/>
+</document-summary>

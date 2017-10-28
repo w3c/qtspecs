@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding='utf-8'?>
+<project name="xquery" default="build.xquery" basedir=".">
+<!-- build customization file for XQuery specification -->
+
+<!-- Import a bunch of global property definitions -->
+  <dirname property="etc.dir" file="../../etc/*"/>
+  <import file="${etc.dir}/build-constants.xml"/>
+
+<!-- Set properties for "this" document's build requirements -->
+  <property name="generic-shortname" value="xquery"/>
+  <property name="this-spec-version-code" value="31"/>
+
+  <property name="spec.code" value="XQ${this-spec-version-code}"/>
+  <property name="spec.xml" value="${src.dir}/xquery.xml"/>
+  <property name="first-generic-shortname" value="${generic-shortname}${this-spec-version-code}"/>
+  <property name="second-generic-shortname" value="'dummy'"/>
+  <property name="not-this-generic-shortname" value="xpath"/>
+
+  <!-- ====================================================================== -->
+
+  <!-- The "help" template displays on the message medium the names of the    -->
+  <!--   various targets in this project and their purposes.                  -->
+  <target name="help">
+    <echo message="This file should never be invoked directly, but only from the build.xml ant project"/>
+    <echo message="This project to build the XQuery spec includes only one target."/>
+    <echo message="  build.xquery -- builds the spec by invoking build-spec.xml"/>
+    <echo message="  stage -- stages the contents of the .../html/ directory for publication"/>
+    <echo message="  stage-nsdocs -- stages the namespace document contents of the .../html/ directory for publication"/>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="stage"
+          description="Stage the XQuery document. ">
+    <ant antfile="build-spec.xml" inheritAll="true" target="stage"/>
+  </target>
+
+<!-- ======================================================================== -->
+
+<!-- **************************************************************************************
+THE FOLLOWING <target> MUST BE MANUALLY EDITED:
+  There must be one <antcall> task for each namespace document being published.
+     ************************************************************************************** -->
+  <target name="stage-nsdocs"
+          description="Stage XQuery namespace documents for publication">
+<!-- ************************************************************************************** -->
+    <ant antfile="build-spec.xml" inheritAll="true" target="stage-nsdocs"/>
+<!-- ************************************************************************************** -->
+  </target>
+
+<!-- ======================================================================== -->
+
+  <target name="build.xquery"
+          description="This is the default target. ">
+    <ant antfile="build-spec.xml" inheritAll="true" inheritRefs="true" target="build-spec"/>
+  </target>
+
+</project>

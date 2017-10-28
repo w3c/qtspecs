@@ -1,0 +1,1197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  ================================================================================  -->
+<!--  Errata applied:                                                                   -->
+<!--    XQX.E4 - Editorial (Bugzilla Bug 5323)                                          -->
+<!--  ================================================================================  -->
+<!DOCTYPE spec SYSTEM "../../../schema/xsl-query.dtd" [
+
+<!-- Things to update in these ENTITY definitions before publishing this document:
+* doc.stage must be "FPWD", "WD", "CR", "PR", "PER", or "REC"
+* w3c-doctype must be "wd", "cr", "pr", "per", "rec", or "note"
+* doc.w3c-doctype-full must be "First Public Working Draft", "Working Draft", "Last Call Working Draft",
+    "Candidate Recommendation", "Proposed Recommendation", "Proposed Edited Recommendation", or "Recommendation"
+* date.day, date.DD, date.month, date.monthnum, and date.year must represent the date of publication of the document
+* doc.w3c-prevdesignation must properly represent the stage and shortname of the immediately preceding publication of the document
+* Various status section generation ENTITY definitions below must be properly updated
+-->
+
+<!ENTITY doc.version "1.1">
+<!ENTITY doc.version-code "11">
+<!ENTITY doc.stage "WD">
+<!ENTITY doc.w3c-doctype "wd">
+<!ENTITY doc.w3c-doctype-full "(editor's) Working Draft">
+<!ENTITY date.day "28">
+<!ENTITY date.DD "28">
+<!ENTITY date.month "June">
+<!ENTITY date.monthnum "06">
+<!ENTITY date.year "2010">
+<!ENTITY doc.date "&date.year;&date.monthnum;&date.DD;">
+
+<!ENTITY w3c.tr "http://www.w3.org/TR">
+<!ENTITY doc.generic-shortname "xqueryx">
+<!ENTITY doc.shortname "&doc.generic-shortname;-&doc.version-code;">
+<!ENTITY doc.w3c-designation "&doc.stage;-&doc.shortname;">
+<!ENTITY doc.publoc "&w3c.tr;/&date.year;/&doc.w3c-designation;-&doc.date;/">
+<!ENTITY doc.latestloc "&w3c.tr;/&doc.shortname;/">
+<!ENTITY doc.w3c-prev-designation "REC-&doc.shortname;">
+<!ENTITY language "XQueryX &doc.version;">
+
+<!ENTITY xqx-schema SYSTEM "included-files/xqueryx-CDATA.xsd.xml">
+<!ENTITY xqx2xq-stylesheet SYSTEM "included-files/xqueryx-CDATA.xsl.xml">
+<!ENTITY xq-grammarSnippet SYSTEM "included-files/xqueryx-grammar.xml.snippet-CDATA.xml">
+<!ENTITY xqx-schemaSnippet SYSTEM "included-files/xqueryx.xsd.snippet-CDATA.xml">
+<!ENTITY exmpl1xq SYSTEM "included-files/exmpl1-CDATA.xq.xml">
+<!ENTITY exmpl2xq SYSTEM "included-files/exmpl2-CDATA.xq.xml">
+<!ENTITY exmpl3xq SYSTEM "included-files/exmpl3-CDATA.xq.xml">
+<!ENTITY exmpl1grammar SYSTEM "included-files/exmpl1-CDATA.grammar.xml">
+<!ENTITY exmpl4xq SYSTEM "included-files/exmpl4-CDATA.xq.xml">
+<!ENTITY exmpl1xqx SYSTEM "included-files/exmpl1-CDATA.xqx.xml">
+<!ENTITY exmpl2xqx SYSTEM "included-files/exmpl2-CDATA.xqx.xml">
+<!ENTITY exmpl3xqx SYSTEM "included-files/exmpl3-CDATA.xqx.xml">
+<!ENTITY exmpl4xqx SYSTEM "included-files/exmpl4-CDATA.xqx.xml">
+<!ENTITY exmpl1xqx2xq SYSTEM "included-files/exmpl1-CDATA.xqx2xq.xml">
+<!ENTITY exmpl2xqx2xq SYSTEM "included-files/exmpl2-CDATA.xqx2xq.xml">
+<!ENTITY exmpl3xqx2xq SYSTEM "included-files/exmpl3-CDATA.xqx2xq.xml">
+<!ENTITY exmpl4xqx2xq SYSTEM "included-files/exmpl4-CDATA.xqx2xq.xml">
+<!ENTITY mimetypeappendix SYSTEM "xqueryx-mime-type.xml">
+
+
+<!ENTITY % status-entities SYSTEM "../../../etc/status-entities.dtd">
+%status-entities;
+
+
+<!ENTITY doc.WD-pubdate "03 December 2008">
+<!ENTITY doc.LC-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.LC-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.CR-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.CR-repubdate "TO BE SPECIFIED">
+<!ENTITY doc.CR-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.PR-expected "TO BE SPECIFIED">
+<!ENTITY doc.PR-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.PR-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.REC-pubdate "TO BE SPECIFIED">
+
+<!ENTITY doc.pubdate "&doc.WD-pubdate;">
+<!ENTITY doc.comments-due "$doc.LC-comments-due;">
+
+
+<!ENTITY status-section-id "status">
+<!ENTITY spec-devby    "&devby.xquery;">
+<!ENTITY changelog-id  "changelog">
+<!ENTITY changes-para  "&post.WD.changes;">
+<!ENTITY implementation-report-location "http://dev.w3.org/2007/xquery-11-test-suite/results/">
+<!ENTITY implementation-report-availability "&report-public;">
+<!ENTITY implementation-report '&no-implementation-report-or-test-suite-yet;'>
+<!ENTITY test-suite-location "http://dev.w3.org/2007/xquery-11-test-suite/">
+<!ENTITY disclosure.one    "&disclosure.xquery;"> 
+<!ENTITY Bugzilla-key "XQueryX11">
+<!ENTITY patent-policy-paragraph "&ppp-one;">
+<!ENTITY documents-and-relationships "&set-of-documents-11-preREC;">
+
+<!ENTITY advancement.statement "&advance.1WG;">
+<!ENTITY document-stage "&doc-stage-WD;">
+
+<!ENTITY doc-stability "&doc-stability-WD;">
+<!ENTITY PR-entrance-criteria ''>
+<!ENTITY features-at-risk-para "&no-features-at-risk;">
+<!ENTITY features-at-risk "<p>To Be Determined</p>">
+<!ENTITY customized-paragraph '<p>This is an "internal last call working draft" of XQueryX 1.1.
+                               The purpose of this publication is for members of the XML Query and XSL WGs to review
+                               the content and identify all issues that they believe would inhibit progression of
+                               the document to Proposed Recommendation status. 
+                               Ideally, WG members will identify all such issues in the document before it is progressed
+                               to Last Call Working Draft status and will not submit large numbers of issues during the
+                               (public) Last Call review period.
+                               WG members&apos; comments on this document should be submitted, using the ordinary Bugzilla
+                               reporting mechanism, no later than Friday, 2010-07-09, so they may be considered by the
+                               Joint face-to-face meeting scheduled to begin on 2010-07-12. </p>'>
+
+<!ENTITY status-section SYSTEM "../../../etc/status-general.xml">
+]>
+
+<spec id="spec-top" w3c-doctype="&doc.w3c-doctype;" status="int-review">
+  <header id="spec-header">
+    <title>&language;</title>
+    <version>("Internal Last Call")</version>
+    <w3c-designation>&doc.w3c-designation;</w3c-designation>
+<!--    <w3c-doctype>W3C Internal Draft</w3c-doctype> -->
+    <w3c-doctype>W3C &doc.w3c-doctype-full;</w3c-doctype>
+    <pubdate>
+      <day>&date.day;</day>
+      <month>&date.month;</month>
+      <year>&date.year;</year>
+    </pubdate>
+    <publoc>
+      <loc href="&doc.publoc;">&doc.publoc;</loc>
+    </publoc>
+<!-- These altlocs URIs are computed from the concatenation of doc.public, doc.shortname, and either '.xml' or
+     '-diff-from-yyyymmdd.html', where 'yyyymmdd' is the earlier version of the spec from which a diff has been produced -->
+    <altlocs diff="chg">
+      <loc href="&doc.publoc;&doc.shortname;.xml">XML</loc>
+      <loc href="&doc.publoc;&doc.shortname;-diff-from-20070123.html">Change markings relative to first edition</loc>
+    </altlocs>
+<!-- The latestloc URI is computed from doc.latestloc -->
+    <latestloc>
+      <loc href="&doc.latestloc;">&doc.latestloc;</loc>
+    </latestloc>
+<!-- These prevlocs URIs are always hard-coded and are never computed from entities -->
+    <prevlocs diff="chg">
+      <loc href="http://www.w3.org/TR/2008/WD-xqueryx-11-20081203">http://www.w3.org/TR/2008/WD-xqueryx-11-20081203</loc>
+    </prevlocs>
+    <authlist>
+      <author>
+        <name>Jim Melton</name>
+        <affiliation>Oracle</affiliation>
+        <email href="mailto:jim.melton@oracle.com">jim.melton@oracle.com</email>
+      </author>
+    </authlist>
+
+<!-- No errata for a document until it reaches Recommendation status
+    <errataloc diff="chg" href="http://www.w3.org/XML/2009/qt-errata/xqueryx-errata.html" xlink:type="simple"/>
+-->
+
+    <translationloc href="http://www.w3.org/2003/03/Translations/byTechnology?technology=xqueryx"/>
+
+    <abstract>
+      <p>This document defines an XML Syntax for <phrase diff="chg"><bibref ref="xquery-11"/></phrase>.</p>
+    </abstract>
+
+&status-section;
+
+    <langusage>
+      <language id="EN">English</language>
+    </langusage>
+
+    <revisiondesc diff="chg">
+      <p>This is the First Public Working Draft of this specification. 
+         It is aligned with the XQuery grammar as published in <bibref ref="xquery-11"/>.</p>
+    </revisiondesc>
+  </header>
+
+  <body>
+
+    <div1 id="Introduction">
+      <head>Introduction</head>
+
+      <p>The <phrase diff="chg"><bibref ref="xquery-11-requirements"/></phrase>
+         states that <quote>The XML Query Language MAY have
+         more than one syntax binding. One query language syntax MUST be convenient for
+         humans to read and write. One query language syntax MUST be expressed in XML in
+         a way that reflects the underlying structure of the query.</quote></p>
+
+      <p>XQueryX is an XML representation of an XQuery. It was created by mapping
+         the productions of the XQuery grammar into XML productions.
+         The result is not particularly convenient for humans to read and write, but it
+         is easy for programs to parse, and because XQueryX is represented in XML, standard
+         XML tools can be used to create, interpret, or modify queries.</p>
+
+<!-- 2009-01-29 JM: Add paragraph clarifying that all Notes are non-normative per Bugzilla Bug #6377 and Erratum XQX.E6 -->
+        <p diff="add">In this document, examples and material labeled as <quote>Note</quote> are provided for
+           explanatory purposes and are not normative. </p>
+
+<!-- 2005-10-05 JM: Add informative note clarifying that the
+     XQueryX static/dynamic contexts are the same as the XQuery contexts -->
+      <note>
+        <p>Because the two syntaxes are merely different grammars that express the
+           same query semantics, they share all aspects of an XQuery processing system
+           except for the component that recognizes and translates the source representation
+           of a query (that is, the parser). 
+           The aspects that are shared include both the static context and
+           the dynamic context that are defined in <phrase diff="chg"><bibref ref="xquery-11"/></phrase>. </p>
+      </note>
+
+      <p>There are several environments in which XQueryX may be useful:</p>
+
+      <ulist>
+        <item>
+          <p><emph>Parser Reuse.</emph> In heterogeneous environments, a
+             variety of systems may be used to execute a query. One parser can generate XQueryX
+             for all of these systems.</p>
+        </item>
+
+        <item>
+          <p><emph>Queries on Queries.</emph> Because XQueryX is represented in XML, queries
+             can be queried and can be transformed into new queries. For instance, a query can
+             be performed against a set of XQueryX queries to determine which queries use
+             FLWOR expressions to range over a set of invoices.</p>
+        </item>
+
+        <item>
+          <p><emph>Generating Queries.</emph> In some XML-oriented programming
+             environments, it may be more convenient to build a query in its XQueryX
+             representation than in the corresponding XQuery representation, since ordinary
+             XML tools can be used.</p>
+        </item>
+
+        <item>
+          <p><emph>Embedding Queries in XML.</emph> XQueryX can be embedded
+             directly in an XML document.</p>
+        </item>
+
+      </ulist>
+
+    <p diff="add">This version of XQueryX is fully compatible with <bibref ref="xqueryx"/>. 
+      It differs from that earlier version of the language by the addition of new XML Schema
+      definitions and XSLT stylesheet templates.  All queries expressed in the syntax defined
+      by <bibref ref="xqueryx"/> continue to be valid, with the same meaning, when processed
+      by an implementation of this version of XQueryX. 
+    </p>
+
+	  <p diff="chg">The most recent versions of the XQueryX XML Schema and the XQueryX XSLT stylesheet
+       are available at
+       <loc href="http://www.w3.org/2009/12/XQueryX/xqueryx.xsd">http://www.w3.org/2009/12/XQueryX/xqueryx.xsd</loc>
+       and
+       <loc href="http://www.w3.org/2009/12/XQueryX/xqueryx.xsl">http://www.w3.org/2009/12/XQueryX/xqueryx.xsl</loc>,
+       respectively. </p>
+
+    <note diff="add">
+      <p>The locations at which the current versions of the XML Schema and XSLT stylesheet are located during development of
+      this specification will vary with each Working Draft and Candidate Recommendation of the spec that is published. 
+      The namespace target URI is identical to that used for XQueryX 1.0. </p>
+    </note>
+
+    </div1>
+
+
+    <div1 id="Mapping">
+      <head>Mapping the XQuery Syntax</head>
+
+      <p>XQueryX is an XML representation of the abstract syntax found in
+         Appendix A of <phrase diff="chg"><bibref ref="xquery-11"/></phrase>. 
+         The XQueryX syntax is defined by
+         the XQueryX Schema, which is specified in <specref ref="Schema"/>. The XQueryX semantics are
+         defined by a stylesheet that maps an instance of XQueryX to an instance of
+         XQuery; see <specref ref="Stylesheet"/>.</p>
+
+      <p>The main data structure in the XQueryX Schema is the set of types that describe
+         expressions. We have chosen to model expressions using substitution groups,
+         with an "expr" abstract base class and a number of intermediate abstract classes. </p>
+
+      <p>Consider the following productions from the abstract syntax:</p>
+
+      <!-- insert the grammar snippet here -->
+      <eg diff="chg">&xq-grammarSnippet;</eg>
+
+      <note diff="add">
+        <p>Those productions do not represent the entire FLWOR expression, so some of the
+           BNF non-terminal names are not resolved in the example abstract syntax. </p>
+      </note>
+
+      <p>The following XQueryX Schema definitions reflect the structure of those
+         productions from that abstract syntax:</p>
+
+      <!-- insert schema snippet here -->
+      <eg diff="chg">&xqx-schemaSnippet;</eg>
+
+      <p>Since XQuery uses the expression production liberally to allow
+         expressions to be flexibly combined, XQueryX uses the exprWrapper type
+         in embedded contexts to allow all expression types to occur.</p>
+
+    </div1>
+
+
+    <div1 id="Examples">
+      <head>Examples from the XML Query Use Cases in XML Syntax</head>
+
+      <p>Three of following examples are based on the data and queries in the XMP
+         (Experiences and Exemplars) use case in
+         <phrase diff="chg"><bibref ref="xquery-11-use-cases"/></phrase>,
+         while a fourth example is based on the data and queries in the
+         NS (Queries Using Namespaces) use case. 
+         For each example, we show the English description of the query,
+         the XQuery solution given in <phrase diff="chg"><bibref ref="xquery-11-use-cases"/></phrase>,
+         an XQueryX solution, and the XQuery that results from applying the XQueryX-to-XQuery transformation
+         defined by the stylesheet in <specref ref="Stylesheet"/> to the XQueryX solution. 
+         That produced XQuery is presented only as a sanity-check &mdash;
+         the intent of the stylesheet is not to create the identical
+         XQuery expression given in <phrase diff="chg"><bibref ref="xquery-11-use-cases"/></phrase>,
+         but to produce <emph>a</emph> valid
+         XQuery expression with the same semantics. 
+         The semantics of the XQueryX solution are determined by the semantics of the XQuery expression that
+         results from that transformation.  The "correctness" of that transformation is determined by
+         asking the following the question:
+         Can some XQueryX processor QX process some XQueryX document D1 to produce results R1,
+         after which the stylesheet is used to translate D1 into an XQuery expression E1 that,
+         when processed by some XQuery processor Q, produces results R2 that are equivalent
+         (under some meaningful definition of "equivalent") to results R1? </p>
+
+      <p>Comparison of the results of the XQueryX-to-XQuery transformation given in this document
+         with the XQuery solutions in the <phrase diff="chg"><bibref ref="xquery-11-use-cases"/></phrase>
+         may be helpful in evaluating
+         the correctness of the XQueryX solution in each example. </p>
+
+      <p>The XQuery Use Cases solution given for each example is provided only to assist readers of this
+         document in understanding the XQueryX solution.  There is no intent to imply that this
+         document specifies a "compilation" or "transformation" of XQuery syntax into XQueryX syntax. </p>
+
+      <p>In the following examples, note that path expressions are expanded to show their
+         structure. Also, note that the prefix syntax for binary operators like "and" makes the
+         precedence explicit. In general, humans find it easier to read an XML representation
+         that does not expand path expressions, but it is less convenient for programmatic
+         representation and manipulation.  XQueryX is designed as a language that is convenient
+         for production and modification by software, and not as a convenient syntax for humans to
+         read and write. </p>
+
+      <p>Finally, please note that white space, including new lines, have been added to
+         some of the XQueryX documents and XQuery expressions for readability. 
+         That additional white space is not produced by the XQueryX-to-XQuery transformation. </p>
+
+      <div2 id="Example1">
+        <head>Example 1</head>
+
+        <p>Here is Q1 from the <phrase diff="chg"><bibref ref="xquery-11-use-cases"/></phrase>,
+           use case XMP (Experiences and Exemplars): "List books published by Addison-Wesley after 1991,
+           including their year and title."</p>
+
+        <div3 id="Example1-XQuery">
+          <head>XQuery solution in XQuery Use Cases:</head>
+
+          <eg>&exmpl1xq;</eg>
+
+        </div3>
+
+        <div3 id="Example1-XQueryX">
+          <head>A Solution in XQueryX:</head>
+
+          <eg>&exmpl1xqx;</eg>
+
+        </div3>
+
+        <div3 id="Example1-Transformation">
+          <head>Transformation of XQueryX Solution into XQuery</head>
+
+          <p>Application of the stylesheet in <specref ref="Stylesheet"/>
+             to the XQueryX solution results in:</p>
+
+          <eg>&exmpl1xqx2xq;</eg>
+
+        </div3>
+
+        <div3 id="Example1-Abstract">
+          <head>Corresponding Grammar Abstract Parse Tree</head>
+
+  <!-- replaced link to grammar applet per Bugzilla Bug #5323 -->
+          <p>For comparison, here is the abstract parse tree corresponding to the
+             XQuery for Example 1, as produced by the XQuery grammar applets found at
+             <loc diff="chg" href="http://www.w3.org/2007/01/applets/">http://www.w3.org/2007/01/applets/</loc>. </p>
+
+          <eg>&exmpl1grammar;</eg>
+
+        </div3>
+
+      </div2>
+
+      <div2 id="Example2">
+        <head>Example 2</head>
+
+        <p>Here is Q4 from the <phrase diff="chg"><bibref ref="xquery-11-use-cases"/></phrase>,
+           use case XMP (Experiences and Exemplars): "For each author in the bibliography, list the
+           author's name and the titles of all books by that author, grouped inside a
+           "result" element."</p>
+
+        <div3 id="Example2-XQuery">
+          <head>XQuery solution in XQuery Use Cases:</head>
+
+          <eg>&exmpl2xq;</eg>
+
+        </div3>
+
+        <div3 id="Example2-XQueryX">
+          <head>A solution in XQueryX:</head>
+
+          <!-- insert exmpl2 here -->
+          <eg>&exmpl2xqx;</eg>
+
+        </div3>
+
+        <div3 id="Example2-Transformation">
+          <head>Transformation of XQueryX Solution into XQuery</head>
+
+          <p>Application of the stylesheet in <specref ref="Stylesheet"/>
+            to the XQueryX solution results in:</p>
+
+          <eg>&exmpl2xqx2xq;</eg>
+
+        </div3>
+
+      </div2>
+
+      <div2 id="Example3">
+        <head>Example 3</head>
+
+        <p>Here is Q7 from the <phrase diff="chg"><bibref ref="xquery-11-use-cases"/></phrase>,
+           use case XMP (Experiences and Exemplars): "List the titles and years of all books published by
+           Addison-Wesley after 1991, in alphabetic order."</p>
+ 
+        <div3 id="Example3-XQuery">
+          <head>XQuery solution in XQuery Use Cases:</head>
+ 
+          <eg>&exmpl3xq;</eg>
+
+        </div3>
+
+        <div3 id="Example3-XQueryX">
+          <head>A solution in XQueryX:</head>
+
+          <!-- insert exmpl3 here -->
+          <eg>&exmpl3xqx;</eg>
+
+        </div3>
+
+        <div3 id="Example3-Transformation">
+          <head>Transformation of XQueryX Solution into XQuery</head>
+
+          <p>Application of the stylesheet in <specref ref="Stylesheet"/> to the XQueryX solution
+             results in:</p>
+
+          <eg>&exmpl3xqx2xq;</eg>
+
+        </div3>
+
+      </div2>
+
+      <div2 id="Example4">
+        <head>Example 4</head>
+
+        <p>Here is Q8 from the <phrase diff="chg"><bibref ref="xquery-11-use-cases"/></phrase>,
+           use case NS (Queries Using Namespaces):
+           "Select all traders (either seller or high bidder) without negative comments."</p>
+ 
+        <div3 id="Example4-XQuery">
+          <head>XQuery solution in XQuery Use Cases:</head>
+ 
+          <eg>&exmpl4xq;</eg>
+
+        </div3>
+
+        <div3 id="Example4-XQueryX">
+          <head>A solution in XQueryX:</head>
+
+          <!-- insert exmpl4 here -->
+          <eg>&exmpl4xqx;</eg>
+
+        </div3>
+
+        <div3 id="Example4-Transformation">
+          <head>Transformation of XQueryX Solution into XQuery</head>
+
+          <p>Application of the stylesheet in <specref ref="Stylesheet"/>
+             to the XQueryX solution results in:</p>
+
+          <eg>&exmpl4xqx2xq;</eg>
+
+        </div3>
+
+      </div2>
+
+    </div1>
+
+
+    <div1 id="Schema">
+      <head>An XML Schema for the XQuery XML Syntax</head>
+
+      <p>Here is the XML Schema against which XQueryX documents must be valid.</p>
+
+      <eg diff="chg">&xqx-schema;</eg>
+
+    </div1>
+
+<!-- Trivial Embedding, an At Risk feature, was dropped by the Joint XML Query and XSL WG meeting
+     on 2006-11-02
+
+    <div1 id="TrivialEmbedding">
+      <head>A Trivial Embedding of XQuery</head>
+      <p>
+        <specref ref="Introduction"/> observed that the
+<bibref ref="xquery-requirements"/> says <quote>The XML Query Language MAY have
+more than one syntax binding. One query language syntax MUST be convenient for
+humans to read and write. One query language syntax MUST be expressed in XML in
+a way that reflects the underlying structure of the query.</quote>
+There are many possible ways to define an XML syntax for XQuery. 
+This document specifies two XML Syntaxes for XQuery: 
+the one in <specref ref="Schema"/> and the <quote>trivial embedding</quote>
+defined in this section. 
+Of course, XQueries could be expressed in XML Syntax in other ways.</p>
+
+      <p>The trivial embedding specified here can be used when an
+      XQuery is exchanged with other entities as XML or embedded
+      in an XML document, and when it is not necessary to communicate
+      the underlying structure of the query. 
+      When this alternative is chosen, the XQuery expression is treated
+      as though it were ordinary text. </p>
+
+      <p>The trivial embedding defined in this specification requires that the
+entire query be enclosed within an element named "xquery" in the XQueryX namespace
+(the "xqx:" namespace prefix is used here only for the purposes of this example),
+as illustrated here:</p>
+
+      <eg>&lt;xqx:xquery&gt;for $i... let $j...where $x = $y...return...&lt;/xqx:xquery&gt;</eg>
+
+< ! - -  Response to Bugzilla bug #2611 - - >
+<p>
+XQuery expressions are, for the purposes of this trivial embedding, treated 
+as literal text. Therefore, if the XQuery contains characters that are 
+prohibited in XML text (specifically &lt; and &amp;), they must be "escaped" as 
+character entity references (&amp;lt; and &amp;amp;, respectively) or as numeric 
+character references (for example, &amp;#x3C; and &amp;#x26;, respectively), or 
+they must be enclosed in a CDATA section (for example, &lt;![CDATA[&lt;]] or 
+&lt;![CDATA[&amp;]]).  Note that this includes the leading "&lt;" of a CDATA section 
+that appears in the original XQuery expression.  In addition, because the 
+sequence of characters "]]&gt;" is always prohibited within element content,
+it is recommended that instances of &gt; in the original XQuery always be 
+"escaped" (for example, as &amp;gt;, &amp;#x3E;, or &lt;![CDATA[&gt;]]).
+</p>
+
+      <eg>&lt;xqx:xquery&gt;for $i... let $j...where $x &amp;lt; $y...return...&lt;/xqx:xquery&gt;</eg>
+
+      <p>or</p>
+
+      <eg>&lt;xqx:xquery&gt;for $i... let $j...where $x &amp;x003C; $y...return...&lt;/xqx:xquery&gt;</eg>
+
+      <p>This limitation may require that user agents scan the XQuery text, escaping such
+prohibited characters, before transmitting or embedding the XQuery as XML. </p>
+
+< ! - - Response to Bugzilla bug #2611 - - >
+< ! - - Response to Bugzilla bug #3056 - - >
+      <p>The following two more complete examples (which are equivalent to one another
+      and to "<code>for $i in (1 to 5) let $j := 4 where $i &lt; $j return
+  &lt;x&gt;&lt;i&gt;{$i}&lt;/i&gt;&lt;/x&gt;</code>") further illustrate the use of the
+         XQueryX trivial embedding. </p>
+
+      <eg>&lt;xqx:xquery&gt;for $i in (1 to 5) let $j := 4 where $i &amp;lt; $j return
+  &lt;x&gt;&lt;i&gt;{$i}&lt;/i&gt;&lt;/x&gt;&lt;/xqx:xquery&gt;
+
+&lt;xqx:xquery&gt;&lt;![CDATA[for $i in (1 to 5) let $j := 4 where $i &lt; $j
+  return &lt;x&gt;&lt;i&gt;{$i}&lt;/i&gt;&lt;/x&gt;]]&gt;&lt;/xqx:xquery&gt;</eg>
+
+    </div1>
+-->
+
+    <div1 id="xqx_conformance">
+      <head>Conformance</head>
+
+      <p>This section defines the conformance criteria for an XQueryX processor
+         (see Figure 1, "Processing Model Overview", in <phrase diff="chg"><bibref ref="xquery-11"/></phrase>,
+         <xspecref diff="chg" spec="XQ" ref="id-processing-model"/>. 
+      </p>
+
+      <p>In this section, the following terms are used to indicate the
+         requirement levels defined in <bibref ref="RFC2119"/>. 
+         [Definition: MUST means that the item is an absolute requirement of the specification.]
+         [Definition: SHOULD means that there may exist valid reasons in particular
+         circumstances to ignore a particular item, but the full implications
+         must be understood and carefully weighed before choosing a different course.]
+         [Definition: MAY means that an item is truly optional.] </p>
+
+      <p>An XQueryX processor that claims to conform to this specification MUST
+         implement the XQueryX syntax as defined in <specref ref="Schema"/> of this
+         specification and include a claim of Minimal Conformance as defined in
+         <phrase diff="chg"><bibref ref="xquery-11"/></phrase>,
+         <xspecref diff="chg" spec="XQ11" ref="id-minimal-conformance"/>. 
+         In addition to a claim of Minimal Conformance, it MAY claim conformance to
+         one or more optional features defined in
+         <phrase diff="chg"><bibref ref="xquery-11"/></phrase>,
+         <xspecref diff="chg" spec="XQ11" ref="id-conform-optional-features"/>. </p>
+
+    </div1>
+
+  </body>
+
+
+  <back>
+
+    <div1 id="biblio">
+      <head>References</head>
+
+<!-- RFC refs changed per re-opened Bugzilla bug #1345 -->
+      <blist>
+
+        <bibl id="xquery-11-requirements" key="XQuery 1.1 Requirements"/>
+        <bibl id="xquery-11" key="XQuery 1.1: An XML Query Language"/>
+        <bibl id="xquery-11-use-cases" key="XQuery 1.1 Use Cases"/>
+        <bibl id="xquery-semantics" key="XQuery 1.0 and XPath 2.0 Formal Semantics"/>
+        <bibl id="xqueryx" key="XML Syntax for XQuery 1.0 (XQueryX)"/>
+        <bibl id="RFC2119" key="RFC 2119">S. Bradner. 
+          <emph>Key Words for use in RFCs to Indicate Requirement Levels.</emph> IETF RFC 2119. 
+          See <loc href="http://www.ietf.org/rfc/rfc2119.txt">http://www.ietf.org/rfc/rfc2119.txt</loc>.</bibl>
+        <bibl id="RFC3023" key="RFC 3023">M. Murata, S. St. Laurent, and D. Kohn. 
+          <emph>XML Media Types</emph> IETF RFC 3023 or its successors. 
+          See <loc href="http://www.ietf.org/rfc/rfc3023.txt">http://www.ietf.org/rfc/rfc3023.txt</loc>.</bibl>
+<!--        <bibl id="RFC3986" key="RFC 3986">T. Berners-Lee, R. Fielding, and L. Masinter. 
+		  <emph>Uniform Resource Identifiers (URI): Generic Syntax</emph>. IETF RFC 3986. 
+		  See <loc href="http://www.ietf.org/rfc/rfc3986.txt">http://www.ietf.org/rfc/rfc3986.txt</loc>.</bibl> -->
+      </blist>
+
+    </div1>
+
+
+    <div1 id="Stylesheet">
+
+      <head>Transforming XQueryX to XQuery</head>
+
+      <p>The following stylesheet converts from XQueryX syntax to XML Query syntax. 
+         Note the intent of the stylesheet is to produce <emph>a</emph> valid XQuery with the
+         same semantics (see <bibref ref="xquery-semantics"/>) as the input XQueryX.</p>
+
+      <eg diff="chg">&xqx2xq-stylesheet;</eg>
+
+    </div1>
+
+<!-- Insert the appendix for the MIME type for XQueryX here -->
+    &mimetypeappendix;
+
+    <inform-div1 id="changelog">
+      <head>Change log</head>
+
+      <p>This appendix lists the changes that have been made to this specification
+         since the publication of the XQueryX 1.0 Recommendation on 23 January 2007. </p>
+
+      <div2 id="changelog_substantive" diff="add">
+        <head>Substantive changes</head>
+
+        <p>In the
+           &doc.w3c-doctype-full;
+           of
+           &date.day; &date.month; &date.year;,
+           the following substantive changes have been made relative to XQueryX 1.0.
+           The changes made to this document are described below. 
+           The rationale for each change is explained in the corresponding Bugzilla database entry (if any). 
+           The following table summarizes the errata that have been applied.
+        </p>
+
+         <table border="1" cellpadding="5" width="100%">
+            <thead>
+               <tr>
+                  <td>Change</td>
+                  <td>Bugzilla</td>
+                  <td>Category</td>
+                  <td>Description</td>
+               </tr>
+            </thead>
+            <tbody>
+
+               <tr>
+                  <td>
+                     Group By clause in FLWOR expression. 
+                  </td>
+                  <td>
+                     None. 
+                  </td>
+                  <td>
+                     Substantive. 
+                  </td>
+                  <td>
+                     A new clause was added to the FLWOR expression to allow query writers
+                     to cause groups of tuples to be created based on the values of
+                     some expression. 
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     Window clause in FLWOR expression. 
+                  </td>
+                  <td>
+                     None. 
+                  </td>
+                  <td>
+                     Substantive. 
+                  </td>
+                  <td>
+                     A new clause was added to the FLWOR expression to allow query writers
+                     to create sliding and tumbling windows of tuples based on a number
+                     of criteria. 
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     Simplification of FLWOR expression. 
+                  </td>
+                  <td>
+                     None. 
+                  </td>
+                  <td>
+                     Substantive. 
+                  </td>
+                  <td>
+                     The syntax of the FLWOR expression was considerably relaxed, permitting
+                     most clauses (other than the return clause) to be used at almost any
+                     position (only a few clauses are allowed to be the first clause)
+                     within a FLWOR expression. 
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     Outer for supported in FLWOR expressions. 
+                  </td>
+                  <td>
+                     None. 
+                  </td>
+                  <td>
+                     Substantive. 
+                  </td>
+                  <td>
+                     The syntax of the for clause in FLWOR expressions was extended
+                     to allow the use of "outer for". 
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     Count clause in FLWOR expression. 
+                  </td>
+                  <td>
+                     None. 
+                  </td>
+                  <td>
+                     Substantive. 
+                  </td>
+                  <td>
+                     A new clause was added to the FLWOR expression to allow query writers
+                     to capture the total number of items that are returned by a (portion of a)
+                     FLWOR expression. 
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     Declaration of decimal number formats. 
+                  </td>
+                  <td>
+                     None. 
+                  </td>
+                  <td>
+                     Substantive. 
+                  </td>
+                  <td>
+                     A new option was added to the query prologue, allowing query authors to
+                     specify a named (or an unnamed default) format for decimal numbers. 
+                     This allows the specification of such items as the decimal separator,
+                     the minus sign, the percent and per mille signs, and even the class
+                     of Unicode digits. 
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     Query version and encoding declaration. 
+                  </td>
+                  <td>
+                     None. 
+                  </td>
+                  <td>
+                     Substantive. 
+                  </td>
+                  <td>
+                     Allows specification of either or both of the version of XQuery to which a
+                     query adheres and the encoding of the query (e.g., UTF8, ISO8859-1). 
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     Enhanced validation expression. 
+                  </td>
+                  <td>
+                     <loc href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=5472">[XQuery 1.1] Requirement: validation by type</loc>
+                  </td>
+                  <td>
+                     Substantive. 
+                  </td>
+                  <td>
+                     Permits query authors to validate an expression against a specified XML Schema type. 
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     Nondeterministic external functions. 
+                  </td>
+                  <td>
+                     None. 
+                  </td>
+                  <td>
+                     Substantive. 
+                  </td>
+                  <td>
+                     Functions declared to be external functions can also be
+                     specified to be deterministic or nondeterministic. 
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     Syntax used to provide default value for external variables. 
+                  </td>
+                  <td>
+                     None. 
+                  </td>
+                  <td>
+                     Minor. 
+                  </td>
+                  <td>
+                     The declaration of external variables now uses ":=" to indicate the
+                     default value given to such variables, instead of the keyword "default". 
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     Try/catch for error handling. 
+                  </td>
+                  <td>
+                     None. 
+                  </td>
+                  <td>
+                     Substantive. 
+                  </td>
+                  <td>
+                     A try/catch facility is provided that allows query authors to control
+                     how errors are handled when raised by evaluation of queries. 
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     Context item declaration. 
+                  </td>
+                  <td>
+                     None. 
+                  </td>
+                  <td>
+                     Substantive. 
+                  </td>
+                  <td>
+                     It is now possible to declare both the type of and the default initial value of
+                     the context item of a query, and to specify whether its value may be provided
+                     by the external environment. 
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     Computed namespace constructor. 
+                  </td>
+                  <td>
+                     None.
+                  </td>
+                  <td>
+                     Substantive. 
+                  </td>
+                  <td>
+                     Added new complex type and element to XQueryX schema, and new template to XQueryX stylesheet,
+                     in support of computed namespace constructors in XQuery 1.1. 
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     Generate proper syntax for variable names in positional variable bindings. 
+                  </td>
+                  <td>
+                     <loc href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=6309">[XQX11] template for positionalVariableBinding</loc>
+                  </td>
+                  <td>
+                     Substantive. 
+                  </td>
+                  <td>
+                     Modified XQueryX stylesheet template to correctly generate a "$" preceding the variable name. 
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     Allow positional variable bindings to be optional in window variables. 
+                  </td>
+                  <td>
+                     <loc href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=6310">[XQX11] positionalVariableBinding should be optional in windowVars</loc>
+                  </td>
+                  <td>
+                     Substantive. 
+                  </td>
+                  <td>
+                     Modified XQueryX schema to add minOccurs="0" on element positionalVariableBinding in windowVars complex type definition. 
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     XQueryX syntax must allow wildcards in the try/catch error list. 
+                  </td>
+                  <td>
+                     <loc href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=7053">[XQX11] cannot represent a catchErrorList wildcard in XQueryX</loc>
+                  </td>
+                  <td>
+                     Substantive. 
+                  </td>
+                  <td>
+                     In XQueryX schema, modified catchErrorList complex type definition to allow a choice between a nameText (essentially a QName) and a Wildcard. 
+                     In XQueryX stylesheet, modified catchErrorList template to support Wildcard as well as nameText. 
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     Private functions. 
+                  </td>
+                  <td>
+                     None.
+                  </td>
+                  <td>
+                     Substantive. 
+                  </td>
+                  <td>
+                     In XQueryX schema, added new attribute "private" in functionDecl complex type. 
+                     In XQUeryX stylesheet, template for functionDecl, added support for @private (generate "private" for private functions and "public" for others)
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     Replace "outer for" with "allowing empty". 
+                  </td>
+                  <td>
+                     None.
+                  </td>
+                  <td>
+                     Substantive. 
+                  </td>
+                  <td>
+                     In XQueryX schema, forClause complex type, delete attribute "outer"; in forClauseItem complex type, add new element allowingEmpty. 
+                     In XQueryX stylesheet template for forClause, remove generation of "outer"; in template for forClauseItem, generate "allowing empty". 
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     Higher-order functions. 
+                  </td>
+                  <td>
+                     None.
+                  </td>
+                  <td>
+                     Substantive. 
+                  </td>
+                  <td>
+                     Made changes to XQueryX schema and stylesheet corresponding to new higher-order function syntax in XQuery 1.1. 
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     New "switch" expression ("value switch", analogous to typeswitch). 
+                  </td>
+                  <td>
+                     None.
+                  </td>
+                  <td>
+                     Substantive. 
+                  </td>
+                  <td>
+                     Made changes to XQueryX schema and stylesheet corresponding to new switch syntax in XQuery 1.1. 
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     Support for partial function application. 
+                  </td>
+                  <td>
+                     None.
+                  </td>
+                  <td>
+                     Substantive. 
+                  </td>
+                  <td>
+                     Made changes to XQueryX schema and stylesheet to support the partial function application capability of XQuery 1.1. 
+                  </td>
+               </tr>
+
+            </tbody>
+         </table>
+
+      </div2>
+
+      <div2 id="changelog_incompatibilities" diff="add">
+        <head>Incompatibilities</head>
+
+        <p>The
+           &doc.w3c-doctype-full;
+           of
+           &date.day; &date.month; &date.year;,
+           contains the following incompatibilities with XQueryX 1.0.
+           The changes made to this document are described below. 
+           The rationale for each change is explained in the corresponding Bugzilla database entry (if any). 
+           The following table summarizes the errata that have been applied.
+        </p>
+
+         <table border="1" cellpadding="5" width="100%">
+            <thead>
+               <tr>
+                  <td>Change</td>
+                  <td>Bugzilla</td>
+                  <td>Category</td>
+                  <td>Description</td>
+               </tr>
+            </thead>
+            <tbody>
+
+               <tr>
+                  <td>
+                     (none)
+                  </td>
+                  <td>
+                     
+                  </td>
+                  <td>
+                      
+                  </td>
+                  <td>
+                     
+                  </td>
+               </tr>
+
+            </tbody>
+         </table>
+
+      </div2>
+
+      <div2 id="changelog_editorial" diff="add">
+        <head>Editorial changes</head>
+
+        <p>In the
+           &doc.w3c-doctype-full;
+           of
+           &date.day; &date.month; &date.year;,
+           the following editorial changes have been made relative to XQueryX 1.0.
+           The changes made to this document are described below. 
+           The rationale for each change is explained in the corresponding Bugzilla database entry (if any). 
+           The following table summarizes the errata that have been applied.
+        </p>
+
+         <table border="1" cellpadding="5" width="100%">
+            <thead>
+               <tr>
+                  <td>Change</td>
+                  <td>Bugzilla</td>
+                  <td>Category</td>
+                  <td>Description</td>
+               </tr>
+            </thead>
+            <tbody>
+
+               <tr>
+                  <td>
+                     Erratum XQX.E1
+                  </td>
+                  <td>
+                     <loc href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=4924">Arguably incorrect element definition in XQueryX's Schema.</loc>
+                  </td>
+                  <td>
+                     Editorial. 
+                  </td>
+                  <td>
+                     The published XQueryX 1.0 schema defined many elements using anonymous complex types. 
+                     That made it infeasible to extend the content model of those elements in other
+                     specifications that define XQueryX extensions corresponding perhaps to XQuery extensions. 
+                     While conceptually simple, a number of changes were required to ensure that
+                     all elements are defined using named complex types.  
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     Erratum XQX.E2 and Erratum XQX.E3
+                  </td>
+                  <td>
+                     <loc href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=4963">Removed element xqx:parenthesizedExpr used in example.</loc>
+                  </td>
+                  <td>
+                     Editorial. 
+                  </td>
+                  <td>
+                     The XQueryX solution to Example 4 incorrectly contained an &lt;xqx:parenthesizedExpr> element. 
+                     That element was changed to an &lt;xqx:sequenceExpr> element.
+                     The XSLT stylesheet in Appendix B contained a template for the transformation
+                     of &lt;xqx:parenthesizedExpr> elements that was unnecessary and
+                     confusing; that template was deleted. 
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     Erratum XQX.E4
+                  </td>
+                  <td>
+                     <loc href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=5323">Bug in XQueryX applet</loc>
+                  </td>
+                  <td>
+                     Editorial. 
+                  </td>
+                  <td>
+                     The XQueryX 1.0 Recommendation linked to an obsolete version of the XQuery 1.0 grammar applet.  
+                     The proper link has now been used. 
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     Erratum XQX.E5
+                  </td>
+                  <td>
+                     <loc href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=5343">Problem with {{ and }} in a Namespace Declaration Attribute</loc>
+                  </td>
+                  <td>
+                     Editorial. 
+                  </td>
+                  <td>
+                     The XSLT stylsheet in Appendix B contained a template for the transformation of
+                     &lt;xqx:namespaceDeclaration> elements that failed to correctly "escape"
+                     curly braces in the same manner as does the template for the transformation of
+                     &lt;xqx:attributeConstructor> elements.  That template has been corrected. 
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     Introduction. 
+                  </td>
+                  <td>
+                     <loc href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=6377">[XQX] non-normative notes</loc>
+                  </td>
+                  <td>
+                     Editorial. 
+                  </td>
+                  <td>
+                     Added text in <specref ref="Introduction"/> to clarify that Notes are non-normative. 
+                  </td>
+               </tr>
+
+               <tr>
+                  <td>
+                     This appendix. 
+                  </td>
+                  <td>
+                     None.
+                  </td>
+                  <td>
+                     Editorial. 
+                  </td>
+                  <td>
+                     Reorganized this appendix to more clearly distinguish between substantive and editorial changes and to clearly
+                     identify incompatibilities with the previous Recommendation. 
+                  </td>
+               </tr>
+
+            </tbody>
+         </table>
+
+      </div2>
+
+    </inform-div1>
+
+  </back>
+
+</spec>

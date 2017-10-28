@@ -1,0 +1,171 @@
+<![CDATA[
+<xsd:schema
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+     xmlns:xqx="http://www.w3.org/2005/XQueryX"
+     xmlns:xqxuf="http://www.w3.org/2007/xquery-update-10"
+     targetNamespace="http://www.w3.org/2007/xquery-update-10"
+     elementFormDefault="qualified" 
+     attributeFormDefault="unqualified">
+
+<!-- Initial creation                  2006-08-17: Jim Melton -->
+<!-- Added ufRevalidationDecl          2006-08-21: Jim Melton -->
+<!-- Overhaul to bring up to date      2007-08-07: Jim Melton -->
+<!-- Reconfirmed correctness for CR    2008-02-27: Jim Melton -->
+
+  <xsd:import namespace="http://www.w3.org/2005/XQueryX"
+     schemaLocation="http://www.w3.org/2007/xquery-update-10/
+xquery-update-10-xqueryx-redef.xsd"/>
+
+
+  <!-- Add revalidationDecl to alternatives in prolog setters -->
+  <xsd:element name="revalidationDecl"
+               substitutionGroup="xqx:prologPartOneItem">
+    <xsd:simpleType>
+      <xsd:restriction base="xsd:NMTOKEN">
+        <xsd:enumeration value="strict"/>
+        <xsd:enumeration value="lax"/>
+        <xsd:enumeration value="skip"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+  </xsd:element>
+
+
+  <!-- Create substitution group for update facility exprs    -->
+  <xsd:complexType name="expr">
+    <xsd:complexContent>
+      <xsd:extension base="xqx:expr"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- Make the update facilities subst grp part of expr grp  -->
+  <xsd:element name="expr" type="xqxuf:expr" abstract="true"
+               substitutionGroup="xqx:expr"/>
+
+
+  <!-- InsertExpr                                             -->
+  <xsd:complexType name="insertExpr">
+    <xsd:complexContent>
+      <xsd:extension base="xqxuf:expr">
+        <xsd:sequence>
+          <xsd:element name="sourceExpr"
+                       type="xqx:exprWrapper"/>
+          <xsd:choice>
+            <xsd:element name="insertInto">
+              <xsd:complexType>
+                <xsd:sequence minOccurs="0" maxOccurs="1">
+                  <xsd:choice>
+                    <xsd:element name="insertAsFirst" 
+                                 type="xqx:emptyContent"/>
+                    <xsd:element name="insertAsLast" 
+                                 type="xqx:emptyContent"/>
+                  </xsd:choice>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="insertAfter"
+                         type="xqx:emptyContent"/>
+            <xsd:element name="insertBefore"
+                         type="xqx:emptyContent"/>
+          </xsd:choice>
+          <xsd:element name="targetExpr"
+                       type="xqx:exprWrapper"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="insertExpr" type="xqxuf:insertExpr" 
+               substitutionGroup="xqxuf:expr"/>
+
+
+  <!-- DeleteExpr                                             -->
+  <xsd:complexType name="deleteExpr">
+    <xsd:complexContent>
+      <xsd:extension base="xqxuf:expr">
+        <xsd:sequence>
+         <xsd:element name="targetExpr"
+                      type="xqx:exprWrapper"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="deleteExpr" type="xqxuf:deleteExpr" 
+               substitutionGroup="xqxuf:expr"/>
+
+
+  <!-- ReplaceExpr                                            -->
+  <xsd:complexType name="replaceExpr">
+    <xsd:complexContent>
+      <xsd:extension base="xqxuf:expr">
+        <xsd:sequence>
+          <xsd:element name="replaceValue"
+                       type="xqx:emptyContent"
+                       minOccurs="0" maxOccurs="1"/>
+          <xsd:element name="targetExpr"
+                       type="xqx:exprWrapper"/>
+          <xsd:element name="replacementExpr"
+                       type="xqx:exprWrapper"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="replaceExpr" type="xqxuf:replaceExpr" 
+               substitutionGroup="xqxuf:expr"/>
+
+
+  <!-- RenameExpr                                             -->
+  <xsd:complexType name="renameExpr">
+    <xsd:complexContent>
+      <xsd:extension base="xqxuf:expr">
+        <xsd:sequence>
+          <xsd:element name="targetExpr"
+                       type="xqx:exprWrapper"/>
+          <xsd:element name="newNameExpr"
+                       type="xqx:exprWrapper"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="renameExpr" type="xqxuf:renameExpr" 
+               substitutionGroup="xqxuf:expr"/>
+
+
+  <!-- TransformExpr                                          -->
+  <xsd:complexType name="transformExpr">
+    <xsd:complexContent>
+      <xsd:extension base="xqxuf:expr">
+        <xsd:sequence>
+          <xsd:element name="transformCopies">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="transformCopy" minOccurs="1" 
+                             maxOccurs="unbounded">
+                  <xsd:complexType>
+                    <xsd:sequence>
+                      <xsd:element ref="xqx:varRef"/>
+                      <xsd:element name="copySource"
+                                   type="xqx:exprWrapper"/>
+                    </xsd:sequence>
+                  </xsd:complexType>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="modifyExpr"
+                       type="xqx:exprWrapper"/>
+          <xsd:element name="returnExpr"
+                       type="xqx:exprWrapper"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="transformExpr" type="xqxuf:transformExpr" 
+               substitutionGroup="xqxuf:expr"/>
+
+
+</xsd:schema>
+]]>

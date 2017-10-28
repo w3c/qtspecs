@@ -1,0 +1,957 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--{xsl-query} XSLT Processor: Saxonica SAXON HE 9.4.0.3-->
+<!--{xmlspec} XSLT Processor: SaxonicaSAXONHE 9.4.0.3-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="EN" xmlns="http://www.w3.org/1999/xhtml" xml:lang="EN">
+    <head>
+        <meta name="generator" content=
+            "HTML Tidy for Mac OS X (vers 31 October 2006 - Apple Inc. build 15.12), see www.w3.org" />
+        <title>XSL Transformations (XSLT) Version 3.0 -- Review
+            Version</title>
+        
+        <style type="text/css">
+/*<![CDATA[*/
+/* from xsl:query.xsl (C) */          
+code           { font-family: monospace; }
+
+div.constraint,
+div.issue,
+div.note,
+div.notice     { margin-left: 2em; }
+
+div.issue
+p.title        { margin-left: -2em; }
+
+ol.enumar      { list-style-type: decimal; }
+ol.enumla      { list-style-type: lower-alpha; }
+ol.enumlr      { list-style-type: lower-roman; }
+ol.enumua      { list-style-type: upper-alpha; }
+ol.enumur      { list-style-type: upper-roman; }
+
+li p           { margin-top: 0.3em;
+                 margin-bottom: 0.3em; }
+
+sup small      { font-style: italic;
+                 color: #8F8F8F;
+               }
+    
+/* from xsl:query.xsl (D) */          
+div.exampleInner pre { margin-left: 1em;
+                       margin-top: 0em; margin-bottom: 0em}
+div.exampleOuter {border: 4px double gray;
+                  margin: 0em; padding: 0em}
+div.exampleInner { background-color: #d5dee3;
+                   border-top-width: 4px;
+                   border-top-style: double;
+                   border-top-color: #d3d3d3;
+                   border-bottom-width: 4px;
+                   border-bottom-style: double;
+                   border-bottom-color: #d3d3d3;
+                   padding: 4px; margin: 0em }
+div.exampleWrapper { margin: 4px }
+div.exampleHeader { font-weight: bold;
+                    margin: 4px}
+
+div.issue { border-bottom-color: black;
+            border-bottom-style: solid;
+            border-bottom-width: 1pt;
+            margin-bottom: 20pt;
+}
+
+th.issue-toc-head { border-bottom-color: black;
+                    border-bottom-style: solid;
+                    border-bottom-width: 1pt;
+}
+
+      
+/* from xslt3.0/diff.xsl (A) */  
+div.diff-add  { background-color: #99ff99 }
+div.diff-del  { background-color: #ff9999; text-decoration: line-through }
+div.diff-chg  { background-color: #ffff99 }
+div.diff-off  {  }
+
+span.diff-chg:before,
+span.diff-chg:after {
+content: "";
+}
+
+div.diff-chg:before,
+div.diff-chg:after {
+content: "";
+}
+
+
+span.diff-add { background-color: #99ff99 }
+span.diff-del { background-color: #ff9999; text-decoration: line-through }
+span.diff-chg { background-color: #ffff99 }
+span.diff-off {  }
+
+td.diff-add   { background-color: #99ff99 }
+td.diff-del   { background-color: #ff9999; text-decoration: line-through }
+td.diff-chg   { background-color: #ffff99 }
+td.diff-off   {  }
+
+/* from xslt3.0/diff.xsl (B) */  
+dd.indent { margin-left: 2em; }
+p.element-syntax { border: solid thin; background-color: #ffccff }
+p.element-syntax-chg { border: solid thick yellow; background-color: #ffccff }
+div.proto { border: solid thin; background-color: #ffccff }
+div.proto + div.proto { margin-top : 2em; }
+div.example { border: solid thin; background-color: #40e0d0; padding: 1em }
+div.example-chg { border: solid thick yellow; background-color: #40e0d0; padding: 1em }
+span.verb { font: small-caps 100% sans-serif } 
+span.error { font-size: small } 
+span.definition { font: small-caps 100% sans-serif } 
+span.grayed { color: gray }
+
+/* from xsl-query.xsl (A) */      
+.diff-add  { background-color: #99ff99 }
+.diff-del  { background-color: #ff9999; text-decoration: line-through }
+.diff-chg  { background-color: #ffff99 }
+.diff-off  { background-color: #ffffff; text-decoration: none; }
+    
+/* from xsl-query.xsl (B) */    
+table.small                             { font-size: x-small; }
+a.judgment:visited, a.judgment:link     { font-family: sans-serif;
+                                          color: black; 
+                                          text-decoration: none }
+a.processing:visited, a.processing:link { color: black; 
+                                                text-decoration: none }
+a.env:visited, a.env:link               { color: black; 
+                                          text-decoration: none }
+/*]]>*/
+</style>
+        <link rel="stylesheet" type="text/css" href=
+            "http://www.w3.org/StyleSheets/TR/W3C-WD.css" />
+    </head>
+    <body>
+<div class="div2">
+<h3><a name="initiating-2" id="initiating-2"></a>2.4 <a href=
+"#initiating-2" style="text-decoration: none">Initiating a
+Transformation - Proposed replacement for section 2.3 and parts of
+2.4</a></h3>
+<p>This document does not specify any application programming
+interfaces or other interfaces for initiating a transformation.
+This section, however, describes the information that is supplied
+when a transformation is initiated. Except where otherwise
+indicated, the information is <span class=
+"verb">required</span>.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.85</span>
+<p>The execution of a stylesheet necessarily involves two
+activities: static analysis and dynamic evaluation. Static analysis
+consists of those tasks that can be performed by inspection of the
+stylesheet alone, including the evaluation of
+<code>[xsl:]use-when</code> expressions (see <a href=
+"#conditional-inclusion"><i>3.14 Conditional Element
+Inclusion</i></a>), and detection of <a title="static error" class=
+"termref" href="#dt-static-error">static errors</a>. Dynamic
+evaluation consists of tasks which in general cannot be carried out
+until a source document is available.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.86</span>
+<div class="diff-add">
+<div class="diff-add">
+<p>Dynamic evaluation is further divided into two activities:
+<b>priming</b> the stylesheet, and <b>invoking</b> a selected
+component.</p>
+</div>
+</div>
+<ul>
+<li>
+<p>Priming the stylesheet provides the dynamic context for
+evaluation, and supplies all the information needed to establish
+the values of global variables.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.88</span></li>
+<li>
+<p>Invoking a component (such as a template or function) causes
+evaluation of that template or function to produce a result, which
+is an arbitrary XDM value.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.89</span>
+<p><span class="definition">[Definition:&#160;</span><a name=
+"dt-raw-result" id="dt-raw-result" title="raw result"></a>The
+result of invoking the selected component, after any required
+conversion to the declared result type of the component, is
+referred to as the <b>raw result</b>.<span class=
+"definition">]</span></p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.90</span>
+<p>This raw result may optionally be post-processed to construct a
+result tree, to serialize the result, or both, as described in
+<a href="#post-processing"><i>2.4.6 Post-processing the Raw
+Result</i></a>.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.91</span></li>
+</ul>
+<p>Implementations <span class="verb">may</span> allow static
+analysis and dynamic evaluation to be initiated independently, so
+that the cost of static analysis can be amortized over multiple
+transformations using the same stylesheet. <span class=
+"diff-add"><span class="diff-add"><span>Implementations
+<span class="verb">may</span> also allow priming of a stylesheet
+and invocation of components to be initiated independently, in
+which case a single act of priming the stylesheet may be followed
+by a series of independent component invocations. Although this
+specification does not require such a separation, this section
+distinguishes information that is needed before static analysis can
+proceed, information that is needed to prime the stylesheet, and
+information that is needed when invoking
+components.</span></span></span></p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.92</span>
+<p>The language is designed to allow the static analysis of each
+<a title="package" class="termref" href="#dt-package">package</a>
+to be performed independently of other packages, with only basic
+knowledge of the properties of components made available by used
+packages. Beyond this, the specification leaves it to
+implementations to decide how to organize this process. When
+packages are not used explicitly, the entire stylesheet is treated
+as a single package.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.93</span>
+<div class="div3">
+<h4><a name="info-for-static-analysis" id=
+"info-for-static-analysis"></a>2.4.1 <a href=
+"#info-for-static-analysis" style=
+"text-decoration: none">Information needed for Static
+Analysis</a></h4>
+<p>The following information is needed prior to static analysis
+<span>of a package</span>:</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.94</span>
+<ul>
+<li>
+<p>The location of the <a title="package manifest" class="termref"
+href="#dt-package-manifest">package manifest</a>, or in the absence
+of a package manifest, the <a title="stylesheet module" class=
+"termref" href="#dt-stylesheet-module">stylesheet module</a> that
+is to act as the <a title="principal stylesheet module" class=
+"termref" href="#dt-principal-stylesheet-module">principal
+stylesheet module</a> for the transformation. The complete
+<a title="package" class="termref" href="#dt-package">package</a>
+is assembled by recursively expanding the <a href=
+"#element-import"><code>xsl:import</code></a> and <a href=
+"#element-include"><code>xsl:include</code></a> declarations in the
+principal stylesheet module, as described in <a href=
+"#include"><i>3.12.2 Stylesheet Inclusion</i></a> and <a href=
+"#import"><i>3.12.3 Stylesheet Import</i></a>.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.95</span></li>
+<li>
+<p>Information about the packages referenced from this package
+using <a href=
+"#element-use-package"><code>xsl:use-package</code></a>
+declarations. The information needed will include the names and
+signatures of public components exported by the referenced
+package.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.96</span></li>
+<li>
+<p>A set (possibly empty) of values for <a title="static parameter"
+class="termref" href="#dt-static-parameter">static parameters</a>
+(see <a href="#global-variables"><i>9.5 Global Variables and
+Parameters</i></a>). These values are available for use within
+<a title="static expression" class="termref" href=
+"#dt-static-expression">static expressions</a> (notably
+<code>[xsl:]use-when</code> expressions) as well as non-static
+expressions in the <a title="stylesheet" class="termref" href=
+"#dt-stylesheet">stylesheet</a>. As a minimum, values <span class=
+"verb">must</span> be supplied for any static parameters declared
+with the attribute <code>required="yes"</code>.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.97</span></li>
+</ul>
+<p>Conceptually, the output of the static analysis of a package is
+an object which might be referred to (without constraining the
+implementation) as a compiled package. Prior to dynamic evaluation,
+all the compiled packages needed for execution must be checked for
+consistency, and component references must be resolved. This
+process may be referred to, again without constraining the
+implementation, as linking.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.98</span></div>
+<div class="div3">
+<h4><a name="priming-stylesheet" id="priming-stylesheet"></a>2.4.2
+<a href="#priming-stylesheet" style="text-decoration: none">Priming
+a Stylesheet</a></h4>
+<div class="diff-chg">
+<div class="diff-chg">
+<p>The information needed when priming a stylesheet is as
+follows:</p>
+</div>
+</div>
+<ul>
+<li>
+<p>A set (possibly empty) of values for <span>non-static</span>
+<a title="stylesheet parameter" class="termref" href=
+"#dt-stylesheet-parameter">stylesheet parameters</a> (see <a href=
+"#global-variables"><i>9.5 Global Variables and
+Parameters</i></a>). These values are available for use within
+<a title="expression" class="termref" href=
+"#dt-expression">expressions</a> in the <a title="stylesheet"
+class="termref" href="#dt-stylesheet">stylesheet</a>. As a minimum,
+values <span class="verb">must</span> be supplied for any
+parameters declared with the attribute
+<code>required="yes"</code>.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.100</span>
+<div class="diff-add">
+<div class="diff-add">
+<p>A supplied value is converted if necessary to the declared type
+of the stylesheet parameter using the <a title=
+"function conversion rules" class="termref" href=
+"#dt-function-conversion-rules">function conversion rules</a>.</p>
+</div>
+</div>
+<div class="note">
+<p class="prefix"><b>Note:</b></p>
+<p>It is possible for static stylesheet parameters to be declared
+in any package, and stylesheet parameters in different packages
+might have the same name.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.102</span></div>
+</li>
+<li>
+<p><span class="definition">[Definition:&#160;</span><a name=
+"dt-initial-context-item-2" id="dt-initial-context-item-2" title=
+"initial context item"></a>An item that acts as the <b>initial
+context item</b> for the transformation. This item is accessible
+within the <a title="stylesheet" class="termref" href=
+"#dt-stylesheet">stylesheet</a> as the initial value of the XPath
+<a title="expression" class="termref" href=
+"#dt-expression">expressions</a> <code>.</code> (dot) and
+<code>self::node()</code>, as described in <a href=
+"#focus"><i>5.4.3.1 Maintaining Position: the Focus</i></a>
+<span class="definition">]</span>.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.103</span>
+<p>The <a title="initial context item" class="termref" href=
+"#dt-initial-context-item">initial context item</a> is required if
+dynamic evaluation is to start with a <a title="template rule"
+class="termref" href="#dt-template-rule">template rule</a>, and is
+optional if it is to start with a <a title="named template" class=
+"termref" href="#dt-named-template">named template</a> <span class=
+"diff-add"><span class="diff-add"><span>or with a <a title=
+"stylesheet function" class="termref" href=
+"#dt-stylesheet-function">stylesheet
+function</a>.</span></span></span>.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.104</span>
+<p>The value that can be supplied as the <span><a title=
+"initial context item" class="termref" href=
+"#dt-initial-context-item">initial context item</a></span> is
+constrained by the <a href=
+"#element-context-item"><code>xsl:context-item</code></a> element,
+if defined for the chosen <a title="initial mode" class="termref"
+href="#dt-initial-mode">initial mode</a> <span>and/or <a title=
+"initial template" class="termref" href=
+"#dt-initial-template">initial template</a></span>.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.105</span>
+<p>If no initial context item is supplied, then the <a title=
+"context item" class="termref" href="#dt-context-item">context
+item</a>, <a title="context position" class="termref" href=
+"#dt-context-position">context position</a>, and <a title=
+"context size" class="termref" href="#dt-context-size">context
+size</a> will initially be <a title="absent" class="termref" href=
+"#dt-absent">absent</a>, and the evaluation of any expression that
+references these values will result in a dynamic error. (Note that
+the initial context size and context position will always be 1
+(one) when an <span><a title="initial context item" class="termref"
+href="#dt-initial-context-item">initial context item</a></span> is
+supplied, and will be <a title="absent" class="termref" href=
+"#dt-absent">absent</a> if no initial context item is
+supplied).</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.106</span></li>
+<li>
+<p>A base output URI. <span class=
+"definition">[Definition:&#160;</span><a name=
+"dt-base-output-uri-2" id="dt-base-output-uri-2" title=
+"base output URI"></a> The <b>base output URI</b> is a URI to be
+used as the base URI when resolving a relative URI
+<span>reference</span> allocated to a <a title="final result tree"
+class="termref" href="#dt-final-result-tree">final result tree</a>.
+If the transformation generates more than one final result tree,
+then typically each one will be allocated a URI relative to this
+base URI. <span class="definition">]</span> The way in which a base
+output URI is established is <a title="implementation-defined"
+class="termref" href=
+"#dt-implementation-defined">implementation-defined</a>.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.107</span></li>
+<li>
+<p>A mechanism for obtaining a document node and a media type,
+given an absolute URI. The total set of available documents
+(modeled as a mapping from URIs to document nodes) forms part of
+the context for evaluating XPath expressions, specifically the
+<a href=
+"http://www.w3.org/TR/xpath-functions-30/#func-doc"><code>doc</code></a><sup><small>FO30</small></sup>
+function. The XSLT <a href=
+"#func-document"><code>document</code></a> function additionally
+requires the media type of the resource representation, for use in
+interpreting any fragment identifier present within a URI
+Reference.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.108</span>
+<div class="note">
+<p class="prefix"><b>Note:</b></p>
+<p>The set of documents that are available to the stylesheet is
+<a title="implementation-dependent" class="termref" href=
+"#dt-implementation-dependent">implementation-dependent</a>, as is
+the processing that is carried out to construct a tree representing
+the resource retrieved using a given URI. Some possible ways of
+constructing a document (specifically, rules for constructing a
+document from an Infoset or from a PSVI) are described in <a href=
+"#xpath-datamodel-30">[Data Model]</a>.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.109</span></div>
+</li>
+</ul>
+<div class="diff-add">
+<div class="diff-add">
+<p>Once a stylesheet is primed, the values of global variables
+remain stable through all component invocations. In addition,
+priming a stylesheet creates an <a href=
+"http://www.w3.org/TR/xpath-functions-30/#execution-scope">execution
+scope</a><sup><small>FO30</small></sup> during which the dynamic
+context and all function calls remain stable; for example two calls
+on the <a href=
+"http://www.w3.org/TR/xpath-functions-30/#func-current-dateTime"><code>
+current-dateTime</code></a><sup><small>FO30</small></sup> function
+within an execution scope are defined to return the same
+result.</p>
+</div>
+</div>
+<p>Parameters passed to the transformation by the client
+application <span class="diff-add"><span class=
+"diff-add"><span>when a stylesheet is primed</span></span></span>
+are matched against <a title="stylesheet parameter" class="termref"
+href="#dt-stylesheet-parameter">stylesheet parameters</a> (see
+<a href="#global-variables"><i>9.5 Global Variables and
+Parameters</i></a>), not against the <a title="template parameter"
+class="termref" href="#dt-template-parameter">template
+parameters</a> declared within the <a title="initial template"
+class="termref" href="#dt-initial-template">initial template</a>.
+<span class="diff-del"><span class="diff-del"><span>All <a title=
+"template parameter" class="termref" href=
+"#dt-template-parameter">template parameters</a> within the initial
+template to be executed will take their default
+values.</span></span></span></p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.111</span>
+<p><a name="err-XTDE0050" id="err-XTDE0050"><span class=
+"error">[ERR XTDE0050]</span></a> It is a <a title="dynamic error"
+class="termref" href="#dt-dynamic-error">dynamic error</a> if a
+stylesheet declares a visible <a title="stylesheet parameter"
+class="termref" href="#dt-stylesheet-parameter">stylesheet
+parameter</a> with <code>required="yes"</code> and no value for
+this parameter is supplied when the stylesheet is primed. A
+stylesheet parameter is visible if it is not masked by another
+global variable or parameter with the same name and higher
+<a title="import precedence" class="termref" href=
+"#dt-import-precedence">import precedence</a>. <span>If the
+parameter is a <a title="static parameter" class="termref" href=
+"#dt-static-parameter">static parameter</a> then the value
+<span class="verb">must</span> be supplied prior to the static
+analysis phase.</span></p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.112</span>
+<p>A <a title="stylesheet" class="termref" href=
+"#dt-stylesheet">stylesheet</a> can process further source
+documents in addition to those supplied when the transformation is
+invoked. These additional documents can be loaded using the
+functions <a href="#func-document"><code>document</code></a> (see
+<a href="#func-document"><i>20.1 fn:document</i></a>) or <a href=
+"http://www.w3.org/TR/xpath-functions-30/#func-doc"><code>doc</code></a><sup><small>FO30</small></sup>
+or <a href=
+"http://www.w3.org/TR/xpath-functions-30/#func-collection"><code>collection</code></a><sup><small>FO30</small></sup>
+(see <a href="#xpath-functions-30">[Functions and Operators]</a>),
+<span>or using the <a href=
+"#element-stream"><code>xsl:stream</code></a> instruction</span>;
+alternatively, they can be supplied as <a title=
+"stylesheet parameter" class="termref" href=
+"#dt-stylesheet-parameter">stylesheet parameters</a> (see <a href=
+"#global-variables"><i>9.5 Global Variables and
+Parameters</i></a>), or returned as the result of an <a title=
+"extension function" class="termref" href=
+"#dt-extension-function">extension function</a> (see <a href=
+"#extension-functions"><i>23.1 Extension Functions</i></a>).</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.114</span></div>
+<div class="div3">
+<h4><a name="invoking-initial-mode" id=
+"invoking-initial-mode"></a>2.4.3 <a href="#invoking-initial-mode"
+style="text-decoration: none">Invoking an Initial Mode</a></h4>
+<p>When the stylesheet is evaluated by invoking a <a title="mode"
+class="termref" href="#dt-mode">mode</a>, processing proceeds by
+finding a <a title="template rule" class="termref" href=
+"#dt-template-rule">template rule</a> that matches the <a title=
+"initial context item" class="termref" href=
+"#dt-initial-context-item">initial context item</a>, and evaluating
+this template rule with a <a title="singleton focus" class=
+"termref" href="#dt-singleton-focus">singleton focus</a> based on
+the initial context item.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.115</span>
+<p>The following additional information is needed when dynamic
+evaluation is to start with a <a title="template rule" class=
+"termref" href="#dt-template-rule">template rule</a></p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.116</span>
+<ul>
+<li>
+<p>Optionally, an initial <a title="mode" class="termref" href=
+"#dt-mode">mode</a>.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.117</span>
+<p><span class="definition">[Definition:&#160;</span><a name=
+"dt-initial-mode-2" id="dt-initial-mode-2" title=
+"initial mode"></a>The initial mode, if specified, <span class=
+"verb">must</span> either be the default mode, or a mode that is
+explicitly named <span>either in an <a href=
+"#element-mode"><code>xsl:mode</code></a> declaration, or</span> in
+the <code>mode</code> attribute of an <a href=
+"#element-template"><code>xsl:template</code></a> declaration
+within the stylesheet. If an initial mode is supplied, then in
+searching for the <a title="template rule" class="termref" href=
+"#dt-template-rule">template rule</a> that best matches the
+<span><a title="initial context item" class="termref" href=
+"#dt-initial-context-item">initial context item</a></span>, the
+processor considers only those rules that apply to the initial
+mode. If no initial mode is supplied, then the mode used is that
+named in the <span><code>default-mode</code> attribute of the
+<a href="#element-stylesheet"><code>xsl:stylesheet</code></a>
+element of the <a title="principal stylesheet module" class=
+"termref" href="#dt-principal-stylesheet-module">principal
+stylesheet module</a>; or failing that, the mode named in the
+<code>default-mode</code> attribute of its containing <a href=
+"#element-package"><code>xsl:package</code></a> element;</span> or
+in the absence of such an attribute, the <a title="unnamed mode"
+class="termref" href="#dt-unnamed-mode">unnamed
+mode</a>.<span class="definition">]</span></p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.118</span></li>
+<li>
+<div class="diff-add">
+<div class="diff-add">
+<p>Optionally, a set of parameters, which will be passed to the
+selected template rule. The parameters consist of a two sets of
+(QName, value) pairs, one set for <a title="tunnel parameter"
+class="termref" href="#dt-tunnel-parameter">tunnel parameters</a>
+and one for non-tunnel parameters, in which the QName identifies
+the name of a parameter and the value provides the value of the
+parameter. The effect is the same as when a template is invoked
+using <a href=
+"#element-apply-templates"><code>xsl:apply-templates</code></a>
+with an <a href=
+"#element-with-param"><code>xsl:with-param</code></a> child
+specifying <code>tunnel="yes"</code> or <code>tunnel="no"</code> as
+appropriate. If a parameter is supplied that is not declared or
+used, the value is simply ignored. These parameters are
+<em>not</em> used to set <a title="stylesheet parameter" class=
+"termref" href="#dt-stylesheet-parameter">stylesheet
+parameters</a>.</p>
+</div>
+</div>
+<div class="diff-add">
+<div class="diff-add">
+<p>A supplied value is converted if necessary to the declared type
+of the template parameter using the <a title=
+"function conversion rules" class="termref" href=
+"#dt-function-conversion-rules">function conversion rules</a>.</p>
+</div>
+</div>
+</li>
+</ul>
+<div class="diff-add">
+<div class="diff-add">
+<p>The <a title="raw result" class="termref" href=
+"#dt-raw-result">raw result</a> of the invocation is the result of
+evaluating the initial template, after conversion of the result to
+the type declared in the <code>as</code> attribute of that template
+using the <a title="function conversion rules" class="termref"
+href="#dt-function-conversion-rules">function conversion rules</a>,
+if such conversion is necessary.</p>
+</div>
+</div>
+<div class="note">
+<p class="prefix"><b>Note:</b></p>
+<p>If the initial mode is a <a title="streamable mode" class=
+"termref" href="#dt-streamable-mode">streamable mode,</a> then
+streaming will only be possible if the initial context item is a
+node that is supplied in a form that allows such processing: for
+example, as a reference to a stream of parsing events.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.122</span></div>
+<div class="note">
+<p class="prefix"><b>Note:</b></p>
+<p>The design of the API for invoking a transformation <span class=
+"verb">should</span> provide some means for users to designate the
+<a title="unnamed mode" class="termref" href=
+"#dt-unnamed-mode">unnamed mode</a> as the <a title="initial mode"
+class="termref" href="#dt-initial-mode">initial mode</a> in cases
+where it is not the default mode.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.123</span></div>
+<p><a name="err-XTDE0045" id="err-XTDE0045"><span class=
+"error">[ERR XTDE0045]</span></a> It is a <a title="dynamic error"
+class="termref" href="#dt-dynamic-error">dynamic error</a> if the
+invocation of the <a title="stylesheet" class="termref" href=
+"#dt-stylesheet">stylesheet</a> specifies an initial <a title=
+"mode" class="termref" href="#dt-mode">mode</a> (other than the
+unnamed mode) that does not match <span>either the <a title=
+"expanded QName" class="termref" href="#dt-expanded-qname">expanded
+QName</a> in the <code>name</code> attribute of an <a href=
+"#element-mode"><code>xsl:mode</code></a> declaration, or</span>
+the <a title="expanded QName" class="termref" href=
+"#dt-expanded-qname">expanded QName</a> in the <code>mode</code>
+attribute of any template defined in the <a title="stylesheet"
+class="termref" href="#dt-stylesheet">stylesheet</a>.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.124</span>
+<table border="1" summary="Editorial note">
+<tr>
+<td align="left" valign="top" width="50%"><b>Editorial
+note</b></td>
+<td align="right" valign="top" width="50%">&#160;</td>
+</tr>
+<tr>
+<td colspan="2" align="left" valign="top">Error case when there is
+no initial context item?</td>
+</tr>
+</table>
+</div>
+<div class="div3">
+<h4><a name="invoking-initial-template" id=
+"invoking-initial-template"></a>2.4.4 <a href=
+"#invoking-initial-template" style="text-decoration: none">Invoking
+an Initial Template</a></h4>
+<p>The following additional information is needed when dynamic
+evaluation is to start with a <a title="named template" class=
+"termref" href="#dt-named-template">named template</a></p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.126</span>
+<ul>
+<li>
+<p>Optionally, the name of a <a title="named template" class=
+"termref" href="#dt-named-template">named template</a> which is to
+be executed as the entry point to the transformation. <span>If no
+template name is supplied, the default template name is
+<code>xsl:initial-template</code>.</span> The selected template
+<span class="verb">must</span> exist within the <a title=
+"stylesheet" class="termref" href=
+"#dt-stylesheet">stylesheet</a>.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.127</span></li>
+<li>
+<div class="diff-add">
+<div class="diff-add">
+<p>Optionally, a set of parameters, which will be passed to the
+selected template rule. The parameters consist of a two sets of
+(QName, value) pairs, one set for <a title="tunnel parameter"
+class="termref" href="#dt-tunnel-parameter">tunnel parameters</a>
+and one for non-tunnel parameters, in which the QName identifies
+the name of a parameter and the value provides the value of the
+parameter. The effect is the same as when a template is invoked
+using <a href=
+"#element-call-templates"><code>xsl:call-templates</code></a> with
+an <a href="#element-with-param"><code>xsl:with-param</code></a>
+child specifying <code>tunnel="yes"</code> or
+<code>tunnel="no"</code> as appropriate. If a parameter is supplied
+that is not declared or used, the value is simply ignored. These
+parameters are <em>not</em> used to set <a title=
+"stylesheet parameter" class="termref" href=
+"#dt-stylesheet-parameter">stylesheet parameters</a>.</p>
+</div>
+</div>
+<div class="diff-add">
+<div class="diff-add">
+<p>A supplied value is converted if necessary to the declared type
+of the template parameter using the <a title=
+"function conversion rules" class="termref" href=
+"#dt-function-conversion-rules">function conversion rules</a>.</p>
+</div>
+</div>
+</li>
+</ul>
+<div class="diff-add">
+<div class="diff-add">
+<p>The <a title="raw result" class="termref" href=
+"#dt-raw-result">raw result</a> of the invocation is the result of
+evaluating the initial template, after conversion of the result to
+the type declared in the <code>as</code> attribute of that template
+using the <a title="function conversion rules" class="termref"
+href="#dt-function-conversion-rules">function conversion rules</a>,
+if such conversion is necessary.</p>
+</div>
+</div>
+<p><a name="err-XTDE0040" id="err-XTDE0040"><span class=
+"error">[ERR XTDE0040]</span></a> It is a <a title="dynamic error"
+class="termref" href="#dt-dynamic-error">dynamic error</a> if the
+invocation of the <a title="stylesheet" class="termref" href=
+"#dt-stylesheet">stylesheet</a> specifies a template name that does
+not match the <a title="expanded QName" class="termref" href=
+"#dt-expanded-qname">expanded QName</a> of a named template defined
+in the <a title="stylesheet" class="termref" href=
+"#dt-stylesheet">stylesheet</a>, <span class=
+"diff-add"><span class="diff-add"><span>whose visibility is
+<code>public</code> or <code>final</code></span></span></span>.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.131</span>
+<div class="diff-del">
+<div class="diff-del">
+<p><span class="error">[ERR XTDE0047]</span> It is a <a title=
+"dynamic error" class="termref" href="#dt-dynamic-error">dynamic
+error</a> if the invocation of the <a title="stylesheet" class=
+"termref" href="#dt-stylesheet">stylesheet</a> specifies both an
+initial <a title="mode" class="termref" href="#dt-mode">mode</a>
+and an initial template.</p>
+</div>
+</div>
+<p><span class="definition">[Definition:&#160;</span><a name=
+"dt-initial-template-2" id="dt-initial-template-2" title=
+"initial template"></a>The transformation is performed by
+evaluating an <b>initial template</b>. If a <a title=
+"named template" class="termref" href="#dt-named-template">named
+template</a> is supplied when the transformation is initiated, then
+this is the initial template; otherwise, the initial template is
+the <a title="template rule" class="termref" href=
+"#dt-template-rule">template rule</a> selected according to the
+rules of the <a href=
+"#element-apply-templates"><code>xsl:apply-templates</code></a>
+instruction for processing the <span><a title=
+"initial context item" class="termref" href=
+"#dt-initial-context-item">initial context item</a></span> in the
+initial <a title="mode" class="termref" href=
+"#dt-mode">mode</a>.<span class="definition">]</span></p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.135</span>
+<p><a name="err-XTDE0060" id="err-XTDE0060"><span class=
+"error">[ERR XTDE0060]</span></a> It is a <a title="dynamic error"
+class="termref" href="#dt-dynamic-error">dynamic error</a> if the
+<a title="initial template" class="termref" href=
+"#dt-initial-template">initial template</a> defines a <a title=
+"template parameter" class="termref" href=
+"#dt-template-parameter">template parameter</a> that specifies
+<code>required="yes"</code>.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.136</span></div>
+<div class="div3">
+<h4><a name="invoking-initial-function" id=
+"invoking-initial-function"></a>2.4.5 <a href=
+"#invoking-initial-function" style="text-decoration: none">Invoking
+an Initial Function</a></h4>
+<p>The following additional information is needed when dynamic
+evaluation is to start with a <a title="stylesheet function" class=
+"termref" href="#dt-stylesheet-function">stylesheet
+function</a></p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.138</span>
+<ul>
+<li>
+<p>The name and arity of a <a title="stylesheet function" class=
+"termref" href="#dt-stylesheet-function">stylesheet function</a>
+which is to be executed as the entry point to the
+transformation.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.139</span>
+<div class="note">
+<p class="prefix"><b>Note:</b></p>
+<p>In the design of a concrete API, the arity may be inferred from
+the length of the parameter list.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.140</span></div>
+</li>
+<li>
+<p>Optionally, a list of values to act as parameters to the initial
+function of parameters, which will be passed to the selected
+template rule. The number of values in the list must be the same as
+the arity of the function.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.141</span>
+<div class="diff-add">
+<div class="diff-add">
+<p>A supplied value is converted if necessary to the declared type
+of the stylesheet parameter using the <a title=
+"function conversion rules" class="termref" href=
+"#dt-function-conversion-rules">function conversion rules</a>.</p>
+</div>
+</div>
+</li>
+</ul>
+<div class="diff-add">
+<div class="diff-add">
+<p>The <a title="raw result" class="termref" href=
+"#dt-raw-result">raw result</a> of the invocation is the result of
+evaluating the initial function, after conversion of the result to
+the type declared in the <code>as</code> attribute of that function
+using the <a title="function conversion rules" class="termref"
+href="#dt-function-conversion-rules">function conversion rules</a>,
+if such conversion is necessary.</p>
+</div>
+</div>
+<p><a name="err-XTDE0041" id="err-XTDE0041"><span class=
+"error">[ERR XTDE0041]</span></a> It is a <a title="dynamic error"
+class="termref" href="#dt-dynamic-error">dynamic error</a> if the
+invocation of the <a title="stylesheet" class="termref" href=
+"#dt-stylesheet">stylesheet</a> specifies a function name and arity
+that does not match the <a title="expanded QName" class="termref"
+href="#dt-expanded-qname">expanded QName</a> and arity of a named
+<a title="stylesheet function" class="termref" href=
+"#dt-stylesheet-function">stylesheet function</a> defined in the
+<a title="stylesheet" class="termref" href=
+"#dt-stylesheet">stylesheet</a>, whose visibility is
+<code>public</code> or <code>final</code>.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.144</span>
+<div class="diff-del">
+<div class="diff-del">
+<p><span class="error">[ERR XTDE0047]</span> It is a <a title=
+"dynamic error" class="termref" href="#dt-dynamic-error">dynamic
+error</a> if the invocation of the <a title="stylesheet" class=
+"termref" href="#dt-stylesheet">stylesheet</a> specifies both an
+initial <a title="mode" class="termref" href="#dt-mode">mode</a>
+and an initial template.</p>
+</div>
+</div>
+<p><span class="definition">[Definition:&#160;</span><a name=
+"dt-initial-function" id="dt-initial-function" title=
+"initial function"></a>The transformation is performed by
+evaluating an <b>initial function</b>. <span class=
+"definition">]</span></p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.148</span>
+<p><a name="err-XTDE0060" id="err-XTDE0060"><span class=
+"error">[ERR XTDE0060]</span></a> It is a <a title="dynamic error"
+class="termref" href="#dt-dynamic-error">dynamic error</a> if the
+<a title="initial template" class="termref" href=
+"#dt-initial-template">initial template</a> defines a <a title=
+"template parameter" class="termref" href=
+"#dt-template-parameter">template parameter</a> that specifies
+<code>required="yes"</code>.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.149</span></div>
+<div class="div3">
+<h4><a name="post-processing" id="post-processing"></a>2.4.6
+<a href="#post-processing" style=
+"text-decoration: none">Post-processing the Raw Result</a></h4>
+<p>At user option, the <a title="raw result" class="termref" href=
+"#dt-raw-result">raw result</a> of a component invocation may
+either be returned to the calling application unchanged, or it may
+be post-processed. Two stages of post-processing are defined, both
+of which are optional:</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.151</span>
+<ol class="enumar">
+<li>
+<p><b>Result tree construction</b></p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.152</span>
+<p>If the raw result is non-empty, then it is used to construct an
+implicit <a title="final result tree" class="termref" href=
+"#dt-final-result-tree">final result tree</a>, following the rules
+described in <a href="#constructing-complex-content"><i>5.8.1
+Constructing Complex Content</i></a>: the effect is as if the raw
+result <var>R</var> were processed by the following function:</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.153</span>
+<div class="exampleInner">
+<pre>
+&lt;xsl:function name="construct-result-tree" as="document-node()"&gt;
+  &lt;xsl:param name="R" as="item()*"&gt;
+  &lt;xsl:document validation="preserve"&gt;
+    &lt;xsl:sequence select="$R"/&gt;
+  &lt;/xsl:document&gt;  
+&lt;/xsl:function&gt;
+</pre></div>
+<p>An implicit result tree is also created when the raw result is
+empty, provided that no <a href=
+"#element-result-document"><code>xsl:result-document</code></a>
+instruction has been evaluated during the course of the
+transformation. In this situation the implicit result tree will
+consist of a document node with no children.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.154</span>
+<div class="note">
+<p class="prefix"><b>Note:</b></p>
+<p>This means that there is always at least one result tree. It
+also means that if the content of the initial template is a single
+<a href=
+"#element-result-document"><code>xsl:result-document</code></a>
+instruction, as in the example above, then only one result tree is
+produced, not two. It is useful to make the result document
+explicit as this is the only way of invoking document-level
+validation.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.155</span>
+<p>If the result of the initial template is non-empty, and an
+explicit <a href=
+"#element-result-document"><code>xsl:result-document</code></a>
+instruction has been evaluated with the empty attribute
+<code>href=""</code>, then an error will occur <span class=
+"error">[see <a href="#err-XTDE1490">ERR XTDE1490</a>]</span>,
+since it is not possible to create two final result trees with the
+same URI.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.156</span></div>
+</li>
+<li>
+<p><b>Serialization</b></p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.157</span>
+<p>See <a href="#parsing-and-serialization"><i>2.7 Parsing and
+Serialization</i></a>.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.158</span>
+<p>Either the raw result, or a result tree produced as described
+above, may optionally be serialized as decribed in <a href=
+"#serialization">[serialization]</a>.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.159</span>
+<div class="note">
+<p class="prefix"><b>Note:</b></p>
+<p>The first phase of serialization, called <b>sequence
+normalization</b>, has no effect if the supplied value is a single
+document node, which will be the case if serialization is preceded
+by result tree construction. In the case of any other supplied
+value, the effect of sequence normalization is very similar to the
+effect of result tree construction, except where an
+<code>item-separator</code> serialization parameter is present. Use
+of <code>item-separator</code> allows, for example, a sequence of
+strings returned by invoking a stylesheet function to be output
+with newline separators.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.160</span></div>
+<table border="1" summary="Editorial note">
+<tr>
+<td align="left" valign="top" width="50%"><b>Editorial
+note</b></td>
+<td align="right" valign="top" width="50%">&#160;</td>
+</tr>
+<tr>
+<td colspan="2" align="left" valign="top">Add item-separator to
+xsl:output and xsl:result-document</td>
+</tr>
+</table>
+</li>
+</ol>
+<div class="note">
+<p class="prefix"><b>Note:</b></p>
+<p>This specification does not constrain the design of application
+programming interfaces or the choice of defaults. In previous
+versions of this specification, result tree construction was a
+mandatory process, while serialization was optional. When invoking
+stylesheet functions directly, however, result tree construction
+and serialization may be inappropriate as defaults. These
+considerations may affect the design of APIs.</p>
+<span style=
+"font-size:10; background-color:DarkRed; color:white; float:right">&#160;&#160;P2.161</span></div>
+</div>
+</div>
+
+    </body>
+</html>

@@ -1,0 +1,2076 @@
+options {
+
+	  
+       STATIC = false;
+	   MULTI=false;
+	   VISITOR=true ;     // invokes the JJTree Visitor support
+	   NODE_SCOPE_HOOK=false;
+	   NODE_USES_PARSER=true;
+	   FORCE_LA_CHECK=false;
+	   NODE_PACKAGE="org.w3c.xqparser";
+	   NODE_PREFIX="";
+	
+}
+
+
+    PARSER_BEGIN(XPath)
+
+package org.w3c.xqparser;
+
+import org.w3c.xqparser.Node;
+import org.w3c.xqparser.SimpleNode;
+
+import java.io.*;
+import java.util.Stack;
+import java.util.Vector;
+import org.w3c.dom.Element;
+import org.w3c.dom.Document;
+import javax.xml.parsers.*;
+import org.w3c.dom.traversal.DocumentTraversal;
+import org.w3c.dom.traversal.NodeFilter;
+import org.w3c.dom.traversal.NodeIterator;
+import org.w3c.dom.traversal.TreeWalker;
+
+public class XPath {
+      
+
+      boolean m_isMatchPattern = false;
+      boolean isStep = false;
+
+	  Stack _elementStack = new Stack();
+
+		  Stack binaryTokenStack = new Stack();
+
+		  public Node createNode(int id) {
+			  return null;
+		  }
+
+
+ 		 void processToken(SimpleNode n, Token t)
+		  {
+			
+		    
+			  if(t.kind == XPathConstants.Slash && n.id != XPathTreeConstants.JJTSLASH)
+				  return;
+		    
+			  if(t.kind == XPathConstants.TagQName && n.id != XPathTreeConstants.JJTTAGQNAME)
+				  return;
+			  if(t.kind == XPathConstants.S && n.id != XPathTreeConstants.JJTS)
+				  return;
+			
+			  n.processToken(t);
+		  }
+
+		  
+		void checkCharRef(String ref) throws ParseException
+		{
+            ref = ref.substring(2, ref.length() - 1);
+            int val;
+            if (ref.charAt(0) == 'x') {
+                val = Integer.parseInt(ref.substring(1), 16);
+            } else
+                val = Integer.parseInt(ref);
+            boolean isLegal = val == 0x9 || val == 0xA || val == 0xD
+                    || (val >= 0x20 && val <= 0xD7FF)
+                    || (val >= 0xE000 && val <= 0xFFFD)
+                    || (val >= 0x10000 && val <= 0x10FFFF);
+            if (!isLegal)
+                throw new ParseException(
+                        "Well-formedness constraint: Legal Character, \n"
+                                + "Characters referred to using character references MUST match the production for Char.");
+        }
+		
+
+
+		  public static void main(String args[])
+		     throws Exception
+		  {
+
+        int numberArgsLeft = args.length;
+        int argsStart = 0;
+        boolean isMatchParser = false;
+        boolean dumpTree = false;
+        while (numberArgsLeft > 0) {
+            try {
+
+                if (args[argsStart].equals("-dumptree")) {
+                    dumpTree = true;
+                    argsStart++;
+                    numberArgsLeft--;
+                }
+                else if (args[argsStart].equals("-match")) {
+                    isMatchParser = true;
+                    System.out.println("Match Pattern Parser");
+                    argsStart++;
+                    numberArgsLeft--;
+                } else if ("-file".equalsIgnoreCase(args[argsStart])) {
+                    argsStart++;
+                    numberArgsLeft--;
+                    System.out.println("Running test for: " + args[argsStart]);
+                    File file = new File(args[argsStart]);
+                    argsStart++;
+                    numberArgsLeft--;
+                    Reader fis = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+                    XPath parser = new XPath(fis);
+                    SimpleNode tree = parser.XPath2();
+                    if (dumpTree)
+                        tree.dump("|");
+                } else if (args[argsStart].endsWith(".xquery")) {
+                    System.out.println("Running test for: " + args[argsStart]);
+                    File file = new File(args[argsStart]);
+                    argsStart++;
+                    numberArgsLeft--;
+                    Reader fis = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+                    XPath parser = new XPath(fis);
+                    SimpleNode tree = parser.XPath2();
+                    if (dumpTree)
+                        tree.dump("|");
+                }         else if ("-catalog".equalsIgnoreCase(args[argsStart])) {
+                    argsStart++;
+                    numberArgsLeft--;
+                    String catalogFileName = args[argsStart];
+                    argsStart++;
+                    numberArgsLeft--;
+                    System.out.println("Running catalog for: "
+                            + catalogFileName);
+                    DocumentBuilderFactory dbf = DocumentBuilderFactory
+                            .newInstance();
+                    DocumentBuilder db = dbf.newDocumentBuilder();
+                    Document doc = db.parse(catalogFileName);
+
+                    NodeIterator testCases = ((DocumentTraversal) doc)
+                            .createNodeIterator(doc, NodeFilter.SHOW_ELEMENT,
+                                    new NodeFilter() {
+                                        public short acceptNode(
+                                                org.w3c.dom.Node node) {
+                                            String nm = node.getNodeName();
+                                            return (nm.equals("test-case")) ? NodeFilter.FILTER_ACCEPT
+                                                    : NodeFilter.FILTER_SKIP;
+                                        }
+                                    }, true);
+                    org.w3c.dom.Element testCase;
+                    int totalCount = 0;
+                    Vector failedList = new Vector();
+                    while ((testCase = (org.w3c.dom.Element) testCases
+                            .nextNode()) != null) {
+                        NodeIterator queryies = ((DocumentTraversal) doc)
+                                .createNodeIterator(testCase,
+                                        NodeFilter.SHOW_ELEMENT,
+                                        new NodeFilter() {
+                                            public short acceptNode(
+                                                    org.w3c.dom.Node node) {
+                                                String nm = node.getNodeName();
+                                                return (nm.equals("query")) ? NodeFilter.FILTER_ACCEPT
+                                                        : NodeFilter.FILTER_SKIP;
+                                            }
+                                        }, true);
+                        org.w3c.dom.Element query;
+                        while ((query = (org.w3c.dom.Element) queryies
+                                .nextNode()) != null) {
+                            String fileString = query.getAttribute("name");
+                            String locString = testCase
+                                    .getAttribute("FilePath").replace('/',
+                                            File.separatorChar);
+                            File catFile = new File(catalogFileName);
+                            String locCatFile = catFile.getParent();
+                            String absFileName = locCatFile + File.separator
+                                    + "Queries" + File.separator + "XQuery"
+                                    + File.separator + locString + fileString;
+
+                            if (dumpTree) {
+                                System.out.print("== ");
+                                System.out.print(absFileName);
+                                System.out.println(" ==");
+                            } else
+                                System.out.print(".");
+
+                            boolean isParseError = false;
+                            String scenario = testCase.getAttribute("scenario");
+                            if (scenario.equals("parse-error"))
+                                isParseError = true;
+
+                            totalCount++;
+
+                            try {
+                                File file = new File(absFileName);
+                                Reader fis = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+                                XPath parser = new XPath(fis);
+                                SimpleNode tree = parser.XPath2();
+                                if(isParseError)
+                                    failedList.addElement(fileString);
+                                if (dumpTree)
+                                    tree.dump("|");
+                            } catch (Exception e) {
+                                if(!isParseError)
+                                    failedList.addElement(fileString);
+                            } catch (Error e2) {
+                                if(!isParseError)
+                                    failedList.addElement(fileString);
+                            }
+
+                        }
+
+                    }
+                    System.out.println();
+                    if(failedList.size() > 0)
+                    {
+                        System.out.print("FAILED: ");
+                        for(int i = 0; i < failedList.size(); i++)
+                        {
+                            String fname = (String)failedList.elementAt(i);
+                            System.out.print(fname);
+                            if((i+1) != failedList.size())
+                                System.out.print(", ");
+                        }
+                        System.out.println();
+                        System.out.print("Failed "+failedList.size()+" out of ");
+                    }
+                    else
+                    {
+                        System.out.print("Total Success!! ");
+                    }
+                    System.out.println(totalCount+" cases");
+
+                }
+
+        else
+        {
+				for(int i = argsStart; i < args.length; i++)
+				{
+					System.out.println();
+					System.out.println("Test["+i+"]: "+args[i]);
+          Reader fis = new BufferedReader(new InputStreamReader(new java.io.StringBufferInputStream(args[i]), "UTF-8"));
+					XPath parser = new XPath(fis);
+          SimpleNode tree;
+          if(isMatchParser)
+          {
+					tree = parser.XPath2();
+          }
+          else
+          {
+					tree = parser.XPath2();
+          }
+					((SimpleNode)tree.jjtGetChild(0)).dump("|") ;
+          break;
+				}
+				System.out.println("Success!!!!");
+        }
+			}
+			catch(ParseException pe)
+			{
+				System.err.println(pe.getMessage());
+			}
+			  catch(Error e)
+			  {
+				  String msg = e.getMessage();
+				  if(msg == null || msg.equals(""))
+					  msg = "Unknown Error: "+e.getClass().getName();
+			  	System.err.println(msg);
+			  }
+			return;
+		   }
+		    java.io.DataInputStream dinput = new java.io.DataInputStream(System.in);
+		    while(true)
+		    {
+			  try
+			  {
+			      System.err.println("Type Expression: ");
+			      String input =  dinput.readLine();
+			      if(null == input || input.trim().length() == 0)
+			        break;
+			      XPath parser = new XPath(new BufferedReader(new InputStreamReader(new java.io.StringBufferInputStream(input), "UTF-8")));
+          SimpleNode tree;
+          if(isMatchParser)
+          {
+					tree = parser.XPath2();
+          }
+          else
+          {
+					tree = parser.XPath2();
+          }
+			      ((SimpleNode)tree.jjtGetChild(0)).dump("|") ;
+			  }
+			  catch(ParseException pe)
+			  {
+			  	System.err.println(pe.getMessage());
+			  }
+			  catch(Exception e)
+			  {
+			  	System.err.println(e.getMessage());
+			  }
+			  catch(Error e)
+			  {
+				  String msg = e.getMessage();
+				  if(msg == null || msg.equals(""))
+					  msg = "Unknown Error: "+e.getClass().getName();
+			  	System.err.println(msg);
+			  }
+		    }
+		  }
+		}
+
+    PARSER_END(XPath)
+
+	
+
+TOKEN_MGR_DECLS : {
+  public Stack stateStack = new Stack();
+  // private Vector persistentLexStates  = new Vector();
+  static final int PARENMARKER = 2000;
+  public int offset = 0;
+  
+  
+  void CommonTokenAction(Token t) {}	
+
+  
+  /**
+   * Push the current state onto the state stack.
+   */
+  private void pushState()
+  {
+    
+    stateStack.addElement(new Integer(curLexState));
+  }
+  
+  /**
+   * Push the given state onto the state stack.
+   * @param state Must be a valid state.
+   */
+  private void pushState(int state)
+  {
+	
+    stateStack.push(new Integer(state));
+  }
+  
+  /**
+   * Pop the state on the state stack, and switch to that state.
+   */
+  private void popState()
+  {
+    if (stateStack.size() == 0)
+    {
+      printLinePos();
+    }
+
+    int nextState = ((Integer) stateStack.pop()).intValue();
+    
+    if(nextState == PARENMARKER)
+      printLinePos();
+    SwitchTo(nextState);
+  }
+  
+  /**
+   * Push the given state onto the state stack.
+   * @param state Must be a valid state.
+   */
+  private boolean isState(int state)
+  {
+	for (int i = 0; i < stateStack.size(); i++) {
+        if(((Integer) stateStack.elementAt(i)).intValue() == state)
+        {
+        	return true;
+        }
+	}
+	return false;
+  }
+
+  /**
+   * Push a parenthesis state.  This pushes, in addition to the 
+   * lexical state value, a special marker that lets 
+   * resetParenStateOrSwitch(int state)
+   * know if it should pop and switch.  Used for the comma operator.
+   */
+  private void pushParenState(int commaState, int rparState)
+  {
+    stateStack.push(new Integer(rparState));
+    stateStack.push(new Integer(commaState));
+    stateStack.push(new Integer(PARENMARKER));
+    SwitchTo(commaState);
+  }
+
+
+  /**
+   * Print the current line position.
+   */
+  public void printLinePos()
+  {
+    System.err.println("Line: " + input_stream.getEndLine());
+  }
+}
+
+
+		SimpleNode XPath2() :
+		{}
+		{
+		  QueryList()<EOF>
+		  { if(this.token_source.curLexState == XPathConstants.EXPR_COMMENT)
+                            throw new ParseException("Unterminated comment.");
+			return jjtThis ; }
+		}
+      void QueryList()  :
+{}
+{
+  Module() ("%%%" [Module()])*
+}
+
+void Module()  :
+{}
+{
+  [LOOKAHEAD(2) VersionDecl()] (LOOKAHEAD(2) LibraryModule() | MainModule())
+}
+
+void VersionDecl()  :
+{}
+{
+  "xquery" "version" <StringLiteral>{processToken(jjtThis, token);} #StringLiteral(true) ["encoding" <StringLiteral>{processToken(jjtThis, token);} #StringLiteral(true)] Separator()
+}
+
+void MainModule()  :
+{}
+{
+  Prolog() QueryBody()
+}
+
+void LibraryModule()  :
+{}
+{
+  ModuleDecl() Prolog()
+}
+
+void ModuleDecl()  :
+{}
+{
+  "module" "namespace" NCName() "=" URILiteral() Separator()
+}
+
+void Prolog()  :
+{}
+{
+  (LOOKAHEAD(2) (LOOKAHEAD(3) DefaultNamespaceDecl() | LOOKAHEAD(3) Setter() | LOOKAHEAD(2) NamespaceDecl() | Import()) Separator())* (LOOKAHEAD(2) (LOOKAHEAD(2) VarDecl() | LOOKAHEAD(2) FunctionDecl() | LOOKAHEAD(2) OptionDecl()) Separator())*
+}
+
+void Setter()  :
+{}
+{
+  (LOOKAHEAD(2) BoundarySpaceDecl() | LOOKAHEAD(3) DefaultCollationDecl() | LOOKAHEAD(2) BaseURIDecl() | LOOKAHEAD(2) ConstructionDecl() | LOOKAHEAD(2) OrderingModeDecl() | LOOKAHEAD(3) EmptyOrderDecl() | LOOKAHEAD(2) RevalidationDecl() | CopyNamespacesDecl())
+}
+
+void Import()  :
+{}
+{
+  (LOOKAHEAD(2) SchemaImport() | ModuleImport())
+}
+
+void Separator()  :
+{}
+{
+  ";"
+}
+
+void NamespaceDecl()  :
+{}
+{
+  "declare" "namespace" NCName() "=" URILiteral()
+}
+
+void BoundarySpaceDecl()  :
+{}
+{
+  "declare" "boundary-space" ("preserve"{jjtThis.processValue("preserve");} | "strip"{jjtThis.processValue("strip");})
+}
+
+void DefaultNamespaceDecl()  :
+{}
+{
+  "declare" "default" ("element"{jjtThis.processValue("element");} | "function"{jjtThis.processValue("function");}) "namespace" URILiteral()
+}
+
+void OptionDecl()  :
+{}
+{
+  "declare" "option" QName() <StringLiteral>{processToken(jjtThis, token);} #StringLiteral(true)
+}
+
+void OrderingModeDecl()  :
+{}
+{
+  "declare" "ordering" ("ordered"{jjtThis.processValue("ordered");} | "unordered"{jjtThis.processValue("unordered");})
+}
+
+void EmptyOrderDecl()  :
+{}
+{
+  "declare" "default" "order" "empty" (<Greatest>{processToken(jjtThis, token);} #Greatest(true) | <Least>{processToken(jjtThis, token);} #Least(true))
+}
+
+void CopyNamespacesDecl()  :
+{}
+{
+  "declare" "copy-namespaces" PreserveMode() "," InheritMode()
+}
+
+void PreserveMode()  :
+{}
+{
+  ("preserve"{jjtThis.processValue("preserve");} | "no-preserve"{jjtThis.processValue("no-preserve");})
+}
+
+void InheritMode()  :
+{}
+{
+  ("inherit"{jjtThis.processValue("inherit");} | "no-inherit"{jjtThis.processValue("no-inherit");})
+}
+
+void DefaultCollationDecl()  :
+{}
+{
+  "declare" "default" "collation" URILiteral()
+}
+
+void BaseURIDecl()  :
+{}
+{
+  "declare" "base-uri" URILiteral()
+}
+
+void SchemaImport()  :
+{}
+{
+  "import" "schema" [SchemaPrefix()] URILiteral() ["at" URILiteral() ("," URILiteral())*]
+}
+
+void SchemaPrefix()  :
+{}
+{
+  ( (
+"namespace" NCName() "=") |  (
+"default" "element" "namespace"))
+}
+
+void ModuleImport()  :
+{}
+{
+  "import" "module" ["namespace" NCName() "="] URILiteral() ["at" URILiteral() ("," URILiteral())*]
+}
+
+void VarDecl()  :
+{}
+{
+  "declare" "variable" "$" QName() [TypeDeclaration()] ( (
+":=" ExprSingle()) | <External>{processToken(jjtThis, token);} #External(true))
+}
+
+void ConstructionDecl()  :
+{}
+{
+  "declare" "construction" ("strip"{jjtThis.processValue("strip");} | "preserve"{jjtThis.processValue("preserve");})
+}
+
+void FunctionDecl()  :
+{}
+{
+  "declare" ["updating"] "function" QName() "(" [ParamList()] ")" ["as" SequenceType()] (EnclosedExpr() | <External>{processToken(jjtThis, token);} #External(true))
+}
+
+void ParamList()  :
+{}
+{
+  Param() ("," Param())*
+}
+
+void Param()  :
+{}
+{
+  "$" QName() [TypeDeclaration()]
+}
+
+void EnclosedExpr()  :
+{}
+{
+  (<Lbrace>{processToken(jjtThis, token);} #Lbrace(true) | <LbraceExprEnclosure>{processToken(jjtThis, token);} #LbraceExprEnclosure(true)) Expr() <Rbrace>{processToken(jjtThis, token);} #Rbrace(true)
+}
+
+void QueryBody()  :
+{}
+{
+  Expr()
+}
+
+void Expr()  :
+{}
+{
+  ExprSingle() ("," ExprSingle())*
+}
+
+void ExprSingle()  #void :
+{}
+{
+  (LOOKAHEAD(2) FLWORExpr() | LOOKAHEAD(2) QuantifiedExpr() | LOOKAHEAD(2) TypeswitchExpr() | LOOKAHEAD(2) IfExpr() | LOOKAHEAD(2) InsertExpr() | LOOKAHEAD(2) DeleteExpr() | LOOKAHEAD(2) RenameExpr() | LOOKAHEAD(2) ReplaceExpr() | LOOKAHEAD(2) TransformExpr() | OrExpr())
+}
+
+void FLWORExpr()  :
+{}
+{
+  ((ForClause() | LetClause()))+  [WhereClause()] [OrderByClause()] "return" ExprSingle()
+}
+
+void ForClause()  :
+{}
+{
+  "for" "$" VarName() [TypeDeclaration()] [PositionalVar()] "in" ExprSingle() ("," "$" VarName() [TypeDeclaration()] [PositionalVar()] "in" ExprSingle())*
+}
+
+void PositionalVar()  :
+{}
+{
+  "at" "$" VarName()
+}
+
+void LetClause()  :
+{}
+{
+   (
+"let" "$" VarName() [TypeDeclaration()]) ":=" ExprSingle() (","  (
+"$" VarName() [TypeDeclaration()]) ":=" ExprSingle())*
+}
+
+void WhereClause()  :
+{}
+{
+  "where" ExprSingle()
+}
+
+void OrderByClause()  :
+{}
+{
+  ( (
+"order" "by") |  (
+"stable"{jjtThis.processValue("stable");} "order" "by")) OrderSpecList()
+}
+
+void OrderSpecList()  :
+{}
+{
+  OrderSpec() ("," OrderSpec())*
+}
+
+void OrderSpec()  :
+{}
+{
+  ExprSingle() OrderModifier()
+}
+
+void OrderModifier()  :
+{}
+{
+  [(<Ascending>{processToken(jjtThis, token);} #Ascending(true) | <Descending>{processToken(jjtThis, token);} #Descending(true))] ["empty" (<Greatest>{processToken(jjtThis, token);} #Greatest(true) | <Least>{processToken(jjtThis, token);} #Least(true))] ["collation" URILiteral()]
+}
+
+void QuantifiedExpr()  :
+{}
+{
+  ("some"{jjtThis.processValue("some");} | "every"{jjtThis.processValue("every");}) "$" VarName() [TypeDeclaration()] "in" ExprSingle() ("," "$" VarName() [TypeDeclaration()] "in" ExprSingle())* "satisfies" ExprSingle()
+}
+
+void TypeswitchExpr()  :
+{}
+{
+  "typeswitch" "(" Expr() ")" (CaseClause())+  "default" ["$" VarName()] "return" ExprSingle()
+}
+
+void CaseClause()  :
+{}
+{
+  "case" ["$" VarName() "as"] SequenceType() "return" ExprSingle()
+}
+
+void IfExpr()  :
+{}
+{
+  "if" "(" Expr() ")" "then" ExprSingle() "else" ExprSingle()
+}
+
+void OperatorExpr()  #void  : 
+{}
+{
+	OrExpr()
+}
+
+void OrExpr() #OrExpr(> 1) : 
+{}
+{
+  AndExpr() ("or"{
+				binaryTokenStack.push(token);
+			} AndExpr()
+		{
+         try
+         {
+			   processToken(jjtThis, (Token)binaryTokenStack.pop());
+         }
+         catch(java.util.EmptyStackException e)
+         {
+           token_source.printLinePos();
+           e.printStackTrace();
+           throw e;
+         }
+		}
+		 #OrExpr(2))*
+}
+
+void AndExpr() #AndExpr(> 1) : 
+{}
+{
+  ComparisonExpr() ("and"{
+				binaryTokenStack.push(token);
+			} ComparisonExpr()
+		{
+         try
+         {
+			   processToken(jjtThis, (Token)binaryTokenStack.pop());
+         }
+         catch(java.util.EmptyStackException e)
+         {
+           token_source.printLinePos();
+           e.printStackTrace();
+           throw e;
+         }
+		}
+		 #AndExpr(2))*
+}
+
+void ComparisonExpr() #ComparisonExpr(> 1) : 
+{}
+{
+  RangeExpr() ((ValueComp() | GeneralComp() | NodeComp()) RangeExpr()
+		{
+         try
+         {
+			   processToken(jjtThis, (Token)binaryTokenStack.pop());
+         }
+         catch(java.util.EmptyStackException e)
+         {
+           token_source.printLinePos();
+           e.printStackTrace();
+           throw e;
+         }
+		}
+		 #ComparisonExpr(2))?
+}
+
+void RangeExpr() #RangeExpr(> 1) : 
+{}
+{
+  AdditiveExpr() ("to"{
+				binaryTokenStack.push(token);
+			} AdditiveExpr()
+		{
+         try
+         {
+			   processToken(jjtThis, (Token)binaryTokenStack.pop());
+         }
+         catch(java.util.EmptyStackException e)
+         {
+           token_source.printLinePos();
+           e.printStackTrace();
+           throw e;
+         }
+		}
+		 #RangeExpr(2))?
+}
+
+void AdditiveExpr() #AdditiveExpr(> 1) : 
+{}
+{
+  MultiplicativeExpr() ((<Plus>
+		        
+         {binaryTokenStack.push(token);}
+			 | <Minus>
+		        
+         {binaryTokenStack.push(token);}
+			) MultiplicativeExpr()
+		{
+         try
+         {
+			   processToken(jjtThis, (Token)binaryTokenStack.pop());
+         }
+         catch(java.util.EmptyStackException e)
+         {
+           token_source.printLinePos();
+           e.printStackTrace();
+           throw e;
+         }
+		}
+		 #AdditiveExpr(2))*
+}
+
+void MultiplicativeExpr() #MultiplicativeExpr(> 1) : 
+{}
+{
+  UnionExpr() (("*"{
+				binaryTokenStack.push(token);
+			} | "div"{
+				binaryTokenStack.push(token);
+			} | "idiv"{
+				binaryTokenStack.push(token);
+			} | "mod"{
+				binaryTokenStack.push(token);
+			}) UnionExpr()
+		{
+         try
+         {
+			   processToken(jjtThis, (Token)binaryTokenStack.pop());
+         }
+         catch(java.util.EmptyStackException e)
+         {
+           token_source.printLinePos();
+           e.printStackTrace();
+           throw e;
+         }
+		}
+		 #MultiplicativeExpr(2))*
+}
+
+void UnionExpr() #UnionExpr(> 1) : 
+{}
+{
+  IntersectExceptExpr() (("union"{
+				binaryTokenStack.push(token);
+			} | "|"{
+				binaryTokenStack.push(token);
+			}) IntersectExceptExpr()
+		{
+         try
+         {
+			   processToken(jjtThis, (Token)binaryTokenStack.pop());
+         }
+         catch(java.util.EmptyStackException e)
+         {
+           token_source.printLinePos();
+           e.printStackTrace();
+           throw e;
+         }
+		}
+		 #UnionExpr(2))*
+}
+
+void IntersectExceptExpr() #IntersectExceptExpr(> 1) : 
+{}
+{
+  InstanceofExpr() (("intersect"{
+				binaryTokenStack.push(token);
+			} | "except"{
+				binaryTokenStack.push(token);
+			}) InstanceofExpr()
+		{
+         try
+         {
+			   processToken(jjtThis, (Token)binaryTokenStack.pop());
+         }
+         catch(java.util.EmptyStackException e)
+         {
+           token_source.printLinePos();
+           e.printStackTrace();
+           throw e;
+         }
+		}
+		 #IntersectExceptExpr(2))*
+}
+
+void InstanceofExpr() #InstanceofExpr(> 1) : 
+{}
+{
+  TreatExpr()  (
+"instance" "of" SequenceType())?
+}
+
+void TreatExpr() #TreatExpr(> 1) : 
+{}
+{
+  CastableExpr()  (
+"treat" "as" SequenceType())?
+}
+
+void CastableExpr() #CastableExpr(> 1) : 
+{}
+{
+  CastExpr()  (
+"castable" "as" SingleType())?
+}
+
+void CastExpr() #CastExpr(> 1) : 
+{}
+{
+  UnaryExpr()  (
+"cast" "as" SingleType())?
+}
+
+void UnaryExpr() #UnaryExpr(keepUnary) : 
+{boolean keepUnary=false;}
+{
+  (<Minus>{keepUnary=true;processToken(jjtThis, token);} #Minus(true) | <Plus>{keepUnary=true;processToken(jjtThis, token);} #Plus(true))* ValueExpr()
+}
+
+void ValueExpr() #void : 
+{}
+{
+  (LOOKAHEAD(2) ValidateExpr() | PathExpr() | ExtensionExpr())
+}
+
+void GeneralComp()  #void :
+{}
+{
+  ("="{
+				binaryTokenStack.push(token);
+			} | "!="{
+				binaryTokenStack.push(token);
+			} | <LessThanOpOrTagO>
+					{/* Careful! */ token_source.SwitchTo(DEFAULT); token_source.stateStack.pop(); }
+				
+		        
+         {binaryTokenStack.push(token);}
+			 | "<="{
+				binaryTokenStack.push(token);
+			} | ">"{
+				binaryTokenStack.push(token);
+			} | ">="{
+				binaryTokenStack.push(token);
+			})
+}
+
+void ValueComp()  #void :
+{}
+{
+  ("eq"{
+				binaryTokenStack.push(token);
+			} | "ne"{
+				binaryTokenStack.push(token);
+			} | "lt"{
+				binaryTokenStack.push(token);
+			} | "le"{
+				binaryTokenStack.push(token);
+			} | "gt"{
+				binaryTokenStack.push(token);
+			} | "ge"{
+				binaryTokenStack.push(token);
+			})
+}
+
+void NodeComp()  #void :
+{}
+{
+  ("is"{
+				binaryTokenStack.push(token);
+			} | "<<"{
+				binaryTokenStack.push(token);
+			} | ">>"{
+				binaryTokenStack.push(token);
+			})
+}
+
+void ValidateExpr()  :
+{}
+{
+  "validate" [ValidationMode()] <LbraceExprEnclosure>{processToken(jjtThis, token);} #LbraceExprEnclosure(true) Expr() <Rbrace>{processToken(jjtThis, token);} #Rbrace(true)
+}
+
+void ValidationMode()  :
+{}
+{
+  ("lax"{jjtThis.processValue("lax");} | "strict"{jjtThis.processValue("strict");})
+}
+
+void ExtensionExpr()  :
+{}
+{
+  (Pragma())+  <LbraceExprEnclosure>{processToken(jjtThis, token);} #LbraceExprEnclosure(true) [Expr()] <Rbrace>{processToken(jjtThis, token);} #Rbrace(true)
+}
+
+void Pragma()  :
+{}
+{
+  <PragmaOpen>{processToken(jjtThis, token);} #PragmaOpen(true) [<S>{processToken(jjtThis, token);} #S(true)] <QNameForPragma>{processToken(jjtThis, token);} #QNameForPragma(true) [<SForPragma>{processToken(jjtThis, token);} #SForPragma(true) PragmaContents()] <PragmaClose>{processToken(jjtThis, token);} #PragmaClose(true)
+}
+
+void PragmaContents()  :
+{}
+{
+  (<ExtensionContentChar>{processToken(jjtThis, token);} #ExtensionContentChar(true))*
+}
+
+void PathExpr()  #PathExpr(>1) :
+{}
+{
+  ( (
+<Slash>{processToken(jjtThis, token);} #Slash(true) [LOOKAHEAD(1) RelativePathExpr()]) |  (
+<SlashSlash>{processToken(jjtThis, token);} #SlashSlash(true) RelativePathExpr()) | RelativePathExpr())
+}
+
+void RelativePathExpr()  #void :
+{}
+{
+  StepExpr() ((<Slash>{processToken(((SimpleNode)jjtree.peekNode()), token);} | <SlashSlash>{processToken(jjtThis, token);} #SlashSlash(true)) StepExpr())*
+}
+
+void StepExpr()  #StepExpr(>1 || isStep) :
+{boolean savedIsStep = isStep; isStep=false;}
+{
+  (LOOKAHEAD(3) FilterExpr(){isStep = savedIsStep;} | {isStep=true;}AxisStep(){isStep = savedIsStep;})
+}
+
+void AxisStep()  #void :
+{}
+{
+  (LOOKAHEAD(2) ReverseStep() | ForwardStep()) PredicateList()
+}
+
+void ForwardStep()  #void :
+{}
+{
+  (LOOKAHEAD(2)  (
+ForwardAxis() NodeTest()) | AbbrevForwardStep())
+}
+
+void ForwardAxis()  :
+{}
+{
+  ( (
+"child"{jjtThis.processValue("child");} "::") |  (
+"descendant"{jjtThis.processValue("descendant");} "::") |  (
+"attribute"{jjtThis.processValue("attribute");} "::") |  (
+"self"{jjtThis.processValue("self");} "::") |  (
+"descendant-or-self"{jjtThis.processValue("descendant-or-self");} "::") |  (
+"following-sibling"{jjtThis.processValue("following-sibling");} "::") |  (
+"following"{jjtThis.processValue("following");} "::"))
+}
+
+void AbbrevForwardStep()  :
+{}
+{
+  ["@"{jjtThis.processValue("@");}] NodeTest()
+}
+
+void ReverseStep()  #void :
+{}
+{
+  ( (
+ReverseAxis() NodeTest()) | AbbrevReverseStep())
+}
+
+void ReverseAxis()  :
+{}
+{
+  ( (
+"parent"{jjtThis.processValue("parent");} "::") |  (
+"ancestor"{jjtThis.processValue("ancestor");} "::") |  (
+"preceding-sibling"{jjtThis.processValue("preceding-sibling");} "::") |  (
+"preceding"{jjtThis.processValue("preceding");} "::") |  (
+"ancestor-or-self"{jjtThis.processValue("ancestor-or-self");} "::"))
+}
+
+void AbbrevReverseStep()  :
+{}
+{
+  ".."
+}
+
+void NodeTest()  :
+{}
+{
+  (LOOKAHEAD(2) KindTest() | NameTest())
+}
+
+void NameTest()  :
+{}
+{
+  (QName() | Wildcard())
+}
+
+void Wildcard()  :
+{}
+{
+  ("*"{jjtThis.processValue("*");} | <NCNameColonStar>{processToken(jjtThis, token);} #NCNameColonStar(true) | <StarColonNCName>{processToken(jjtThis, token);} #StarColonNCName(true))
+}
+
+void FilterExpr()  #void :
+{}
+{
+  PrimaryExpr() PredicateList()
+}
+
+void PredicateList()  #PredicateList(> 0) :
+{}
+{
+  (Predicate())*
+}
+
+void Predicate()  #Predicate(> 0) :
+{}
+{
+  "[" Expr() "]"
+}
+
+void PrimaryExpr()  #void :
+{}
+{
+  (Literal() | VarRef() | ParenthesizedExpr() | {isStep=true;}ContextItemExpr() | LOOKAHEAD(2) FunctionCall() | LOOKAHEAD(2) OrderedExpr() | LOOKAHEAD(2) UnorderedExpr() | Constructor())
+}
+
+void Literal()  #void :
+{}
+{
+  (NumericLiteral() | <StringLiteral>{processToken(jjtThis, token);} #StringLiteral(true))
+}
+
+void NumericLiteral()  #void :
+{}
+{
+  (<IntegerLiteral>{processToken(jjtThis, token);} #IntegerLiteral(true) | <DecimalLiteral>{processToken(jjtThis, token);} #DecimalLiteral(true) | <DoubleLiteral>{processToken(jjtThis, token);} #DoubleLiteral(true))
+}
+
+void VarRef()  #void :
+{}
+{
+  "$" VarName()
+}
+
+void VarName()  :
+{}
+{
+  QName()
+}
+
+void ParenthesizedExpr()  :
+{}
+{
+  "(" [Expr()] ")"
+}
+
+void ContextItemExpr()  :
+{}
+{
+  "."{jjtThis.processValue(".");}
+}
+
+void OrderedExpr()  :
+{}
+{
+  "ordered" <LbraceExprEnclosure>{processToken(jjtThis, token);} #LbraceExprEnclosure(true) Expr() <Rbrace>{processToken(jjtThis, token);} #Rbrace(true)
+}
+
+void UnorderedExpr()  :
+{}
+{
+  "unordered" <LbraceExprEnclosure>{processToken(jjtThis, token);} #LbraceExprEnclosure(true) Expr() <Rbrace>{processToken(jjtThis, token);} #Rbrace(true)
+}
+
+void FunctionCall()  :
+{}
+{
+  FunctionQName() "(" [ExprSingle() ("," ExprSingle())*] ")"
+}
+
+void Constructor()  :
+{}
+{
+  (DirectConstructor() | ComputedConstructor())
+}
+
+void DirectConstructor()  :
+{}
+{
+  (DirElemConstructor() | DirCommentConstructor() | DirPIConstructor())
+}
+
+void DirElemConstructor()  :
+{}
+{
+  (<LessThanOpOrTagO>{processToken(jjtThis, token);} #LessThanOpOrTagO(true) | <StartTagOpen>{processToken(jjtThis, token);} #StartTagOpen(true)) <TagQName>{_elementStack.push(token.image); processToken(jjtThis, token);} #TagQName(true) DirAttributeList() (<EmptyTagClose>{_elementStack.pop(); processToken(jjtThis, token);} #EmptyTagClose(true) |  (
+<StartTagClose>{processToken(jjtThis, token);} #StartTagClose(true) (DirElemContent())* <EndTagOpen>{processToken(((SimpleNode)jjtree.peekNode()), token);} <EndTagQName>{if(!token.image.equals(_elementStack.pop())) throw new ParseException("Error: In a direct element constructor, the name used in the end tag must exactly match the name used in the corresponding start tag, including its prefix or absence of a prefix. Line: " + token.beginLine); processToken(jjtThis, token);} #EndTagQName(true) [<S>{processToken(((SimpleNode)jjtree.peekNode()), token);}] <EndTagClose>{processToken(((SimpleNode)jjtree.peekNode()), token);}))
+}
+
+void DirAttributeList()  :
+{}
+{
+  (<S>{processToken(jjtThis, token);} #S(true) [<TagQName>{processToken(jjtThis, token);} #TagQName(true) [<S>{processToken(jjtThis, token);} #S(true)] <ValueIndicator>{processToken(jjtThis, token);} #ValueIndicator(true) [<S>{processToken(jjtThis, token);} #S(true)] DirAttributeValue()])*
+}
+
+void DirAttributeValue()  :
+{}
+{
+  ( (
+<OpenQuot>{processToken(jjtThis, token);} #OpenQuot(true) ((<EscapeQuot>{processToken(jjtThis, token);} #EscapeQuot(true) | QuotAttrValueContent()))* <CloseQuot>{processToken(jjtThis, token);} #CloseQuot(true)) |  (
+<OpenApos>{processToken(jjtThis, token);} #OpenApos(true) ((<EscapeApos>{processToken(jjtThis, token);} #EscapeApos(true) | AposAttrValueContent()))* <CloseApos>{processToken(jjtThis, token);} #CloseApos(true)))
+}
+
+void QuotAttrValueContent()  :
+{}
+{
+  (<QuotAttrContentChar>{processToken(jjtThis, token);} #QuotAttrContentChar(true) | CommonContent())
+}
+
+void AposAttrValueContent()  :
+{}
+{
+  (<AposAttrContentChar>{processToken(jjtThis, token);} #AposAttrContentChar(true) | CommonContent())
+}
+
+void DirElemContent()  :
+{}
+{
+  (DirectConstructor() | CDataSection() | CommonContent() | <ElementContentChar>{processToken(jjtThis, token);} #ElementContentChar(true))
+}
+
+void CommonContent()  :
+{}
+{
+  (<PredefinedEntityRef>{processToken(jjtThis, token);} #PredefinedEntityRef(true) | <CharRef>{checkCharRef(token.image);processToken(jjtThis, token);} #CharRef(true) | <LCurlyBraceEscape>{processToken(jjtThis, token);} #LCurlyBraceEscape(true) | <RCurlyBraceEscape>{processToken(jjtThis, token);} #RCurlyBraceEscape(true) | EnclosedExpr())
+}
+
+void DirCommentConstructor()  :
+{}
+{
+  (<XmlCommentStartForElementContent>{processToken(jjtThis, token);} #XmlCommentStartForElementContent(true) | <XmlCommentStart>{processToken(jjtThis, token);} #XmlCommentStart(true)) DirCommentContents() <XmlCommentEnd>{processToken(jjtThis, token);} #XmlCommentEnd(true)
+}
+
+void DirCommentContents()  :
+{}
+{
+  ((<CommentContentChar>{processToken(jjtThis, token);} #CommentContentChar(true) | <CommentContentCharDash>{processToken(jjtThis, token);} #CommentContentCharDash(true)))*
+}
+
+void DirPIConstructor()  :
+{}
+{
+  (<ProcessingInstructionStartForElementContent>{processToken(jjtThis, token);} #ProcessingInstructionStartForElementContent(true) | <ProcessingInstructionStart>{processToken(jjtThis, token);} #ProcessingInstructionStart(true)) <PITarget>{processToken(jjtThis, token);} #PITarget(true) [<SForPI>{processToken(jjtThis, token);} #SForPI(true) DirPIContents()] <ProcessingInstructionEnd>{processToken(jjtThis, token);} #ProcessingInstructionEnd(true)
+}
+
+void DirPIContents()  :
+{}
+{
+  (<PIContentChar>{processToken(jjtThis, token);} #PIContentChar(true))*
+}
+
+void CDataSection()  :
+{}
+{
+  (<CdataSectionStartForElementContent>{processToken(jjtThis, token);} #CdataSectionStartForElementContent(true) | <CdataSectionStart>{processToken(jjtThis, token);} #CdataSectionStart(true)) CDataSectionContents() <CdataSectionEnd>{processToken(jjtThis, token);} #CdataSectionEnd(true)
+}
+
+void CDataSectionContents()  :
+{}
+{
+  (<CDataSectionChar>{processToken(jjtThis, token);} #CDataSectionChar(true))*
+}
+
+void ComputedConstructor()  :
+{}
+{
+  (CompDocConstructor() | CompElemConstructor() | CompAttrConstructor() | CompTextConstructor() | CompCommentConstructor() | CompPIConstructor())
+}
+
+void CompDocConstructor()  :
+{}
+{
+  "document" <LbraceExprEnclosure>{processToken(jjtThis, token);} #LbraceExprEnclosure(true) Expr() <Rbrace>{processToken(jjtThis, token);} #Rbrace(true)
+}
+
+void CompElemConstructor()  :
+{}
+{
+  "element" (QName() |  (
+<LbraceExprEnclosure>{processToken(jjtThis, token);} #LbraceExprEnclosure(true) Expr() <Rbrace>{processToken(jjtThis, token);} #Rbrace(true))) <LbraceExprEnclosure>{processToken(jjtThis, token);} #LbraceExprEnclosure(true) [ContentExpr()] <Rbrace>{processToken(jjtThis, token);} #Rbrace(true)
+}
+
+void ContentExpr()  :
+{}
+{
+  Expr()
+}
+
+void CompAttrConstructor()  :
+{}
+{
+  "attribute" (QName() |  (
+<LbraceExprEnclosure>{processToken(jjtThis, token);} #LbraceExprEnclosure(true) Expr() <Rbrace>{processToken(jjtThis, token);} #Rbrace(true))) <LbraceExprEnclosure>{processToken(jjtThis, token);} #LbraceExprEnclosure(true) [Expr()] <Rbrace>{processToken(jjtThis, token);} #Rbrace(true)
+}
+
+void CompTextConstructor()  :
+{}
+{
+  "text" <LbraceExprEnclosure>{processToken(jjtThis, token);} #LbraceExprEnclosure(true) Expr() <Rbrace>{processToken(jjtThis, token);} #Rbrace(true)
+}
+
+void CompCommentConstructor()  :
+{}
+{
+  "comment" <LbraceExprEnclosure>{processToken(jjtThis, token);} #LbraceExprEnclosure(true) Expr() <Rbrace>{processToken(jjtThis, token);} #Rbrace(true)
+}
+
+void CompPIConstructor()  :
+{}
+{
+  "processing-instruction" (NCName() |  (
+<LbraceExprEnclosure>{processToken(jjtThis, token);} #LbraceExprEnclosure(true) Expr() <Rbrace>{processToken(jjtThis, token);} #Rbrace(true))) <LbraceExprEnclosure>{processToken(jjtThis, token);} #LbraceExprEnclosure(true) [Expr()] <Rbrace>{processToken(jjtThis, token);} #Rbrace(true)
+}
+
+void SingleType()  :
+{}
+{
+  AtomicType() ["?"{jjtThis.processValue("?");}]
+}
+
+void TypeDeclaration()  :
+{}
+{
+  "as" SequenceType()
+}
+
+void SequenceType()  :
+{}
+{
+  (LOOKAHEAD(2)  (
+"empty-sequence"{jjtThis.processValue("empty-sequence");} "(" ")") |  (
+ItemType() [LOOKAHEAD(1) OccurrenceIndicator()]))
+}
+
+void OccurrenceIndicator()  :
+{}
+{
+  ("?"{jjtThis.processValue("?");} | "*"{jjtThis.processValue("*");} | <Plus>{processToken(((SimpleNode)jjtree.peekNode()), token);})
+}
+
+void ItemType()  :
+{}
+{
+  (LOOKAHEAD(2) KindTest() | LOOKAHEAD(2)  (
+"item"{jjtThis.processValue("item");} "(" ")") | AtomicType())
+}
+
+void AtomicType()  :
+{}
+{
+  QName()
+}
+
+void KindTest()  #void :
+{}
+{
+  (DocumentTest() | ElementTest() | AttributeTest() | SchemaElementTest() | SchemaAttributeTest() | PITest() | CommentTest() | TextTest() | AnyKindTest())
+}
+
+void AnyKindTest()  :
+{}
+{
+  "node" "(" ")"
+}
+
+void DocumentTest()  :
+{}
+{
+  "document-node" "(" [(ElementTest() | SchemaElementTest())] ")"
+}
+
+void TextTest()  :
+{}
+{
+  "text" "(" ")"
+}
+
+void CommentTest()  :
+{}
+{
+  "comment" "(" ")"
+}
+
+void PITest()  :
+{}
+{
+  "processing-instruction" "(" [(NCName() | <StringLiteral>{processToken(jjtThis, token);} #StringLiteral(true))] ")"
+}
+
+void AttributeTest()  :
+{}
+{
+  "attribute" "(" [ (
+AttribNameOrWildcard() ["," TypeName()])] ")"
+}
+
+void AttribNameOrWildcard()  :
+{}
+{
+  (AttributeName() | "*"{jjtThis.processValue("*");})
+}
+
+void SchemaAttributeTest()  :
+{}
+{
+  "schema-attribute" "(" AttributeDeclaration() ")"
+}
+
+void AttributeDeclaration()  :
+{}
+{
+  AttributeName()
+}
+
+void ElementTest()  :
+{}
+{
+  "element" "(" [ (
+ElementNameOrWildcard() ["," TypeName() ["?"{jjtThis.processValue("?");}]])] ")"
+}
+
+void ElementNameOrWildcard()  :
+{}
+{
+  (ElementName() | "*"{jjtThis.processValue("*");})
+}
+
+void SchemaElementTest()  :
+{}
+{
+  "schema-element" "(" ElementDeclaration() ")"
+}
+
+void ElementDeclaration()  :
+{}
+{
+  ElementName()
+}
+
+void AttributeName()  :
+{}
+{
+  QName()
+}
+
+void ElementName()  :
+{}
+{
+  QName()
+}
+
+void TypeName()  :
+{}
+{
+  QName()
+}
+
+void URILiteral()  :
+{}
+{
+  <StringLiteral>{processToken(jjtThis, token);} #StringLiteral(true)
+}
+
+void RevalidationDecl()  :
+{}
+{
+  "declare" "revalidation" ("strict"{jjtThis.processValue("strict");} | "lax"{jjtThis.processValue("lax");} | "skip"{jjtThis.processValue("skip");})
+}
+
+void InsertExprTargetChoice()  :
+{}
+{
+  ( (
+["as" ("first"{jjtThis.processValue("first");} | "last"{jjtThis.processValue("last");})] "into") | "after"{jjtThis.processValue("after");} | "before"{jjtThis.processValue("before");})
+}
+
+void InsertExpr()  :
+{}
+{
+  "insert" ("node" | "nodes") SourceExpr() InsertExprTargetChoice() TargetExpr()
+}
+
+void DeleteExpr()  :
+{}
+{
+  "delete" ("node" | "nodes") TargetExpr()
+}
+
+void ReplaceExpr()  :
+{}
+{
+  "replace" [LOOKAHEAD(2) "value" "of"] "node" TargetExpr() "with" ExprSingle()
+}
+
+void RenameExpr()  :
+{}
+{
+  "rename" "node" TargetExpr() "as" NewNameExpr()
+}
+
+void SourceExpr()  :
+{}
+{
+  ExprSingle()
+}
+
+void TargetExpr()  :
+{}
+{
+  ExprSingle()
+}
+
+void NewNameExpr()  :
+{}
+{
+  ExprSingle()
+}
+
+void TransformExpr()  :
+{}
+{
+  "copy" "$" VarName() ":=" ExprSingle() ("," "$" VarName() ":=" ExprSingle())* "modify" ExprSingle() "return" ExprSingle()
+}
+
+void NCName()  :
+{}
+{
+  QName()
+}
+
+void QName()  :
+{}
+{
+  (FunctionQName() | "attribute"{jjtThis.processValue("attribute");} | "comment"{jjtThis.processValue("comment");} | "document-node"{jjtThis.processValue("document-node");} | "element"{jjtThis.processValue("element");} | "if"{jjtThis.processValue("if");} | "item"{jjtThis.processValue("item");} | "node"{jjtThis.processValue("node");} | "processing-instruction"{jjtThis.processValue("processing-instruction");} | "schema-attribute"{jjtThis.processValue("schema-attribute");} | "schema-element"{jjtThis.processValue("schema-element");} | "text"{jjtThis.processValue("text");} | "typeswitch"{jjtThis.processValue("typeswitch");} | "empty-sequence"{jjtThis.processValue("empty-sequence");})
+}
+
+void FunctionQName()  :
+{}
+{
+  (<QNameToken>{processToken(((SimpleNode)jjtree.peekNode()), token);} | <External>{processToken(((SimpleNode)jjtree.peekNode()), token);} | "xquery"{jjtThis.processValue("xquery");} | "version"{jjtThis.processValue("version");} | "encoding"{jjtThis.processValue("encoding");} | "module"{jjtThis.processValue("module");} | "namespace"{jjtThis.processValue("namespace");} | "declare"{jjtThis.processValue("declare");} | "boundary-space"{jjtThis.processValue("boundary-space");} | "preserve"{jjtThis.processValue("preserve");} | "strip"{jjtThis.processValue("strip");} | "default"{jjtThis.processValue("default");} | "function"{jjtThis.processValue("function");} | "option"{jjtThis.processValue("option");} | "ordering"{jjtThis.processValue("ordering");} | "ordered"{jjtThis.processValue("ordered");} | "unordered"{jjtThis.processValue("unordered");} | "order"{jjtThis.processValue("order");} | "empty"{jjtThis.processValue("empty");} | <Greatest>{processToken(((SimpleNode)jjtree.peekNode()), token);} | <Least>{processToken(((SimpleNode)jjtree.peekNode()), token);} | "copy-namespaces"{jjtThis.processValue("copy-namespaces");} | "no-preserve"{jjtThis.processValue("no-preserve");} | "inherit"{jjtThis.processValue("inherit");} | "no-inherit"{jjtThis.processValue("no-inherit");} | "collation"{jjtThis.processValue("collation");} | "base-uri"{jjtThis.processValue("base-uri");} | "import"{jjtThis.processValue("import");} | "schema"{jjtThis.processValue("schema");} | "at"{jjtThis.processValue("at");} | "variable"{jjtThis.processValue("variable");} | "construction"{jjtThis.processValue("construction");} | "update"{jjtThis.processValue("update");} | "as"{jjtThis.processValue("as");} | "lax"{jjtThis.processValue("lax");} | "strict"{jjtThis.processValue("strict");} | "return"{jjtThis.processValue("return");} | "transform"{jjtThis.processValue("transform");} | "do"{jjtThis.processValue("do");} | "for"{jjtThis.processValue("for");} | "in"{jjtThis.processValue("in");} | "let"{jjtThis.processValue("let");} | "where"{jjtThis.processValue("where");} | "by"{jjtThis.processValue("by");} | "stable"{jjtThis.processValue("stable");} | <Ascending>{processToken(((SimpleNode)jjtree.peekNode()), token);} | <Descending>{processToken(((SimpleNode)jjtree.peekNode()), token);} | "some"{jjtThis.processValue("some");} | "every"{jjtThis.processValue("every");} | "satisfies"{jjtThis.processValue("satisfies");} | "case"{jjtThis.processValue("case");} | "then"{jjtThis.processValue("then");} | "else"{jjtThis.processValue("else");} | "or"{jjtThis.processValue("or");} | "and"{jjtThis.processValue("and");} | "to"{jjtThis.processValue("to");} | "div"{jjtThis.processValue("div");} | "idiv"{jjtThis.processValue("idiv");} | "mod"{jjtThis.processValue("mod");} | "union"{jjtThis.processValue("union");} | "intersect"{jjtThis.processValue("intersect");} | "except"{jjtThis.processValue("except");} | "instance"{jjtThis.processValue("instance");} | "of"{jjtThis.processValue("of");} | "treat"{jjtThis.processValue("treat");} | "castable"{jjtThis.processValue("castable");} | "cast"{jjtThis.processValue("cast");} | "eq"{jjtThis.processValue("eq");} | "ne"{jjtThis.processValue("ne");} | "lt"{jjtThis.processValue("lt");} | "le"{jjtThis.processValue("le");} | "gt"{jjtThis.processValue("gt");} | "ge"{jjtThis.processValue("ge");} | "is"{jjtThis.processValue("is");} | "validate"{jjtThis.processValue("validate");} | "child"{jjtThis.processValue("child");} | "descendant"{jjtThis.processValue("descendant");} | "self"{jjtThis.processValue("self");} | "descendant-or-self"{jjtThis.processValue("descendant-or-self");} | "following-sibling"{jjtThis.processValue("following-sibling");} | "following"{jjtThis.processValue("following");} | "parent"{jjtThis.processValue("parent");} | "ancestor"{jjtThis.processValue("ancestor");} | "preceding-sibling"{jjtThis.processValue("preceding-sibling");} | "preceding"{jjtThis.processValue("preceding");} | "ancestor-or-self"{jjtThis.processValue("ancestor-or-self");} | "document"{jjtThis.processValue("document");} | "insert"{jjtThis.processValue("insert");} | "first"{jjtThis.processValue("first");} | "last"{jjtThis.processValue("last");} | "into"{jjtThis.processValue("into");} | "after"{jjtThis.processValue("after");} | "before"{jjtThis.processValue("before");} | "delete"{jjtThis.processValue("delete");} | "replace"{jjtThis.processValue("replace");} | "value"{jjtThis.processValue("value");} | "rename"{jjtThis.processValue("rename");} | "copy"{jjtThis.processValue("copy");} | "modify"{jjtThis.processValue("modify");} | "nodes"{jjtThis.processValue("nodes");} | "type"{jjtThis.processValue("type");})
+}
+
+
+<DEFAULT>
+TOKEN :
+{
+ < IntegerLiteral : <Digits> >
+}
+
+<DEFAULT>
+TOKEN :
+{
+ < DecimalLiteral : ( (
+"." <Digits>) |  (
+<Digits> "." (["0" - "9"])*)) >
+}
+
+<DEFAULT>
+TOKEN :
+{
+ < DoubleLiteral : ( (
+"." <Digits>) |  (
+<Digits> ("." (["0" - "9"])*)?)) ["e", "E"] (["+", "-"])? <Digits> >
+}
+
+<DEFAULT>
+TOKEN :
+{
+ < StringLiteral : ( (
+"\"" ((<PredefinedEntityRef> | <CharRef> | <EscapeQuot> | ~["\"", "&"]))* "\"") |  (
+"'" ((<PredefinedEntityRef> | <CharRef> | <EscapeApos> | ~["'", "&"]))* "'")) >
+}
+<FTPOSFILTER, FTMATCHOPTION, PROLOG_SPECIAL, PROLOG_NCNAME, DECLAREORDERING, DEFAULT, PROLOG, OPERAND, OPERATOR, KINDTEST, NAMESPACEDECL, SINGLETYPE, ITEMTYPE, NAMESPACEKEYWORD, VARNAME, OCCURRENCEINDICATOR, CLOSEKINDTEST, XQUERYVERSION, PRAGMA, OPTION, URITOOPERATOR>
+SKIP:
+{
+  <DUMMYLABEL:<skip_>>
+}
+
+TOKEN :
+{
+  < #skip_ :  (
+(<WhitespaceChar>)+ ) >
+}
+
+
+<DEFAULT>
+TOKEN :
+{
+ < Minus : "-" >
+}
+
+<DEFAULT>
+TOKEN :
+{
+ < Plus : "+" >
+}
+
+<DEFAULT>
+TOKEN :
+{
+ < External : "external" >
+}
+
+<DEFAULT>
+TOKEN :
+{
+ < Ascending : "ascending" >
+}
+
+<DEFAULT>
+TOKEN :
+{
+ < Descending : "descending" >
+}
+
+<DEFAULT>
+TOKEN :
+{
+ < Greatest : "greatest" >
+}
+
+<DEFAULT>
+TOKEN :
+{
+ < Least : "least" >
+}
+
+TOKEN :
+{
+ < #Prefix : <NCNameTok> >
+}
+
+TOKEN :
+{
+ < #LocalPart : <NCNameTok> >
+}
+
+TOKEN :
+{
+ < #Nmstart : (<Letter> | "_") >
+}
+
+TOKEN :
+{
+ < #Nmchar : (<Letter> | <CombiningChar> | <Extender> | <Digit> | "." | "-" | "_") >
+}
+
+<DEFAULT, ELEMENT_CONTENT, QUOT_ATTRIBUTE_CONTENT, APOS_ATTRIBUTE_CONTENT>
+TOKEN :
+{
+ < PredefinedEntityRef : "&" ("lt" | "gt" | "amp" | "quot" | "apos") ";" >
+}
+
+<QUOT_ATTRIBUTE_CONTENT>
+TOKEN :
+{
+ < EscapeQuot : "\"\"" > : QUOT_ATTRIBUTE_CONTENT
+}
+
+<APOS_ATTRIBUTE_CONTENT>
+TOKEN :
+{
+ < EscapeApos : "''" > : APOS_ATTRIBUTE_CONTENT
+}
+
+TOKEN :
+{
+ < #HexDigits : (["0" - "9", "a" - "f", "A" - "F"])+  >
+}
+
+<ELEMENT_CONTENT, QUOT_ATTRIBUTE_CONTENT, APOS_ATTRIBUTE_CONTENT>
+TOKEN :
+{
+ < Lbrace : "{" > { pushState(); } : DEFAULT
+}
+
+<DEFAULT>
+TOKEN :
+{
+ < LbraceExprEnclosure : "{" > { pushState(DEFAULT); } : DEFAULT
+}
+
+<DEFAULT>
+TOKEN :
+{
+ < Rbrace : "}" > { popState(); }
+}
+
+<ELEMENT_CONTENT, QUOT_ATTRIBUTE_CONTENT, APOS_ATTRIBUTE_CONTENT>
+TOKEN :
+{
+ < RbraceErrorInContent : "}" > { pushState(); } : DEFAULT
+}
+
+<ELEMENT_CONTENT, QUOT_ATTRIBUTE_CONTENT, APOS_ATTRIBUTE_CONTENT>
+TOKEN :
+{
+ < LCurlyBraceEscape : "{{" >
+}
+
+<ELEMENT_CONTENT, QUOT_ATTRIBUTE_CONTENT, APOS_ATTRIBUTE_CONTENT>
+TOKEN :
+{
+ < RCurlyBraceEscape : "}}" >
+}
+
+<ELEMENT_CONTENT, QUOT_ATTRIBUTE_CONTENT, APOS_ATTRIBUTE_CONTENT>
+TOKEN :
+{
+ < Amp : "&" >
+}
+
+<DEFAULT>
+TOKEN :
+{
+ < LessThanOpOrTagO : "<" > { pushState(DEFAULT); } : START_TAG
+}
+
+<ELEMENT_CONTENT>
+TOKEN :
+{
+ < StartTagOpen : "<" > { pushState(); } : START_TAG
+}
+
+<QUOT_ATTRIBUTE_CONTENT, APOS_ATTRIBUTE_CONTENT>
+TOKEN :
+{
+ < AttrLTCharError : "<" > { pushState(); } : DEFAULT
+}
+
+<START_TAG>
+TOKEN :
+{
+ < StartTagClose : ">" > : ELEMENT_CONTENT
+}
+
+<START_TAG>
+TOKEN :
+{
+ < OpenQuot : "\"" > : QUOT_ATTRIBUTE_CONTENT
+}
+
+<QUOT_ATTRIBUTE_CONTENT>
+TOKEN :
+{
+ < CloseQuot : "\"" > : START_TAG
+}
+
+<START_TAG>
+TOKEN :
+{
+ < OpenApos : "'" > : APOS_ATTRIBUTE_CONTENT
+}
+
+<APOS_ATTRIBUTE_CONTENT>
+TOKEN :
+{
+ < CloseApos : "'" > : START_TAG
+}
+
+<PRAGMACONTENTS>
+TOKEN :
+{
+ < ExtensionContentChar : <Char> >
+}
+
+<ELEMENT_CONTENT>
+TOKEN :
+{
+ < ElementContentChar : <Char> > : ELEMENT_CONTENT
+}
+
+<QUOT_ATTRIBUTE_CONTENT>
+TOKEN :
+{
+ < QuotAttrContentChar : <Char> > : QUOT_ATTRIBUTE_CONTENT
+}
+
+<APOS_ATTRIBUTE_CONTENT>
+TOKEN :
+{
+ < AposAttrContentChar : <Char> > : APOS_ATTRIBUTE_CONTENT
+}
+
+<XML_COMMENT>
+TOKEN :
+{
+ < CommentContentChar : <Char> > : XML_COMMENT
+}
+
+<START_TAG>
+TOKEN :
+{
+ < EmptyTagClose : "/>" > { popState(); }
+}
+
+<ELEMENT_CONTENT>
+TOKEN :
+{
+ < EndTagOpen : "</" > : END_TAG
+}
+
+<END_TAG>
+TOKEN :
+{
+ < EndTagClose : ">" > { popState(); }
+}
+
+<START_TAG>
+TOKEN :
+{
+ < ValueIndicator : "=" > : START_TAG
+}
+
+<DEFAULT>
+TOKEN :
+{
+ < PragmaOpen : "(#" > : PRAGMA
+}
+
+<PRAGMACONTENTS, PRAGMACONTENTSSPACEDIVIDER>
+TOKEN :
+{
+ < PragmaClose : "#)" > : DEFAULT
+}
+
+<XML_COMMENT>
+TOKEN :
+{
+ < XMLCommentDoubleDashError : "-" "-" > : XML_COMMENT
+}
+
+<XML_COMMENT>
+TOKEN :
+{
+ < CommentContentCharDash : "-" <Char> > : XML_COMMENT
+}
+
+<DEFAULT>
+TOKEN :
+{
+ < ProcessingInstructionStart : "<?" > { pushState(DEFAULT); } : PROCESSING_INSTRUCTION
+}
+
+<ELEMENT_CONTENT>
+TOKEN :
+{
+ < ProcessingInstructionStartForElementContent : "<?" > { pushState(); } : PROCESSING_INSTRUCTION
+}
+
+<PROCESSING_INSTRUCTION, PROCESSING_INSTRUCTION_CONTENT>
+TOKEN :
+{
+ < ProcessingInstructionEnd : "?>" > { popState(); }
+}
+
+<PROCESSING_INSTRUCTION_CONTENT>
+TOKEN :
+{
+ < PIContentChar : ["\t", "\r", "\n", "\u0020" - "\uFFFD"] > : PROCESSING_INSTRUCTION_CONTENT
+}
+
+<CDATA_SECTION>
+TOKEN :
+{
+ < CDataSectionChar : ["\t", "\r", "\n", "\u0020" - "\uFFFD"] > : CDATA_SECTION
+}
+
+<DEFAULT>
+TOKEN :
+{
+ < CdataSectionStart : "<![CDATA[" > { pushState(DEFAULT); } : CDATA_SECTION
+}
+
+<ELEMENT_CONTENT>
+TOKEN :
+{
+ < CdataSectionStartForElementContent : "<![CDATA[" > { pushState(); } : CDATA_SECTION
+}
+
+<CDATA_SECTION>
+TOKEN :
+{
+ < CdataSectionEnd : ("]" "]" ">") > { popState(); }
+}
+
+<DEFAULT>
+TOKEN :
+{
+ < XmlCommentStart : "<!--" > { pushState(DEFAULT); } : XML_COMMENT
+}
+
+<ELEMENT_CONTENT>
+TOKEN :
+{
+ < XmlCommentStartForElementContent : "<!--" > { pushState(); } : XML_COMMENT
+}
+
+<XML_COMMENT>
+TOKEN :
+{
+ < XmlCommentEnd : "-->" > { popState(); }
+}
+
+SPECIAL_TOKEN :
+{
+ < #Comment : <CommentStart> ((<CommentContents>))* <CommentEnd> >
+}
+
+<DEFAULT, EXPR_COMMENT>
+SPECIAL_TOKEN :
+{
+ < CommentStart : "(:" > { pushState(); } : EXPR_COMMENT
+}
+
+<EXPR_COMMENT>
+SPECIAL_TOKEN :
+{
+ < CommentContent : <Char> >
+}
+
+<EXPR_COMMENT>
+SPECIAL_TOKEN :
+{
+ < CommentEnd : ":)" > { popState(); }
+}
+
+<DEFAULT>
+TOKEN :
+{
+ < Slash : "/" >
+}
+
+<DEFAULT>
+TOKEN :
+{
+ < SlashSlash : "//" >
+}
+
+<PROCESSING_INSTRUCTION>
+TOKEN :
+{
+ < PITargetError : ("xml" | "Xml" | "xMl" | "xmL" | "XMl" | "xML" | "xMl" | "XML" | "XmL") > : PROCESSING_INSTRUCTION
+}
+
+<PROCESSING_INSTRUCTION>
+TOKEN :
+{
+ < PITarget : <NCNameTok> > : PROCESSING_INSTRUCTION
+}
+
+<DEFAULT, ELEMENT_CONTENT, QUOT_ATTRIBUTE_CONTENT, APOS_ATTRIBUTE_CONTENT>
+TOKEN :
+{
+ < CharRef : "&#" (<Digits> |  (
+"x" <HexDigits>)) ";" >
+}
+
+<DEFAULT>
+TOKEN :
+{
+ < QNameToken : (<Prefix> ":")? <LocalPart> >
+}
+
+<PRAGMA>
+TOKEN :
+{
+ < QNameForPragma : <QNameToken> > : PRAGMACONTENTSSPACEDIVIDER
+}
+
+<START_TAG>
+TOKEN :
+{
+ < TagQName : <QNameToken> >
+}
+
+<END_TAG>
+TOKEN :
+{
+ < EndTagQName : <QNameToken> >
+}
+
+TOKEN :
+{
+ < #NCNameTok : <Nmstart> (<Nmchar>)* >
+}
+
+<DEFAULT>
+TOKEN :
+{
+ < NCNameColonStar : <NCNameTok> ":" "*" >
+}
+
+<DEFAULT>
+TOKEN :
+{
+ < StarColonNCName : "*" ":" <NCNameTok> >
+}
+
+<DEFAULT, START_TAG, END_TAG>
+TOKEN :
+{
+ < S : (<WhitespaceChar>)+  >
+}
+
+<PRAGMACONTENTSSPACEDIVIDER>
+TOKEN :
+{
+ < SForPragma : (<WhitespaceChar>)+  > : PRAGMACONTENTS
+}
+
+<PROCESSING_INSTRUCTION>
+TOKEN :
+{
+ < SForPI : (<WhitespaceChar>)+  > : PROCESSING_INSTRUCTION_CONTENT
+}
+
+<DEFAULT>
+TOKEN :
+{
+ < Char : ["\t", "\r", "\n", "\u0020" - "\uFFFD"] >
+}
+
+TOKEN :
+{
+ < #Digits : (["0" - "9"])+  >
+}
+
+SPECIAL_TOKEN :
+{
+ < #CommentContents : (<CommentContent>)+  >
+}
+
+TOKEN :
+{
+ < #WhitespaceChar : ["\t", "\r", "\n", " "] >
+}
+
+TOKEN :
+{
+ < #Letter : (<BaseChar> | <Ideographic>) >
+}
+
+TOKEN :
+{
+ < #BaseChar : ["\u0041" - "\u005a", "\u0061" - "\u007a", "\u00c0" - "\u00d6", "\u00d8" - "\u00f6", "\u00f8" - "\u00ff", "\u0100" - "\u0131", "\u0134" - "\u013e", "\u0141" - "\u0148", "\u014a" - "\u017e", "\u0180" - "\u01c3", "\u01cd" - "\u01f0", "\u01f4" - "\u01f5", "\u01fa" - "\u0217", "\u0250" - "\u02a8", "\u02bb" - "\u02c1", "\u0386", "\u0388" - "\u038a", "\u038c", "\u038e" - "\u03a1", "\u03a3" - "\u03ce", "\u03d0" - "\u03d6", "\u03da", "\u03dc", "\u03de", "\u03e0", "\u03e2" - "\u03f3", "\u0401" - "\u040c", "\u040e" - "\u044f", "\u0451" - "\u045c", "\u045e" - "\u0481", "\u0490" - "\u04c4", "\u04c7" - "\u04c8", "\u04cb" - "\u04cc", "\u04d0" - "\u04eb", "\u04ee" - "\u04f5", "\u04f8" - "\u04f9", "\u0531" - "\u0556", "\u0559", "\u0561" - "\u0586", "\u05d0" - "\u05ea", "\u05f0" - "\u05f2", "\u0621" - "\u063a", "\u0641" - "\u064a", "\u0671" - "\u06b7", "\u06ba" - "\u06be", "\u06c0" - "\u06ce", "\u06d0" - "\u06d3", "\u06d5", "\u06e5" - "\u06e6", "\u0905" - "\u0939", "\u093d", "\u0958" - "\u0961", "\u0985" - "\u098c", "\u098f" - "\u0990", "\u0993" - "\u09a8", "\u09aa" - "\u09b0", "\u09b2", "\u09b6" - "\u09b9", "\u09dc" - "\u09dd", "\u09df" - "\u09e1", "\u09f0" - "\u09f1", "\u0a05" - "\u0a0a", "\u0a0f" - "\u0a10", "\u0a13" - "\u0a28", "\u0a2a" - "\u0a30", "\u0a32" - "\u0a33", "\u0a35" - "\u0a36", "\u0a38" - "\u0a39", "\u0a59" - "\u0a5c", "\u0a5e", "\u0a72" - "\u0a74", "\u0a85" - "\u0a8b", "\u0a8d", "\u0a8f" - "\u0a91", "\u0a93" - "\u0aa8", "\u0aaa" - "\u0ab0", "\u0ab2" - "\u0ab3", "\u0ab5" - "\u0ab9", "\u0abd", "\u0ae0", "\u0b05" - "\u0b0c", "\u0b0f" - "\u0b10", "\u0b13" - "\u0b28", "\u0b2a" - "\u0b30", "\u0b32" - "\u0b33", "\u0b36" - "\u0b39", "\u0b3d", "\u0b5c" - "\u0b5d", "\u0b5f" - "\u0b61", "\u0b85" - "\u0b8a", "\u0b8e" - "\u0b90", "\u0b92" - "\u0b95", "\u0b99" - "\u0b9a", "\u0b9c", "\u0b9e" - "\u0b9f", "\u0ba3" - "\u0ba4", "\u0ba8" - "\u0baa", "\u0bae" - "\u0bb5", "\u0bb7" - "\u0bb9", "\u0c05" - "\u0c0c", "\u0c0e" - "\u0c10", "\u0c12" - "\u0c28", "\u0c2a" - "\u0c33", "\u0c35" - "\u0c39", "\u0c60" - "\u0c61", "\u0c85" - "\u0c8c", "\u0c8e" - "\u0c90", "\u0c92" - "\u0ca8", "\u0caa" - "\u0cb3", "\u0cb5" - "\u0cb9", "\u0cde", "\u0ce0" - "\u0ce1", "\u0d05" - "\u0d0c", "\u0d0e" - "\u0d10", "\u0d12" - "\u0d28", "\u0d2a" - "\u0d39", "\u0d60" - "\u0d61", "\u0e01" - "\u0e2e", "\u0e30", "\u0e32" - "\u0e33", "\u0e40" - "\u0e45", "\u0e81" - "\u0e82", "\u0e84", "\u0e87" - "\u0e88", "\u0e8a", "\u0e8d", "\u0e94" - "\u0e97", "\u0e99" - "\u0e9f", "\u0ea1" - "\u0ea3", "\u0ea5", "\u0ea7", "\u0eaa" - "\u0eab", "\u0ead" - "\u0eae", "\u0eb0", "\u0eb2" - "\u0eb3", "\u0ebd", "\u0ec0" - "\u0ec4", "\u0f40" - "\u0f47", "\u0f49" - "\u0f69", "\u10a0" - "\u10c5", "\u10d0" - "\u10f6", "\u1100", "\u1102" - "\u1103", "\u1105" - "\u1107", "\u1109", "\u110b" - "\u110c", "\u110e" - "\u1112", "\u113c", "\u113e", "\u1140", "\u114c", "\u114e", "\u1150", "\u1154" - "\u1155", "\u1159", "\u115f" - "\u1161", "\u1163", "\u1165", "\u1167", "\u1169", "\u116d" - "\u116e", "\u1172" - "\u1173", "\u1175", "\u119e", "\u11a8", "\u11ab", "\u11ae" - "\u11af", "\u11b7" - "\u11b8", "\u11ba", "\u11bc" - "\u11c2", "\u11eb", "\u11f0", "\u11f9", "\u1e00" - "\u1e9b", "\u1ea0" - "\u1ef9", "\u1f00" - "\u1f15", "\u1f18" - "\u1f1d", "\u1f20" - "\u1f45", "\u1f48" - "\u1f4d", "\u1f50" - "\u1f57", "\u1f59", "\u1f5b", "\u1f5d", "\u1f5f" - "\u1f7d", "\u1f80" - "\u1fb4", "\u1fb6" - "\u1fbc", "\u1fbe", "\u1fc2" - "\u1fc4", "\u1fc6" - "\u1fcc", "\u1fd0" - "\u1fd3", "\u1fd6" - "\u1fdb", "\u1fe0" - "\u1fec", "\u1ff2" - "\u1ff4", "\u1ff6" - "\u1ffc", "\u2126", "\u212a" - "\u212b", "\u212e", "\u2180" - "\u2182", "\u3041" - "\u3094", "\u30a1" - "\u30fa", "\u3105" - "\u312c", "\uac00" - "\ud7a3"] >
+}
+
+TOKEN :
+{
+ < #Ideographic : ["\u4e00" - "\u9fa5", "\u3007", "\u3021" - "\u3029"] >
+}
+
+TOKEN :
+{
+ < #CombiningChar : ["\u0300" - "\u0345", "\u0360" - "\u0361", "\u0483" - "\u0486", "\u0591" - "\u05a1", "\u05a3" - "\u05b9", "\u05bb" - "\u05bd", "\u05bf", "\u05c1" - "\u05c2", "\u05c4", "\u064b" - "\u0652", "\u0670", "\u06d6" - "\u06dc", "\u06dd" - "\u06df", "\u06e0" - "\u06e4", "\u06e7" - "\u06e8", "\u06ea" - "\u06ed", "\u0901" - "\u0903", "\u093c", "\u093e" - "\u094c", "\u094d", "\u0951" - "\u0954", "\u0962" - "\u0963", "\u0981" - "\u0983", "\u09bc", "\u09be", "\u09bf", "\u09c0" - "\u09c4", "\u09c7" - "\u09c8", "\u09cb" - "\u09cd", "\u09d7", "\u09e2" - "\u09e3", "\u0a02", "\u0a3c", "\u0a3e", "\u0a3f", "\u0a40" - "\u0a42", "\u0a47" - "\u0a48", "\u0a4b" - "\u0a4d", "\u0a70" - "\u0a71", "\u0a81" - "\u0a83", "\u0abc", "\u0abe" - "\u0ac5", "\u0ac7" - "\u0ac9", "\u0acb" - "\u0acd", "\u0b01" - "\u0b03", "\u0b3c", "\u0b3e" - "\u0b43", "\u0b47" - "\u0b48", "\u0b4b" - "\u0b4d", "\u0b56" - "\u0b57", "\u0b82" - "\u0b83", "\u0bbe" - "\u0bc2", "\u0bc6" - "\u0bc8", "\u0bca" - "\u0bcd", "\u0bd7", "\u0c01" - "\u0c03", "\u0c3e" - "\u0c44", "\u0c46" - "\u0c48", "\u0c4a" - "\u0c4d", "\u0c55" - "\u0c56", "\u0c82" - "\u0c83", "\u0cbe" - "\u0cc4", "\u0cc6" - "\u0cc8", "\u0cca" - "\u0ccd", "\u0cd5" - "\u0cd6", "\u0d02" - "\u0d03", "\u0d3e" - "\u0d43", "\u0d46" - "\u0d48", "\u0d4a" - "\u0d4d", "\u0d57", "\u0e31", "\u0e34" - "\u0e3a", "\u0e47" - "\u0e4e", "\u0eb1", "\u0eb4" - "\u0eb9", "\u0ebb" - "\u0ebc", "\u0ec8" - "\u0ecd", "\u0f18" - "\u0f19", "\u0f35", "\u0f37", "\u0f39", "\u0f3e", "\u0f3f", "\u0f71" - "\u0f84", "\u0f86" - "\u0f8b", "\u0f90" - "\u0f95", "\u0f97", "\u0f99" - "\u0fad", "\u0fb1" - "\u0fb7", "\u0fb9", "\u20d0" - "\u20dc", "\u20e1", "\u302a" - "\u302f", "\u3099", "\u309a"] >
+}
+
+TOKEN :
+{
+ < #Digit : ["\u0030" - "\u0039", "\u0660" - "\u0669", "\u06f0" - "\u06f9", "\u0966" - "\u096f", "\u09e6" - "\u09ef", "\u0a66" - "\u0a6f", "\u0ae6" - "\u0aef", "\u0b66" - "\u0b6f", "\u0be7" - "\u0bef", "\u0c66" - "\u0c6f", "\u0ce6" - "\u0cef", "\u0d66" - "\u0d6f", "\u0e50" - "\u0e59", "\u0ed0" - "\u0ed9", "\u0f20" - "\u0f29"] >
+}
+
+TOKEN :
+{
+ < #Extender : ["\u00b7", "\u02d0", "\u02d1", "\u0387", "\u0640", "\u0e46", "\u0ec6", "\u3005", "\u3031" - "\u3035", "\u309d" - "\u309e", "\u30fc" - "\u30fe"] >
+}
+
+<DEFAULT>
+TOKEN :
+{
+ < NotNumber : ( (
+"." <Digits>) |  (
+<Digits> ("." (["0" - "9"])*)?)) (["e", "E"] (["+", "-"])? <Digits>)? ["a" - "z", "A" - "Z"] (["0" - "9", "a" - "z", "A" - "Z"])* >
+}

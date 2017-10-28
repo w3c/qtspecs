@@ -1,0 +1,849 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+2. TeXQuery Expressions
+2.1   Processing Model
+2.2   FTContainsExpr 
+2.3   Scoring
+2.3   Extensions to the Static Context
+
+-->
+<div1 id="tq-extensions">
+   <head>Full-Text Extensions to XQuery and XPath</head>
+
+<p>&language; extends the languages of XQuery <phrase diff="chg">3.1</phrase> and XPath <phrase diff="chg">3.1</phrase> in three ways. It:</p> 
+
+<olist>
+  <item><p>Adds a new expression called FTContainsExpr;</p>
+  </item>
+
+  <item><p>Enhances the syntax of FLWOR expressions in XQuery <phrase diff="chg">3.1</phrase> and
+  <code>for</code> expressions in XPath <phrase diff="chg">3.1</phrase> with optional score
+  variables; and</p>
+  </item>
+
+  <item><p>Adds static context declarations for full-text match
+  options to the query prolog.</p>
+  </item>
+</olist>
+
+<p>Additionally, it extends the data model and processing models in
+various ways.</p>
+
+<div2 id="processing-model">
+<head>Processing Model</head>
+
+
+<p>
+A <termref def="dt-ftcontains">full-text contains expression</termref>
+(<specref ref="section-ftcontainsexpr"/>)
+is composed of several parts:</p>
+
+<olist>
+
+  <item><p>
+  An XPath <phrase diff="chg">3.1</phrase> or XQuery <phrase diff="chg">3.1</phrase> expression (<phrase diff="del">RangeExpr</phrase><phrase diff="add">StringConcatExpr</phrase>) that
+  specifies the sequence of items to be searched. 
+  <termdef id="dt-search-context" term="search context">
+  Those items are called
+  the <term>search context</term>.</termdef></p>
+  </item>
+
+  <item><p>
+  The full-text selection to be applied (<specref
+  ref="ftselections"/>).
+  <term>Full-text selections</term> 
+  are, syntactically and semantically, fully composable and contain:
+  </p>
+  <ulist>
+
+    <item><p>
+    Required:</p>
+
+    <ulist>
+
+      <item><p>
+      Tokens and phrases for which a search is performed (<specref ref="ftwords"/>).</p>
+      </item>
+
+    </ulist>
+
+    </item>
+
+    <item><p>
+    Optional:</p>
+
+    <ulist>
+
+      <item><p>
+      Match options, such as indicators for case sensitivity and stop
+      words (<specref ref="ftmatchoptions"/>);</p>
+      </item>
+
+      <item><p>
+      Boolean full-text operators, that compose a full-text selection from
+      simpler full-text selections (<specref ref="logical_ftoperators"/>);</p>
+      </item>
+
+      <item><p>
+      Other full-text operators that are constraints on the positions of
+      matches, such as indicators for distance between tokens and for the
+      cardinality of matches (<specref ref="ftposfilter"/> and 
+      <specref ref="fttimes"/>); and</p>
+      </item>
+
+      <item><p>
+      The weighting information. Each individual search term in a
+      full-text selection may be annotated with optional weight
+      information. This information may be used during the evaluation
+      of the full-text selections to
+      calculate scoring, information that quantifies the relevance of the
+      result to the given search criteria.</p>
+      </item>
+
+    </ulist>
+
+    </item>
+
+  </ulist>
+
+  </item>
+
+  <item><p>
+  An optional XPath <phrase diff="chg">3.1</phrase> or XQuery <phrase diff="chg">3.1</phrase> expression (UnionExpr) that
+  specifies the set of nodes, descendents of the <phrase diff="del">RangeExp</phrase><phrase diff="add">StringConcatExpr</phrase>, whose
+  contents must be ignored for the purpose of determining a match
+  during the search (<specref ref="ftignoreoption"/>).</p>
+  </item>
+
+</olist>
+
+<p>
+The results of the evaluation of the full-text selection operators are
+instances of the AllMatches model, which complements the XQuery Data
+Model (XDM) for processing full-text queries. An AllMatches instance
+describes all possible solutions to the full-text query for a given
+search context item. Each solution is described by a Match instance. A
+Match instance contains the tokens from the search context that must
+be included (described using StringInclude instances which model the
+positive terms) and the tokens from search context item that must be
+excluded (described using StringExclude instances which model the
+negative terms). Each negative or positive term is modeled as a tuple:
+the position of the query token or phrase in the full-text selection, and a
+TokenInfo structure that describes a set of tokens in the text string which match the query token or phrase.
+</p>
+
+<graphic source="images/ProcMod-XQueryFT.gif" alt="Processing Model Extensions"/>
+
+<p>Figure 1 provides a schematic overview of the &language; processing steps that are discussed in detail below. 
+Some of these steps are completely outside the domain of XQuery; in
+Figure 1, these are depicted outside the black line that represents
+the boundaries of the language. The diagram only shows the central pieces
+of the XQuery Processing Model (see <xspecref spec="XQ"
+ref="id-processing-model"/>), however zooms in on the Execution Engine
+where the processing of the full-text extensions takes place. The
+full-text processing steps are labeled as FTn within the diagram and
+are referenced within the text.</p>
+
+<p>
+Like all XQuery expressions, an FTContainsExpr returns an XDM
+Instance (see Fig. 1). With the exception of FTWords, which consumes TokenInfos,
+all full-text selections are closed under the AllMatches data model,
+i.e., their input and output are AllMatches instances. Tokenization transforms an XDM
+instance into TokenInfos, which ultimately get converted into AllMatches
+instances by the evaluation of full-text selections. Thus, the evaluation of
+nested full-text and XQuery expressions instances moves back and forth
+between these two models.
+</p>
+
+<p>
+The resulting AllMatches instance obtained by the evaluation of an FTContainsExpr 
+is converted into a Boolean value before being
+returned to the enclosing XPath or XQuery operation as follows. If at
+least one member of the disjunction contains only positive terms then
+value returned is true. If all members of the disjunction contain
+negative terms the result is false.
+</p>
+
+<p>
+Weighting information, in an &ref-implementation-dependent; fashion, may be
+used when calculating the scoring information computed and made
+available by FTContainsExpr to the optional score construct.
+</p>
+
+<p>
+Given the components of a given full-text contains expression, the evaluation
+algorithm will proceed according to the following steps, also referenced in
+the processing model diagram as steps FT<emph>n</emph> (see Fig. 1):
+</p>
+
+<olist>
+
+  <item><p>
+  Evaluate the search context expression
+  (resulting in the sequence of search context items),
+  the ignore option, if any
+  (resulting in the set of ignored nodes),
+  and any other XQuery/XPath exprssions nested within the full-text contains expression.
+  (FT1)
+  </p>
+  </item>
+
+  <item><p>
+  Tokenize the query string(s). (FT2.1)</p>
+  </item>
+
+  <item><p>
+  For each search context item:</p>
+
+  <olist>
+
+   <item><p>
+  Delete the ignored nodes from the search context item.</p>
+  </item>
+ 
+    <item><p>
+    Tokenize the result of the previous step.
+    This produces a sequence of tokens. (FT2.2)
+    Note that implementations may (as an optimization) perform tokenization
+    as part of the External Processing that is described in the XQuery Processing Model,
+    when an XML document is parsed into an Infoset/PSVI
+    and ultimately into a XQuery Data Model instance.</p> 
+    </item>
+
+    <item><p>
+    Evaluate the FTSelection against the tokens of the search context. (FT3, FT4)</p>
+    </item>
+
+  </olist>
+
+  </item>
+
+  <item>
+  
+  <p>
+  Convert the topmost AllMatches instances into a Boolean value. (FT5)</p>
+
+<!-- Bugzilla Bug# 3908 -->
+  <p>
+  The additional scoring information (also part of FT5) that is produced
+  by the evaluation 
+  of the full-text contains expression is &ref-implementation-dependent; and is not
+  specified in this document. The scoring information is made available at the same time the
+  Boolean value is returned.
+  </p>
+
+  </item>
+
+</olist>
+
+<p>
+(A more detailed version of the above procedure
+appears in Section <specref ref="FTContainsSec"/>.)
+</p>
+
+<!-- Bugzilla Bug# 3908 -->
+<p>
+Section <specref ref="ftselections"/>
+describes the syntax and the informal semantics of full-text operators. 
+Their formal semantics as well as the formal definition of the
+AllMatches data model are given in Section <specref ref="tq-semantics"/>.
+</p>
+
+</div2>
+
+
+<div2 id="section-ftcontainsexpr">
+   <head>Full-Text Contains Expression</head>
+
+<p>
+<termdef id="dt-ftcontains" term="full-text contains expression">A
+<term>full-text contains expression</term> is a expression that evaluates a
+sequence of items against a full-text selection.
+</termdef>
+</p>
+<p>As a syntactic construct, a full-text contains expression
+(grammar symbol: <nt def="FTContainsExpr">FTContainsExpr</nt>) 
+behaves like a
+comparison expression (see <xspecref spec="XQ" ref="id-general-comparisons"/>).
+This grammar rule introduces <nt def="FTContainsExpr">FTContainsExpr</nt>.</p>
+
+
+<scrap>
+<head/>
+<prodrecap ref="ComparisonExpr"/>
+</scrap>
+
+<p>A full-text contains expression may be used anywhere a
+ComparisonExpr may be 
+used. The <code>contains text</code> operator has higher precedence than
+other comparison operators,  so the results of <code>contains text</code>
+expressions may be compared without enclosing them in parentheses.</p>
+
+<div3 id="section-ftcontainsexpr-description">
+      <head>Description</head>
+
+
+<scrap>
+<head/>
+<prodrecap ref="FTContainsExpr" id="FTContainsExpr"/>
+</scrap>
+
+<p>A full-text contains expression returns a Boolean
+value. It returns true if there is some item returned by
+the <phrase diff="del">RangeExpr</phrase><phrase diff="add">StringConcatExpr</phrase> that, after
+<loc href="#TokenizationSec">tokenization</loc>, 
+matches the full-text selection <nt def="FTSelection">FTSelection</nt>. 
+Since tokenization includes tokens derived only from the string values of
+items, a full-text contains expression searches the text of element nodes
+and of their descendant elements. The string value of other kinds of nodes,
+such as attributes and comments, will not be included unless the attribute or
+comment node itself is the target (<phrase diff="del">RangeExpr</phrase><phrase diff="add">StringConcatExpr</phrase>) of the full-text contains
+expression. 
+See Section <specref ref="ftselections"/> for more details. 
+For the purpose of determining
+a match, certain descendants of nodes (identified by 
+<nt def="FTIgnoreOption">FTIgnoreOption</nt>) in 
+the <phrase diff="del">RangeExpr</phrase><phrase diff="add">StringConcatExpr</phrase> may be ignored, as specified in Section
+<specref ref="ftignoreoption"/>.</p>
+
+<p>An &language; processor <termref def="should">SHOULD</termref> try to use the
+information available in xml:lang for processing of collations, as well as
+the various match options defined in Section <specref ref="ftmatchoptions"/>. 
+</p>
+
+</div3>
+
+<div3 id="section-ftcontainsexpr-examples">
+   <head>Examples</head>
+
+<p>The following example in XQuery <phrase diff="chg">3.1</phrase> Full Text returns the author of
+each book with a title containing a token with the same root as
+<code>dog</code> and the token
+<code>cat</code>.
+
+		<eg role="xquery"><![CDATA[
+for $b in /books/book
+where $b/title contains text ("dog" using stemming) ftand "cat" 
+return $b/author]]></eg>
+</p>
+		<p>The same example in XPath <phrase diff="chg">3.1</phrase> Full Text is written as:
+
+		<eg role="xpath">
+<![CDATA[
+/books/book[title contains text ("dog" using stemming) ftand "cat"]/author]]></eg>
+</p>
+<p>In the next example a ComparisonExpr is combined with an FTContainsExpr 
+using the logical XQuery operator <code>and</code>. The query
+selects books that have a price of less than 50 and a title which contains 
+a token with the same root as <code>train</code>:</p>
+<eg role="xquery"><![CDATA[
+/books/book[price < 50 and title contains text ("train" using stemming)]
+]]></eg>
+<p>The following example shows the combination of two <code>contains text</code>
+expressions the results of which are compared using the not-equals operator. 
+The query
+selects books where either the title contains the token
+<code>dog</code> and the token <code>cat</code> and the content
+does not contain a token with the same root as <code>train</code>, or where the
+title fails to have one of the matching tokens but the content does:</p>
+<eg role="xquery"><![CDATA[
+/books/book[title contains text "dog" ftand "cat" ne
+            content contains text ("train" using stemming)]
+]]></eg>
+   </div3>
+
+	</div2>
+
+	<div2 id="section-score-variables">
+	<head>Score Variables</head>
+	<p>Besides specifying a match of a full-text 
+        query as a Boolean condition, full-text query applications
+        typically also have the ability to associate scores with
+        the results. <termdef id="Score" term="Score">The <term>score</term> of a full-text query result expresses its relevance to
+        the search conditions.</termdef></p>
+
+        <p>&language; extends the languages of
+        XQuery <phrase diff="chg">3.1</phrase> and XPath <phrase diff="chg">3.1</phrase> further  by adding optional 
+        <code>score</code> variables to the <code>for</code> and
+        <code>let</code> clauses of FLWOR expressions.</p>
+
+        <p>The production for the extended <code>for</code> clause in XQuery <phrase diff="chg">3.1</phrase> follows.
+
+
+<scrap>
+<head/>
+<prodrecap ref="ForClause" id="ForClause"/>
+<prodrecap ref="ForBinding" id="ForBinding"/>
+<prodrecap ref="FTScoreVar" id="FTScoreVar"/>
+</scrap> 
+</p>
+
+<p>In XPath <phrase diff="chg">3.1</phrase>, the SimpleForClause is extended similarly.</p>
+
+<p>When a <code>score</code> variable is present in a <code>for</code> 
+clause the evaluation of the expression following the <code>in</code>
+keyword not only needs to determine the result sequence of the
+expression, i.e., the sequence of items which are iteratively
+bound to the <code>for</code> variable. It must also determine in each
+iteration the relevance "score" value of the current item
+and bind the <code>score</code> variable to that value. </p> 
+
+<p>
+The scope of a score variable bound in a for or let clause comprises all
+subexpressions of the containing FLWOR expression that appear after the
+variable binding. The scope does not include the expression to which the
+variable is bound.
+The for and let clauses of a given FLWOR expression may bind the same score
+variable name more than once. In this case, each new binding occludes the
+previous one, which becomes inaccessible in the remainder of the FLWOR
+expression. 
+</p>
+<p>
+The expanded QName of a score variable bound in a for clause must be distinct
+from both the expanded 
+QName of the variable with which it is associated and the expanded QName of any
+positional variable with which it is associated
+<xerrorref spec="XQ" class="ST" code="0089" type="static"/>.
+</p>
+
+<p>The semantics of scoring and how it relates to second-order functions is 
+discussed in Section <specref ref="ScoreSec"/>.</p>
+
+<p>In the following example <code>book</code> elements are determined that satisfy
+the condition <code>[content contains text "web site" ftand "usability" and
+.//chapter/title contains text "testing"]</code>. The scores assigned to the
+<code>book</code> elements are returned.
+
+		<eg role="xquery"><![CDATA[
+for $b score $s 
+    in /books/book[content contains text "web site" ftand "usability" 
+                   and .//chapter/title contains text "testing"]
+return $s
+]]></eg>
+</p>
+
+<p>The example above is
+also a valid example of the XPath <phrase diff="chg">3.1</phrase> extension.</p>
+
+<p>Scores are typically used to order results, as in the 
+following, more complete example.
+		<eg role="xquery"><![CDATA[
+for $b score $s 
+    in /books/book[content contains text "web site" ftand "usability"]
+where $s > 0.5
+order by $s descending
+return <result>  
+          <title> {$b//title} </title> 
+          <score> {$s} </score> 
+       </result>
+]]></eg>
+</p>
+
+<p>Note that the score variable gets <emph>one</emph> score value for each item
+in the value of the expression after the <code>in</code> keyword,
+regardless of the number of FTContainsExprs in that expression. 
+In the following example, two separate full-text contains expressions are
+used to select the matching paragraphs. There is still just one score for each
+<code>para</code> returned.  The highest scoring paragraphs will be returned
+first:
+</p>
+
+<eg role="xquery"><![CDATA[
+for $p score $s in 
+  //book[title contains text "software"]/para[. contains text "usability"]
+     order by $s descending
+  return $p
+]]></eg>
+
+<p>The following more elaborate example uses multiple score variables to
+return the matching paragraphs ordered so that those from the highest scoring
+books precede those from the lowest scoring books, where the highest scoring
+paragraphs of each book are returned before the lower scoring paragraphs of
+that book:
+</p>
+<eg role="xquery"><![CDATA[
+for $b score $score1 in //book[title contains text "software"]
+    order by $score1 descending
+return
+    for $p score $score2 in $b/para[. contains text "usability"]
+       order by $score2 descending
+    return $p
+]]></eg>
+
+<p>The <code>score</code> variable is bound to a value which reflects
+the relevance of the match criteria in the 
+full-text selections to the items returned by the respective <phrase diff="del">RangeExprs</phrase><phrase diff="add">StringConcatExprs</phrase>. The
+calculation of relevance is &ref-implementation-dependent;, but score
+evaluation must follow these rules:</p>
+
+<olist>
+<item><p>Score values are of type <code>xs:double</code> in the range
+[0, 1].</p></item> 
+<item><p>For score values greater than 0, a higher score must imply a
+higher degree of relevance </p></item>
+</olist>
+
+<p>Similarly to their use in a <code>for</code> clause, score variables
+may be specified in a <code>let</code> clause. A score variable in a
+<code>let</code> clause is also bound to the score of the expression
+evaluation, but in the <code>let</code> clause one score is determined
+for the complete result. </p>
+
+<p>The production for the extended <code>let</code> clause follows.
+
+
+<scrap>
+<head/>
+<prodrecap ref="LetClause" id="LetClause"/>
+<prodrecap ref="LetBinding" id="LetBinding"/>
+</scrap> 
+</p>
+
+<p>When using the score option in a <code>for</code> clause the
+expression following the <code>in</code> keyword has the dual purpose
+of filtering, i.e., driving the iteration, and determining the scores. 
+It is possible to separately specify expressions for filtering and
+scoring by combining a simple <code>for</code> clause with a
+<code>let</code> clause that uses scoring. The following is 
+an example of this.
+
+		<eg role="xquery"><![CDATA[
+for $b in /books/book[.//chapter/title contains text "testing"]
+let score $s := $b/content contains text "web site" ftand "usability" 
+order by $s descending
+return <result score="{$s}">{$b}</result>
+]]></eg>
+This example returns <code>book</code> elements with chapter titles that contain "testing". 
+Along with the <code>book</code> elements scores are returned. 
+These scores, however, reflect whether the book content contains "web site" and "usability".</p>
+
+<p>Note that it is not a requirement of the score of an 
+FTContainsExpr to be 0, if the expression evaluates to false, nor to
+be non-zero, if the expression evaluates to true.
+Hence, in the example above it is not possible to infer the Boolean
+value of the FTContainsExpr in the <code>let</code> clause from the
+calculated score of a returned <code>result</code> element. For instance, an
+implementation may want to assign a non-zero score to a book that
+contained "web site", but not "usability", as this may be
+considered more relevant than a book that does not contain "web site" or "usability".
+</p>
+
+
+<p>
+The expression ExprSingle associated with the score variable is passed to
+the scoring algorithm. 
+The scoring algorithm calculates the score value based on the passed expression
+(not on the value returned by evaluating the expression). 
+The set of expressions supported by the scoring algorithm is &ref-implementation-defined;. 
+If an expression not supported by the scoring algorithm is passed to the scoring algorithm,
+the result is implementation-defined.
+</p>
+
+<p>The use of <code>score</code> variables introduces a second-order
+aspect to the evaluation of expressions which cannot be emulated by
+(first-order) XQuery functions. Consider the following replacement of
+the clause <code>let score $s := FTContainsExpr</code></p>
+
+		<eg><![CDATA[
+let $s := score(FTContainsExpr)
+]]></eg>
+
+<p>where a function <code>score</code> is applied to some
+FTContainsExpr. If the function <code>score</code> were first-order, it
+would only be applied to the result of the evaluation of 
+its argument, which is one of the Boolean constants <code>true</code>
+or <code>false</code>. Hence, there would be at most two possible
+values such a <code>score</code> function would be able to return and
+no further differentiation would be possible. </p>
+
+
+   <div3 id="section-using-weights">
+      <head>Using Weights Within a Scored FTContainsExpr</head>
+
+<p><termdef id="WeightDeclarationsDef" term="WeightDeclarations">Scoring may be influenced
+by adding <term>weight declarations</term> to search tokens, phrases, and expressions.</termdef> 
+Weight declarations are introduced syntactically in the FTPrimaryWithOptions
+production, described in Section <specref ref="ftweight"/>.
+</p>
+
+<p>The weights assigned are not related to any absolute standard,
+but typically have a relationship to other weights within the same FTContains expression.</p>
+
+<p>The effect of weights on the resulting score is
+&ref-implementation-dependent;. However, scoring algorithms <termref def="must">MUST</termref> conform to 
+the constraint that when no explicit weight is specified, the default weight is 1.0.</p> 
+
+
+<p>The following example illustrates how different weights can be used
+for different search terms.
+		<eg role="xquery"><![CDATA[
+for $b in /books/book
+let score $s := $b/content contains text ("web site" weight {0.5})
+                                ftand ("usability" weight {2})
+return <result score="{$s}">{$b}</result>
+]]></eg>
+</p>
+
+   </div3>
+	</div2>
+
+    <div2 id="section-highlight" diff="add">
+        <head>Highlight Expression</head>
+        <p>Full text search applications typically need to display a content fragment with the highlighted search terms
+            in the search results.  This allows user to peek into the content of the document to quickly
+            judge the relevance of the result.  Applications may also need to display the entire document with
+            all the search terms highlighted, and permit user to browse all the highlighted terms
+            forwards and backwards.
+        </p>
+        <p>
+            XQuery and XPath Full Text 3.1 supports highlight by introducing the FtHighlightsExpr.
+            <eg role="example" xml:space="preserve">
+# place holder
+FtHighlightsExpr ::= StringConcatExpr "highlights" "text" FTSelection FTIgnoreOption?
+
+</eg>
+        </p>
+
+        <p>A full text highlight expression MUST return a highlight variable with the following structure.</p>
+            <eg role="example" xml:space="preserve">
+map {
+    "offsets" : map {
+        4 : 3,
+        9 : 4
+    },
+    "summary" : ("text", "term", "text", "term")
+}
+            </eg>
+        <olist>
+            <item>
+                <p>"offsets" is a map of the character offsets of the highlighted terms.
+                   The character offset is the offset in the string value returned by the
+                    StringConcatExpr after <specref ref="ftignoreoption"/> is applied.  Refer to the
+                    section <loc href="#TokenizationSec">Tokenization</loc> for a more detailed definition of
+                    "the string value".
+                </p>
+                <p>The keys of offsets map are the start character positions of the highlighted terms.
+                The values are the character length of the highlighted terms.
+                The offsets MUST NOT contain overlapping ranges.</p>
+
+            </item>
+            <item><p>"summary" is a sequence of strings where
+                every string at the even position is a highlighted search term.  The combined string value of the
+                "summary" sequence is a snippet of the entire searched string content.
+                The intent of the summary field is to allow application quickly construct a highlighted summary along with
+                the search results.
+            </p>
+            <p>
+                The size and computation of the summary fragment with the highlighted search terms is &ref-implementation-dependent;.
+                The implementation SHOULD consider both weight and frequency of the
+                search terms.  The summary MAY be an empty sequence if the implementation chooses to not calculate the summary.
+            </p>
+            </item>
+        </olist>
+
+        <p>The evaluation of FtHighlightsExpr conforms to the same rules as specified in
+            the <loc href="#FTSelectionEvalSec">Evaluation of FTSelections</loc>.  The "offsets"
+            information may be obtained by applying the following steps.
+            <olist>
+                <item>
+                    <p>Introduce character offset information to the TokenInfo structure.</p>
+                </item>
+                <item>
+                    <p>Perform match as detailed in the <loc href="#FTSelectionEvalSec">Evaluation of FTSelections</loc>.</p>
+                </item>
+                <item>
+                    <p>Extract the character offset information from all the TokenInfos contained in
+                        the final AllMatches result.</p>
+                </item>
+            </olist>
+        </p>
+
+
+        <p>The following example illustrates the basic usage of the FtHighlightsExpr.</p>
+        <eg role="xquery" xml:space="preserve">
+
+for $b score $s in /books/book[content contains text ("web site") with stemming]
+let $highlight := $b/content highlights text ("web site") with stemming
+return ($b, $highlight)
+
+        </eg>
+
+        <p>This example demonstrates how to construct a html fragment from the summary.</p>
+        <eg role="xquery" xml:space="preserve">
+
+for $b score $s in /books/book[content contains text ("web site") with stemming]
+let $highlight := $b/content highlights text ("web site") with stemming
+let $summary := &lt;summary>{
+  for $token at $i in $highlight?summary
+  return
+    if ($i mod 2 = 0) then &lt;strong>{$token}&lt;/strong>
+    else $token
+}&lt;/summary>
+return &lt;result>{$b}{$summary}>&lt;/result>
+
+        </eg>
+
+        <p>The following is a more elaborate XQuery example showing how to construct a summary
+        using the offsets information based solely on the term frequencies.
+        </p>
+        <eg role="xquery" xml:space="preserve">
+
+(: $size is the desired size of summary in characters, the function attempts to find the most densely highlighted
+   section of no more than $size number of characters in the content :)
+declare function local:summary($offsets as map(*), $content as xs:string, $size as xs:integer) as xs:string* {
+    let $sections :=
+        for sliding window $w in (for $x in map:keys($offsets) order by $x return $x)
+            start $s when fn:true()
+            end $e when $e - $s le $size
+        return array { $w }
+    let $most-dense-section := subsequence(
+        for $section in $sections
+        order by array:size($section) descending
+        return $section
+        ,1,1)
+
+    let $summary :=
+        for sliding window $w in $most-dense-section?*
+            start $offset at $s when fn:true()
+            end $next-offset at $e when $e - $s eq 1
+        let $end := $offset + $offsets($offset)
+        return
+            if (fn:count($w) eq 2) then
+                (fn:substring($content, $offset, $offsets($offset)),
+                 fn:substring($content, $end, $next-offset - $end))
+            else
+                fn:substring($content, $offset, $offsets($offset))
+
+    return ("", $summary)   (: compensate for highlighted term at even position :)
+};
+
+for $b in /books/book[content contains text ("web site") with stemming]
+let $highlight := $b/content highlights text ("web site") with stemming
+let $summary-tokens := local:summary($highlight?offsets, fn:string($b/content), 1024)
+let $summary := &lt;summary>{
+  for $token at $i in $summary-tokens
+  return
+    if ($i mod 2 = 0) then &lt;strong>{$token}&lt;/strong>
+    else $token
+}&lt;/summary>
+return &lt;result>{$b}{$summary}>&lt;/result>
+
+        </eg>
+
+       </div2>
+
+   <div2 id="section-extensions-static-context">
+      <head>Extensions to the Static Context</head>
+<p>
+The XQuery Static Context is extended with a component for each
+full-text <termref def="dt-match-option-group">match option group</termref>.
+The settings of these components can be changed
+by using the following declaration syntax in the Prolog.
+<scrap><head></head>
+	<prodrecap ref="Prolog" id="Prolog"/>
+	<prodrecap ref="FTOptionDecl" id="FTOptionDecl"/>
+</scrap>
+Match options modify the match semantics of full-text
+expressions. They are described in detail in  
+Section <specref ref="ftmatchoptions"/>. When a match
+option is specified explicitly in a full-text expression,
+it overrides the setting of the respective component in the
+static context.
+</p>
+
+
+
+   </div2>
+
+<!--
+   <div2 diff="add" id="section-extensions-feature-selection">
+      <head>Extensions to Features</head>
+<p>
+The set of feature names that can be used in the XQuery 
+<code>require-feature</code> or <code>prohibit-feature</code> is extended to 
+include the following names defined in the 
+<code>"http://www.w3.org/2011/xquery-features"</code> namespace.
+</p>
+<p>These features fall into a hierarchy of feature names following the rules
+given in <xspecref spec="XQ30" ref="id-require-prohibit-feature"/>.
+</p>
+<ulist>
+<item><p>The name <code>full-text</code> corresponds to support for the minimal conformance defined in <specref ref="id-minimal-conformance"/>.</p></item>
+</ulist>
+<p>Adding any of the following feature names to <code>require-feature</code> 
+implicitly requires the <code>full-text</code> feature as well:</p>
+<ulist>
+<item><p>The name <code>full-text-mild-not</code> corresponds to the feature defined in <specref ref="id-ftmildnot-option"/>.</p></item>
+
+<item><p>The name <code>full-text-unary-not</code> corresponds to the unrestricted form of the feature defined in <specref ref="id-unary-not-option"/>.</p>
+<p>Adding either of the following two feature names to <code>require-feature</code> implicitly requires <code>full-text-unary-not</code> also:</p>
+<ulist>
+<item><p>The name <code>full-text-unary-not-no-ftand</code> corresponds 
+to the feature defined in <specref ref="id-unary-not-option"/> without <termref def="id-Negation-Restriction-1">Negation Restriction 1</termref>.</p></item>
+<item><p>The name <code>full-text-unary-not-positional-filter</code> corresponds 
+to the feature defined in <specref ref="id-unary-not-option"/> without <termref def="id-Negation-Restriction-2">Negation Restriction 2</termref>.</p></item>
+</ulist>
+<p>Adding the name <code>full-text-unary-not-optional-features</code> to <code>require-features</code> implicitly requires whichever of the above two features that are not explicitly forbidden; adding it to <code>prohibit-features</code> implicitly forbids whichever of the above two features that are not explicitly required.</p>
+</item>
+
+<item><p>The name <code>full-text-sentences</code> corresponds to the "sentence" feature defined in <specref ref="id-ftunit-option"/>.</p></item>
+<item><p>The name <code>full-text-paragraphs</code> corresponds to the "paragraph" feature defined in <specref ref="id-ftunit-option"/>.</p></item>
+
+<item><p>The name <code>full-text-ordered</code> corresponds to the unrestricted form of the feature defined in <specref ref="id-ftorder-option"/>.</p></item>
+
+<item><p>The name <code>full-text-scope</code> corresponds to the feature defined in <specref ref="id-ftscope-option"/>.</p></item>
+
+<item><p>The name <code>full-text-window</code> corresponds to the unrestricted form of the feature defined in <specref ref="id-ftwindow-option"/>.</p></item>
+
+<item><p>The name <code>full-text-distance</code> corresponds to the unrestricted form of the feature defined in <specref ref="id-ftdistance-option"/>.</p></item>
+
+<item><p>The name <code>full-text-times</code> corresponds to the feature defined in <specref ref="id-fttimes-option"/>.</p></item>
+
+<item><p>The name <code>full-text-anchoring</code> corresponds to the feature defined in <specref ref="id-ftcontent-option"/>.</p></item>
+
+<item><p>The name <code>full-text-case</code> corresponds to the unrestricted form of the feature defined in <specref ref="id-ftcase-option"/>.</p>
+<p>Adding either of the following two feature names to <code>require-feature</code> implicitly requires <code>full-text-case</code> also:</p>
+<ulist>
+<item><p>The name <code>full-text-case-upper</code> corresponds to the "uppercase" feature defined in <specref ref="id-ftcase-option"/>.</p></item>
+<item><p>The name <code>full-text-case-lower</code> corresponds to the "lowercase" feature defined in <specref ref="id-ftcase-option"/>.</p></item>
+</ulist>
+<p>Adding the name <code>full-text-case-optional-features</code> to <code>require-features</code> implicitly requires whichever of the above two features that are not explicitly forbidden; adding it to <code>prohibit-features</code> implicitly forbids whichever of the above two features that are not explicitly required.</p>
+</item>
+<item><p>The name <code>full-text-stop-words</code> corresponds to the feature defined in <specref ref="id-ftstopword-option"/>.</p>
+<p>Adding either of the following two feature names to <code>require-feature</code> implicitly requires <code>full-text-stop-words</code> also:</p>
+<ulist>
+
+<item><p>The name <code>full-text-stop-words-body</code> corresponds to the feature defined in <specref ref="id-ftstopword-option"/> in the body of a query.</p></item>
+<item><p>The name <code>full-text-stop-words-literal</code> corresponds to the StringLiteral form of the feature defined in <specref ref="id-ftstopword-option"/>.</p></item>
+</ulist>
+<p>Adding the name <code>full-text-stop-words-optional-features</code> to <code>require-features</code> implicitly requires whichever of the above two features that are not explicitly prohibited; adding it to <code>prohibit-features</code> implicitly forbids whichever of the above two features that are not explicitly required.</p>
+</item>
+
+<item><p>The name <code>full-text-multi-language</code> corresponds to the unrestricted form of the feature defined in <specref ref="id-ftlanguage-option"/>.</p></item>
+
+<item><p>The name <code>full-text-score</code> corresponds to the unrestricted form of the feature defined in <specref ref="id-scoring-option"/>.</p></item>
+
+<item><p>The name <code>full-text-ignore</code> corresponds to the feature defined in <specref ref="id-ftignore-option"/>.</p></item>
+
+<item><p>The name <code>full-text-weight-negative</code> corresponds to the feature defined in <specref ref="id-weights-conf"/>.</p></item>
+
+<item><p>The name <code><phrase>full-text-language-<var>xxx</var></phrase></code> corresponds to the support for the language <var>xxx</var> as defined in <specref ref="ftlanguageoption"/>. <var>xxx</var> can be any language identifier. An implementation
+<termref def="must">MUST</termref> follow the same rules for determining 
+language feature name equivalence as it does for language option equivalence.
+For example, "full-text-language-de" is equivalent to "full-text-language-deu".
+</p>
+</item>
+
+<item><p>The name <code><phrase>full-text-thesaurus-<var>xxx</var></phrase></code> corresponds to support for the <var>xxx</var> relationship as defined in 
+<specref ref="ftthesaurusoption"/>. An implementation 
+<termref def="must">MUST</termref> recognize feature names for the relationship names USE, UF, BT, NT, BTG, NTG, BTP, NTP, TT, and RT. It <termref def="may">MAY</termref> recognize others.</p></item> 
+
+<item><p>Adding the name <code>full-text-optional-features</code> to <code>require-features</code> implicitly requires whichever of the full-text features listed above that are not expressly prohibited; adding it to <code>prohibit-features</code> implicitly prohibits whichever of the full-text features listed above that are not explicitly required.</p></item>
+</ulist>
+<p>All XQuery implementations must recognize the feature names in the above list.</p> 
+   </div2>
+-->
+
+</div1>
+<!-- web35706.mail.mud.yahoo.com uncompressed/chunked Sun Aug  5 16:53:44 PDT 2007 -->
+<!-- web35713.mail.mud.yahoo.com compressed/chunked Thu Sep 13 09:00:24 PDT 2007 -->

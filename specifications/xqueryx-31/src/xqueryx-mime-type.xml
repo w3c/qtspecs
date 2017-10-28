@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<div1 role="xqueryx" id="xqueryx-id-mime-type">
+  <head>The <code>application/xquery+xml</code> Media Type</head>
+
+  <p>This Appendix specifies the media type for <phrase  diff="chg" at="2014-04-24">XQueryX Version 3.1</phrase>. 
+     XQueryX is the XML syntax of a language, XQuery, for querying over
+     data from XML data sources, as specified in <phrase  diff="chg" at="2014-04-24"><bibref ref="xquery-31"/></phrase>.</p>
+
+  <note><p>Specification of media types is described in
+           <bibref ref="RFC3023"/>.</p></note>
+
+
+  <div2 id="xqueryx-mime-introduction">
+    <head>Introduction</head>
+
+    <p>This document, together with its normative references, defines the
+       XML syntax for the XML Query language <phrase  diff="chg" at="2014-04-24">XQuery Version 3.1</phrase>. 
+       This Appendix specifies the <code>application/xquery+xml</code> media type,
+       which is intended to be used for transmitting queries expressed in the
+       XQueryX syntax.</p>
+
+<!-- Changed "document" to "media type" per Liam Quin -->
+	  <p diff="chg" at="2014-12-03">This media type registration is to allow for the deployment of
+       XQueryX on the World Wide Web. </p>
+
+    <p>This document was prepared by members of the W3C XML Query Working
+       Group.  Please send comments to public-qt-comments@w3.org,
+       a public mailing list with archives at
+       <loc href="http://lists.w3.org/Archives/Public/public-qt-comments">http://lists.w3.org/Archives/Public/public-qt-comments</loc>. </p>
+
+  </div2>
+
+
+  <div2 id="xqueryx-mime-registration">
+    <head>Registration of MIME Media Type <code>application/xquery+xml</code></head>
+
+    <p>MIME media type name:  <code>application</code></p>
+
+    <p>MIME subtype name:    <code>xquery+xml</code></p>
+
+    <p>Required parameters:  none</p>
+
+    <p>Optional parameters: <code>charset</code></p>
+
+    <p>This parameter has identical semantics to the
+       <code>charset</code> parameter of the <code>application/xml</code>
+       media type as specified in [RFC 3023].</p>
+
+
+    <div3 id="xqueryx-mime-encoding">
+      <head>Encoding Considerations</head>
+
+      <p>By virtue of XSLT content being XML, it has the same considerations
+      when sent as "<code>application/xquery+xml</code>" as does XML. 
+      See [RFC 3023], section 3.2.</p>
+
+    </div3>
+
+
+    <div3 id="xqueryx-mime-security" diff="chg" at="bug29893">
+      <head>Security Considerations</head>
+
+        <p>Queries written in XQuery may cause arbitrary URIs or IRIs to be dereferenced. 
+           Therefore, the security issues of [RFC 3987] Section 8 should be considered. 
+           In addition, the contents of resources identified by <code>file:</code> URIs can in
+           some cases be accessed, processed and returned as results. 
+           XQuery expressions can invoke any of the functions defined in
+           <phrase diff="chg" at="2014-04-24"><bibref ref="xpath-functions-31"/></phrase>.
+           For example, the <code>fn:doc()</code> and <code>fn:doc-available()</code> functions  
+           allow local filesystem probes as well as access to any URI-defined resource accessible 
+           from the system evaluating the XQuery expression.
+
+           <phrase diff="add" at="bug 30027">
+           The <code>fn:transform()</code> function allows calls to
+           URI-identified XSLT transformations which may in turn call
+           external extension functions and access or write to the
+           file system. The <code>fn:transform()</code> function
+           should be sandboxed or disabled if untrusted queries are
+           run.
+           </phrase>
+        </p>
+
+        <p>XQuery is a full declarative programming language, and supports
+           user-defined functions, external function libraries (modules)
+           referenced by URI, and system-specific "native" functions. </p>
+
+        <p>Arbitrary recursion is possible, as is arbitrarily large
+           memory usage, and implementations may place limits on CPU and
+           memory usage, as well as restricting access to system-defined functions. </p>
+
+        <p>
+           The optional XQuery Update Facility allows XQuery expressions to
+           create and update persistent data, potentially including writing
+           to arbitrary locations on the local filesystem as well as to
+           remote URIs. Untrusted queries should not be given write access
+           to data.
+        </p>
+
+        <p>Furthermore, because the XQuery language permits extensions, it is
+           possible that <code>application/xquery+xml</code> may describe content 
+           that has security implications beyond those described here. </p>
+    </div3>
+ 
+
+    <div3 id="xqueryx-mime-interoperability">
+      <head>Interoperability Considerations</head>
+
+	    <p>See <phrase diff="chg" at="2014-04-24"><xspecref spec="XQ31" ref="id-conformance"/></phrase>. </p>
+
+    </div3>
+
+
+    <div3 id="xqueryx-mime-pubspec">
+      <head>Published specification</head>
+
+      <p>This media type registration is for XQueryX documents as described
+         by the <phrase diff="chg" at="2014-04-24">XQueryX 3.1 specification, which is located at
+         <loc href="http://www.w3.org/TR/xqueryx-31/">http://www.w3.org/TR/xqueryx-31/</loc></phrase>. 
+         It is also appropriate to use this media type with later versions of
+         the XQueryX language. </p>
+
+    </div3>
+
+
+    <div3 id="xqueryx-mime-applications">
+      <head>Applications That Use This Media Type</head>
+
+    	<p>The public <loc href="http://www.w3.org/XML/Query/">XQuery Web page</loc>
+         lists more than two dozen implementations of the XQuery language,
+	       both proprietary and open source.  Some of these are known to
+         support XQueryX. </p>
+
+  	  <p>This new media type is being registered to allow for deployment
+	       of XQueryX on the World Wide Web.</p>
+
+      <p>There is no experimental, vendor specific, or personal tree
+         predecessor to "application/xquery+xml", reflecting the fact
+         that no applications currently recognize it. This new type is
+         being registered in order to allow for the expected deployment
+         of <phrase diff="chg" at="2014-04-24">XQueryX 3.1</phrase>
+         on the World Wide Web, as a first class XML application. </p>
+
+    </div3>
+
+
+    <div3 id="xqueryx-mime-additional">
+      <head>Additional Information</head>
+
+      <div4 id="xqueryx-mime-recognizing">
+        <head>Recognizing XQuery Files ("Magic Numbers")</head>
+
+        <p>Although no byte sequences can be depended on to consistently
+           identify XQueryX, XQueryX documents will have the sequence
+           "http://www.w3.org/2005/XQueryX" to identify the XQueryX
+           namespace. 
+           This sequence will normally be found in a namespace attribute
+           of the first element in the document. </p>
+
+      </div4>
+
+
+      <div4 id="xqueryx-mime-extensions">
+        <head>File Extensions</head>
+
+      	<p>The most common file extension in use for XQueryX is
+	      <code>.xqx</code>. </p>
+
+      </div4>
+
+
+      <div4 id="xqueryx-mime-macfiletype">
+        <head>Macintosh File Type Code(s)</head>
+
+      	<p>The appropriate Macintosh file type code is <code>TEXT</code>.</p>
+
+      </div4>
+
+    </div3>
+
+
+    <div3 id="xqueryx-mime-author">
+      <head>Person and Email Address to Contact For Further Information</head>
+
+      <p>Jim Melton, Oracle Corp.,
+          <loc href="mailto:jim.melton@oracle.com">jim.melton@oracle.com</loc></p>
+
+    </div3>
+
+
+    <div3 id="xqueryx-mime-intended-usage">
+      <head>Intended Usage</head>
+
+      <p>COMMON</p>
+
+    </div3>
+
+
+    <div3 id="xqueryx-mime-restrictions">
+      <head>Restrictions on usage</head>
+
+      <p>The intended usage of this media type is for interchange
+         of XQueryX expressions.</p>
+
+    </div3>
+
+
+    <div3 id="xqueryx-mime-owner">
+      <head>Author/Change Controller</head>
+
+      <p>XQuery was produced by, and is maintained by, the World Wide Web
+         Consortium's XML Query Working Group.  The W3C has change
+         control over this specification. </p>
+
+    </div3>
+
+    <div3 id="xqueryx-mime-fragments">
+      <head>Fragment Identifiers</head>
+
+      <p>For documents labeled as "<code>application/xquery+xml</code>",
+         the fragment identifier notation is exactly that for
+         "<code>application/xml</code>", as specified in [RFC 3023]. </p>
+
+    </div3>
+
+  </div2>
+
+</div1>
+

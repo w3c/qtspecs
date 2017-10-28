@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<div1 id="id-errors">	
+<head>Error Conditions</head>	
+
+
+<div2 id="id-new-error-codes"><head>New Error Codes</head><error-list>
+<error spec="XU" code="0001" class="ST" type="static">
+<p>
+It is a static error if an <termref def="dt-updating-expression">updating expression</termref> is used in any position other than one of the following:</p>
+<olist><item><p>The topmost expression in the body of a query.</p></item><item><p>The <code>modify</code> clause of a transform expression.</p></item><item><p>The <code>return</code> clause of a FLWOR expression.</p></item><item><p>The <code>return</code> clauses of a typeswitch expression in which every <code>return</code> clause contains an <termref def="dt-updating-expression">updating expression</termref> or a <termref def="dt-vacuous-expression">vacuous expression</termref>.</p></item><item><p>The <code>then</code> and <code>else</code> clauses of a conditional statement in which both the <code>then</code> and <code>else</code> clauses contain either an <termref def="dt-updating-expression">updating expression</termref> or a <termref def="dt-vacuous-expression">vacuous expression</termref>.</p></item><item><p>An operand of a comma expression in which each operand is either an <termref def="dt-updating-expression">updating expression</termref> or a <termref def="dt-vacuous-expression">vacuous expression</termref>.</p></item><item><p>The content of a  parenthesized expression.</p></item><item><p>The body of a function declaration in which the keyword <code>updating</code> is specified.</p></item></olist></error>
+
+<error spec="XU" code="0002" class="ST" type="static">
+<p>
+It is a static error if a <termref def="dt-simple-expression">simple expression</termref> that is not a <termref def="dt-vacuous-expression">vacuous expression</termref> is used in one of the following positions:</p>
+<olist><item><p>The <code>modify</code> clause of a transform expression.</p></item><item><p>The top-level expression in the body of a function declaration in which the keyword <code>updating</code> is specified.</p></item></olist></error><error spec="XU" code="0003" class="ST" type="static">
+<p>
+It is a static error if a Prolog contains more than one revalidation declaration.</p>
+</error><error spec="XU" code="0004" class="TY" type="type">
+<p>
+It is a type  error if the insertion sequence of an insert expression contains an attribute node following a node that is not an attribute node.</p>
+</error><error spec="XU" code="0005" class="TY" type="type">
+<p>
+In an insert expression where <code>into</code>, <code>as first into</code>, or <code>as last into</code> is specified, it is a type  error if the target expression returns a non-empty result that does not consist of a single element or document node.</p>
+</error><error spec="XU" code="0006" class="TY" type="type">
+<p>
+In an insert expression where <code>before</code> or <code>after</code> is specified, it is a type  error if the target expression returns a non-empty result that does not consist of a single element, text, comment, or processing instruction node.</p>
+</error><error spec="XU" code="0007" class="TY" type="type">
+<p>
+It is a type  error if the target expression of a delete expression does not return a sequence of zero or more nodes.</p>
+</error><error spec="XU" code="0008" class="TY" type="type">
+<p>In a replace expression, it is a type error if the target expression returns a non-empty result that does not consist of a single  element, attribute, text, comment, or processing instruction node.</p>
+</error><error spec="XU" code="0009" class="DY" type="dynamic">
+<p>In a replace expression where <code>value of</code> is not specified, it is a dynamic error if the node returned by the target expression does not have a parent.</p>
+</error><error spec="XU" code="0010" class="TY" type="type">
+<p>In a replace expression where <code>value of</code> is not specified and the target is an element, text, comment, or processing instruction node, it is a type error if the replacement sequence does not consist of zero or more element, text, comment, or processing instruction nodes.</p>
+</error><error spec="XU" code="0011" class="TY" type="type">
+<p>In a replace expression where <code>value of</code> is not specified and the target is an attribute node, it is a type error if the replacement sequence does not consist of zero or more attribute nodes.</p>
+</error><error spec="XU" code="0012" class="TY" type="type">
+<p>In a rename expression, it is a type error if the target expression returns a non-empty result that does not consist of a single element, attribute, or processing instruction node.</p>
+</error><error spec="XU" code="0013" class="TY" type="type">
+<p>In a transform expression, it is a type error if a source expression in the <code>copy</code> clause does not return a single node.</p>
+</error><error spec="XU" code="0014" class="DY" type="dynamic">
+<p>In a transform expression, it is a dynamic error if the <code>modify</code> clause modifies any node that was not created by the <code>copy</code> clause.</p>
+</error><error spec="XU" code="0015" class="DY" type="dynamic">
+<p>It is a dynamic error if any node is the target of more than one <code>rename</code> expression within the same query.</p>
+</error><error spec="XU" code="0016" class="DY" type="dynamic">
+<p>It is a dynamic error if any node is the target of more than one <code>replace</code> expression (without <code>value of</code> being specified) within the same query.</p>
+</error><error spec="XU" code="0017" class="DY" type="dynamic">
+<p>It is a dynamic error if any node is the target of more than one <code>replace value of</code> expression within the same query.</p>
+</error><error spec="XU" code="0018" class="DY" type="dynamic">
+<p>It is a dynamic error if a function that was declared to be <code>external</code> but not <code>updating</code> returns a non-empty pending update list.</p>
+</error><error spec="XU" code="0019" class="DY" type="dynamic">
+<p>It is a dynamic error if a function that was declared to be both <code>external</code> and <code>updating</code> returns a non-empty data model instance.</p>
+</error>
+<error spec="XU" code="0020" class="DY" type="dynamic" diff="del">
+<p>An implementation may (but is not required to) raise a dynamic error if a node is deleted that had no parent before the beginning of the current snapshot.</p>
+</error>
+<error spec="XU" code="0021" class="DY" type="dynamic">
+<p>It is a dynamic error if the <termref def="dt-xdm-instance">XDM instance</termref> that  would result from applying all the updates in a query violates any constraint specified in <bibref ref="datamodel"/>. In this case, none of the updates in the query are made effective.</p>
+</error><error spec="XU" code="0022" class="TY" type="type">
+<p>It is a type error if an 
+insert expression specifies the insertion of an attribute node into a 
+document node.</p>
+</error><error spec="XU" code="0023" class="DY" type="dynamic">
+<p>It is a dynamic error if an insert, replace, or rename expression affects an element node by introducing a new namespace binding that  <termref def="dt-conflict">conflicts</termref> with one of its existing namespace bindings.</p>
+</error><error spec="XU" code="0024" class="DY" type="dynamic">
+<p>It is a dynamic error if the effect of a set of updating expressions is to introduce <termref def="dt-conflict">conflicting</termref> namespace bindings into an element node.</p>
+</error><error spec="XU" code="0025" class="DY" type="dynamic">
+<p>(Not currently used.)</p>
+</error><error spec="XU" code="0026" class="ST" type="static">
+<p>It is a static error if a revalidation declaration in a Prolog specifies a revalidation mode that is not supported by the current implementation.</p>
+</error><error spec="XU" code="0027" class="DY" type="dynamic">
+<p>It is a dynamic error if the target expression of an insert, replace, or rename expression evaluates to an empty sequence.</p>
+</error><error spec="XU" code="0028" class="ST" type="static">
+<p>It is a static error if a function declaration specifies both <code>updating</code> and a return type.</p>
+</error><error spec="XU" code="0029" class="DY" type="dynamic">
+<p>In an insert expression where <code>before</code> or <code>after</code> is specified, it is a dynamic  error if the node returned by the target expression does not have a parent.</p>
+</error><error spec="XU" code="0030" class="DY" type="dynamic">
+<p>It is a dynamic error if an 
+insert expression specifies the insertion of an attribute node before or after a 
+child of a document node.</p>
+</error><error spec="XU" code="0031" class="DY" type="dynamic">
+<p>It is a dynamic error if multiple calls to <code>fn:put</code> in the same snapshot specify the same URI (after resolution of relative URIs).</p>
+</error><error spec="FO" code="0001" class="UP" type="dynamic">
+<p>It is a dynamic error if the first operand of <code>fn:put</code> is not a node of a supported kind.</p>
+</error><error spec="FO" code="0002" class="UP" type="dynamic">
+<p>It is a dynamic error if the second operand of <code>fn:put</code> is not a valid lexical representation of the <code>xs:anyURI</code> type.</p>
+</error></error-list></div2><div2 id="id-amended-error-codes"><head>Amendments to Existing Error Codes</head><error-list><error spec="XP" code="0005" class="ST" type="static">
+<p>During the analysis phase, it is a static error if the static type assigned to a simple expression other than <code>( )</code> or <code>data(( ))</code> is <code>empty-sequence( )</code>.</p>
+</error><error spec="XQ" code="0026" class="DY" type="dynamic">
+<p>It is a dynamic error if a constructor or replace expression would result in a processing instruction node whose content includes the string "<code>?&gt;</code>".</p>
+</error><error spec="XQ" code="0041" class="DY" type="dynamic">
+<p>It is a dynamic error if the name assigned to a processing node by  a constructor or rename expression cannot be cast to the type <code>xs:NCName</code>.</p>
+</error><error spec="XQ" code="0072" class="DY" type="dynamic">
+<p>It is a dynamic error if a constructor or replace expression would result in a comment node whose content ends with a hyphen or contains two adjacent hyphens.</p>
+</error><error spec="XQ" code="0074" class="DY" type="dynamic">
+<p>It is a dynamic error if the value of the name expression in a computed element constructor, computed attribute constructor, or rename expression cannot be converted to an expanded QName (for example, because it contains a namespace prefix not found in the statically known namespaces.)</p>
+</error></error-list></div2></div1>

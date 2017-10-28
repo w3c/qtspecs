@@ -1,0 +1,1628 @@
+<?xml version="1.0"?>
+<!DOCTYPE g:grammar SYSTEM "../../grammar-30/grammar.dtd">
+<!-- $Id: formal-grammar.xml,v 1.6 2011/05/11 03:38:49 mdyck Exp $ -->
+<!--
+====================================================================
+Description: This document defines a grammar and subsets/supersets 
+for XPath 2.0, XQuery 1.0, XPath 1.0, and the core formal semantics 
+description language.  Specific differences of these languages are 
+distinguished by 'if' attributes.
+====================================================================
+Formatting: 80 column, no tabs with indents as two spaces.
+=================================================================
++++ Change Log +++
+$Log: formal-grammar.xml,v $
+Revision 1.6  2011/05/11 03:38:49  mdyck
+The "assembly" code assumes that (g:xref|g:ref)/@orig identifies a
+language using an its g:language/@id.
+(As opposed to prodrecap/@orig, which identifies a language using
+the kv/@name in grammar-map.xml. They could be made consistent,
+but is it worth the bother?)
+
+So, in all the (g:xref|g:ref)/@orig,
+change "core" to "xcore" and "xquery" to "xquery30".
+
+This eliminates almost all of the "nt target not found!" build messages.
+
+Revision 1.5  2011/05/06 03:53:25  mdyck
+Change various occurrence of '11' and '21' to '30',
+and '1.1' and '2.1' to '3.0'.
+
+Revision 1.4  2011/02/20 09:44:26  mdyck
+Delete occurrences of
+    <g:requiredSkip show="no"/>
+as they make no difference to the document.
+
+Revision 1.3  2011/02/20 09:33:50  mdyck
+Delete unreferenced <g:token> elements.
+
+Revision 1.2  2008/12/31 00:03:25  jmelton
+Got formal semantics 1.1 to build
+
+Revision 1.45  2008/08/30 21:15:15  mdyck
+E042 (bug 3871)
+In the production for Definitions, add a semicolon after each Definition.
+Adjust the rest of the spec accordingly.
+
+Revision 1.44  2008/08/30 05:50:48  mdyck
+E041 (bug 3868)
+Fix typos in 2.4.3 [Content models].
+
+Revision 1.43  2008/08/30 01:46:34  mdyck
+E036 (bug 3268)
+Introduce Formal symbol OptDerivation.
+
+Revision 1.42  2008/07/15 05:44:48  mdyck
+E022 (bug 3946)
+Make the static typing of processing-instructions
+consistent with their dynamic typing.
+
+Revision 1.41  2007/09/30 06:20:20  mdyck
+E009 (bug 3142)
+Fix some errors in the productions for FunctionSig and TypeList.
+
+Revision 1.40  2007/09/21 00:32:52  mdyck
+E006 (parts of bugs 3875, 3184, 3194, 1715)
+Fix problems involving the domains of
+statEnv.funcType and dynEnv.funcDefn.
+
+Revision 1.39  2007/09/11 05:54:42  mdyck
+E001 (bug 1641 and some of 3896)
+Make normalization of DirAttributeValue more explicit.
+
+Revision 1.38  2007/01/15 00:28:01  jsimeon
+REC changes on FS. - Jerome
+
+Revision 1.37  2006/06/05 21:59:30  jsimeon
+Fixed wrong reference to TypeName in the formal grammar.
+- Jerome
+
+Revision 1.36  2006/06/05 20:45:29  jsimeon
+removed Occurs production in the formal grammar. - jerome
+
+Revision 1.35  2006/05/10 20:24:24  jsimeon
+Minor clean up of the formal grammar.
+- Jerome
+
+Revision 1.34  2006/05/10 19:57:52  jsimeon
+May 10th's working draft commit.
+- Jerome
+
+Revision 1.33  2006/04/25 00:24:26  jsimeon
+FS edits preparing for the next publication round.
+- Jerome
+
+Revision 1.32  2006/04/24 14:12:48  jsimeon
+*** empty log message ***
+
+Revision 1.31  2006/04/18 03:36:04  jsimeon
+Editorial fixes during CR.
+- Jerome
+
+Revision 1.30  2006/04/16 00:22:07  jsimeon
+Editorial Fixes to FS.
+- Jerome
+
+Revision 1.29  2006/04/13 16:17:56  jsimeon
+*** empty log message ***
+
+Revision 1.28  2006/04/11 22:45:41  jsimeon
+Numerous editorial fixes from last call.
+- Jerome
+
+Revision 1.27  2005/10/27 18:07:19  sboag
+Remove sequence wrappers from things that are already sequences, like productions.  Required by DTD.
+Change QNameToken (which should not be visible to any spec) to QName.
+Consistently use <g:xref name="QName" orig="core"/> form for QName.
+Removed <g:optionalSkip/> from production "LocationHints", 'cause it is not allowed.
+
+Revision 1.26  2005/10/25 11:50:26  jsimeon
+Minor editorial changes.
+- Jerome
+
+Revision 1.25  2005/10/24 14:41:47  jsimeon
+Ids and status section.
+- Jerome
+
+Revision 1.24  2005/09/29 15:02:26  jsimeon
+Editorial work.
+
+Revision 1.23  2005/09/27 13:53:19  jsimeon
+Edinburgh f2f changes.
+
+Revision 1.22  2005/09/02 07:14:23  jsimeon
+Sept 1st. changes to XQuery FS.
+
+Revision 1.21  2005/05/08 01:15:36  jsimeon
+Last call changes to XQuery 1.0 and XPath 2.0 Formal Semantics.
+
+Revision 1.20  2005/03/18 18:52:26  jsimeon
+Set of fixed to FS for March 21st editor's draft.
+
+Revision 1.19  2005/02/19 20:04:01  jsimeon
+*** empty log message ***
+
+Revision 1.18  2005/01/21 02:07:28  jsimeon
+Numerous changes and fixes, out of the Brisbane meeting.
+
+Revision 1.17  2004/08/27 19:44:23  jsimeon
+Alignment of Core grammar and Formal Semantics update.
+
+Revision 1.16  2004/05/14 20:19:22  sboag
+Latest integration effort between Don and Scott.  In particular these should have grammar production name changes.
+
+Revision 1.15  2004/01/25 22:12:54  mfernand
+
+Bug fixes to last call draft
+
+Revision 1.14  2004/01/12 19:45:53  mfernand
+
+FS Changes in prep for LC doc
+
+Revision 1.13  2003/12/09 22:10:02  mfernand
+
+9 Dec 2003 Editors' draft
+
+Revision 1.12  2003/12/03 03:39:04  mfernand
+
+16 Jan 2004 FS Document
+
+Revision 1.11  2003/10/30 19:27:53  mfernand
+
+Fixed invalid references to non-existent core productions.
+
+Revision 1.10  2003/10/28 04:18:00  mfernand
+
+14 Nov 2003 FS Working Draft
+
+Revision 1.7  2003/10/23 03:07:07  mfernand
+
+Working on Oct 24 draft
+
+Revision 1.6  2003/10/09 21:32:14  mfernand
+Changes in this draft:
+
+Removed fstemplate.xml - no longer needed
+
+FS-Align-06 (on FS)
+~~~~~~~~~~~~
+
+  The semantics of QName conflate element (and type) names, function
+  names, and attribute (and variable) names.  Write three
+  normalization rules: one for each kind above, and apply
+  appropriately.
+
+FS-Align-18 (on Lang)
+~~~~~~~~~~~
+
+  Now that "isnot" is gone, there doesn't seem to be much point in
+  having two sections for operators on nodes.  Suggest coalescing
+  "Node Comparisons" and "Order Comparisons" into one section, "Node
+  Comparisons" - order comparisons qualify as node comparisons.
+
+FS-Align-19 (on FS)
+~~~~~~~~~~~
+
+  Link all uses of Values in inference rules to def'n Values in
+  Section 2.
+
+FS-Align-24 (on FS after Lang)
+~~~~~~~~~~~
+  Got rid of @in KindTest where attribute axis is explicitly
+  identified.
+
+FS-Align-30 (on FS)
+~~~~~~~~~~
+
+   Missing abs() in Section 6
+
+FS-Align-31 (on FS)
+~~~~~~~~~~
+   (from Michael K)
+   All rules for F&O functions in Section 6 should be applied after
+   type promotion to the base primitive types.
+   http://lists.w3.org/Archives/Member/w3c-xsl-query/2003Sep/0126.html
+   http://lists.w3.org/Archives/Member/w3c-xsl-query/2003Sep/0127.html
+
+FS-Align-32 (on FS)
+~~~~~~~~~~~
+
+    Normative text in "XML Values" section should point to constraints
+    in XQuery Data Model
+
+FS-Align-34 (on FS)
+~~~~~~~~~~~
+  Add static rules for fn:reverse to Section 6.
+
+FS-Align-35 (on FS)
+~~~~~~~~~~~
+
+  See changes to F&O in:
+  http://lists.w3.org/Archives/Member/w3c-query-operators/2003Sep/0072.html
+  Discussed at 1 Oct XQuery mtg.  Check for changes to static rules.
+
+  fn:error(item?) returns none
+
+FS-Align-36 (on FS)
+~~~~~~~~~~~
+  Implement changes to document structure from Don in:
+  http://lists.w3.org/Archives/Member/w3c-query-editors/2003Oct/0001.html
+
+DONE
+
+FS-Align-37 (on FS)
+~~~~~~~~~~~
+  Check that static type of processing-instruction() NodeTest is
+  processing-instruction?
+
+Revision 1.5  2003/09/17 22:07:07  mfernand
+
+Sanity check so that all the F2F changes don't get
+lost.
+
+Revision 1.4  2003/08/20 17:00:28  sboag
+Major changes for new build system, and for passing validation.  Note a lot of rearranging, so a diff is useless.
+
+Revision 1.3  2003/08/12 02:57:19  mfernand
+
+August 22 WD
+
+Revision 1.1  2003/08/03 23:57:22  mfernand
+
+August draft of FS document
+
+Revision 1     2002/4/17 21:01:14  jerome
+Created fs-grammar.xml file from xpath-grammar.xml to contain FS only productions.
+=================================================================
+-->
+
+<g:grammar xmlns:g="http://www.w3.org/2001/03/XPath/grammar">
+  <g:language id="fs" display-name="XQuery FS 1.0"/>
+
+  <g:start name="Value" state="DEFAULT" if="formal"/>
+
+  <!-- Note: the core notations do not appear here as none of the
+      productions are actually part of any language. -->
+
+  <g:token name="DefineElement">
+    <g:string >define</g:string>
+    <g:string >element</g:string>
+  </g:token>
+
+  <g:token name="DefineAttribute">
+    <g:string >define</g:string>
+    <g:string >attribute</g:string>
+  </g:token>
+
+  <g:token name="DefineType">
+    <g:string >define</g:string>
+    <g:string >type</g:string>
+  </g:token>
+
+  <g:token name="Multiply" if="xpath xquery">
+    <g:string>*</g:string>
+  </g:token>
+
+  <g:token name="Return">
+    <g:string >return</g:string>
+  </g:token>
+
+  <g:token name="Default">
+    <g:string >default</g:string>
+  </g:token>
+
+  <g:token name="Case">
+    <g:string >case</g:string>
+  </g:token>
+
+  <g:token name="As">
+    <g:string >as</g:string>
+  </g:token>
+
+  <g:token name="DefineFunction">
+		<g:string>declare</g:string>
+		<g:string>function</g:string>
+  </g:token>
+
+  <g:token name="Element" value-type="id">
+    <g:string >element</g:string>
+  </g:token>
+
+  <g:token name="any" value-type="id">
+    <g:string >any</g:string>
+  </g:token>
+
+  <g:token name="Document" override="true" value-type="id">
+    <g:string >document</g:string>
+  </g:token>
+
+  <g:token name="Text" override="true" value-type="id">
+    <g:string>text</g:string >
+  </g:token>
+
+  <g:token name="Comment" override="true" value-type="id">
+    <g:string>comment</g:string >
+  </g:token>
+
+  <g:token name="ProcessingInstruction" override="true" value-type="id">
+    <g:string>processing-instruction</g:string >
+  </g:token>
+
+  <g:token name="NillableToken" override="true" value-type="id">
+    <g:string>nillable</g:string>
+  </g:token>
+
+  <g:token name="substitutionGroupToken" override="true" value-type="id">
+    <g:string>substitutionGroup</g:string>
+  </g:token>
+
+  <g:token name="Restricts" override="true" value-type="id">
+    <g:string>restricts</g:string>
+  </g:token>
+
+  <g:token name="Extends" override="true" value-type="id">
+    <g:string>extends</g:string>
+  </g:token>
+
+  <g:token name="Nilled" override="true" value-type="id">
+    <g:string>nilled</g:string>
+  </g:token>
+
+  <g:token name="MixedToken" override="true" value-type="id">
+    <g:string>mixed</g:string>
+  </g:token>
+
+  <g:token name="maxLengthToken" override="true" value-type="id">
+    <g:string>maxLength</g:string>
+  </g:token>
+
+  <g:token name="minLengthToken" override="true" value-type="id">
+    <g:string>minLength</g:string>
+  </g:token>
+
+  <g:token name="lengthToken" override="true" value-type="id">
+    <g:string>length</g:string>
+  </g:token>
+
+  <g:token name="maxOccursToken" override="true" value-type="id">
+    <g:string>maxOccurs</g:string>
+  </g:token>
+
+  <g:token name="minOccursToken" override="true" value-type="id">
+    <g:string>minOccurs</g:string>
+  </g:token>
+
+  <g:token name="OfType" value-type="id">
+    <g:string >of</g:string>
+    <g:string >type</g:string>
+  </g:token>
+
+  <g:token name="SubstitutesFor" value-type="id">
+    <g:string >substitutes</g:string>
+    <g:string >for</g:string>
+  </g:token>
+
+  <g:token name="Attribute" value-type="id">
+    <g:string >attribute</g:string>
+  </g:token>
+
+  <g:token name="Namespace" value-type="id">
+    <g:string >namespace</g:string>
+  </g:token>
+
+  <g:token name="None" value-type="id">
+    <g:string >none</g:string>
+  </g:token>
+
+  <g:token name="Empty" value-type="id">
+    <g:string >empty</g:string>
+  </g:token>
+
+  <g:token name="Star" value-type="string">
+    <g:string>*</g:string>
+  </g:token>
+
+  <g:token name="QMark">
+    <g:string>?</g:string>
+  </g:token>
+
+  <g:token name="Vbar">
+    <g:string>|</g:string>
+  </g:token>
+
+  <g:token name="Lpar">
+    <g:string>(</g:string>
+  </g:token>
+
+  <g:token name="Rpar">
+    <g:string>)</g:string>
+  </g:token>
+
+  <g:token name="Comma">
+    <g:string>,</g:string>
+  </g:token>
+
+  <g:token name="Amp">
+    <g:string>&amp;</g:string>
+  </g:token>
+
+  <g:token name="HexDigits" if="xquery core" inline="false">
+    <g:oneOrMore>
+      <g:charClass>
+        <g:charRange minChar="0" maxChar="9"/>
+        <g:charRange minChar="a" maxChar="f"/>
+        <g:charRange minChar="A" maxChar="F"/>
+      </g:charClass>
+    </g:oneOrMore>
+  </g:token>
+
+  <g:token name="CharRef" if="xquery core" inline="false">
+    <g:string>&amp;#</g:string>
+    <g:choice>
+      <g:xref name="Digits" orig="xcore"/>
+      <g:sequence>
+        <g:string>x</g:string>
+        <g:ref name="HexDigits"/>
+      </g:sequence>
+    </g:choice>
+    <g:string>;</g:string>
+  </g:token>
+
+  <g:token name="ValueIndicator" recognize="START_TAG">
+    <g:string>=</g:string>
+  </g:token>
+
+  <!-- Recognize in OPERATOR state for function definitions. -->
+  <g:token name="Lbrace" override="true">
+    <g:string>{</g:string>
+  </g:token>
+
+  <g:token name="Rbrace" override="true">
+    <g:string>}</g:string>
+  </g:token>
+
+  <g:token name="LCurlyBraceEscape" if="xquery core" override="true">
+    <g:string>{{</g:string>
+  </g:token>
+
+  <g:token name="RCurlyBraceEscape" if="xquery core" override="true">
+    <g:string>}}</g:string>
+  </g:token>
+
+  <!-- This needs to come after the rules for special characters. -->
+  <g:token name="Char" if="xquery core xpath" inline="false" value-type="string">
+    <g:charClass>
+      <g:charCode value="0009"/>
+      <g:charCode value="000D"/>
+      <g:charCode value="000A"/>
+      <!-- This isn't quite right, but JavaCC doesn't understand surrogates. -->
+      <g:charCodeRange minValue="0020" maxValue="FFFD"/>
+    </g:charClass>
+  </g:token>
+
+  <g:token name="String">
+    <g:emph>String</g:emph>
+  </g:token>  
+
+  <g:token name="StringType">
+    <g:emph>String</g:emph>
+  </g:token>  
+
+  <g:token name="BooleanType">
+    <g:emph>Boolean</g:emph>
+  </g:token>  
+
+  <g:token name="DecimalType">
+    <g:emph>Decimal</g:emph>
+  </g:token>  
+
+  <g:token name="FloatType">
+    <g:emph>Float</g:emph>
+  </g:token>  
+
+  <g:token name="DoubleType">
+    <g:emph>Double</g:emph>
+  </g:token>  
+
+  <g:token name="DurationType">
+    <g:emph>Duration</g:emph>
+  </g:token>  
+
+  <g:token name="DateTimeType">
+    <g:emph>DateTime</g:emph>
+  </g:token>  
+
+  <g:token name="TimeType">
+    <g:emph>Time</g:emph>
+  </g:token>  
+
+  <g:token name="DateType">
+    <g:emph>Date</g:emph>
+  </g:token>  
+
+  <g:token name="GYearMonthType">
+    <g:emph>GYearMonth</g:emph>
+  </g:token>  
+
+  <g:token name="GYearType">
+    <g:emph>GYear</g:emph>
+  </g:token>  
+
+  <g:token name="GMonthDayType">
+    <g:emph>GMonthDay</g:emph>
+  </g:token>  
+
+  <g:token name="GDayType">
+    <g:emph>GDay</g:emph>
+  </g:token>  
+
+  <g:token name="GMonthType">
+    <g:emph>GMonth</g:emph>
+  </g:token>  
+
+  <g:token name="HexBinaryType">
+    <g:emph>HexBinary</g:emph>
+  </g:token>  
+
+  <g:token name="Base64BinaryType">
+    <g:emph>Base64Binary</g:emph>
+  </g:token>  
+
+  <g:token name="AnyURIType">
+    <g:emph>AnyURI</g:emph>
+  </g:token>  
+
+  <g:token name="QNameType">
+    <g:emph>expanded-QName</g:emph>
+  </g:token>  
+
+  <g:token name="NOTATIONType">
+    <g:emph>NOTATION</g:emph>
+  </g:token>  
+
+  <g:token name="DirElemContent" if="xquery core">
+    <g:string >DirElemContent</g:string>
+  </g:token>
+
+  <g:token name="include" value-type="id">
+    <g:string>include</g:string>
+  </g:token>
+
+  <g:token name="import" value-type="id">
+    <g:string>import</g:string>
+  </g:token>
+
+  <g:token name="redefine" value-type="id">
+    <g:string>redefine</g:string>
+  </g:token>
+
+  <g:token name="simpleType" value-type="id">
+    <g:string>simpleType</g:string>
+  </g:token>
+
+  <g:token name="complexType" value-type="id">
+    <g:string>complexType</g:string>
+  </g:token>
+
+  <g:token name="attributeGroup" value-type="id">
+    <g:string>attributeGroup</g:string>
+  </g:token>
+
+  <g:token name="element" value-type="id">
+    <g:string>element</g:string>
+  </g:token>
+
+  <g:token name="attribute" value-type="id">
+    <g:string>attribute</g:string>
+  </g:token>
+
+  <g:token name="group" value-type="id">
+    <g:string>group</g:string>
+  </g:token>
+
+  <g:token name="notation" value-type="id">
+    <g:string>notation</g:string>
+  </g:token>
+
+  <g:token name="anyAttribute" value-type="id">
+    <g:string>anyAttribute</g:string>
+  </g:token>
+
+  <g:token name="annotation" value-type="id">
+    <g:string>annotation</g:string>
+  </g:token>
+
+  <g:token name="simpleContent" value-type="id">
+    <g:string>simpleContent</g:string>
+  </g:token>
+
+  <g:token name="complexContent" value-type="id">
+    <g:string>complexContent</g:string>
+  </g:token>
+
+  <g:token name="all" value-type="id">
+    <g:string>all</g:string>
+  </g:token>
+
+
+  <g:token name="choice" value-type="id">
+    <g:string>choice</g:string>
+  </g:token>
+
+  <g:token name="sequence" value-type="id">
+    <g:string>sequence</g:string>
+  </g:token>
+
+  <g:token name="nonNegativeInteger" value-type="id">
+    <g:string>nonNegativeInteger</g:string>
+  </g:token>
+
+  <g:token name="unbounded" value-type="id">
+    <g:string>unbounded</g:string>
+  </g:token>
+
+  <g:token name="use" value-type="id">
+    <g:string>use</g:string>
+  </g:token>
+  <g:token name="default" value-type="id">
+    <g:string>default</g:string>
+  </g:token>
+  <g:token name="fixed" value-type="id">
+    <g:string>fixed</g:string>
+  </g:token>
+  <g:token name="optional" value-type="id">
+    <g:string>optional</g:string>
+  </g:token>
+  <g:token name="prohibited" value-type="id">
+    <g:string>prohibited</g:string>
+  </g:token>
+  <g:token name="required" value-type="id">
+    <g:string>required</g:string>
+  </g:token>
+
+  <g:token name="VariableIndicator" inline="true" node-type="void">
+    <g:string>$</g:string>
+  </g:token>
+
+  <!-- It would be nice to not take character content runs one character 
+       at a time.  However, it seems difficult to say, "all these characters 
+       but these three", at least in JavaCC. -->
+  <!-- token name="CharData" if="xquery" inline="true" value-type="string">
+    <g:oneOrMore>
+      <g:complement>
+      <g:charClass>
+        <g:char>&lt;</g:char>
+        <g:char>&amp;</g:char>
+        <g:char>{</g:char>
+      </g:charClass>
+      </g:complement>
+    </g:oneOrMore>
+  </g:token -->
+
+  <g:production name="AtomicValueContent">
+    <g:choice break="true">
+      <g:ref name="StringType"/>
+      <g:ref name="BooleanType"/>
+      <g:ref name="DecimalType"/>
+      <g:ref name="FloatType"/>
+      <g:ref name="DoubleType"/>
+      <g:ref name="DurationType"/>
+      <g:ref name="DateTimeType"/>
+      <g:ref name="TimeType"/>
+      <g:ref name="DateType"/>
+      <g:ref name="GYearMonthType"/>
+      <g:ref name="GYearType"/>
+      <g:ref name="GMonthDayType"/>
+      <g:ref name="GDayType"/>
+      <g:ref name="GMonthType"/>
+      <g:ref name="HexBinaryType"/>
+      <g:ref name="Base64BinaryType"/>
+      <g:ref name="AnyURIType"/>
+      <g:ref name="QNameType"/>
+      <g:ref name="NOTATIONType"/>
+    </g:choice>
+  </g:production>
+
+  <g:production name="TypeAnnotation">
+      <g:ref name="OfType"/>
+      <g:ref name="TypeName"/>
+  </g:production>
+
+  <g:production name="ElementName">
+    <g:xref name="QName" orig="xcore"/> 
+  </g:production>
+
+  <g:production name="ElementNameOrWildcard">
+    <g:choice>
+      <g:xref name="QName" orig="xcore"/> 
+      <g:ref name="Star" orig="xcore"/>
+    </g:choice>
+  </g:production>
+
+  <g:production name="AttributeNameOrWildcard">
+    <g:choice>
+      <g:xref name="QName" orig="xcore"/> 
+      <g:ref name="Star" orig="xcore"/>
+    </g:choice>
+  </g:production>
+
+  <g:production name="AttributeName">
+   <g:xref name="QName" orig="xcore"/> 
+  </g:production>
+ 
+<!-- ******************************************************************
+      XQuery type value
+     ****************************************************************** -->
+
+  <g:production name="Value">
+    <g:choice break="true">
+      <g:ref name="Item"/>
+      <g:sequence>
+        <g:ref name="Value"/>
+        <g:ref name="Comma"/>
+        <g:ref name="Value"/>
+      </g:sequence>
+      <g:sequence>
+        <g:ref name="Lpar"/>
+        <g:ref name="Rpar"/>
+      </g:sequence>
+    </g:choice>
+  </g:production>
+
+  <g:production name="SimpleValue">
+    <g:choice break="true">
+      <g:ref name="AtomicValue"/>
+      <g:sequence>
+        <g:ref name="SimpleValue"/>
+        <g:ref name="Comma"/>
+        <g:ref name="SimpleValue"/>
+      </g:sequence>
+      <g:sequence>
+        <g:ref name="Lpar"/>
+        <g:ref name="Rpar"/>
+      </g:sequence>
+    </g:choice>
+  </g:production>
+
+  <g:production name="ElementValue">
+        <g:ref name="Element"/>
+        <g:ref name="ElementName"/>
+        <g:optional>
+          <g:ref name="Nilled"/>
+        </g:optional>
+        <g:optional>
+          <g:ref name="TypeAnnotation"/>
+        </g:optional>
+        <g:ref name="Lbrace"/>
+        <g:ref name="Value"/>
+        <g:ref name="Rbrace"/>
+        <g:optional>
+          <g:ref name="Lbrace"/>
+          <g:ref name="NamespaceBindings"/>
+          <g:ref name="Rbrace"/>
+        </g:optional>
+  </g:production>
+ 
+  <g:production name="AttributeValue">
+        <g:ref name="Attribute"/>
+        <g:ref name="AttributeName"/>
+        <g:optional>
+         <g:ref name="TypeAnnotation"/>
+        </g:optional>
+        <g:ref name="Lbrace"/>
+        <g:ref name="SimpleValue"/>
+        <g:ref name="Rbrace"/>
+  </g:production>
+
+  <g:production name="DocumentValue">
+        <g:ref name="Document"/>
+        <g:ref name="Lbrace"/>
+        <g:ref name="Value"/>
+        <g:ref name="Rbrace"/>
+  </g:production>
+
+  <g:production name="TextValue">
+        <g:ref name="Text"/>
+        <g:ref name="Lbrace"/>
+        <g:ref name="String"/>
+        <g:ref name="Rbrace"/>
+  </g:production>
+
+  <g:production name="CommentValue">
+        <g:ref name="Comment"/>
+        <g:ref name="Lbrace"/>
+        <g:ref name="String"/>
+        <g:ref name="Rbrace"/>
+  </g:production>
+
+  <g:production name="ProcessingInstructionValue">
+        <g:ref name="ProcessingInstruction"/>
+        <g:xref name="NCName" orig="xcore"/>
+        <g:ref name="Lbrace"/>
+        <g:ref name="String"/>
+        <g:ref name="Rbrace"/>
+  </g:production>
+
+  <g:production name="NamespaceBindings">
+        <g:ref name="NamespaceBinding"/>
+        <g:zeroOrMore name="NamespaceBindingTail">
+          <g:ref name="Comma"/>
+          <g:ref name="NamespaceBinding"/>
+	</g:zeroOrMore>
+  </g:production>
+
+  <g:production name="LocationHints">
+	<g:string>at</g:string>
+	<g:xref name="URILiteral" orig="xquery30"/>
+	<g:zeroOrMore name="LocationHints2">
+		<g:ref name="Comma"/>
+		<g:xref name="URILiteral" orig="xquery30"/>
+	</g:zeroOrMore>
+  </g:production>
+
+  <g:production name="NamespaceBinding">
+        <g:ref name="Namespace"/>
+        <g:xref name="NCName" orig="xcore"/>
+        <g:ref name="Lbrace"/>
+        <g:ref name="AnyURIType"/> 
+        <g:ref name="Rbrace"/>
+  </g:production>
+
+  <g:production name="Prefix">
+    <g:xref name="NCName" orig="xcore"/>
+  </g:production>
+
+  <g:production name="LocalPart">
+    <g:xref name="NCName" orig="xcore"/>
+  </g:production>
+
+  <g:production name="NodeValue">
+    <g:choice break="true">
+      <g:ref name="ElementValue"/>
+      <g:ref name="AttributeValue"/>
+      <g:ref name="DocumentValue"/>
+      <g:ref name="TextValue"/>
+      <g:ref name="CommentValue"/>
+      <g:ref name="ProcessingInstructionValue"/>
+    </g:choice>
+  </g:production>
+
+  <g:production name="Item">
+    <g:choice break="true">
+      <g:ref name="NodeValue"/>
+      <g:ref name="AtomicValue"/>
+    </g:choice>
+  </g:production>
+
+  <g:production name="AtomicValue">
+      <g:ref name="AtomicValueContent"/>
+      <g:optional>
+        <g:ref name="TypeAnnotation"/>
+      </g:optional>
+  </g:production>
+
+  <g:production name="TypeName">
+    <g:choice>
+     <g:xref name="QName" orig="xcore"/> 
+    </g:choice>
+  </g:production>
+
+<!-- ******************************************************************
+      XQuery type system
+     ****************************************************************** -->
+
+  <g:production name="Type">
+    <g:choice break="true">
+      <g:ref name="FormalItemType"/>
+      <g:sequence>
+        <g:ref name="Type"/>
+        <g:xref name="OccurrenceIndicator" orig="xquery30"/>
+      </g:sequence>
+      <g:sequence>
+        <g:ref name="Type"/>
+        <g:ref name="Amp"/>
+        <g:ref name="Type"/>
+      </g:sequence>
+      <g:sequence>
+        <g:ref name="Type"/>
+        <g:ref name="Comma"/>
+        <g:ref name="Type"/>
+      </g:sequence>
+      <g:sequence>
+        <g:ref name="Type"/>
+        <g:ref name="Vbar"/>
+        <g:ref name="Type"/>
+      </g:sequence>
+      <g:ref name="Empty"/>
+      <g:ref name="None"/>
+      <g:sequence>
+        <g:ref name="Lpar"/>
+        <g:ref name="Type"/>
+        <g:ref name="Rpar"/>
+      </g:sequence>
+    </g:choice>
+  </g:production>
+
+  <g:production name="FormalItemType">
+    <g:choice>
+      <g:ref name="AtomicTypeName"/>
+      <g:ref name="NodeType"/>
+    </g:choice>
+  </g:production>
+
+  <g:production name="NodeType">
+    <g:choice break="true">
+      <g:ref name="DocumentType"/>
+      <g:ref name="AttributeType"/>
+      <g:ref name="ElementContentType"/>
+    </g:choice>
+  </g:production>
+
+  <g:production name="ElementContentType">
+    <g:choice break="true">
+      <g:ref name="ElementType"/>
+      <g:ref name="Comment"/>
+      <!-- E022 start -->
+      <g:ref name="ProcessingInstructionType"/>
+      <!-- E022 end -->
+      <g:ref name="Text"/>
+    </g:choice>
+  </g:production>
+ 
+  <g:production name="AtomicTypeName">
+   <g:ref name="TypeName"/> 
+  </g:production>
+
+  <g:production name="ElementType">
+      <g:ref name="Element"/>
+      <g:ref name="ElementNameOrWildcard"/>
+      <g:ref name="OptTypeSpecifier"/>
+  </g:production>
+
+  <g:production name="TypeSpecifier">
+    <g:ref name="OptNillable"/>
+    <g:ref name="TypeReference"/>
+  </g:production>
+
+  <g:production name="AttributeType">
+      <g:ref name="Attribute"/>
+      <g:ref name="AttributeNameOrWildcard"/>
+      <g:ref name="OptTypeReference"/>
+  </g:production>
+
+  <g:production name="Nillable">
+    <g:ref name="NillableToken"/>
+  </g:production>
+
+  <g:production name="TypeDerivation">
+    <g:choice>
+      <g:ref name="ComplexTypeDerivation"/>
+      <g:ref name="AtomicTypeDerivation"/>
+    </g:choice>
+  </g:production>
+
+  <g:production name="ComplexTypeDerivation">
+      <!-- E036 start -->
+      <g:ref name="OptDerivation"/>
+      <!-- E036 end -->
+      <g:ref name="OptMixed"/>
+      <g:ref name="Lbrace"/>
+      <g:optional>
+        <g:ref name="Type"/>
+      </g:optional>
+      <g:ref name="Rbrace"/>
+  </g:production>
+
+  <!-- E036: This is a logical location for the OptDerivation production -->
+
+  <g:production name="AtomicTypeDerivation">
+      <g:ref name="Restricts"/>
+      <g:ref name="AtomicTypeName"/>
+  </g:production>
+
+  <g:production name="TypeReference">
+      <g:ref name="OfType"/>
+      <g:ref name="TypeName"/>
+  </g:production>
+
+  <g:production name="Derivation">
+    <g:choice break="true">
+      <g:sequence>
+        <g:ref name="Restricts"/>
+        <g:ref name="TypeName"/>
+      </g:sequence>
+      <g:sequence>
+        <g:ref name="Extends"/>
+        <g:ref name="TypeName"/>
+      </g:sequence>
+    </g:choice>
+  </g:production>
+
+  <g:production name="Mixed">
+    <g:ref name="MixedToken"/>
+  </g:production>
+
+  <g:production name="Definition">
+    <g:choice break="true">
+      <g:sequence>
+        <g:ref name="DefineElement"/>
+        <g:ref name="ElementName"/>
+        <g:ref name="OptSubstitution"/>
+        <g:ref name="OptNillable"/>
+        <g:ref name="TypeReference"/>
+      </g:sequence>
+      <g:sequence>
+        <g:ref name="DefineAttribute"/>
+        <g:ref name="AttributeName"/>
+        <g:ref name="TypeReference"/>
+      </g:sequence>
+      <g:sequence>
+        <g:ref name="DefineType"/>
+        <g:ref name="TypeName"/>
+        <g:ref name="TypeDerivation"/>
+      </g:sequence>
+    </g:choice>
+  </g:production>
+
+  <g:production name="Definitions">
+    <g:optional>
+      <g:sequence>
+        <g:ref name="Definition"/>
+        <!-- E042 start -->
+        <g:ref name="Separator" orig="xcore"/>
+        <!-- E042 end -->
+        <g:ref name="Definitions"/>
+      </g:sequence>
+    </g:optional>
+  </g:production>
+
+  <g:production name="Substitution">
+      <g:ref name="SubstitutesFor"/>
+      <g:ref name="ElementName"/>
+  </g:production>
+
+  <g:production name="AttributeModel">
+    <g:choice break="true">
+      <g:ref name="AttributeType"/>
+      <g:sequence>
+        <g:ref name="AttributeType"/>
+        <g:ref name="QMark"/>
+      </g:sequence>
+      <g:sequence>
+        <g:ref name="AttributeModel"/>
+        <g:ref name="Amp"/>
+        <g:ref name="AttributeModel"/>
+      </g:sequence>
+      <g:sequence>
+        <!-- E041 start -->
+        <g:ref name="Empty"/>
+        <!-- E041 end -->
+      </g:sequence>
+    </g:choice>
+  </g:production>
+
+  <g:production name="ElementModel">
+    <g:choice break="true">
+      <g:ref name="ElementType"/>
+      <g:sequence>
+        <g:ref name="ElementType"/>
+        <g:ref name="QMark"/>
+      </g:sequence>
+      <g:sequence>
+        <g:ref name="ElementModel"/>
+        <g:ref name="Amp"/>
+        <g:ref name="ElementModel"/>
+      </g:sequence>
+      <g:sequence>
+        <!-- E041 start -->
+        <g:ref name="Empty"/>
+        <!-- E041 end -->
+      </g:sequence>
+      <g:ref name="None"/>
+    </g:choice>
+  </g:production>
+
+  <g:production name="PrimeType">
+    <g:choice break="true">
+      <g:ref name="FormalItemType"/>
+      <g:sequence>
+        <g:ref name="PrimeType"/>
+        <g:ref name="Vbar"/>
+        <g:ref name="PrimeType"/>
+      </g:sequence>
+    </g:choice>
+  </g:production>
+
+  <g:production name="DocumentType">
+        <g:ref name="Document"/>
+        <g:optional>
+          <g:ref name="Lbrace"/>
+          <g:ref name="Type"/>
+          <g:ref name="Rbrace"/>
+        </g:optional>
+  </g:production>
+
+<!--
+====================================================================
+The following productions are describing specific bits and pieces of
+XML Schema, and are used when describing the mapping from XML Schema
+to the XQuery type system. - js
+====================================================================
+-->
+
+  <g:production name="SPragma">
+    <g:zeroOrMore>
+      <g:choice>
+        <g:ref name="include"/>
+        <g:ref name="import"/>
+        <g:ref name="redefine"/>
+        <g:ref name="annotation"/>
+      </g:choice>
+    </g:zeroOrMore>
+  </g:production>
+
+  <g:production name="Content">
+    <g:zeroOrMore>
+        <g:choice>
+          <g:ref name="simpleType"/>
+          <g:ref name="complexType"/>
+          <g:ref name="element"/>
+          <g:ref name="attribute"/>
+          <g:ref name="attributeGroup"/>
+          <g:ref name="group"/>
+          <g:ref name="notation"/>
+        </g:choice>
+        <g:zeroOrMore>
+          <g:ref name="annotation"/>
+        </g:zeroOrMore>
+    </g:zeroOrMore>
+  </g:production>
+
+  <g:production name="MixedAttribute">
+      <g:ref name="MixedToken"/>
+      <g:ref name="ValueIndicator"/>
+      <g:ref name="BooleanType"/>
+  </g:production>
+
+  <g:production name="NillableAttribute">
+      <g:ref name="NillableToken"/>
+      <g:ref name="ValueIndicator"/>
+      <g:ref name="BooleanType"/>
+  </g:production>
+
+  <g:production name="substitutionGroupAttribute">
+      <g:ref name="substitutionGroupToken"/>
+      <g:ref name="ValueIndicator"/>
+      <g:xref name="QName" orig="xcore"/>
+  </g:production>
+
+  <g:production name="maxLength">
+      <g:ref name="maxLengthToken"/>
+      <g:ref name="ValueIndicator"/>
+      <g:ref name="nonNegativeInteger"/>
+  </g:production>
+
+  <g:production name="minLength">
+      <g:ref name="minLengthToken"/>
+      <g:ref name="ValueIndicator"/>
+      <g:ref name="nonNegativeInteger"/>
+  </g:production>
+
+  <g:production name="length">
+      <g:ref name="lengthToken"/>
+      <g:ref name="ValueIndicator"/>
+      <g:ref name="nonNegativeInteger"/>
+  </g:production>
+
+  <g:production name="maxOccurs">
+      <g:ref name="maxOccursToken"/>
+      <g:ref name="ValueIndicator"/>
+      <g:choice>
+        <g:ref name="nonNegativeInteger"/>
+        <g:ref name="unbounded"/>
+      </g:choice>
+  </g:production>
+
+  <g:production name="minOccurs">
+      <g:ref name="minOccursToken"/>
+      <g:ref name="ValueIndicator"/>
+      <g:ref name="nonNegativeInteger"/>
+  </g:production>
+
+  <g:production name="OccursAttributes">
+       <g:choice>
+      <g:ref name="maxOccurs"/>
+      <g:ref name="minOccurs"/>
+      <g:ref name="maxLength"/>
+      <g:ref name="minLength"/>
+      <g:ref name="length"/>
+        </g:choice>
+  </g:production>
+
+  <g:production name="ComplexTypeContent">
+      <g:optional> 
+       <g:ref name="annotation"/>
+      </g:optional>
+      <g:choice>
+        <g:ref name="simpleContent"/>
+        <g:ref name="complexContent"/>
+    	<g:sequence>
+          <g:ref name="ChildrenContent"/>
+          <g:ref name="AttributeContent"/>
+    	</g:sequence>
+      </g:choice>
+  </g:production>
+
+  <g:production name="ChildrenContent">
+      <g:optional> 
+        <g:choice>
+          <g:ref name="group"/>
+          <g:ref name="all"/>
+          <g:ref name="choice"/>
+          <g:ref name="sequence"/>
+        </g:choice>
+      </g:optional>
+  </g:production>
+
+  <g:production name="GroupComponent">
+      <g:choice>
+        <g:ref name="element"/>
+        <g:ref name="group"/>
+        <g:ref name="choice"/>
+        <g:ref name="sequence"/>
+        <g:ref name="any"/>
+      </g:choice>
+  </g:production>
+
+  <g:production name="AttributeContent">
+       <g:zeroOrMore>
+         <g:choice>
+           <g:ref name="attribute"/>
+           <g:ref name="attributeGroup"/>
+         </g:choice>
+       </g:zeroOrMore>
+       <g:optional> 
+          <g:ref name="anyAttribute"/>
+       </g:optional>
+  </g:production>
+
+  <g:production name="UseAttribute">
+      <g:ref name="use"/>
+      <g:ref name="ValueIndicator"/>
+      <g:choice>
+        <g:ref name="optional"/>
+        <g:ref name="prohibited"/>
+        <g:ref name="required"/>
+      </g:choice>
+  </g:production>
+
+  <g:production name="DefaultAttribute">
+      <g:ref name="default"/>
+      <g:ref name="ValueIndicator"/>
+      <g:choice>
+        <g:ref name="String"/>
+      </g:choice>
+  </g:production>
+
+  <g:production name="FixedAttribute">
+      <g:ref name="fixed"/>
+      <g:ref name="ValueIndicator"/>
+      <g:choice>
+        <g:ref name="String"/>
+      </g:choice>
+  </g:production>
+
+<!--
+====================================================================
+The following productions are really not part of any language, but
+are used in the course of defining the formal semantics - js
+====================================================================
+-->
+
+  <!-- Filter, PrincipalNodeKind and Axis are used to describe the
+       semantics of XPath - Jerome -->
+
+  <g:production name="PrincipalNodeKind">
+    <g:choice break="false">
+      <g:ref name="Element"/>
+      <g:ref name="Attribute"/>
+      <g:ref name="Namespace"/>
+    </g:choice>
+  </g:production>
+
+  <!-- bits and pieces of FLWR expressions - js -->
+
+  <g:production name="FormalFLWORClause">
+    <g:choice>
+      <g:xref name="ForClause" orig="xquery30"/>
+      <g:xref name="LetClause" orig="xquery30"/>
+      <g:xref name="WhereClause" orig="xquery30"/>
+      <g:xref name="OrderByClause" orig="xquery30"/>
+    </g:choice>
+  </g:production>
+
+  <g:production name="FormalReturnClause">
+    <g:choice>
+      <g:ref name="FormalFLWORExpr"/>
+      <g:sequence>
+        <g:string>return</g:string>
+        <g:ref name="Expr" orig="xcore"/>
+      </g:sequence>
+    </g:choice>
+  </g:production>
+
+  <g:production name="FormalFLWORExpr">
+    <g:sequence>
+      <g:ref name="FormalFLWORClause"/>
+      <g:ref name="FormalReturnClause"/>
+    </g:sequence>
+  </g:production>
+
+  <!-- bits and pieces of Typeswitch expressions - js -->
+
+  <g:production name="FormalCaseClauses">
+    <g:choice>
+      <g:sequence>
+        <g:ref name="FormalCaseClause"/>
+        <g:ref name="FormalCaseClauses"/>
+      </g:sequence>
+      <g:sequence>
+        <g:ref name="FormalDefaultCaseClause"/>
+      </g:sequence>
+    </g:choice>
+  </g:production>
+
+  <g:production name="FormalCaseClause">
+    <g:sequence>
+      <!-- g:sequence -->
+        <g:ref name="Case"/>
+    	  <g:ref name="VariableIndicator"/>
+    	  <g:xref name="VarName" orig="xcore"/>
+        <g:ref name="As"/>
+        <g:xref name="SequenceType" orig="xcore"/>
+        <g:ref name="Return"/>
+        <g:xref name="Expr" orig="xquery30"/>
+      <!-- /g:sequence -->
+    </g:sequence>
+  </g:production>
+
+  <g:production name="FormalDefaultCaseClause">
+    <g:sequence>
+      <g:ref name="Default"/>
+    	<g:ref name="VariableIndicator"/>
+    	<g:xref name="VarName" orig="xcore"/>
+      <g:ref name="Return"/>
+      <g:xref name="Expr" orig="xquery30"/>
+    </g:sequence>
+  </g:production>
+
+  <!-- Type declaration stuff follows -->
+  <g:production name="PrologDeclList">
+    <g:optional>
+      <g:ref name="PrologDecl"/>
+      <g:ref name="Separator" orig="xcore"/>
+      <g:ref name="PrologDeclList"/>
+    </g:optional>
+  </g:production>
+
+  <g:production name="PrologDecl">
+    <g:choice break="true">
+      <g:xref name="DefaultCollationDecl" orig="xquery30"/>
+      <g:xref name="BaseURIDecl"          orig="xquery30"/>
+      <g:xref name="ConstructionDecl"     orig="xquery30"/>
+      <g:xref name="OrderingModeDecl"     orig="xquery30"/>
+      <g:xref name="EmptyOrderDecl"       orig="xquery30"/>
+      <g:xref name="CopyNamespacesDecl"   orig="xquery30"/>
+      <g:xref name="SchemaImport" 	  orig="xquery30"/>
+      <g:xref name="ModuleImport" 	  orig="xquery30"/>
+      <g:xref name="NamespaceDecl"        orig="xquery30"/>
+      <g:xref name="DefaultNamespaceDecl" orig="xquery30"/>
+      <g:xref name="VarDecl"              orig="xquery30"/>
+      <g:xref name="FunctionDecl"         orig="xquery30"/>
+      <g:xref name="OptionDecl"           orig="xquery30"/>
+    </g:choice>
+  </g:production>
+
+  <g:production name="OptAtomicType">
+    <g:choice>
+      <g:ref name="AtomicTypeName"/>
+      <g:sequence>
+        <g:ref name="AtomicTypeName"/>
+        <g:ref name="QMark"/>
+      </g:sequence>
+      <g:ref name="Empty"/>
+    </g:choice>
+  </g:production>
+
+  <g:production name="OptMixed">
+    <g:optional>
+      <g:ref name="Mixed"/>
+    </g:optional>
+  </g:production>
+
+  <g:production name="OptNillable">
+    <g:optional>
+      <g:ref name="Nillable"/>
+    </g:optional>
+  </g:production>
+
+  <g:production name="OptSubstitution">
+    <g:optional>
+      <g:ref name="Substitution"/>
+    </g:optional>
+  </g:production>
+
+  <g:production name="OptTypeSpecifier">
+    <g:optional>
+      <g:ref name="TypeSpecifier"/>
+    </g:optional>
+  </g:production>
+
+  <g:production name="OptTypeReference">
+    <g:optional>
+      <g:ref name="TypeReference"/>
+    </g:optional>
+  </g:production>
+
+  <g:production name="OptTypeDeclaration">
+    <g:optional>
+      <g:ref name="TypeDeclaration" orig="xcore"/>
+    </g:optional>
+  </g:production>
+
+  <g:production name="OptPositionalVar">
+    <g:optional>
+      <g:ref name="PositionalVar" orig="xcore"/>
+    </g:optional>
+  </g:production>
+
+  <g:production name="OptVarName">
+    <g:optional>
+      <g:ref name="VariableIndicator"/>
+      <g:ref name="VarName" orig="xcore"/>
+    </g:optional>
+  </g:production>
+
+  <g:production name="OptLocationHints">
+    <g:optional>
+      <g:ref name="LocationHints"/>
+    </g:optional>
+  </g:production>
+
+  <g:production name="ElementContentUnit">
+    <g:choice>
+      <g:xref name="DirectConstructor" orig="xquery30"/>
+      <g:xref name="EnclosedExpr" orig="xquery30"/>
+      <g:ref name="DirCharsUnit"/>
+    </g:choice>
+  </g:production>
+
+  <g:production name="DirCharsUnit">
+    <g:oneOrMore>
+      <g:choice>
+        <g:xref name="CDataSection" orig="xquery30"/>
+	<g:xref name="PredefinedEntityRef" orig="xquery30"/>
+	<g:xref name="CharRef" orig="xquery30"/>
+	<g:xref name="LCurlyBraceEscape" orig="xquery30"/>
+	<g:xref name="RCurlyBraceEscape" orig="xquery30"/>
+	<g:xref name="ElementContentChar" orig="xquery30"/>
+      </g:choice>
+    </g:oneOrMore>
+  </g:production>
+
+  <!-- E006: This is a logical location for the FunctionKey production -->
+
+  <g:production name="FunctionSig">
+	<g:ref name="DefineFunction" orig="xcore"/>
+	<g:ref name="QNameType"/>
+	<g:xref name="Lpar" orig="xcore"/>
+	<g:optional name="OptionalTypeList">
+  	  <g:ref name="TypeList"/>
+	</g:optional>
+	<g:ref name="Rpar"/>
+	<g:ref name="As" orig="xcore"/>
+        <!-- E009 start -->
+        <g:ref name="Type"/>
+        <!-- E009 end -->
+  </g:production>
+
+ <g:production name="TypeList">
+        <!-- E009 start -->
+ 	<g:ref name="Type"/>
+        <!-- E009 end -->
+ 	<g:zeroOrMore name="TypeListTail">
+ 		<g:xref name="Comma" orig="xquery30"/>
+ 		<g:ref name="Type"/>
+ 	</g:zeroOrMore>
+ </g:production>
+
+ <g:production name="AttributeContentUnits">
+        <g:zeroOrMore>
+            <g:ref name="AttributeContentUnit"/>
+        </g:zeroOrMore>
+ </g:production>
+
+ <!-- E001 start -->
+ <g:production name="AttributeContentUnit">
+        <g:choice>
+          <g:ref name="AttributeCharsUnit"/>
+          <g:xref name="EnclosedExpr" orig="xquery30"/>
+        </g:choice>
+ </g:production>
+ <!-- E001 end -->
+
+ <g:production name="ConstructionMode">
+    <g:choice>
+      <g:string process-value="yes">preserve</g:string>
+      <g:string process-value="yes">strip</g:string>
+    </g:choice>
+ </g:production>
+
+ <g:production name="Axis">
+    <g:choice>
+      <g:xref name="ForwardAxis" orig="xquery30"/>
+      <g:xref name="ReverseAxis" orig="xquery30"/>
+    </g:choice>
+ </g:production>
+
+<!--
+  Productions added by errata:
+  for now, put them at the end of the grammar
+  so they don't disturb the reference numbers of other productions.
+  Eventually, move them to more logical locations?
+-->
+
+ <!-- E001 start -->
+ <g:production name="AttributeCharsUnit">
+      <g:oneOrMore>
+        <g:choice>
+          <g:xref name="QuotAttrContentChar" orig="xquery30"/>
+          <g:xref name="AposAttrContentChar" orig="xquery30"/>
+          <g:xref name="EscapeQuot" orig="xquery30"/>
+          <g:xref name="EscapeApos" orig="xquery30"/>
+          <g:xref name="PredefinedEntityRef" orig="xquery30"/>
+          <g:xref name="CharRef" orig="xquery30"/>
+          <g:xref name="LCurlyBraceEscape" orig="xquery30"/>
+          <g:xref name="RCurlyBraceEscape" orig="xquery30"/>
+        </g:choice>
+      </g:oneOrMore>
+ </g:production>
+ <!-- E001 end -->
+
+  <!-- E006 start -->
+  <g:production name="FunctionKey">
+    <g:ref name="QNameType"/>
+    <g:ref name="Comma"/>
+    <g:ref name="Arity"/>
+  </g:production>
+
+  <g:token name="Arity">
+    <!-- Not really a token, this is a kludge as with DecimalType etc. -->
+    <g:emph>Arity</g:emph>
+  </g:token>
+  <!-- E006 end -->
+
+  <!-- E022 start -->
+  <g:production name="ProcessingInstructionType">
+    <g:ref name="ProcessingInstruction"/>
+    <g:ref name="PITargetOrWildcard"/>
+  </g:production>
+
+  <g:production name="PITargetOrWildcard">
+    <g:choice>
+      <g:xref name="NCName" orig="xcore"/> 
+      <g:ref name="Star" orig="xcore"/>
+    </g:choice>
+  </g:production>
+  <!-- E022 end -->
+
+  <!-- E036 start -->
+  <g:production name="OptDerivation">
+    <g:optional>
+      <g:ref name="Derivation"/>
+    </g:optional>
+  </g:production>
+  <!-- E036 end -->
+
+</g:grammar>
+

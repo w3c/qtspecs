@@ -1,0 +1,1081 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--XSLT Processor: SAXON 8.9.0.4 from Saxonica SAXON SA 8.9.0.4--><document-summary uri="http://www.w3.org/TR/xpath-semantics-11/">
+   <title>XQuery and XPath Formal Semantics 1.1</title>
+   <div1 id="introduction">
+      <head>
+1 Introduction</head>
+      <div2 id="id-normativity">
+         <head>
+1.1 Normative and Informative
+  Sections</head>
+      </div2>
+   </div1>
+   <div1 id="sec_preliminaries">
+      <head>
+2 Preliminaries</head>
+      <div2 id="sec_intro">
+         <head>
+2.1 Introduction to the Formal Semantics</head>
+         <div3 id="sec_grammar_notations">
+            <head>
+2.1.1 Notations from grammar productions</head>
+         </div3>
+         <div3 id="sec_judgments">
+            <head>
+2.1.2 Notations for judgments</head>
+         </div3>
+         <div3 id="sec_environments">
+            <head>
+2.1.3 Notations for environments</head>
+         </div3>
+         <div3 id="sec_inference">
+            <head>
+2.1.4 Notations for inference rules</head>
+         </div3>
+         <div3 id="sec_together">
+            <head>
+2.1.5 Putting it together</head>
+         </div3>
+      </div2>
+      <div2 id="sec_namespaces">
+         <head>
+2.2 URIs, Namespaces, and Prefixes</head>
+      </div2>
+      <div2 id="sec_values">
+         <head>
+2.3 XML Values</head>
+         <div3 id="sec_data_model_overview">
+            <head>
+2.3.1 Formal values</head>
+         </div3>
+         <div3 id="sec_example_values">
+            <head>
+2.3.2 Examples of values</head>
+         </div3>
+      </div2>
+      <div2 id="sec_types">
+         <head>
+2.4 The  Type System</head>
+         <div3 id="sec_schema">
+            <head>
+2.4.1 XML Schema and the  Type System</head>
+         </div3>
+         <div3 id="sec_item_types">
+            <head>
+2.4.2 Item types</head>
+         </div3>
+         <div3 id="sec_content_models">
+            <head>
+2.4.3 Content models</head>
+         </div3>
+         <div3 id="sec_top_level_definitions">
+            <head>
+2.4.4 Top level definitions</head>
+         </div3>
+         <div3 id="sec_types_example">
+            <head>
+2.4.5 Example of a complete Schema</head>
+         </div3>
+      </div2>
+      <div2 id="sec_fando">
+         <head>
+2.5 Functions and operators</head>
+      </div2>
+   </div1>
+   <div1 id="id-basics">
+      <head>
+3 Basics</head>
+      <div2 id="sec_context">
+         <head>
+3.1 Expression Context</head>
+         <div3 id="static_context">
+            <head>
+3.1.1 Static Context</head>
+            <div4 id="id-expanded-qnames">
+               <head>
+3.1.1.1 Resolving QNames to Expanded QNames</head>
+            </div4>
+         </div3>
+         <div3 id="eval_context">
+            <head>
+3.1.2 Dynamic Context</head>
+         </div3>
+      </div2>
+      <div2 id="id-processing-model">
+         <head>
+3.2 Processing Model</head>
+         <div3 id="id-fs-processing-model">
+            <head>
+3.2.1 Processing model</head>
+         </div3>
+         <div3 id="sec_normalization">
+            <head>
+3.2.2 Normalization mapping rules</head>
+         </div3>
+         <div3 id="sec_static">
+            <head>
+3.2.3 Static typing judgment</head>
+         </div3>
+         <div3 id="sec_evaluation">
+            <head>
+3.2.4 Dynamic evaluation judgment</head>
+         </div3>
+      </div2>
+      <div2 id="sec_errors">
+         <head>
+3.3 Error Handling</head>
+      </div2>
+      <div2 id="id-important-concepts">
+         <head>
+3.4 Concepts</head>
+         <div3 id="id-doc-order">
+            <head>
+3.4.1 Document Order</head>
+         </div3>
+         <div3 id="id-atomization">
+            <head>
+3.4.2 Atomization</head>
+         </div3>
+         <div3 id="id-ebv">
+            <head>
+3.4.3 Effective Boolean Value</head>
+         </div3>
+         <div3 id="id-input-sources">
+            <head>
+3.4.4 Input Sources</head>
+         </div3>
+         <div3 id="id-uri-literals">
+            <head>
+3.4.5 URI Literals</head>
+         </div3>
+      </div2>
+      <div2 id="id-type-conversion">
+         <head>
+3.5 Types</head>
+         <div3 id="id-predefined-types">
+            <head>
+3.5.1 Predefined Schema Types</head>
+         </div3>
+         <div3 id="id-typed-value">
+            <head>
+3.5.2 Typed Value and String Value</head>
+         </div3>
+         <div3 id="id-sequencetype">
+            <head>
+3.5.3 SequenceType Syntax</head>
+         </div3>
+         <div3 id="id-sequencetype-matching">
+            <head>
+3.5.4 SequenceType Matching</head>
+         </div3>
+      </div2>
+      <div2 id="comments">
+         <head>
+3.6 Comments</head>
+      </div2>
+      <div2 id="xml-terminals">
+         <head>
+3.7 XML-defined Terminals</head>
+      </div2>
+   </div1>
+   <div1 id="id-expressions">
+      <head>
+4 Expressions</head>
+      <div2 id="id-primary-expressions">
+         <head>
+4.1 Primary Expressions</head>
+         <div3 id="id-literals">
+            <head>
+4.1.1 Literals</head>
+         </div3>
+         <div3 id="id-variables">
+            <head>
+4.1.2 Variable References</head>
+         </div3>
+         <div3 id="id-paren-expressions">
+            <head>
+4.1.3 Parenthesized Expressions</head>
+         </div3>
+         <div3 id="id-context-item-expression">
+            <head>
+4.1.4 Context Item Expression</head>
+         </div3>
+         <div3 id="id-function-calls">
+            <head>
+4.1.5 Function Calls</head>
+         </div3>
+      </div2>
+      <div2 id="id-path-expressions">
+         <head>
+4.2 Path Expressions</head>
+         <div3 id="id-axis-steps">
+            <head>
+4.2.1 Steps</head>
+            <div4 id="sec_axes">
+               <head>
+4.2.1.1 Axes</head>
+            </div4>
+            <div4 id="node-tests">
+               <head>
+4.2.1.2 Node Tests</head>
+            </div4>
+         </div3>
+         <div3 id="id-predicates">
+            <head>
+4.2.2 Predicates</head>
+         </div3>
+         <div3 id="unabbrev">
+            <head>
+4.2.3 Unabbreviated Syntax</head>
+         </div3>
+         <div3 id="abbrev">
+            <head>
+4.2.4 Abbreviated Syntax</head>
+         </div3>
+      </div2>
+      <div2 id="id-sequence-expressions">
+         <head>
+4.3 Sequence Expressions</head>
+         <div3 id="sec_constructing_sequences">
+            <head>
+4.3.1 Constructing Sequences</head>
+         </div3>
+         <div3 id="sec_filter_exprs">
+            <head>
+4.3.2 Filter Expressions</head>
+         </div3>
+         <div3 id="sec_combining_sequences">
+            <head>
+4.3.3 Combining Node Sequences</head>
+         </div3>
+      </div2>
+      <div2 id="sec_arithmetic">
+         <head>
+4.4 Arithmetic Expressions</head>
+      </div2>
+      <div2 id="sec_comparisons">
+         <head>
+4.5 Comparison Expressions</head>
+         <div3 id="sec_value_comparisons">
+            <head>
+4.5.1 Value Comparisons</head>
+         </div3>
+         <div3 id="sec_general_comparisons">
+            <head>
+4.5.2 General Comparisons</head>
+         </div3>
+         <div3 id="sec_node-comparisons">
+            <head>
+4.5.3 Node Comparisons</head>
+         </div3>
+      </div2>
+      <div2 id="id-logical-expressions">
+         <head>
+4.6 Logical Expressions</head>
+      </div2>
+      <div2 id="sec_constructors">
+         <head>
+4.7 Constructors</head>
+         <div3 id="id_element_constructor">
+            <head>
+4.7.1 Direct Element Constructors</head>
+            <div4 id="sec_direct_attributes">
+               <head>
+4.7.1.1 Attributes</head>
+            </div4>
+            <div4 id="sec_namespace_attrs">
+               <head>
+4.7.1.2 Namespace Declaration Attributes</head>
+            </div4>
+            <div4 id="sec_content">
+               <head>
+4.7.1.3 Content</head>
+            </div4>
+            <div4 id="sec_whitespace">
+               <head>
+4.7.1.4 Boundary Whitespace</head>
+            </div4>
+         </div3>
+         <div3 id="sec_other_constructors">
+            <head>
+4.7.2 Other Direct Constructors</head>
+         </div3>
+         <div3 id="sec_computedConstructors">
+            <head>
+4.7.3 Computed Constructors</head>
+            <div4 id="sec_comp_elem_constructor">
+               <head>
+4.7.3.1 Computed Element Constructors</head>
+            </div4>
+            <div4 id="sec_attribute_constructor">
+               <head>
+4.7.3.2 Computed Attribute Constructors</head>
+            </div4>
+            <div4 id="sec_documentConstructors">
+               <head>
+4.7.3.3 Document Node Constructors</head>
+            </div4>
+            <div4 id="sec_textConstructors">
+               <head>
+4.7.3.4 Text Node Constructors</head>
+            </div4>
+            <div4 id="sec_computed-pis">
+               <head>
+4.7.3.5 Computed Processing Instruction Constructors</head>
+            </div4>
+            <div4 id="sec_computed-comments">
+               <head>
+4.7.3.6 Computed Comment Constructors</head>
+            </div4>
+         </div3>
+         <div3 id="id-ns-nodes-on-elements">
+            <head>
+4.7.4 In-scope Namespaces of a Constructed Element</head>
+         </div3>
+      </div2>
+      <div2 id="sec_for-expressions">
+         <head>
+4.8  Expressions</head>
+         <div3 id="sec_flwor-expressions">
+            <head>
+4.8.1 FLWOR expressions</head>
+         </div3>
+         <div3 id="id-for-expression">
+            <head>
+4.8.2 For expression</head>
+         </div3>
+         <div3 id="sec_lets">
+            <head>
+4.8.3 Let Expression</head>
+         </div3>
+         <div3 id="id_orderby_clause">
+            <head>
+4.8.4 Order By and Return Clauses</head>
+         </div3>
+      </div2>
+      <div2 id="sec_unordered-expressions">
+         <head>
+4.9 Ordered and Unordered Expressions</head>
+      </div2>
+      <div2 id="sec_conditionals">
+         <head>
+4.10 Conditional Expressions</head>
+      </div2>
+      <div2 id="id-quantified-expressions">
+         <head>
+4.11 Quantified Expressions</head>
+      </div2>
+      <div2 id="sec_sequencetype-matching">
+         <head>
+4.12 Expressions on SequenceTypes</head>
+         <div3 id="sec_instance-of">
+            <head>
+4.12.1 Instance Of</head>
+         </div3>
+         <div3 id="sec_typeswitch">
+            <head>
+4.12.2 Typeswitch</head>
+         </div3>
+         <div3 id="sec_cast">
+            <head>
+4.12.3 Cast</head>
+         </div3>
+         <div3 id="sec_castable">
+            <head>
+4.12.4 Castable</head>
+         </div3>
+         <div3 id="sec_constructor-functions">
+            <head>
+4.12.5 Constructor Functions</head>
+         </div3>
+         <div3 id="sec_treat">
+            <head>
+4.12.6 Treat</head>
+         </div3>
+      </div2>
+      <div2 id="sec_validate_expr">
+         <head>
+4.13 Validate Expressions</head>
+         <div3 id="sec_validating_element">
+            <head>
+4.13.1 Validating an Element Node</head>
+         </div3>
+         <div3 id="sec_validating_document">
+            <head>
+4.13.2 Validating a Document Node</head>
+         </div3>
+      </div2>
+      <div2 id="id-extension-expressions">
+         <head>
+4.14 Extension Expressions</head>
+      </div2>
+   </div1>
+   <div1 id="id-query-prolog">
+      <head>
+5 Modules and Prologs</head>
+      <div2 id="sec_version-declaration">
+         <head>
+5.1 Version Declaration</head>
+      </div2>
+      <div2 id="id-module-declaration">
+         <head>
+5.2 Module Declaration</head>
+      </div2>
+      <div2 id="sec_boundary-space-decls">
+         <head>
+5.3 Boundary-space Declaration</head>
+      </div2>
+      <div2 id="sec_default-collation-declaration">
+         <head>
+5.4 Default Collation Declaration</head>
+      </div2>
+      <div2 id="sec_base-uri-decl">
+         <head>
+5.5 Base URI Declaration</head>
+      </div2>
+      <div2 id="sec_validation_decl">
+         <head>
+5.6 Construction Declaration</head>
+      </div2>
+      <div2 id="id-default-ordering-decl">
+         <head>
+5.7 Ordering Mode Declaration</head>
+      </div2>
+      <div2 id="id-empty-order-decl">
+         <head>
+5.8 Empty Order Declaration</head>
+      </div2>
+      <div2 id="id-copy-namespaces-decl">
+         <head>
+5.9 Copy-Namespaces Declaration</head>
+      </div2>
+      <div2 id="sec_schema_imports">
+         <head>
+5.10 Schema Import</head>
+      </div2>
+      <div2 id="id-module-imports">
+         <head>
+5.11 Module Import</head>
+      </div2>
+      <div2 id="sec_namespace_decls">
+         <head>
+5.12 Namespace Declaration</head>
+      </div2>
+      <div2 id="sec_default_namespace_decls">
+         <head>
+5.13 Default Namespace Declaration</head>
+      </div2>
+      <div2 id="sec_variable-declarations">
+         <head>
+5.14 Variable Declaration</head>
+      </div2>
+      <div2 id="sec_FunctionDeclns">
+         <head>
+5.15 Function Declaration</head>
+      </div2>
+      <div2 id="id-option-declaration">
+         <head>
+5.16 Option Declaration</head>
+      </div2>
+   </div1>
+   <div1 id="id-xquery-conformance">
+      <head>
+6 Conformance</head>
+      <div2 id="id-static-typing-feature">
+         <head>
+6.1 Static Typing Feature</head>
+         <div3 id="id-static-extensions">
+            <head>
+6.1.1 Static Typing Extensions</head>
+         </div3>
+      </div2>
+   </div1>
+   <div1 id="sec_special_functions">
+      <head>
+7 Additional Semantics of Functions</head>
+      <div2 id="sec_special_fs_functions">
+         <head>
+7.1 Formal Semantics Functions</head>
+         <div3 id="sec_convert_operand">
+            <head>
+7.1.1 The fs:convert-operand function</head>
+         </div3>
+         <div3 id="sec_convert_simple_operand">
+            <head>
+7.1.2 The fs:convert-simple-operand function</head>
+         </div3>
+         <div3 id="sec_distinct_docorder">
+            <head>
+7.1.3 The fs:distinct-doc-order function</head>
+         </div3>
+         <div3 id="sec_distinct_docorder_or_atomic_sequence">
+            <head>
+7.1.4 The fs:distinct-doc-order-or-atomic-sequence function</head>
+         </div3>
+         <div3 id="sec_items_to_nodes">
+            <head>
+7.1.5 The fs:item-sequence-to-node-sequence function</head>
+         </div3>
+         <div3 id="sec_items_to_nodes_doc">
+            <head>
+7.1.6 The fs:item-sequence-to-node-sequence-doc function</head>
+         </div3>
+         <div3 id="sec_item_seq_to_string">
+            <head>
+7.1.7 The 
+        fs:item-sequence-to-untypedAtomic
+        fs:item-sequence-to-string
+        function</head>
+         </div3>
+         <div3 id="sec_item_seq_to_untypedAtomic_PI">
+            <head>
+7.1.8 The fs:item-sequence-to-untypedAtomic-PI function</head>
+         </div3>
+         <div3 id="sec_item_seq_to_untypedAtomic_text">
+            <head>
+7.1.9 The fs:item-sequence-to-untypedAtomic-text function</head>
+         </div3>
+         <div3 id="sec_item_seq_to_untypedAtomic_comment">
+            <head>
+7.1.10 The fs:item-sequence-to-untypedAtomic-comment function</head>
+         </div3>
+         <div3 id="sec_apply_ordering_mode">
+            <head>
+7.1.11 The fs:apply-ordering-mode
+      function</head>
+         </div3>
+         <div3 id="sec_fs_to">
+            <head>
+7.1.12 The fs:to function</head>
+         </div3>
+         <div3 id="sec_node_sequence">
+            <head>
+7.1.13 The fs:node-sequence function</head>
+         </div3>
+         <div3 id="sec_item_at">
+            <head>
+7.1.14 The fs:item-at function</head>
+         </div3>
+      </div2>
+      <div2 id="function_rules">
+         <head>
+7.2 Standard functions with specific static typing rules</head>
+         <div3 id="sec_fn_last">
+            <head>
+7.2.1 The fn:last context function</head>
+         </div3>
+         <div3 id="sec_fn_position">
+            <head>
+7.2.2 The fn:position context function</head>
+         </div3>
+         <div3 id="sec_fn_abs_ceil_floor_round">
+            <head>
+7.2.3 The fn:abs, fn:ceiling, fn:floor,
+      fn:round, and fn:round-half-to-even functions</head>
+         </div3>
+         <div3 id="sec_fn_boolean">
+            <head>
+7.2.4 The fn:boolean and fn:not functions</head>
+         </div3>
+         <div3 id="sec_fn_doc_collection">
+            <head>
+7.2.5 The fn:collection and fn:doc functions</head>
+         </div3>
+         <div3 id="sec_fn_data">
+            <head>
+7.2.6 The fn:data function</head>
+         </div3>
+         <div3 id="sec_fn_distinct_node_vals">
+            <head>
+7.2.7 The fn:distinct-values function</head>
+         </div3>
+         <div3 id="sec_fn_unordered">
+            <head>
+7.2.8 The fn:unordered function</head>
+         </div3>
+         <div3 id="sec_fnerror">
+            <head>
+7.2.9 The fn:error function</head>
+         </div3>
+         <div3 id="sec_fn_aggregates">
+            <head>
+7.2.10 The fn:min, fn:max, fn:avg, and fn:sum
+      functions</head>
+         </div3>
+         <div3 id="sec_fn_remove">
+            <head>
+7.2.11 The fn:remove function</head>
+         </div3>
+         <div3 id="sec_fn_reverse">
+            <head>
+7.2.12 The fn:reverse function</head>
+         </div3>
+         <div3 id="sec_fn_subsequence">
+            <head>
+7.2.13 The fn:subsequence function</head>
+         </div3>
+         <div3 id="sec_op_union_intersect_except">
+            <head>
+7.2.14 The op:union, op:intersect, and
+      op:except operators</head>
+         </div3>
+         <div3 id="sec_fn_insert_before">
+            <head>
+7.2.15 The fn:insert-before function</head>
+         </div3>
+         <div3 id="sec_fn_cardinality_funcs">
+            <head>
+7.2.16 The fn:zero-or-one, fn:one-or-more, and
+      fn:exactly-one functions</head>
+         </div3>
+      </div2>
+   </div1>
+   <div1 id="sec_auxiliary_judgments">
+      <head>
+8 Auxiliary Judgments</head>
+      <div2 id="sec_accessing_types">
+         <head>
+8.1 Judgments for accessing types</head>
+         <div3 id="jd_aux_derives_from">
+            <head>
+8.1.1 Derives from</head>
+         </div3>
+         <div3 id="sec_substitutes">
+            <head>
+8.1.2 Substitutes for</head>
+         </div3>
+         <div3 id="sec_element_lookup">
+            <head>
+8.1.3 Element and attribute name lookup (Dynamic)</head>
+         </div3>
+         <div3 id="jd_aux_static_lookup">
+            <head>
+8.1.4 Element and attribute type lookup (Static)</head>
+         </div3>
+         <div3 id="sec_extension">
+            <head>
+8.1.5 Extension</head>
+         </div3>
+         <div3 id="sec_mixed">
+            <head>
+8.1.6 Mixed content</head>
+         </div3>
+         <div3 id="sec_adjustment">
+            <head>
+8.1.7 Type adjustment</head>
+         </div3>
+         <div3 id="sec_built_in_attributes">
+            <head>
+8.1.8 Builtin attributes</head>
+         </div3>
+         <div3 id="sec_type_expansion">
+            <head>
+8.1.9 Type expansion</head>
+         </div3>
+         <div3 id="sec_union_interpretation">
+            <head>
+8.1.10 Union interpretation of derived types</head>
+         </div3>
+      </div2>
+      <div2 id="sec_auxiliary_xpath">
+         <head>
+8.2 Judgments for step expressions and filtering</head>
+         <div3 id="sec_jd_principal">
+            <head>
+8.2.1 Principal Node Kind</head>
+         </div3>
+         <div3 id="sec_axis_judge">
+            <head>
+8.2.2 Auxiliary judgments for axes</head>
+            <div4 id="sec_static_axis_judge">
+               <head>
+8.2.2.1 Static semantics of axes</head>
+               <div5 id="sec_inference_axis">
+                  <head>
+8.2.2.1.1 Inference rules for all axes</head>
+               </div5>
+               <div5 id="sec_inference_self">
+                  <head>
+8.2.2.1.2 Inference rules for the self axis</head>
+               </div5>
+               <div5 id="sec_inference_child">
+                  <head>
+8.2.2.1.3 Inference rules for the child axis</head>
+               </div5>
+               <div5 id="sec_inference_attribute">
+                  <head>
+8.2.2.1.4 Inference rules for the attribute axis</head>
+               </div5>
+               <div5 id="sec_inference_parent">
+                  <head>
+8.2.2.1.5 Inference rules for the parent axis</head>
+               </div5>
+               <div5 id="sec_inference_namespace">
+                  <head>
+8.2.2.1.6 Inference rules for the namespace axis</head>
+               </div5>
+               <div5 id="sec_inference_descendant">
+                  <head>
+8.2.2.1.7 Inference rules for the descendant axis</head>
+               </div5>
+               <div5 id="sec_inference_descendant_of_self">
+                  <head>
+8.2.2.1.8 Inference rules for the descendant-or-self axis</head>
+               </div5>
+               <div5 id="sec_inference_ancestor">
+                  <head>
+8.2.2.1.9 Inference rules for the ancestor axis</head>
+               </div5>
+               <div5 id="sec_inference_ancestor_of_self">
+                  <head>
+8.2.2.1.10 Inference rules for the ancestor-or-self axis</head>
+               </div5>
+            </div4>
+            <div4 id="sec_dyn_axes">
+               <head>
+8.2.2.2 Dynamic semantics of axes</head>
+            </div4>
+         </div3>
+         <div3 id="sec_test_judge">
+            <head>
+8.2.3 Auxiliary judgments for node tests</head>
+            <div4 id="sec_sem_node_tests">
+               <head>
+8.2.3.1 Static semantics of node tests</head>
+               <div5 id="sec_sem_name_tests">
+                  <head>
+8.2.3.1.1 Name Tests</head>
+               </div5>
+               <div5 id="sec_sem_kind_tests">
+                  <head>
+8.2.3.1.2 Kind Tests</head>
+               </div5>
+            </div4>
+            <div4 id="sec_dyn_node_tests">
+               <head>
+8.2.3.2 Dynamic semantics of node tests</head>
+               <div5 id="sec_dyn_sem_name_tests">
+                  <head>
+8.2.3.2.1 Name Tests</head>
+               </div5>
+               <div5 id="sec_dyn_kind_tests">
+                  <head>
+8.2.3.2.2 Kind Tests</head>
+               </div5>
+            </div4>
+         </div3>
+      </div2>
+      <div2 id="sec_type_matching">
+         <head>
+8.3 Judgments for type matching</head>
+         <div3 id="sec_matches">
+            <head>
+8.3.1 Matches</head>
+         </div3>
+         <div3 id="sec_subtyping">
+            <head>
+8.3.2 Subtyping (&lt;:)</head>
+         </div3>
+      </div2>
+      <div2 id="sec_factor">
+         <head>
+8.4 Judgments for FLWOR and other expressions on sequences</head>
+      </div2>
+      <div2 id="sec_promotion_judgments">
+         <head>
+8.5 Judgments for function calls</head>
+         <div3 id="sec_promotion">
+            <head>
+8.5.1 Type promotion</head>
+         </div3>
+      </div2>
+      <div2 id="sec_validation_mode">
+         <head>
+8.6 Judgments for validation modes and contexts</head>
+         <div3 id="jd_aux_context_is">
+            <head>
+8.6.1 Elements in validation mode</head>
+         </div3>
+      </div2>
+   </div1>
+   <div1 id="sec_core">
+      <head>
+A Normalized core and formal grammars</head>
+      <div2 id="sec_core_grammar">
+         <head>
+A.1 Core BNF</head>
+      </div2>
+      <div2 id="sec_formal_grammar">
+         <head>
+A.2 Formal BNF</head>
+      </div2>
+   </div1>
+   <div1 id="sec_indexes">
+      <head>
+B Index of judgments</head>
+   </div1>
+   <div1 id="sec_functions_and_operators">
+      <head>
+C Functions and Operators</head>
+      <div2 id="sec_used_functions">
+         <head>
+C.1 Functions and Operators used in the Formal Semantics</head>
+      </div2>
+      <div2 id="sec_operators">
+         <head>
+C.2 Mapping of Overloaded Internal Functions</head>
+      </div2>
+   </div1>
+   <div1 id="sec_importing_schema">
+      <head>
+D Importing Schemas</head>
+      <div2 id="sec_import_intro">
+         <head>
+D.1 Introduction</head>
+         <div3 id="sec_import_features">
+            <head>
+D.1.1 Features</head>
+         </div3>
+         <div3 id="sec_import_organization">
+            <head>
+D.1.2 Organization</head>
+         </div3>
+         <div3 id="sec_import_mapping">
+            <head>
+D.1.3 Main mapping rules</head>
+         </div3>
+         <div3 id="sec_use">
+            <head>
+D.1.4 Special attributes</head>
+            <div4 id="sec_import_attributes">
+               <head>
+D.1.4.1 use, default, and fixed</head>
+            </div4>
+            <div4 id="prod-formal-OccursAttributes">
+               <head>
+D.1.4.2 minOccurs, maxOccurs, minLength, maxLength, and length</head>
+            </div4>
+            <div4 id="sec_import_mixed">
+               <head>
+D.1.4.3 mixed</head>
+            </div4>
+            <div4 id="sec_import_nillable">
+               <head>
+D.1.4.4 nillable</head>
+            </div4>
+            <div4 id="sec_import_substitution">
+               <head>
+D.1.4.5 substitutionGroup</head>
+            </div4>
+         </div3>
+         <div3 id="sec_import_anonymous">
+            <head>
+D.1.5 Anonymous type names</head>
+         </div3>
+      </div2>
+      <div2 id="sec_schema_as_a_whole">
+         <head>
+D.2 Schemas as a whole</head>
+         <div3 id="sec_import_whole">
+            <head>
+D.2.1 Schema</head>
+         </div3>
+         <div3 id="sec_import_include">
+            <head>
+D.2.2 Include</head>
+         </div3>
+         <div3 id="sec_import_redefine">
+            <head>
+D.2.3 Redefine</head>
+         </div3>
+         <div3 id="sec_import_import">
+            <head>
+D.2.4 Import</head>
+         </div3>
+      </div2>
+      <div2 id="sec_import_attribute_decl">
+         <head>
+D.3 Attribute Declarations</head>
+         <div3 id="sec_import_global_attributes">
+            <head>
+D.3.1 Global attributes declarations</head>
+         </div3>
+         <div3 id="sec_import_local_attributes">
+            <head>
+D.3.2 Local attribute declarations</head>
+         </div3>
+      </div2>
+      <div2 id="sec_import_element">
+         <head>
+D.4 Element Declarations</head>
+         <div3 id="sec_import_global_element">
+            <head>
+D.4.1 Global element declarations</head>
+         </div3>
+         <div3 id="sec_import_local_element">
+            <head>
+D.4.2 Local element declarations</head>
+         </div3>
+      </div2>
+      <div2 id="sec_complex_type">
+         <head>
+D.5 Complex Type Definitions</head>
+         <div3 id="sec_import_global_complex_type">
+            <head>
+D.5.1 Global complex type</head>
+         </div3>
+         <div3 id="sec_import_local_complex_type">
+            <head>
+D.5.2 Local complex type</head>
+         </div3>
+         <div3 id="sec_import_ct_simple">
+            <head>
+D.5.3 Complex type with simple content</head>
+         </div3>
+         <div3 id="sec_import_ct_complex">
+            <head>
+D.5.4 Complex type with complex content</head>
+         </div3>
+      </div2>
+      <div2 id="sec_attribute_use">
+         <head>
+D.6 Attribute Uses</head>
+      </div2>
+      <div2 id="sec_attribute_group">
+         <head>
+D.7 Attribute Group Definitions</head>
+         <div3 id="sec_attribute_group_def">
+            <head>
+D.7.1 Attribute group definitions</head>
+         </div3>
+         <div3 id="sec_import_attribute_group_ref">
+            <head>
+D.7.2 Attribute group reference</head>
+         </div3>
+      </div2>
+      <div2 id="sec_import_model">
+         <head>
+D.8 Model Group Definitions</head>
+      </div2>
+      <div2 id="sec_import_model_groups">
+         <head>
+D.9 Model Groups</head>
+         <div3 id="sec_import_all_groups">
+            <head>
+D.9.1 All groups</head>
+         </div3>
+         <div3 id="sec_import_choice_groups">
+            <head>
+D.9.2 Choice groups</head>
+         </div3>
+         <div3 id="sec_import_sequence_groups">
+            <head>
+D.9.3 Sequence groups</head>
+         </div3>
+      </div2>
+      <div2 id="sec_import_particles">
+         <head>
+D.10 Particles</head>
+         <div3 id="sec_import_element_ref">
+            <head>
+D.10.1 Element reference</head>
+         </div3>
+         <div3 id="sec_group_ref">
+            <head>
+D.10.2 Group reference</head>
+         </div3>
+      </div2>
+      <div2 id="sec_import_wildcards">
+         <head>
+D.11 Wildcards</head>
+         <div3 id="sec_import_attribute_wildcards">
+            <head>
+D.11.1 Attribute wildcards</head>
+         </div3>
+         <div3 id="sec_import_element_wildcards">
+            <head>
+D.11.2 Element wildcards</head>
+         </div3>
+      </div2>
+      <div2 id="sec_import_identity">
+         <head>
+D.12 Identity-constraint Definitions</head>
+      </div2>
+      <div2 id="sec_import_notation">
+         <head>
+D.13 Notation Declarations</head>
+      </div2>
+      <div2 id="sec_import_annotation">
+         <head>
+D.14 Annotation</head>
+      </div2>
+      <div2 id="sec_import_simple_type">
+         <head>
+D.15 Simple Type Definitions</head>
+         <div3 id="sec_import_global_simple_type">
+            <head>
+D.15.1 Global simple type definition</head>
+         </div3>
+         <div3 id="sec_import_local_simple_type">
+            <head>
+D.15.2 Local simple type definition</head>
+         </div3>
+         <div3 id="sec_import_simple_type_content">
+            <head>
+D.15.3 Simple type content</head>
+         </div3>
+      </div2>
+   </div1>
+   <div1 id="appendix_references">
+      <head>
+E References</head>
+      <div2 id="id-normative-references">
+         <head>
+E.1 Normative References</head>
+      </div2>
+      <div2 id="id-non-normative-references">
+         <head>
+E.2 Non-normative References</head>
+      </div2>
+      <div2 id="id-background-references">
+         <head>
+E.3 Background References</head>
+      </div2>
+   </div1>
+   <inform-div1 id="sec_validation_judgments">
+      <head>
+F Auxiliary Judgments for Validation (Non-Normative)</head>
+   </inform-div1>
+   <inform-div1 id="id-fs-revisions-log">
+      <head>
+G Revision Log (Non-Normative)</head>
+   </inform-div1>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="dt-implementation-defined"
+            term="implementation       defined"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+            id="dt-implementation-dependent"
+            term="implementation       dependent"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-static-analysis"
+            term="static analysis       phase"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-xs_anyType"
+            term="xs:anyType"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-xs_anySimpleType"
+            term="xs:anySimpleType"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-xs_anyAtomicType"
+            term="xs:anyAtomicType"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-primitive-types"
+            term="primitive types"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-xs_untypedAtomic"
+            term="xs:untypedAtomic"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-xs_untyped"
+            term="xs:untyped"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-derived-types"
+            term="derived types"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-xs_durations"
+            term="Totally ordered duration       types"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" id="dt-fs_numeric"
+            term="fs:numeric"/>
+   <termdef xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" term="prime type"
+            id="term-prime-type"/>
+</document-summary>

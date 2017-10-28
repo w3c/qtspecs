@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<project name="build-pubrequest" default="all" basedir="..">
+
+  <target name="write-pubrequest-text">
+    <input message="Enter the name/title of the document whose publication is being requested: "
+           addproperty="DOCUMENT-TITLE"
+           defaultvalue=""/>
+
+    <input message="Enter the name(s) of the Working Group(s) requesting this publication: "
+           addproperty="DOCUMENT-GROUP-OR-GROUPS"
+           defaultvalue="XML Query WG and XSLT WG"/>
+
+    <input message="Enter the date on which the Working Group(s) meeting voted to request this publication: "
+           addproperty="MEETING-DATE"
+           defaultvalue=""/>
+
+    <input message="Enter the URI of the minutes of the Working Group(s) meeting that voted to request this publication: "
+           addproperty="MEETING-MINUTES"
+           defaultvalue=""/>
+
+    <input message="Enter the agenda item in which the Working Group(s) voted to request this publication: "
+           addproperty="MEETING-AGENDA"
+           defaultvalue=""/>
+
+    <echo file="publish-${DOCUMENT-SHORTNAME}.txt">&#xa;
+Gentlepeople,${line.separator}
+${line.separator}
+The ${DOCUMENT-GROUP-OR-GROUPS} request that the following ${DOCUMENT-STAGE} be published as soon as possible after ${DOCUMENT-DATE} (which is the date we have used on the document itself). ${line.separator}
+${line.separator}
+The ${DOCUMENT-GROUP-OR-GROUPS} decided to request publication of the ${DOCUMENT-STAGE} during their meeting on ${MEETING-DATE}, the minutes of which are archived at ${MEETING-MINUTES} under agenda item ${MEETING-AGENDA}.${line.separator}
+${line.separator}
+I have worded this publication request as a series of specific steps to be taken.  Liam Quin intends to perform many of the steps (that is, the steps dealing with file location).${line.separator}
+${line.separator}
+I have run the PubRules Checker, including the Link Checker, on Overview.html, with a small handful of unresolved references that will be automatically resolved as a result of completing this pub request.${line.separator}
+${line.separator}
+${line.separator}
+${DOCUMENT-STAGE}${line.separator}
+=======================${line.separator}
+${line.separator}
+* Publish the ${DOCUMENT-STAGE} of ${DOCUMENT-TITLE}${line.separator}
+${line.separator}
+${line.separator}
+   - Copy the following files:${line.separator}
+${DOCUMENT-FILES}${line.separator}
+     from:${line.separator}
+${DOCUMENT-STAGING-DIRECTORY}${line.separator}
+     into a new directory${line.separator}
+${DOCUMENT-PUBLICATION-DIRECTORY}${line.separator}
+${line.separator}
+${line.separator}
+   - Copy the following files:${line.separator}
+${DOCUMENT-OTHER-FILES}${line.separator}
+     from:${line.separator}
+${DOCUMENT-STAGING-DIRECTORY}${line.separator}
+     into a new directory${line.separator}
+${DOCUMENT-OTHER-FILES-PUBLICATION-DIRECTORY}${line.separator}
+(and make that directory public).${line.separator}
+${line.separator}
+${line.separator}
+</echo>
+  </target>
+
+  <target name="write-pubrequest-text-for-namespace">
+    <echo file="publish-${DOCUMENT-SHORTNAME}.txt"
+          append="true">
+   - Copy the entire contents of${line.separator}
+${DOCUMENT-NAMESPACE-STAGING-DIRECTORY}${line.separator}
+    into the existing directory (replacing the files already in that directory)${line.separator}
+${DOCUMENT-NAMESPACE-PUBLICATION-DIRECTORY}${line.separator}
+${line.separator}
+${line.separator}
+</echo>
+  </target>
+
+  <target name="write-pubrequest-text-redirects">
+    <echo file="publish-${DOCUMENT-SHORTNAME}.txt"
+          append="true">
+   - Create a redirect from:${line.separator}
+http://www.w3.org/TR/${DOCUMENT-SHORTNAME}/${line.separator}
+     to:${line.separator}
+${DOCUMENT-PUBLICATION-DIRECTORY}${line.separator}
+${line.separator}
+${line.separator}
+   - Create a redirect from:${line.separator}
+http://www.w3.org/TR/*** Enter a copy of the shortname that omits the minor version number ***/${line.separator}
+     to:${line.separator}
+${DOCUMENT-PUBLICATION-DIRECTORY}${line.separator}
+${line.separator}
+${line.separator}
+   - Create a redirect from:${line.separator}
+https://www.w3.org/TR/*** Enter a copy of the shortname that omits the version number entirely***/${line.separator}
+     to:${line.separator}
+${DOCUMENT-PUBLICATION-DIRECTORY}${line.separator}
+${line.separator}
+Thanks,${line.separator}
+   Jim${line.separator}
+</echo>
+  </target>
+
+</project>

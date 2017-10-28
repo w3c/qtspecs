@@ -1,0 +1,303 @@
+<xsd:schema
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+     xmlns:xqx="http://www.w3.org/2005/XQueryX"
+     xmlns:xqxft="http://www.w3.org/2007/xpath-full-text"
+     targetNamespace="http://www.w3.org/2007/xpath-full-text"
+     elementFormDefault="qualified" 
+     attributeFormDefault="unqualified">
+
+<!-- Initial creation                         2006-08-17: Jim Melton       -->
+<!-- First version believed complete          2006-08-29: Jim Melton       -->
+<!-- Cleaned up naming                        2007-04-27: Mary Holstege    -->     
+<!-- Revised to align with updated syntax     2008-01-14: Jim Melton       -->
+<!-- Comments added to clarify each element   2008-11-12: Jim Melton       -->
+<!-- Add element decl for ftMatchOptions      2009-07-06: Michael Dyck     -->
+<!-- Fixed FTThesaurus for ftLiteralRange     2011-03-08: Jim Melton       -->
+
+  <xsd:import namespace="http://www.w3.org/2005/XQueryX"
+              schemaLocation="http://www.w3.org/2005/XQueryX/xqueryx.xsd"/>
+
+  <!-- FTMatchOption                                                       -->
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTMatchOption ::= FTLanguageOption                                -->
+  <!--                   | FTWildCardOption                                -->
+  <!--                   | FTThesaurusOption                               -->
+  <!--                   | FTStemOption                                    -->
+  <!--                   | FTCaseOption                                    -->
+  <!--                   | FTDiacriticsOption                              -->
+  <!--                   | FTStopWordOption                                -->
+  <!--                   | FTExtensionOption                               -->
+  <xsd:complexType name="ftMatchOption" />
+
+  <xsd:element name="ftMatchOption" type="xqxft:ftMatchOption"
+               abstract="true" />
+  
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTMatchOptions ::= ( "using" FTMatchOption )+                     -->
+  <xsd:complexType name="ftMatchOptions">
+    <xsd:sequence minOccurs="1" maxOccurs="unbounded">
+      <xsd:element ref="xqxft:ftMatchOption"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="ftMatchOptions" type="xqxft:ftMatchOptions"/>
+  
+
+  <!-- ftMatchOption alternative: case                                     -->
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTCaseOption ::= ("case" "insensitive")                           -->
+  <!--                  | ("case" "sensitive")                             -->
+  <!--                  | "lowercase"                                      -->
+  <!--                  | "uppercase"                                      -->
+  <xsd:complexType name="ftCaseOption">
+    <xsd:complexContent>
+      <xsd:extension base="xqxft:ftMatchOption" >
+        <xsd:sequence>
+          <xsd:element name="value">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="lowercase"/>
+                <xsd:enumeration value="uppercase"/>
+                <xsd:enumeration value="case sensitive"/>
+                <xsd:enumeration value="case insensitive"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="case" type="xqxft:ftCaseOption"
+               substitutionGroup="xqxft:ftMatchOption" />
+
+
+  <!-- ftMatchOption alternative: diacritics                               -->
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTDiacriticsOption ::= ("diacritics" "insensitive")               -->
+  <!--                        | ("diacritics" "sensitive")                 -->
+  <xsd:complexType name="ftDiacriticsOption">
+    <xsd:complexContent>
+      <xsd:extension base="xqxft:ftMatchOption" >
+        <xsd:sequence>
+          <xsd:element name="value">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="diacritics sensitive"/>
+                <xsd:enumeration value="diacritics insensitive"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:element name="diacritics" type="xqxft:ftDiacriticsOption"
+               substitutionGroup="xqxft:ftMatchOption" />
+
+
+  <!-- ftMatchOption alternative: stemming                                 -->
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTStemOption ::= ("stemming") | ("no" "stemming")                 -->
+  <xsd:complexType name="ftStemOption">
+    <xsd:complexContent>
+      <xsd:extension base="xqxft:ftMatchOption" >
+        <xsd:sequence>
+          <xsd:element name="value">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="stemming" /> 
+                <xsd:enumeration value="no stemming" /> 
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:element name="stem" type="xqxft:ftStemOption"
+               substitutionGroup="xqxft:ftMatchOption" />
+
+
+  <!-- ftMatchOption alternative: thesaurus                                -->
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTThesaurusID ::= "at" URILiteral ("relationship" StringLiteral)? -->
+  <!--                     (FTLiteralRange "levels")?                      -->
+  <xsd:complexType name="ftThesaurusID">
+    <xsd:sequence>
+      <xsd:element name="at" type="xsd:anyURI" />
+      <xsd:element name="relationship" type="xsd:string" minOccurs="0" />
+      <xsd:element name="levels" type="xqxft:ftLiteralRange" minOccurs="0" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   ... (FTThesaurusID | "default")                                   -->
+  <!--   ... "(" (FTThesaurusID | "default") ("," FTThesaurusID)* ")")     -->
+  <xsd:complexType name="thesaurusSpecSequence">
+    <xsd:sequence>
+      <xsd:choice>
+        <xsd:element name="default" />
+        <xsd:element name="thesaurusID"
+                     type="xqxft:ftThesaurusID" />
+      </xsd:choice>
+      <xsd:element name="thesaurusID" type="xqxft:ftThesaurusID"
+                   minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTThesaurusOption ::=                                             -->
+  <!--       ("thesaurus" (FTThesaurusID | "default"))                     -->
+  <!--     | ("thesaurus"                                                  -->
+  <!--          "(" (FTThesaurusID | "default") ("," FTThesaurusID)* ")")  -->
+  <!--     | ("no" "thesaurus")                                            -->
+  <xsd:complexType name="ftThesaurusOption">
+    <xsd:complexContent>
+      <xsd:extension base="xqxft:ftMatchOption" >
+        <xsd:choice>
+          <xsd:element name="noThesauri" />
+          <xsd:element name="thesauri" type="xqxft:thesaurusSpecSequence" />
+        </xsd:choice>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="thesaurus" type="xqxft:ftThesaurusOption"
+               substitutionGroup="xqxft:ftMatchOption" />
+
+
+  <!-- ftMatchOption alternative: stopwords                                -->
+  <!-- Represents the following grammar productions:                       -->
+  <!--     FTStopWords ::= ("at" URILiteral)                               -->
+  <!--   | ("(" StringLiteral ("," StringLiteral)* ")")                    -->
+  <xsd:complexType name="ftStopWords">
+    <xsd:choice>
+      <xsd:element name="ref" type="xsd:anyURI" />
+      <xsd:element name="list">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element ref="xqx:stringConstantExpr"
+                         minOccurs="1" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:choice>
+  </xsd:complexType>
+
+  <xsd:element name="ftStopWords" type="xqxft:ftStopWords" />
+
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   ... "stop" "words" FTStopWords ...                                -->
+  <!--   ... "stop" "words" "default" ...                                  -->
+  <xsd:group name="baseStopWords">
+    <xsd:choice>
+      <xsd:element name="default" />
+      <xsd:element ref="xqxft:ftStopWords" />
+    </xsd:choice>
+  </xsd:group>
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTStopWordsInclExcl ::= ("union" | "except") FTStopWords          -->
+  <xsd:complexType name="ftStopWordsInclExcl">
+    <xsd:choice>
+      <xsd:element name="union" type="xqxft:ftStopWords" />
+      <xsd:element name="except" type="xqxft:ftStopWords" />
+    </xsd:choice>
+  </xsd:complexType>
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   ... ("using" "stop" "words" FTStopWords FTStopWordsInclExcl*) ... -->
+  <!--   ... ("using" "default" "stop" "words" FTStopWordsInclExcl*) ...   -->
+  <xsd:complexType name="stopWordsSpecSequence">
+    <xsd:sequence>
+      <xsd:group ref="xqxft:baseStopWords" />
+      <xsd:element name="ftStopWordsInclExcl"
+                   type="xqxft:ftStopWordsInclExcl"
+                   minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTStopWordOption ::=                                              -->
+  <!--       ("stop" "words" FTStopWords FTStopWordsInclExcl*)             -->
+  <!--     | ("stop" "words" "default" FTStopWordsInclExcl*)               -->
+  <!--     | ("no" "stop" "words")                                         -->
+  <xsd:complexType name="ftStopWordOption">
+    <xsd:complexContent>
+      <xsd:extension base="xqxft:ftMatchOption" >
+        <xsd:choice>
+          <xsd:element name="noStopwords" />
+          <xsd:element name="stopwords" type="xqxft:stopWordsSpecSequence" />
+        </xsd:choice>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="stopword" type="xqxft:ftStopWordOption"
+               substitutionGroup="xqxft:ftMatchOption" />
+
+
+  <!-- ftMatchOption alternative: language                                 -->
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTLanguageOption ::= "language" StringLiteral                     -->
+  <xsd:complexType name="ftLanguageOption">
+    <xsd:complexContent>
+      <xsd:extension base="xqxft:ftMatchOption" >
+        <xsd:sequence>
+          <xsd:element name="value" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="language" type="xqxft:ftLanguageOption"
+               substitutionGroup="xqxft:ftMatchOption" />
+
+
+  <!-- ftMatchOption alternative: wildcards                                -->
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTWildCardOption ::= ("wildcards")                                -->
+  <!--                      | ("no" "wildcards")                           -->
+  <xsd:complexType name="ftWildCardOption">
+    <xsd:complexContent>
+      <xsd:extension base="xqxft:ftMatchOption">
+        <xsd:sequence>
+          <xsd:element name="value">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="wildcards" /> 
+                <xsd:enumeration value="no wildcards" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="wildcard" type="xqxft:ftWildCardOption"
+               substitutionGroup="xqxft:ftMatchOption" />
+
+
+  <!-- Represents the following grammar productions:                       -->
+  <!--   FTExtensionOption ::= "option" QName StringLiteral                -->
+  <xsd:complexType name="ftExtensionOption">
+    <xsd:complexContent>
+      <xsd:extension base="xqxft:ftMatchOption">
+        <xsd:sequence>
+          <xsd:element name="ftExtensionName" type="xqx:QName"/>
+          <xsd:element name="ftExtensionValue" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="ftExtensionOption" type="xqxft:ftExtensionOption"
+               substitutionGroup="xqxft:ftMatchOption" />
+
+</xsd:schema>

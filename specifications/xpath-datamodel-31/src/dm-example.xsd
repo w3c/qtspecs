@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:cat="http://www.example.com/catalog"
+           xmlns:xlink="http://www.w3.org/1999/xlink"
+           targetNamespace="http://www.example.com/catalog"
+           elementFormDefault="qualified">
+
+<xs:import namespace="http://www.w3.org/XML/1998/namespace"
+           schemaLocation="http://www.w3.org/2001/xml.xsd" />
+
+<xs:import namespace="http://www.w3.org/1999/xlink"
+           schemaLocation="http://www.cs.rpi.edu/~puninj/XGMML/xlinks-2001.xsd" />
+
+<xs:element name="catalog">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="cat:_item" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="version" type="xs:string" fixed="0.1" use="required" />
+    <xs:attribute ref="xml:base" />
+    <xs:attribute ref="xml:lang" />
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="_item" type="cat:itemType" abstract="true" />
+
+<xs:complexType name="itemType">
+  <xs:sequence>
+    <xs:element name="title" type="xs:token" />
+    <xs:element name="description" type="cat:description" nillable="true" />
+    <xs:element name="price" type="cat:price" maxOccurs="unbounded" />
+  </xs:sequence>
+  <xs:attribute name="label" type="xs:token" />
+  <xs:attribute name="code" type="xs:ID" use="required" />
+  <xs:attributeGroup ref="xlink:simpleLink" />
+</xs:complexType>
+
+<xs:element name="tshirt" type="cat:tshirtType" substitutionGroup="cat:_item" />
+
+<xs:complexType name="tshirtType">
+  <xs:complexContent>
+    <xs:extension base="cat:itemType">
+      <xs:attribute name="sizes" type="cat:clothesSizes" use="required" />
+      <xs:attribute ref="xml:lang" use="optional"/>
+    </xs:extension>
+  </xs:complexContent>
+</xs:complexType>
+
+<xs:simpleType name="clothesSizes">
+  <xs:union memberTypes="cat:sizeList">
+    <xs:simpleType>
+      <xs:restriction base="xs:token">
+        <xs:enumeration value="oneSize" />
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:union>
+</xs:simpleType>
+
+<xs:simpleType name="sizeList">
+  <xs:restriction>
+    <xs:simpleType>
+      <xs:list itemType="cat:clothesSize" />
+    </xs:simpleType>
+    <xs:minLength value="1" />
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="clothesSize">
+  <xs:union memberTypes="cat:numberedSize cat:categorySize" />
+</xs:simpleType>
+
+<xs:simpleType name="numberedSize">
+  <xs:restriction base="xs:integer">
+    <xs:enumeration value="4" />
+    <xs:enumeration value="6" />
+    <xs:enumeration value="8" />
+    <xs:enumeration value="10" />
+    <xs:enumeration value="12" />
+    <xs:enumeration value="14" />
+    <xs:enumeration value="16" />
+    <xs:enumeration value="18" />
+    <xs:enumeration value="20" />
+    <xs:enumeration value="22" />
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="categorySize">
+  <xs:restriction base="xs:token">
+    <xs:enumeration value="XS" />
+    <xs:enumeration value="S" />
+    <xs:enumeration value="M" />
+    <xs:enumeration value="L" />
+    <xs:enumeration value="XL" />
+    <xs:enumeration value="XXL" />
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:element name="album" type="cat:albumType" substitutionGroup="cat:_item" />
+
+<xs:complexType name="albumType">
+  <xs:complexContent>
+    <xs:extension base="cat:itemType">
+      <xs:sequence>
+        <xs:element name="artist" type="xs:string" />
+      </xs:sequence>
+      <xs:attribute name="formats" type="cat:formatsType" use="required" />
+      <xs:attribute ref="xml:lang" use="optional"/>
+    </xs:extension>
+  </xs:complexContent>
+</xs:complexType>
+
+<xs:simpleType name="formatsType">
+  <xs:list itemType="cat:formatType" />
+</xs:simpleType>
+
+<xs:simpleType name="formatType">
+  <xs:restriction base="xs:token">
+    <xs:enumeration value="CD" />
+    <xs:enumeration value="MiniDisc" />
+    <xs:enumeration value="tape" />
+    <xs:enumeration value="vinyl" />
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:complexType name="description" mixed="true">
+  <xs:sequence>
+    <xs:any namespace="http://www.w3.org/1999/xhtml" processContents="lax"
+            minOccurs="0" maxOccurs="unbounded" />
+  </xs:sequence>
+  <xs:attribute ref="xml:lang" use="optional"/>
+</xs:complexType>
+
+<xs:complexType name="price">
+  <xs:simpleContent>
+    <xs:extension base="cat:monetaryAmount">
+      <xs:attribute name="currency" type="cat:currencyType" default="USD" />
+    </xs:extension>
+  </xs:simpleContent>
+</xs:complexType>
+
+<xs:simpleType name="currencyType">
+  <xs:restriction base="xs:token">
+    <xs:pattern value="[A-Z]{3}" />
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="monetaryAmount">
+  <xs:restriction base="xs:decimal">
+    <xs:fractionDigits value="3" />
+    <xs:pattern value="\d+(\.\d{2,3})?" />
+  </xs:restriction>
+</xs:simpleType>
+
+</xs:schema>

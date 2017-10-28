@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="semantics" default="all" basedir=".">
+
+<!-- Import a bunch of global property definitions -->
+  <dirname property="etc.dir" file="../../etc/*"/>
+  <import file="${etc.dir}/build-constants.xml"/>
+
+<!-- Set properties for "this" document's build requirements -->
+  <property name="generic-shortname" value="xpath-semantics"/>
+  <property name="spec.code" value="FS30"/>
+  <property name="this-spec-version-code" value="30"/>
+  <property name="xquery-version-code" value="30"/>
+  <property name="shortname" value="${generic-shortname}-${this-spec-version-code}"/>
+  <property name="spec.uri" value="${W3C.TR}/${shortname}/"/>
+  <property name="spec.xml" value="${src.dir}/${generic-shortname}.xml"/>
+  <!-- 2008-09-03, Jim: The following property has no meaning at present,     -->
+  <!--   because we do not build errata in the qtspecs tree. Maybe later...   -->
+<!--  <property name="errata.xml" value="${src.dir}/${generic-shortname}-errata.xml"/> -->
+
+  <dirname property="shared.grammar.dir" file="../grammar-${xquery-version-code}/*"/>
+  <property name="spec.style" value="${local.style.dir}/xpath-semantics.xsl"/>
+
+  <import file="${etc.dir}/build-impl.xml"/>
+
+<!-- Recall that any targets defined herein override targets of the same name -->
+<!--   that are defined in build-impl.xml.  If you cannot find a target of a  -->
+<!--   given name in this file, look in build-impl.xml.                       -->
+
+  <!-- ============================================================ -->
+  <!-- additional properties -->
+
+  <!-- The value of this depends on how well color-changes works for a spec.  -->
+  <property name="color-changes" value="no"/>
+
+  <property name="grammar-file" value="${shared.grammar.dir}/xpath-grammar.xml"/>
+  <property name="formal-grammar-file" value="${src.dir}/formal-grammar.xml"/>
+  <property name="strip-grammar-file" value="${shared.grammar.dir}/parser/strip.xsl"/>
+  <property name="assemble-spec-file" value="${local.style.dir}/assemble-semantics.xsl"/>
+  <property name="grammar-map-file" value="${src.dir}/grammar-map.xml"/>
+  <property name="style-shared-file" value="${local.style.dir}/xquery-semantics-diff.xsl"/> 
+
+  <!-- ============================================================ -->
+
+  <!-- Overrides global template to omit ",errata" -->
+  <target name="all" depends="spec" description="This is the default target."/>
+
+  <!-- ====================================================================== -->
+
+  <!-- Overrides global template -->
+  <target name="chk.spec" depends="init">
+<echo message="Target chk.spec starting"/>
+    <condition property="spec.exists">
+      <uptodate targetfile="${spec.html}">
+         <srcfiles file="${base.dir}/build.xml"/>
+         <srcfiles file="${etc.dir}/build-constants.xml"/>
+         <srcfiles file="${etc.dir}/build-impl.xml"/>
+         <srcfiles file="${etc.dir}/status-entities.dtd"/>
+         <srcfiles file="${etc.dir}/status-general.xml"/>
+         <srcfiles dir="${src.dir}" includes="**/*.xml"/>
+         <srcfiles file="${grammar-file}"/>
+         <srcfiles file="${strip-grammar-file}"/>
+         <srcfiles file="${grammar-map-file}"/>
+         <srcfiles file="${assemble-spec-file}"/>
+         <srcfiles file="${extract-tokens-file}"/>
+         <srcfiles file="${elim-dups-file}"/>
+         <srcfiles file="${spec.style}"/>
+         <srcfiles file="${shared.style.dir}/assemble-spec.xsl"/>
+         <srcfiles file="${shared.style.dir}/xsl-query.xsl"/>
+         <srcfiles file="${shared.style.dir}/xmlspec-override.xsl"/>
+         <srcfiles file="${shared.style.dir}/xmlspec.xsl"/>
+         <srcfiles file="${shared.style.dir}/html-fix.xsl"/>
+         <srcfiles file="${shared.style.dir}/identity.xsl"/>
+         <srcfiles file="${shared.schema.dir}/xsl-query.dtd"/>
+         <srcfiles file="${shared.schema.dir}/xmlspec.dtd"/>
+         <srcfiles file="${shared.schema.dir}/elements.dtd"/>
+         <srcfiles file="${shared.schema.dir}/tree-diagram.dtd"/>
+         <srcfiles file="${local.schema.dir}/xpath-semantics.dtd"/>
+         <srcfiles file="${local.schema.dir}/fsentities.ent"/>
+         <srcfiles file="${local.schema.dir}/fsmarkup.ent"/>
+      </uptodate>
+    </condition>
+  </target>
+
+  <!-- ============================================================ -->
+
+  <!-- Overrides global template -->
+  <target name="-style-spec"
+          depends="init,validate-spec,chk.spec,grammar-files"
+          if="build.spec" unless="spec.exists">
+
+  <!-- The assembly step is used to bring together all of the source files    -->
+  <!--   that are incorporated by using entity references, but also to        -->
+  <!--   transform grammar-related productions into XML elements that can be  -->
+  <!--   readily rendered into a form needed in the HTML document.            -->
+    <echo/>
+    <echo message="ASSEMBLE..."/>
+    <xslt in="${spec.xml}" out="${build.dir}/shared-semantics-assembled.xml"
+          style="${assemble-spec-file}" force="yes">
+      <classpath refid="saxon9.classpath"/>
+      <param name="spec" expression="shared"/>
+      <param name="grammar-map-file-name" expression="${src.dir}/grammar-map.xml"/>
+      <param name="grammar-file" expression="UNNECESSARY.xml"/>
+    </xslt>
+
+    <echo/>
+    <echo message="STYLE..."/>
+    <xslt in="${build.dir}/shared-semantics-assembled.xml"
+          out="${build.dir}/${shortname}.html"
+          style="${spec.style}" force="yes">
+      <classpath refid="saxon9.classpath"/>
+      <param name="color" expression="${color-changes}"/>
+      <param name="show-markup" expression="0"/>
+      <param name="spec" expression="shared"/>
+      <param name="kwFull" expression="brief"/>
+      <param name="kwSort" expression="cluster"/>
+    </xslt>
+
+    <echo/>
+    <echo message="FIX..."/>
+    <xslt in="${build.dir}/${shortname}.html"
+          out="${spec.html}"
+          style="${shared.style.dir}/html-fix.xsl" force="yes"
+          classpathref="saxon9.classpath"/>
+
+    <echo/>
+    <echo message="DIFF STYLE..."/>
+    <xslt in="${build.dir}/shared-semantics-assembled.xml"
+          out="${build.dir}/${shortname}-diff.html"
+          style="${spec.style}" force="yes">
+      <classpath refid="saxon9.classpath"/>
+      <param name="color" expression="${color-changes}"/>
+      <param name="show-markup" expression="1"/>
+      <param name="spec" expression="shared"/>
+      <param name="kwFull" expression="brief"/>
+      <param name="kwSort" expression="cluster"/>
+    </xslt>
+
+    <echo/>
+    <echo message="DIFF FIX..."/>
+    <xslt in="${build.dir}/${shortname}-diff.html"
+          out="${spec.diffs.html}"
+          style="${shared.style.dir}/html-fix.xsl" force="yes"
+          classpathref="saxon9.classpath"/>
+
+  </target>
+
+  <!-- ============================================================ -->
+
+  <target name="chk.grammar-files" depends="init">
+    <condition property="grammar-files.exist">
+      <and>
+        <uptodate srcfile="${grammar-file}" targetfile="${build.dir}/core-grammar.xml"/>
+        <uptodate srcfile="${grammar-file}" targetfile="${build.dir}/xquery-grammar.xml"/>
+        <uptodate srcfile="${grammar-file}" targetfile="${build.dir}/xpath2-grammar.xml"/>
+      </and>
+    </condition>
+  </target>
+
+  <!-- ============================================================ -->
+
+  <!-- Creation of the temp grammar files is needed for assembling the        -->
+  <!--   "complete" document, including grammar and extensions                -->
+  <target name="grammar-files" depends="init,chk.grammar-files,validate-spec"
+          unless="grammar-files.exist"
+          description="Build grammars">
+    <xslt in="${grammar-file}" out="${build.dir}/core-grammar.xml"
+          style="${strip-grammar-file}" force="yes">
+      <param name="spec1" expression="xcore"/>
+    </xslt>
+
+    <xslt in="${grammar-file}" out="${build.dir}/xquery-grammar.xml"
+          style="${strip-grammar-file}" force="yes">
+      <param name="spec1" expression="xquery30"/>
+    </xslt>
+
+    <xslt in="${grammar-file}" out="${build.dir}/xpath2-grammar.xml"
+          style="${strip-grammar-file}" force="yes">
+      <param name="spec1" expression="xpath30"/>
+    </xslt>
+  </target>
+
+  <!-- ============================================================ -->
+
+  <target name="validate-formal-grammar">
+    <xmlvalidate file="${formal-grammar-file}" failonerror="yes" lenient="no" warn="yes"
+                 classname="org.apache.xerces.parsers.SAXParser"
+                 classpath="../lib/xerces.jar">
+      <!-- fileset includes="${grammar-file}"/ -->  
+    </xmlvalidate>
+  </target>
+
+</project>
+<!-- vim: sw=2 ts=2 expandtab
+-->

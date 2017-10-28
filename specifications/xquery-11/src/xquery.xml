@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE spec SYSTEM "../../../schema/xsl-query.dtd"[
+
+<!-- Things to update in these ENTITY definitions before publishing this document:
+* doc.stage must be "FPWD", "WD", "CR", "PR", "PER", or "REC"
+* w3c-doctype must be "wd", "cr", "pr", "per", "rec", or "note"
+* doc.w3c-doctype-full must be "First Public Working Draft", "Working Draft", "Last Call Working Draft",
+    "Candidate Recommendation", "Proposed Recommendation", "Proposed Edited Recommendation", or "Recommendation"
+* date.day, date.DD, date.month, date.monthnum, and date.year must represent the date of publication of the document
+* doc.w3c-prevdesignation must properly represent the stage and shortname of the immediately preceding publication of the document
+* Various status section generation ENTITY definitions below must be properly updated
+-->
+
+<!ENTITY % ref-req.att "ref                    CDATA           #REQUIRED">
+
+<!ENTITY XML "http://www.w3.org/TR/REC-xml">
+<!ENTITY XMLNames "http://www.w3.org/TR/REC-xml-names">
+
+<!ENTITY doc.version "1.1">
+<!ENTITY doc.version-code "11">
+<!ENTITY doc.stage "WD">
+<!ENTITY doc.w3c-doctype "wd">
+<!ENTITY doc.w3c-doctype-full "Working Draft">
+<!ENTITY date.day "13">
+<!ENTITY date.DD "13">
+<!ENTITY date.month "July">
+<!ENTITY date.monthnum "07">
+<!ENTITY date.year "2010">
+<!ENTITY doc.date "&date.year;&date.monthnum;&date.DD;">
+
+
+<!ENTITY w3c.tr "http://www.w3.org/TR">
+<!ENTITY doc.generic-shortname "xquery">
+<!ENTITY doc.shortname "&doc.generic-shortname;-&doc.version-code;">
+<!ENTITY doc.w3c-designation "&doc.stage;-&doc.shortname;">
+<!ENTITY doc.publoc "&w3c.tr;/&date.year;/&doc.w3c-designation;-&doc.date;/">
+<!ENTITY doc.latestloc "&w3c.tr;/&doc.shortname;/">
+<!ENTITY language "XQuery &doc.version;">
+<!ENTITY language-title "XQuery &doc.version;: An XML Query Language">
+
+<!ENTITY ndash "&#45;">
+<!ENTITY eacute "&#233;">
+<!ENTITY ocirc "&#244;">
+
+<!ENTITY version "<phrase role='spec-version'/>">
+<!ENTITY working-group "<phrase role='spec-wg'/>">
+<!ENTITY for-name "<phrase role='spec-for-name'/>">
+<!ENTITY query-expr "<phrase role='spec-query'/>">
+
+<!ENTITY xquery-header SYSTEM "xquery-header.xml">
+<!ENTITY introduction SYSTEM "introduction.xml">
+<!ENTITY expressions SYSTEM "expressions.xml">
+<!ENTITY prolog SYSTEM "query-prolog.xml">
+<!ENTITY conformance SYSTEM "conformance.xml">
+<!ENTITY examples SYSTEM "query-examples.xml">
+<!ENTITY back-matter SYSTEM "back-matter.xml">
+<!ENTITY errors SYSTEM "errors.xml">
+<!ENTITY xpath-backwards-compat SYSTEM "xpath-backwards-compat.xml">
+<!ENTITY ebnf SYSTEM "ebnf.xml">
+<!ENTITY mime-type SYSTEM "mime-type.xml">
+
+
+<!ENTITY % status-entities SYSTEM "../../../etc/status-entities.dtd">
+%status-entities;
+
+<!ENTITY doc.WD-pubdate "03 December 2008">
+<!ENTITY doc.LC-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.LC-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.CR-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.CR-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.PR-expected "TO BE SPECIFIED">
+<!ENTITY doc.PR-pubdate "TO BE SPECIFIED">
+<!ENTITY doc.PR-comments-due "TO BE SPECIFIED">
+<!ENTITY doc.REC-pubdate "TO BE SPECIFIED">
+
+<!ENTITY doc.pubdate "&doc.WD-pubdate;">
+<!ENTITY doc.comments-due "$doc.CR-comments-due;">
+
+<!ENTITY status-section-id "status">
+<!ENTITY spec-devby    "&devby.xquery;">
+<!ENTITY changelog-id  "id-revision-log">
+<!ENTITY changes-para  "&post.WD.changes;">
+<!ENTITY implementation-report-location "http://dev.w3.org/2007/xquery-11-test-suite/results/">
+<!ENTITY implementation-report-availability "&report-public;">
+<!ENTITY implementation-report '&no-implementation-report-or-test-suite-yet;'>
+<!ENTITY test-suite-location "http://dev.w3.org/2007/xquery-11-test-suite/">
+<!ENTITY disclosure.one    "&disclosure.xquery;"> 
+<!ENTITY Bugzilla-key "XQuery11">
+<!ENTITY patent-policy-paragraph "&ppp-one;">
+<!ENTITY documents-and-relationships "&set-of-documents-11-preREC;">
+
+<!ENTITY advancement.statement "&advance.1WG;">
+<!ENTITY document-stage "&doc-stage-WD;">
+
+<!ENTITY doc-stability "&doc-stability-WD;">
+<!ENTITY PR-entrance-criteria ''>
+<!ENTITY features-at-risk-para "&no-features-at-risk;">
+<!ENTITY features-at-risk "<p>To Be Determined</p>">
+<!ENTITY customized-paragraph '
+<p>This is an "internal last call working draft" of XQuery 1.1.  The
+purpose of this publication is for members of the XML Query and XSL
+WGs to review the content and identify all issues that they believe
+would inhibit progression of the document to Proposed Recommendation
+status.  Ideally, WG members will identify all such issues in the
+document before it is progressed to Last Call Working Draft status and
+will not submit large numbers of issues during the (public) Last Call
+review period.  WG members&apos; comments on this document should be
+submitted, using the ordinary Bugzilla reporting mechanism, no later
+than Friday, 2010-07-09, so they may be considered by the Joint
+face-to-face meeting scheduled to begin on 2010-07-12. </p>
+
+<p>The following items have been resolved, but are not not completely
+implemented in this internal last call document.</p>
+
+<olist>
+  <item><p>A formal definition for resolving a URI will be supplied,
+  consistent with the resolution of <loc
+  href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=8810#c2">Bug
+  8810, Comment #2</loc>.</p></item>
+</olist>
+
+<p>The following items are incompletely implemented or likely to change before the Last Call document:</p>
+
+<olist>
+  <item><p>Specification of serialization parameters in a query is
+  likely to change in resolution of <loc href="
+  http://www.w3.org/Bugs/Public/show_bug.cgi?id=9302">Bug
+  9302</loc></p></item>
+  <item><p>Discussion of determinism, stability, and related concepts
+  may be modified per <loc
+  href="http://lists.w3.org/Archives/Member/w3c-xsl-query/2010Jun/0077.html">w3c-xsl-query/2010Jun/0077.html</loc>.</p></item>
+  <item><p>Handling of static errors in switch expressions needs to be
+  specified, as discussed in <loc
+  href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=9252#c5">Bug
+  9259, Comment #5</loc>.</p></item>
+</olist>
+'>
+
+<!ENTITY status-section SYSTEM "../../../etc/status-general.xml">
+
+
+]>
+<spec id="spec-top" w3c-doctype="&doc.w3c-doctype;" status="int-review">
+&xquery-header;
+<body>
+&introduction;
+&expressions;
+&prolog;
+
+&conformance;</body>
+<back id="id-appendices">
+&ebnf;
+&back-matter;
+
+</back>
+</spec>

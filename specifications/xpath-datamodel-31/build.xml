@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding='utf-8'?>
+<!-- ************************************************************************ -->
+<!-- This build.xml file is intended to build ONLY the **3.1** version of XDM -->
+<!-- ************************************************************************ -->
+<project name="xpath-data-model" default="all" >
+
+<!-- Import a bunch of global property definitions -->
+  <dirname property="etc.dir" file="../../etc/*"/>
+  <import file="${etc.dir}/build-constants.xml"/>
+
+<!-- Set properties for "this" document's build requirements -->
+  <property name="generic-shortname" value="xpath-datamodel"/>
+  <property name="this-spec-version-code" value="31"/>
+
+  <property name="spec.code" value="DM${this-spec-version-code}"/>
+  <property name="shortname" value="${generic-shortname}-${this-spec-version-code}"/>
+  <property name="spec.uri" value="${W3C.TR}/${shortname}/"/>
+  <property name="spec.xml" value="${src.dir}/${generic-shortname}.xml"/>
+
+  <!-- 2008-09-03, Jim: The following property has no meaning at present,     -->
+  <!--   because we do not build errata in the qtspecs tree. Maybe later...   -->
+<!--  <property name="errata.xml" value="${src.dir}/${generic-shortname}-errata.xml"/> -->
+
+  <property name="spec.style" value="${local.style.dir}/data-model.xsl"/>
+  <property name="spec.style.diff" value="${local.style.dir}/data-model-diff.xsl"/>
+
+<!-- Import target, etc. definitions that work globally -->
+  <import file="${etc.dir}/build-impl.xml"/>
+
+<!-- Recall that any targets defined herein override targets of the same name -->
+<!--   that are defined in build-impl.xml.  If you cannot find a target of a  -->
+<!--   given name in this file, look in build-impl.xml.                       -->
+
+<!-- ======================================================================== -->
+
+  <!-- additional properties -->
+
+  <property name="assemble-spec-file" value="${local.style.dir}/assemble-data-model.xsl"/>
+	  
+  <property name="skiptidy" value="true"/>
+
+  <!-- ====================================================================== -->
+
+  <!-- The "help" template displays on the message medium the names of the    -->
+  <!--   various targets in this project and their purposes.                  -->
+  <target name="help">
+    <echo message="This project to build ${shortname} includes a number of targets."/>
+    <echo message="To invoke any of these targets from the command line, use 'ant target-name'"/>
+    <echo message="  all -- the default target (target-name not required); builds 'everything'"/>
+    <echo message="  chk.spec -- determines whether the spec has to be rebuilt"/>
+    <echo message="  -style-spec -- transforms the document sources into near-pubrules-ready HTML"/>
+    <echo message="  copy-images -- copies shared images into the local images directory"/>
+    <echo message="  -copy-xml -- creates final XML source file from assembled source file"/>
+    <echo message="  chk.dm-example.xml.cdata -- checks whether the example code file is up to date"/>
+    <echo message="  dm-example.xml.cdata -- validates the example code, then transforms it to CDATA"/>
+    <echo message="  chk.dm-example.xsd.cdata -- checks whether the example schema file is up to date"/>
+    <echo message="  dm-example.xml.cdata -- transforms the example schema to CDATA"/>
+    <echo message="  chk.dm-example.tbl.xml -- checks whether the example data model table file is up to date"/>
+    <echo message="  dm-example.tbl.xml -- transforms the example data model description to XML table format"/>
+    <echo message="  chk.dm-example.dm.xml -- checks whether the example data model description file is up to date"/>
+    <echo message="  dm-example.dm.xml -- transforms the example XML document into the example data model description file"/>
+    <echo message="  stage -- stages the contents of the .../html/ directory for publication"/>
+    <echo message="  stage-nsdocs -- stages the namespace document contents of the .../html/ directory for publication"/>
+    <echo message="The targets that are most likely to be desired from the command line are 'all', 'clean' and '-style-spec'."/>
+    <echo message="Please note that there is not currently a target that builds a diff document for this project."/>
+  </target>
+
+  <!-- ====================================================================== -->
+
+  <!-- Overrides global template to omit ",errata" and add "clean,"           -->
+  <target name="all"
+          depends="clean, spec"
+          description="This is the default target. ">
+  </target>
+
+  <!-- ====================================================================== -->
+
+<!-- 2009-09-04: Jim removed lines related to files in the build directory    -->
+  <target name="chk.spec"
+	        depends="init, dm-example.xml.cdata, dm-example.xsd.cdata, dm-example.tbl.xml">
+    <condition property="spec.exists">
+      <uptodate targetfile="${spec.html}">
+        <srcfiles file="${base.dir}/build.xml"/>
+        <srcfiles file="${etc.dir}/build-constants.xml"/>
+        <srcfiles file="${etc.dir}/build-impl.xml"/>
+        <srcfiles file="${etc.dir}/status-entities.dtd"/>
+        <srcfiles file="${etc.dir}/status-general.xml"/>
+	      <srcfiles dir="${src.dir}" includes="**/*.xml"/>
+        <srcfiles file="${shared.images.dir}/XPathTypeHierarchy-1-items-3.1.png"/>
+        <srcfiles file="${shared.images.dir}/XPathTypeHierarchy-2-anyTypes-3.1.png"/>
+        <srcfiles file="${shared.images.dir}/XPathTypeHierarchy-3-anyAtomicTypes-3.1.png"/>
+        <srcfiles file="${shared.style.dir}/xsl-query.xsl"/>
+        <srcfiles file="${shared.style.dir}/xmlspec-override.xsl"/>
+        <srcfiles file="${shared.style.dir}/xmlspec.xsl"/>
+        <srcfiles file="${shared.style.dir}/funcproto.xsl"/>
+	      <srcfiles file="${local.style.dir}/data-model.xsl"/>
+	      <srcfiles file="${local.style.dir}/data-model-diff.xsl"/>
+        <srcfiles file="${shared.schema.dir}/xsl-query.dtd"/>
+        <srcfiles file="${shared.schema.dir}/xmlspec.dtd"/>
+        <srcfiles file="${shared.schema.dir}/elements.dtd"/>
+        <srcfiles file="${shared.schema.dir}/tree-diagram.dtd"/>
+      </uptodate>
+    </condition>
+  </target>
+
+  <!-- ====================================================================== -->
+
+<!-- 2009-11-25, Jim: Added, over-rode this target for more control -->
+  <!-- Overrides global template -->
+  <target name="-style-spec" depends="init, chk.spec, validate-spec"
+          if="build.spec" unless="spec.exists">
+    <echo message="Building ${shortname} ..."/>
+
+    <!-- The assembly step is used to bring together all of the source files  -->
+    <!--   that are incorporated by using entity references, but also to      -->
+    <!--   transform grammar-related productions into XML elements that can   -->
+    <!--   be readily rendered into a form needed in the HTML document.       -->
+<echo message="Creating ${generic-shortname}-assembled.xml"/>
+    <xslt in="${spec.xml}" out="${build.dir}/${generic-shortname}-assembled.xml"
+          style="${assemble-spec-file}"
+          classpathref="saxon9.classpath" force="yes">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+      <param name="spec" expression="xpath-datamodel"/>
+    </xslt>
+    
+    <xslt in="${build.dir}/${generic-shortname}-assembled.xml" 
+          out="${build.dir}/${generic-shortname}.xml"
+          style="${spec.style}"
+          classpathref="saxon9.classpath" force="yes">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+      <param name="spec" expression="xpath-datamodel"/>
+    </xslt>
+
+  	<!-- 2009-11-25, Jim: Added param to pass DSTAMP and TSTAMP properties -->
+<echo message="Fixing up ${generic-shortname}.xml"/>
+    <xslt in="${build.dir}/${generic-shortname}.xml"
+          out="${build.dir}/${generic-shortname}-fix.xml"
+          style="${shared.style.dir}/html-fix.xsl"
+          classpathref="saxon9.classpath" force="yes">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+      <param name="currentDateTime" expression="${DSTAMP} ${TSTAMP}"/>
+    </xslt>
+
+    <antcall target="xml-to-html5">
+      <param name="xml-to-html5.input" value="${build.dir}/${generic-shortname}-fix.xml"/>
+      <param name="xml-to-html5.output" value="${spec.html}"/>
+    </antcall>
+
+    <echo message="Building ${shortname} ... with diffs"/>
+
+    <!-- XSLT 2.0 -->
+    <xslt in="${build.dir}/${generic-shortname}-assembled.xml"
+      out="${build.dir}/${generic-shortname}-diff.xml"
+      style="${spec.style.diff}"
+      classpathref="saxon9.classpath" force="yes">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+      <param name="currentDateTime" expression="${DSTAMP} ${TSTAMP}"/>
+    </xslt>
+
+<!-- 2009-11-25, Jim: Added param to pass DSTAMP and TSTAMP properties -->
+<echo message="Fixing up ${generic-shortname}-diffs.html"/>
+    <xslt in="${build.dir}/${generic-shortname}-diff.xml"
+          out="${build.dir}/${generic-shortname}-diff-fix.xml"
+          style="${shared.style.dir}/html-fix.xsl"
+          classpathref="saxon9.classpath" force="yes">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+      <param name="currentDateTime" expression="${DSTAMP} ${TSTAMP}"/>
+    </xslt>
+
+    <antcall target="xml-to-html5">
+      <param name="xml-to-html5.input" value="${build.dir}/${generic-shortname}-diff-fix.xml"/>
+      <param name="xml-to-html5.output" value="${spec.diffs.html}"/>
+    </antcall>
+  	
+    <copy file="${src.dir}/xpath-datatypes.xsd"
+          tofile="${dist.dir}/xpath-datatypes.xsd"/>
+  </target>
+
+<!-- ======================================================================== -->
+
+  <!-- Overrides internal template -->
+  <target name="-copy-xml" depends="init, chk.spec"
+          if="build.spec" unless="spec.exists">
+    <echo message="Copying XML for ${shortname}..." />
+
+    <xslt in="${spec.xml}"
+          out="${dist.dir}/${shortname}.xml"
+          style="${shared.style.dir}/identity.xsl"
+          classpathref="saxon9.classpath" force="yes">
+      <factory name="net.sf.saxon.TransformerFactoryImpl">
+        <attribute name="http://saxon.sf.net/feature/generateByteCode" value="false"/>
+      </factory>
+    </xslt>
+  </target>
+
+  <!-- ====================================================================== -->
+
+  <!-- Overrides global template -->
+  <target name="copy-images" depends="init">
+    <copy todir="${dist.dir}" flatten="true">
+      <fileset dir="${local.images.dir}"/>
+      <file file="${shared.images.dir}/XPathTypeHierarchy-1-items-3.1.png"/>
+      <file file="${shared.images.dir}/XPathTypeHierarchy-2-anyTypes-3.1.png"/>
+      <file file="${shared.images.dir}/XPathTypeHierarchy-3-anyAtomicTypes-3.1.png"/>
+    </copy>
+  </target>
+
+  <!-- ====================================================================== -->
+
+  <target name="chk.dm-example.xml.cdata" depends="init">
+    <uptodate property="dm-example.xml.cdata.exists"
+              srcfile="${src.dir}/dm-example.xml"
+              targetfile="${build.dir}/dm-example.xml.cdata"/>
+  </target>
+
+  <!-- ====================================================================== -->
+
+  <target name="dm-example.xml.cdata"
+          depends="init, chk.dm-example.xml.cdata"
+          unless="dm-example.xml.cdata.exists">
+    <echo message="Building CDATA version of dm-example.xml ..." />
+<!--
+    <antcall target="xsdvalidate">
+      <param name="xsd.file" value="${src.dir}/dm-example.xsd"/>
+      <param name="xml.file" value="${src.dir}/dm-example.xml"/>
+    </antcall>
+-->
+    <copy file="${src.dir}/dm-example.xml" tofile="${build.dir}/dm-example.xml.cdata"/>
+    <replace file="${build.dir}/dm-example.xml.cdata" token="&amp;" value="&amp;amp;"/>
+    <replace file="${build.dir}/dm-example.xml.cdata" token="&lt;" value="&amp;lt;"/>
+  </target>
+
+  <!-- ====================================================================== -->
+
+  <target name="chk.dm-example.xsd.cdata" depends="init">
+    <uptodate property="dm-example.xsd.cdata.exists"
+              srcfile="${src.dir}/dm-example.xsd"
+              targetfile="${build.dir}/dm-example.xsd.cdata"/>
+  </target>
+
+  <!-- ====================================================================== -->
+
+  <target name="dm-example.xsd.cdata"
+          depends="init, chk.dm-example.xsd.cdata"
+          unless="dm-example.xsd.cdata.exists">
+    <echo message="Building CDATA version of dm-example.xsd ..." />
+    <copy file="${src.dir}/dm-example.xsd" tofile="${build.dir}/dm-example.xsd.cdata"/>
+    <replace file="${build.dir}/dm-example.xsd.cdata" token="&amp;" value="&amp;amp;"/>
+    <replace file="${build.dir}/dm-example.xsd.cdata" token="&lt;" value="&amp;lt;"/>
+  </target>
+
+  <!-- ====================================================================== -->
+
+  <target name="chk.dm-example.tbl.xml" depends="init">
+    <uptodate property="dm-example.tbl.xml.exists"
+              srcfile="${build.dir}/dm-example.dm.xml"
+              targetfile="${build.dir}/dm-example.tbl.xml"/>
+  </target>
+
+  <!-- ====================================================================== -->
+
+  <target name="dm-example.tbl.xml"
+          depends="init, chk.dm-example.tbl.xml, dm-example.dm.xml"
+          unless="dm-example.tbl.xml.exists">
+    <xslt in="${build.dir}/dm-example.dm.xml" out="${build.dir}/dm-example.tbl.xml"
+          style="${local.style.dir}/dm-example.tbl.xsl" force="yes"/>
+  </target>
+
+  <!-- ====================================================================== -->
+
+  <target name="chk.dm-example.dm.xml" depends="init">
+    <uptodate property="dm-example.dm.xml.exists"
+              srcfile="${src.dir}/dm-example.xml"
+              targetfile="${build.dir}/dm-example.dm.xml"/>
+  </target>
+
+  <!-- ====================================================================== -->
+
+  <target name="dm-example.dm.xml"
+          depends="init, chk.dm-example.dm.xml"
+          unless="dm-example.dm.xml.exists">
+    <xslt in="${src.dir}/dm-example.xml" out="${build.dir}/dm-example.dm.xml"
+          style="${local.style.dir}/dm-example.dm.xsl" force="yes"/>
+  </target>
+
+
+
+<!-- **************************************************************************************
+The following <target>s are all concerned with staging documents for publication. 
+     ************************************************************************************** -->
+
+<!-- **************************************************************************************
+     MAIN DOCUMENT STAGING
+     ************************************************************************************** -->
+
+<!-- **************************************************************************************
+THE FOLLOWING <target> MUST BE MANUALLY EDITED:
+  There must be one <copy> task for each of the files (NON-binary and BINARY) to be placed
+    into the staging directory. 
+  The <property name="nonbinary-files"> task must contain the exact list of the names of
+    the NON-binary files that have been placed into the staging directory.  The list is
+    permitted to use wildcards such as *.html. 
+  The <property name="binary-files"> task must contain the exact list of the names of
+    the BINARY files that have been placed into the staging directory.  The list is
+    permitted to use wildcards such as *.jpg. 
+  Please note that the value of each <property> list MUST NOT BE EMPTY!  If there are
+    NO NON-binary or NO BINARY files to include, there MUST be a filename for which
+    there is no actual file (e.g., x.x)!
+     ************************************************************************************** -->
+  <target name="stage-copy">
+    <copy file="${dist.dir}/Overview.html"
+          tofile="${staging.directory}/Overview.html"/>
+    <copy file="${dist.dir}/Overview-diff.html"
+          tofile="${staging.directory}/${shortname}-diff.html"/>
+    <copy file="${dist.dir}/${shortname}.xml"
+          tofile="${staging.directory}/${shortname}.xml"/>
+    <copy file="${dist.dir}/xpath-datatypes.xsd"
+          tofile="${staging.directory}/xpath-datatypes.xsd"/>
+    <copy file="${dist.dir}/XPathTypeHierarchy-1-items-3.1.png"
+          tofile="${staging.directory}/XPathTypeHierarchy-1-items-3.1.png"/>
+    <copy file="${dist.dir}/XPathTypeHierarchy-2-anyTypes-3.1.png"
+          tofile="${staging.directory}/XPathTypeHierarchy-2-anyTypes-3.1.png"/>
+    <copy file="${dist.dir}/XPathTypeHierarchy-3-anyAtomicTypes-3.1.png"
+          tofile="${staging.directory}/XPathTypeHierarchy-3-anyAtomicTypes-3.1.png"/>
+    <copy file="${dist.dir}/dm-example.png"
+          tofile="${staging.directory}/dm-example.png"/>
+    <copy file="${dist.dir}/dm-example.svg"
+          tofile="${staging.directory}/dm-example.svg"/>
+    <copy file="${dist.dir}/dm-example-large.png"
+          tofile="${staging.directory}/dm-example-large.png"/>
+
+    <antcall target="checkin.staged.stuff">
+      <param name="staging.directory"
+             value="${staging.directory}/"/>
+      <param name="staging.localdirname"
+             value="${staging.localdirname}/"/>
+      <param name="nonbinary-files" value="Overview.html
+${shortname}-diff.html
+${shortname}.xml
+xpath-datatypes.xsd"/>
+      <param name="binary-files" value="XPathTypeHierarchy-1-items-3.1.png
+XPathTypeHierarchy-2-anyTypes-3.1.png
+XPathTypeHierarchy-3-anyAtomicTypes-3.1.png
+dm-example.png
+dm-example.svg
+dm-example-large.png"/>
+    </antcall>
+  </target>
+
+  <!-- ====================================================================== -->
+
+<!-- **************************************************************************************
+     NAMESPACE DOCUMENT STAGING
+     ************************************************************************************** -->
+
+<!-- **************************************************************************************
+THE FOLLOWING <target> MUST BE MANUALLY EDITED:
+  There must be one <antcall> task for each namespace document being published.
+  There must also be one <target> for each namespace document being published.
+     ************************************************************************************** -->
+  <target name="stage-nsdocs"
+          description="Stage XDM namespace documents for publication">
+<!-- ************************************************************************************** -->
+<!-- There are no XDM namespace documents
+    <antcall target="stage-ns-"/>
+    -->
+<!-- ************************************************************************************** -->
+  </target>
+
+  <!-- ====================================================================== -->
+
+<!-- There are no XDM namespace documents
+  <target name="stage-ns-"
+          description="Stage XDM ??? namespace document for publication">
+    <antcall target="stage-a-nsdoc">
+      <param name="nsname"
+             value="ns-???"/>
+      <param name="namespace.fullname"
+              value="WWW/???"/>
+    </antcall>
+  </target>
+-->
+
+<!-- **************************************************************************************
+The preceding <target>s are all concerned with staging documents for publication. 
+     ************************************************************************************** -->
+
+</project>

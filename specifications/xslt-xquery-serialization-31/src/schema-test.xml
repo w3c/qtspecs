@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<s:serialization-parameters 
+  xmlns:s="http://www.w3.org/2010/xslt-xquery-serialization"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:foo="http://example.com/nss/foo"
+  xsi:schemaLocation="
+    http://www.w3.org/2010/xslt-xquery-serialization 
+    schema-for-serialization-parameters.xsd"
+  >
+
+  <!--* VV = was valid, stays valid *-->
+  <s:method value="html"/>
+  <s:method value="text"/>
+  <s:method value="xml"/>
+  <s:method value="xhtml"/>
+  <s:method value="json"/>
+  <s:method value="adaptive"/>
+  <s:method value="foo:bar"/>
+  <s:method value="Q{http://example.com/nss/foo}bar"/>
+  <s:method value="Q{http://e%20xample.com/nss/foo}bar"/>
+  <s:method value="Q{http://e%20xample.com/nss/foo}bar"/>  
+  
+  <!--* VV N.B. ws inside the braces is valid (for better or worse) *-->
+  <s:method value="Q{ http://example.com/nss/foo }bar"/>
+  <!--* VV If ws inside the braces is valid, then these are
+      * valid, too (mostly for worse, but too late to change). *-->
+  <s:method value="Q{ 
+    http://www.w3.org/2010/xslt-xquery-serialization 
+    schema-for-serialization-parameters.xsd }bar"/>
+  <s:method value="Q{http://e xample.com/nss/foo}bar"/>
+  <s:method value="Q{http://e xample.com/nss/foo}bar"/>  
+  
+  <s:json-node-output-method value="html"/>
+  <s:json-node-output-method value="text"/>
+  <s:json-node-output-method value="xml"/>
+  <s:json-node-output-method value="xhtml"/>
+  <s:json-node-output-method value="foo:bar"/>
+  <s:json-node-output-method value="Q{http://example.com/nss/foo}bar"/>
+  <s:json-node-output-method value="Q{ http://example.com/nss/foo }bar"/>
+  <s:json-node-output-method value="Q{ 
+    http://www.w3.org/2010/xslt-xquery-serialization 
+    schema-for-serialization-parameters.xsd }bar"/>
+  
+  <!--* VV EQNames for magic NCNames (with blanks; old schema
+      * made them valid for the wrong reason) *-->
+  <s:method value="Q{  }html"/>
+  <s:json-node-output-method value="Q{  }html"/>
+  <s:method value="Q{  }xhtml"/>
+  <s:json-node-output-method value="Q{  }xhtml"/>
+  <s:method value="Q{  }xml"/>
+  <s:json-node-output-method value="Q{  }xml"/>
+  <s:method value="Q{  }text"/>
+  <s:json-node-output-method value="Q{  }text"/>
+  <s:method value="Q{  }json"/>
+  <s:method value="Q{  }adaptive"/>
+  
+  <!--* II = Was invalid, stays invalid *-->
+  <!--* II wrong case *-->
+  <s:method value="HTML"/>
+  <s:method value="XML"/>
+  <s:json-node-output-method value="TEXT"/>
+  <s:json-node-output-method value="XHTML"/>
+  
+  <!--* II wrong name *-->
+  <s:method value="bar"/>
+  <s:method value="Q{}bar"/>  
+  <s:json-node-output-method value="json"/>
+  <s:json-node-output-method value="adaptive"/>
+  <s:json-node-output-method value="bar"/>
+  <s:json-node-output-method value="Q{ } bar"/>
+  <s:json-node-output-method value="Q{} bar"/>
+  <s:json-node-output-method value="Q {}bar"/>
+  <s:json-node-output-method value="Q{}bar"/>
+  
+  <!--* II Was invalid, stays invalid after all (whitespace in the EQName,
+      * outside the brackets) *-->
+  <s:method value="Q{ http://example.com/nss/foo } bar"/>
+  <s:method value="Q {http://example.com/nss/foo}bar"/>
+  <s:method value="Q {http://example.com/nss/foo} bar"/>
+  
+  <s:json-node-output-method value="Q{http://example.com/nss/foo} bar"/>
+  <s:json-node-output-method value="Q {http://example.com/nss/foo}bar"/>
+  <s:json-node-output-method value="Q {http://example.com/nss/foo} bar"/>
+  
+  <!--* II 'local name' not an NCName *-->
+  <s:method value="Q{http://example.com/nss/foo}-bar"/>
+  <s:json-node-output-method value="Q{http://example.com/nss/foo}-bar"/>  
+  
+  <!--* II 'local name' missing *-->
+  <s:method value="Q{http://example.com/nss/foo}"/>
+  <s:json-node-output-method value="Q{http://example.com/nss/foo}"/>  
+  
+  <!--* II 'namespace name' missing *-->
+  <s:method value="Qbar"/>
+  <s:json-node-output-method value="Qbar"/>  
+  
+  <!--* II everything missing *-->
+  <s:method value=""/>  
+  <s:json-node-output-method value=""/>
+  
+   
+  <!--* VI = Was valid, becomes invalid *-->
+  <!--* VI unqualified / null namespace *-->
+  <s:method value="Q{ }bar"/>
+  <s:json-node-output-method value="Q{  }bar"/>
+  
+  <!--* VI extra braces *-->
+  <s:method value="Q{{http://example.com/nss/foo}}bar"/>
+  <s:method value="Q{http://example.com/nss/foo}}bar"/>
+  <s:method value="Q{{http://example.com/nss/foo}bar"/>
+  <s:json-node-output-method value="Q{{http://example.com/nss/foo}}bar"/>
+  <s:json-node-output-method value="Q{http://example.com/nss/foo}}bar"/>
+  <s:json-node-output-method value="Q{{http://example.com/nss/foo}bar"/>
+  
+  <!--* VI wrong unqualified names *-->
+  <s:json-node-output-method value="Q{  }json"/>
+  <s:json-node-output-method value="Q{  }adaptive"/>
+  
+  <!--* IV = was invalid, becomes valid *-->
+  <!--* IV EQNames for magic unqualified NCNames *-->
+  <s:method value="Q{}html"/>
+  <s:method value="Q{}xhtml"/>
+  <s:method value="Q{}xml"/>
+  <s:method value="Q{}text"/>
+  <s:method value="Q{}adaptive"/>
+  <s:method value="Q{}json"/>
+  <s:json-node-output-method value="Q{}html"/>  
+  <s:json-node-output-method value="Q{}xhtml"/>
+  <s:json-node-output-method value="Q{}xml"/>
+  <s:json-node-output-method value="Q{}text"/>
+  
+  
+</s:serialization-parameters>

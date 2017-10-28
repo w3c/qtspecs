@@ -1,0 +1,266 @@
+<!--XSLT Processor: Saxonica SAXON HE 9.6.0.7--><spec w3c-doctype="note"><header><title>XQuery and XPath Full Text 3.0 Requirements and Use Cases</title><w3c-designation>NOTE-xpath-full-text-30-requirements-use-cases</w3c-designation><w3c-doctype>W3C Working Group Note</w3c-doctype><pubdate diff="chg"><day>10</day><month>December</month><year>2015</year></pubdate><publoc>
+<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/2015/NOTE-xpath-full-text-30-requirements-use-cases-20151210/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://www.w3.org/TR/2015/NOTE-xpath-full-text-30-requirements-use-cases-20151210/</loc>
+</publoc><latestloc>
+<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/xpath-full-text-30-requirements-use-cases/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://www.w3.org/TR/xpath-full-text-30-requirements-use-cases/</loc>
+</latestloc><prevlocs>
+<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/2015/WD-xpath-full-text-30-requirements-use-cases-20150312/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://www.w3.org/TR/2015/WD-xpath-full-text-30-requirements-use-cases-20150312/</loc>
+<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/2012/WD-xpath-full-text-30-requirements-use-cases-20120327/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://www.w3.org/TR/2012/WD-xpath-full-text-30-requirements-use-cases-20120327/</loc>
+</prevlocs><authlist><author><name>Pat Case</name><affiliation>Library of Congress</affiliation></author></authlist><abstract diff="chg"><p>This document specifies requirements and use cases for Full-Text Search for use in
+XQuery 3.0 <bibref ref="xquery-30"/> and XPath 3.0 <bibref ref="xpath-30"/>.</p></abstract><!--* Common status section for QT specs.
+    * Use is currently not required, but it simplifies things.
+    * 
+    * Revisions:
+    * 2007-01-15 : CMSMcQ : made file, to simplify publication of Rec.
+    * 2008-02-15 : JimMelton : cloned from MSM's REC-only material
+                     to generalize for all stages
+    *--><status id="status"><!-- ************************************************************************** --><!-- * All Status sections must start with the standard boilerplate paragraph * --><!-- *   This entity is defined in status-entities.dtd                        * --><!-- ************************************************************************** --><p><emph>This section describes the status of this
+         document at the time of its publication.
+         Other documents may supersede this document.
+         A list of current W3C publications and the latest
+         revision of this technical report can be found in the
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">W3C technical reports index</loc>
+         at http://www.w3.org/TR/.</emph></p><p>This document is governed by the
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" id="w3c_process_revision" href="http://www.w3.org/2005/10/Process-20051014/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">14 October 2005 W3C Process Document</loc>. </p><!-- ************************************************************************** --><!-- * QT publishes suites of documents, which must be described in the       * --><!--     Status section of each document within such a suite.                 * --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><!-- ************************************************************************** --><!-- * There is a lot of detailed customization based on the document stage   * --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><p>This is a <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/2005/10/Process-20051014/tr.html#tr-end" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Working Group Note</loc> as described in the <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/2005/10/Process-20051014/tr.html" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Process Document</loc>. 
+It was jointly developed by the W3C 
+<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/XML/Query/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XML Query Working Group</loc> and the W3C <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/Style/XSL/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XSLT Working Group</loc>, each of which is part of the <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/XML/Activity" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XML Activity</loc>.
+This document will eventually be published as a <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/2005/10/Process-20051014/tr.html#tr-end" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Working Group Note</loc>
+to persistently record the Requirements that guided the development of
+<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/xpath-full-text-30/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery and XPath Full Text 3.0</loc>
+as a W3C Recommendation.</p><!-- ************************************************************************** --><!-- * CR documents must cite features at risk                                * --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><!-- ************************************************************************** --><!-- * Every Status section must have a customized paragraph                  * --><!-- *   This entity is defined completely in the host document.              * --><!-- ************************************************************************** --><!-- ************************************************************************** --><!-- * CR docs should, and PR docs must, have a pointer to an implementation  * --><!-- *   report.  We also want to point to the test suite.                    * --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><!-- ************************************************************************** --><!-- * The Status section should point to a changelog                         * --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><!-- ************************************************************************** --><!-- * The Status section must tell readers where to send comments            * --><!-- *   This entity is defined in status-entities.dtd                        * --><!-- ************************************************************************** --><p>Please report errors in this document using W3C's
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="https://www.w3.org/Bugs/Public/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">public Bugzilla system</loc>
+         (instructions can be found at
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/XML/2005/04/qt-bugzilla" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://www.w3.org/XML/2005/04/qt-bugzilla</loc>).
+         If access to that system is not feasible, you may send your comments
+         to the W3C XSLT/XPath/XQuery public comments mailing list,
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="mailto:public-qt-comments@w3.org" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">public-qt-comments@w3.org</loc>.
+         It will be very helpful if you include the string 
+         “[FT30req]”
+         in the subject line of your report, whether made in Bugzilla or in email.
+         Please use multiple Bugzilla entries (or, if necessary, multiple email messages)
+         if you have more than one comment to make.
+         Archives of the comments and responses are available at
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://lists.w3.org/Archives/Public/public-qt-comments/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://lists.w3.org/Archives/Public/public-qt-comments/</loc>. </p><!-- ************************************************************************** --><!-- Status sections must state the stability (not stable, or REC) of the document --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><p>Publication as a <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/2005/10/Process-20051014/tr.html#tr-end" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Working Group Note</loc>
+does not imply endorsement by the W3C Membership. 
+This is a draft document and may be updated, replaced or obsoleted
+by other documents at any time. 
+It is inappropriate to cite this document as other than work in progress.</p><!-- ************************************************************************** --><!-- * Finally, all Status sections must end with the appropriate IPR para    * --><!-- *   This entity is defined in status-entities.dtd                        * --><!-- ************************************************************************** --><p>This document was produced by groups operating under the
+   <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/Consortium/Patent-Policy-20040205/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">5 February 2004
+   W3C Patent Policy</loc>.
+<!--
+   The groups do not expect this document to become a W3C Recommendation.
+-->
+   W3C maintains a <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/2004/01/pp-impl/18797/status#disclosures" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">public list of any 
+   patent disclosures</loc> made in connection with the deliverables of the 
+   XML Query Working Group and also maintains a <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/2004/01/pp-impl/19552/status#disclosures" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">public list of any patent 
+   disclosures</loc> made in connection with the deliverables of the XSL 
+   Working Group; those pages also include instructions for
+   disclosing a patent.
+   An individual who has actual knowledge of a patent which the individual believes
+   contains
+   <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/Consortium/Patent-Policy-20040205/#def-essential" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Essential Claim(s)</loc>
+   must disclose the information in accordance with
+   <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/Consortium/Patent-Policy-20040205/#sec-Disclosure" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">section 6 of the W3C Patent Policy</loc>. </p></status><langusage><language id="EN">English</language></langusage><revisiondesc><slist><sitem>
+          Strawman 1.0(JM; 2010-12-17)
+</sitem></slist></revisiondesc></header><body><div1 id="goals"><head>Goals</head><p>The goal of XQuery and XPath Full Text 3.0 is to extend XQuery and XPath Full Text 1.0
+with additional functionality in response to requests from users and implementors.</p></div1><div1 id="Requirements"><head>Requirements</head><div2 id="Terminology"><head>Terminology</head><p>The following key words are used throughout the document to specify the
+extent to which an item is a requirement for the work of the XML Query 
+Working Group:</p><glist><gitem><label id="terminology-must">MUST</label><def><p>This word means that the item is an absolute requirement.</p></def></gitem><gitem><label id="terminology-should">SHOULD</label><def><p>This word means that there may exist valid reasons not to treat this item
+as a requirement, but the full implications should be understood and the case
+carefully weighed before discarding this item.</p></def></gitem><gitem><label id="terminology-may">MAY</label><def><p>This word means that an item deserves attention, but further study is
+needed to determine whether the item should be treated as a 
+requirement.</p></def></gitem></glist><p>When the words  
+<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>,  
+<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-should" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">SHOULD</loc>, or  
+<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-may" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MAY</loc> are used in this technical sense, they
+occur as a hyperlink to these definitions. These words will also be used with
+their conventional English meaning, in which case there is no hyperlink. For
+instance, the phrase "the full implications should be understood" uses the
+word "should" in its conventional English sense, and therefore occurs without
+the hyperlink.</p><p id="req-status">Each requirement also includes a status section,
+indicating its current situation in the XML-Query family of specifications.
+Three status levels are available:</p><glist><gitem><label>"Green" status</label><def><p>
+<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/> This indicates that the requirement, according to its
+original formulation, has been completely met. Optional clarificatory text
+may follow.</p></def></gitem><gitem><label>"Yellow" status</label><def><p>
+<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/yellow-ball.gif" alt="yellow status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/> This indicates that the requirement has been partially met
+according to its original formulation. When this happens, explanatory text is
+provided to better clarify the current scope of the
+requirement.</p></def></gitem><gitem><label>"Red" status</label><def><p>
+<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/red-ball.gif" alt="red status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/> This indicates that the requirement, according to its
+original formulation, has not been met. If this is the case, explanatory text
+is provided.</p></def></gitem></glist></div2><div2 id="general-requirements"><head>General Requirements</head><div3 id="backward-compatibility"><head>Backward compatibility</head><glist><gitem><label/><def><p>XQuery and XPath Full Text 3.0 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> be backward compatible.</p><p>Every valid XQuery and XPath Full Text 1.0 expression <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> be valid in XQuery and XPath Full Text 3.0 and it <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>  evaluate to the same result.</p><p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has been met.</p></def></gitem></glist></div3><div3 id="extension-compatibility"><head>Extension compatibility</head><glist><gitem><label/><def><p>XQuery and XPath Full Text 3.0 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> be compatible with XQuery and XPath 3.0 extensions developed by the <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/XML/Query/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XML Query Working Group</loc> and the <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/Style/XSL/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XSL Working Group</loc>.</p><p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has been met.</p></def></gitem></glist></div3></div2><!--  REQUIREMENTS ***********************************--><div2 id="full-text-search-functionality"><head>Full Text Search Functionality</head><div3><head>Language Identifiers</head><glist><gitem><label/><def><p>XQuery and XPath Full Text 3.0 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> specify in the Language Option
+how to handle multiple language identifiers for the same language, including languages represented by both
+two- and three- letter identifiers.</p><p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has been met.</p></def></gitem></glist></div3><!-- The following Requirement has been deferred to FT 3.1
+				<div3>
+					<head>Match highlighting</head>
+
+					<glist>
+
+						<gitem>
+							<label/>
+							<def>
+<p>XQuery and XPath Full Text 3.0 <loc href="#terminology-must">MUST</loc> support adding marker elements around token matches. How the element will be marked <loc href="#terminology-may">MAY</loc> be specified by an EQName or a function item as argument.</p>
+<p><graphic source="http://www.w3.org/Icons/red-ball.gif" alt="red status"></graphic>  
+<emph>Status:</emph> this requirement has not been met. The Working Group has yet to decide whether it will be a requirement for this or any other version.</p>
+							</def>
+						</gitem>
+
+					</glist>
+
+				</div3>
+--><!-- The following Requirement has been deferred to FT 3.1
+				<div3>
+					<head>Optional URI for stemming algorithms</head>
+
+					<glist>
+
+						<gitem>
+							<label/>
+							<def>
+<p>XQuery and XPath Full Text 3.0 <loc href="#terminology-must">MUST</loc> define an optional URI to identify stemming algorithms. Issue raised in Bugzilla Bug 9680.</p>
+<p><graphic source="http://www.w3.org/Icons/red-ball.gif" alt="red status"></graphic>  
+<emph>Status:</emph> this requirement has not been met. The Working Group has yet to decide whether it will be a requirement for this or any other version.</p>
+							</def>
+						</gitem>
+
+					</glist>
+
+				</div3>
+--><!-- The following Requirement has been deferred to FT 3.1
+				<div3>
+					<head>Refine language about levels in FTThesaurus Option</head>
+
+					<glist>
+
+						<gitem>
+							<label/>
+							<def>
+<p>XQuery and XPath Full Text 3.0 <loc href="#terminology-must">MUST</loc> refine language about levels in FTThesaurus Option. Issue raised in Bugzilla Bug 11444.</p>
+<p><graphic source="http://www.w3.org/Icons/red-ball.gif" alt="red status"></graphic>  
+<emph>Status:</emph> this requirement has not been met. The Working Group has yet to decide whether it will be a requirement for this or any other version.</p>
+							</def>
+						</gitem>
+
+					</glist>
+
+				</div3>									
+--><!-- The following Requirement has been deferred to FT 3.1
+					<div3>
+					<head>Tokenize items</head>
+
+					<glist>
+
+						<gitem>
+							<label/>
+							<def>
+<p>XQuery and XPath Full Text 3.0 <loc href="#terminology-must">MUST</loc> support explicitly tokenizing an item and returning a sequence of strings.</p>
+<p><graphic source="http://www.w3.org/Icons/red-ball.gif" alt="red status"></graphic>  
+<emph>Status:</emph> this requirement has not been met. The Working Group has yet to decide whether it will be a requirement for this or any other version.</p>
+							</def>
+						</gitem>
+
+					</glist>
+
+				</div3>	
+--><!-- The following Requirement has been deferred to FT 3.1
+					<div3>
+					<head>Count occurrences of search terms</head>
+
+					<glist>
+
+						<gitem>
+							<label/>
+							<def>
+<p>XQuery and XPath Full Text 3.0 <loc href="#terminology-must">MUST</loc> enable counting the number of occurrences of search terms specified in a full-text expression.</p>
+<p><graphic source="http://www.w3.org/Icons/red-ball.gif" alt="red status"></graphic>  
+<emph>Status:</emph> this requirement has not been met. The Working Group has yet to decide whether it will be a requirement for this or any other version.</p>
+							</def>
+						</gitem>
+
+					</glist>
+
+				</div3>		
+--><!-- The following Requirement has been deferred to FT 3.1
+					<div3>
+					<head>Return score values</head>
+
+					<glist>
+
+						<gitem>
+							<label/>
+							<def>
+<p>XQuery and XPath Full Text 3.0 <loc href="#terminology-must">MUST</loc> allow explicit access to score values that have been assigned to items by an FTContains expression, making the score values available for merging and other computations.</p>
+<p><graphic source="http://www.w3.org/Icons/red-ball.gif" alt="red status"></graphic>  
+<emph>Status:</emph> this requirement has not been met. The Working Group has yet to decide whether it will be a requirement for this or any other version.</p>
+							</def>
+						</gitem>
+
+					</glist>
+
+				</div3>	
+--><!-- The following Requirement has been deferred to FT 3.1
+					<div3>
+					<head>Search on punctuation</head>
+
+					<glist>
+
+						<gitem>
+							<label/>
+							<def>
+<p>XQuery and XPath Full Text 3.0 <loc href="#terminology-must">MUST</loc> support searching on punctuation. For example, searching on tokens that contain punctuation such as PB&amp;J and document.xml.</p>
+<p><graphic source="http://www.w3.org/Icons/red-ball.gif" alt="red status"></graphic>  
+<emph>Status:</emph> this requirement has not been met. The Working Group has yet to decide whether it will be a requirement for this or any other version.</p>
+							</def>
+						</gitem>
+
+					</glist>
+
+				</div3>		
+--><!-- The following Requirement has been deferred to FT 3.1
+						<div3>
+					<head>Snippets</head>
+
+					<glist>
+
+						<gitem>
+							<label/>
+							<def>
+<p>XQuery and XPath Full Text 3.0 <loc href="#terminology-must">MUST</loc> support displaying snippets (match tokens in context). Snippets are brief segments of text surrounding matches displayed in search results to enable the user to better judge the usefulness of a search result.</p>
+<p><graphic source="http://www.w3.org/Icons/red-ball.gif" alt="red status"></graphic>  
+<emph>Status:</emph> this requirement has not been met. The Working Group has yet to decide whether it will be a requirement for this or any other version.</p>
+							</def>
+						</gitem>
+
+					</glist>
+
+				</div3>			
+--></div2><div2 id="editorial-changes"><head>Editorial Changes</head><div3><head>Irrevocable Stop Words</head><glist><gitem><label/><def><p>XQuery and XPath Full Text 3.0 <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> specify in the Stop Word Option that implementations may apply stop word lists during indexing and be unable to comply with query-time requests to not apply those stop words.</p><p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+<emph>Status:</emph> this requirement has been met.</p></def></gitem></glist></div3><!-- The following Requirement has been deferred to FT 3.1
+	<div3>
+					<head>Rename TokenInfo</head>
+
+					<glist>
+
+						<gitem>
+							<label/>
+							<def>
+<p>XQuery and XPath Full Text 3.0 <loc href="#terminology-must">MUST</loc> rename TokenInfo to something like TokenSpan or TokenRange. Issue raised in Bugzilla Bug 9541.</p>
+<p><graphic source="http://www.w3.org/Icons/red-ball.gif" alt="red status"></graphic>  
+<emph>Status:</emph> this requirement has not been met. The Working Group has yet to decide whether it will be a requirement for this or any other version.</p>
+							</def>
+						</gitem>
+
+					</glist>
+
+				</div3>					
+--></div2></div1><div1 id="UseCases"><head>Use Cases</head><p>There are no use cases provided in this edition of the Requirements and Use Cases document. </p></div1></body><back><div1 id="biblio"><head>References</head><div2 id="non-normative-biblio"><head>Non-Normative</head><blist><bibl xmlns:xlink="http://www.w3.org/1999/xlink" diff="chg" id="xpath-datamodel-30" key="XQuery and XPath Data Model (XDM) 3.0" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest"/><bibl xmlns:xlink="http://www.w3.org/1999/xlink" id="xquery-30" key="XQuery 3.0: An XML Query Language" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest"/><bibl xmlns:xlink="http://www.w3.org/1999/xlink" id="xpath-30" key="XML Path Language (XPath) 3.0" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest"/><bibl xmlns:xlink="http://www.w3.org/1999/xlink" diff="chg" id="xquery-30-requirements" key="XQuery 3.0 Requirements" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest"/><bibl xmlns:xlink="http://www.w3.org/1999/xlink" id="SQLMMFT" key="SQL/MM Full-Text" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">ISO/IEC 13249-2:2000,
+Information technology — Database languages —
+SQL Multimedia and Application Packages —
+Part 2: Full-Text,
+International Organization For Standardization, 2000, referenced in e.g.
+<loc href="http://www.acm.org/sigmod/record/issues/0112/standards.pdf" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">"SQL Multimedia and Application Packages (SQL/MM)"</loc>
+(See http://www.acm.org/sigmod/record/issues/0112/standards.pdf)
+</bibl></blist></div2></div1></back></spec>

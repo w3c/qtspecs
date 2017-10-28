@@ -1,0 +1,657 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--XSLT Processor: SAXON 9.1.0.5 from Saxonica SAXON 9.1.0.5-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:xs="http://www.w3.org/2001/XMLSchema" lang="en" xmlns=
+"http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta name="generator" content=
+"HTML Tidy for Windows (vers 14 February 2006), see www.w3.org" />
+<title>XQuery Update Facility 1.0 Requirements</title>
+
+<style type="text/css">
+/*<![CDATA[*/
+code           { font-family: monospace; }
+
+div.constraint,
+div.issue,
+div.note,
+div.notice     { margin-left: 2em; }
+
+div.issue
+p.title        { margin-left: -2em; }
+
+ol.enumar      { list-style-type: decimal; }
+ol.enumla      { list-style-type: lower-alpha; }
+ol.enumlr      { list-style-type: lower-roman; }
+ol.enumua      { list-style-type: upper-alpha; }
+ol.enumur      { list-style-type: upper-roman; }
+
+li p           { margin-top: 0.3em;
+                 margin-bottom: 0.3em; }
+
+sup small      { font-style: italic;
+                 color: #8F8F8F;
+               }
+    
+div.exampleInner pre { margin-left: 1em;
+                       margin-top: 0em; margin-bottom: 0em}
+div.exampleOuter {border: 4px double gray;
+                  margin: 0em; padding: 0em}
+div.exampleInner { background-color: #d5dee3;
+                   border-top-width: 4px;
+                   border-top-style: double;
+                   border-top-color: #d3d3d3;
+                   border-bottom-width: 4px;
+                   border-bottom-style: double;
+                   border-bottom-color: #d3d3d3;
+                   padding: 4px; margin: 0em }
+div.exampleWrapper { margin: 4px }
+div.exampleHeader { font-weight: bold;
+                    margin: 4px}
+
+div.issue { border-bottom-color: black;
+            border-bottom-style: solid;
+            border-bottom-width: 1pt;
+            margin-bottom: 20pt;
+}
+
+th.issue-toc-head { border-bottom-color: black;
+                    border-bottom-style: solid;
+                    border-bottom-width: 1pt;
+}
+
+      table.small                             { font-size: x-small; }
+a.judgment:visited, a.judgment:link     { font-family: sans-serif;
+                                          color: black; 
+                                          text-decoration: none }
+a.processing:visited, a.processing:link { color: black; 
+                                                text-decoration: none }
+a.env:visited, a.env:link               { color: black; 
+                                          text-decoration: none }
+/*]]>*/
+</style>
+<link rel="stylesheet" type="text/css" href=
+"http://www.w3.org/StyleSheets/TR/W3C-WG-NOTE.css" />
+</head>
+<body>
+<div class="head">
+<p><a href="http://www.w3.org/"><img src=
+"http://www.w3.org/Icons/w3c_home" alt="W3C" height="48" width=
+"72" /></a></p>
+<h1><a name="title" id="title"></a>XQuery Update Facility 1.0
+Requirements</h1>
+<h2><a name="w3c-doctype" id="w3c-doctype"></a>W3C Working Group
+Note 25 January 2011</h2>
+<dl>
+<dt>This version:</dt>
+<dd><a href=
+"http://www.w3.org/TR/2011/NOTE-xquery-update-10-requirements-20110125/">
+http://www.w3.org/TR/2011/NOTE-xquery-update-10-requirements-20110125/</a></dd>
+<dt>Latest version:</dt>
+<dd><a href=
+"http://www.w3.org/TR/xquery-update-10-requirements/">http://www.w3.org/TR/xquery-update-10-requirements/</a></dd>
+<dt>Previous version:</dt>
+<dd><a href=
+"http://www.w3.org/TR/2008/CR-xquery-update-10-requirements-20080314/">
+http://www.w3.org/TR/2008/CR-xquery-update-10-requirements-20080314/</a></dd>
+<dt>Editors:</dt>
+<!--xmlspec, match="author"-->
+<dd>Don Chamberlin, IBM Almaden Research Center <a href=
+"mailto:chamberlin@almaden.ibm.com">&lt;chamberlin@almaden.ibm.com&gt;</a></dd>
+<!--xmlspec, match="author"-->
+<dd>Jonathan Robie, Red Hat <a href=
+"mailto:jonathan.robie@redhat.com">&lt;jonathan.robie@redhat.com&gt;</a></dd>
+</dl>
+<p class="copyright"><a href=
+"http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a>&#160;©&#160;2011&#160;<a href="http://www.w3.org/"><acronym title="World Wide Web Consortium">W3C</acronym></a><sup>®</sup>
+(<a href="http://www.csail.mit.edu/"><acronym title=
+"Massachusetts Institute of Technology">MIT</acronym></a>, <a href=
+"http://www.ercim.eu/"><acronym title=
+"European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>,
+<a href="http://www.keio.ac.jp/">Keio</a>), All Rights Reserved.
+W3C <a href=
+"http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>,
+<a href=
+"http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a>
+and <a href=
+"http://www.w3.org/Consortium/Legal/copyright-documents">document
+use</a> rules apply.</p>
+</div>
+<hr />
+<div>
+<h2><a name="abstract" id="abstract"></a>Abstract</h2>
+<p>This document specifies goals and requirements for the XQuery
+Update Facility.</p>
+</div>
+<div>
+<h2><a name="status" id="status"></a>Status of this Document</h2>
+<p><em>This section describes the status of this document at the
+time of its publication. Other documents may supersede this
+document. A list of current W3C publications and the latest
+revision of this technical report can be found in the <a href=
+"http://www.w3.org/TR/">W3C technical reports index</a> at
+http://www.w3.org/TR/.</em></p>
+<p>This is a <a href=
+"http://www.w3.org/2005/10/Process-20051014/tr.html#tr-end">Working
+Group Note</a> as described in the <a href=
+"http://www.w3.org/2005/10/Process-20051014/tr.html">Process
+Document</a>. It has been developed by the W3C <a href=
+"http://www.w3.org/XML/Query/">XML Query Working Group</a>, which
+is part of the <a href="http://www.w3.org/XML/Activity">XML
+Activity</a>.</p>
+<p>This document includes, for each requirement, a corresponding
+status, indicating the current situation of the requirement in
+<a href="http://www.w3.org/TR/xquery-update-10/">XQuery Update
+Facility 1.0</a> at the time that it was issued as a final
+Recommendation on 22 February 2011. Three status levels are
+used:</p>
+<dl>
+<dt class="label">"Green" status</dt>
+<dd>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> This indicates that the requirement, according to
+its original formulation, has been completely met. Optional
+clarificatory text may follow.</p>
+</dd>
+<dt class="label">"Yellow" status</dt>
+<dd>
+<p><img src="http://www.w3.org/Icons/yellow-ball.gif" alt=
+"yellow status" /> This indicates that the requirement has been
+partially met according to its original formulation. When this
+status is indicated, explanatory text is provided to better clarify
+the current scope of the requirement.</p>
+</dd>
+<dt class="label">"Red" status</dt>
+<dd>
+<p><img src="http://www.w3.org/Icons/red-ball.gif" alt=
+"red status" /> This indicates that the requirement, according to
+its original formulation, has not been met. If this is the case,
+explanatory text is provided.</p>
+</dd>
+</dl>
+<p>No substantive changes have been made to this specification
+since its publication as a Proposed Recommendation.</p>
+<p>Please report errors in this document using W3C's <a href=
+"http://www.w3.org/Bugs/Public/">public Bugzilla system</a>
+(instructions can be found at <a href=
+"http://www.w3.org/XML/2005/04/qt-bugzilla">http://www.w3.org/XML/2005/04/qt-bugzilla</a>).
+If access to that system is not feasible, you may send your
+comments to the W3C XSLT/XPath/XQuery public comments mailing list,
+<a href=
+"mailto:public-qt-comments@w3.org">public-qt-comments@w3.org</a>.
+It will be very helpful if you include the string “[UPDreq]” in the
+subject line of your report, whether made in Bugzilla or in email.
+Please use multiple Bugzilla entries (or, if necessary, multiple
+email messages) if you have more than one comment to make. Archives
+of the comments and responses are available at <a href=
+"http://lists.w3.org/Archives/Public/public-qt-comments/">http://lists.w3.org/Archives/Public/public-qt-comments/</a>.</p>
+<p>Publication as a <a href=
+"http://www.w3.org/2005/10/Process-20051014/tr.html#tr-end">Working
+Group Note</a> does not imply endorsement by the W3C Membership. At
+the time of publication, work on this document was considered
+complete and no further revisions are anticipated. It is a stable
+document and may be used as reference material or cited from
+another document. However, this document may be updated, replaced,
+or made obsolete by other documents at any time.</p>
+<p>This document was produced by a group operating under the
+<a href="http://www.w3.org/Consortium/Patent-Policy-20040205/">5
+February 2004 W3C Patent Policy</a>. W3C maintains a <a href=
+"http://www.w3.org/2004/01/pp-impl/18797/status#disclosures">public
+list of any patent disclosures</a> made in connection with the
+deliverables of the group; that page also includes instructions for
+disclosing a patent. An individual who has actual knowledge of a
+patent which the individual believes contains <a href=
+"http://www.w3.org/Consortium/Patent-Policy-20040205/#def-essential">
+Essential Claim(s)</a> must disclose the information in accordance
+with <a href=
+"http://www.w3.org/Consortium/Patent-Policy-20040205/#sec-Disclosure">
+section 6 of the W3C Patent Policy</a>.</p>
+</div>
+<div class="toc">
+<h2><a name="contents" id="contents"></a>Table of Contents</h2>
+<p class="toc">1 <a href="#d3e185">Goals</a><br />
+2 <a href="#d3e192">Usage Scenarios</a><br />
+3 <a href="#d3e236">Requirements</a><br />
+&#160;&#160;&#160;&#160;3.1 <a href="#d3e239">Terminology</a><br />
+&#160;&#160;&#160;&#160;3.2 <a href="#d3e274">General
+Requirements</a><br />
+&#160;&#160;&#160;&#160;3.3 <a href="#d3e377">Relationship to
+XQuery 1.0</a><br />
+&#160;&#160;&#160;&#160;3.4 <a href="#id-update-functionality">XML
+Query Update Functionality</a><br />
+&#160;&#160;&#160;&#160;3.5 <a href="#d3e646">Transaction
+characteristics</a><br /></p>
+<h3><a name="appendices" id="appendices"></a>Appendix</h3>
+<p class="toc">A <a href="#d3e735">References</a><br /></p>
+</div>
+<hr />
+<div class="body">
+<div class="div1">
+<h2><a name="d3e185" id="d3e185"></a>1 Goals</h2>
+<p>This document describes the requirements for the XQuery Update
+Facility. <a href="#xquery">[XQuery 1.0]</a> provides queries, but
+has no support for adding new values or changing existing values.
+The XML Query Working Group intends to add support for updates in a
+future version of XQuery.</p>
+</div>
+<div class="div1">
+<h2><a name="d3e192" id="d3e192"></a>2 Usage Scenarios</h2>
+<p>The following usage scenarios describe how the XQuery Update
+Facility may be used in various environments, and represent a wide
+range of activities and needs that illustrate the problem space to
+be addressed. They are intended to be used as design cases during
+the development of the XQuery Update Facility, and should be
+reviewed when critical decisions are made. These usage scenarios
+should also prove useful in helping non-members of the XML Query
+Working Group understand the intent and goals of the project.</p>
+<dl>
+<dt class="label">2.1 Updating persistent XML stores</dt>
+<dd>
+<p>Modify XML in persistent XML stores, including native XML
+databases, XML files stored on a file system, or XML stored in SQL
+databases.</p>
+</dd>
+<dt class="label">2.2 Modify XML messages</dt>
+<dd>
+<p>Modify XML messages to change status and add information created
+while processing the message.</p>
+</dd>
+<dt class="label">2.3 Add to existing XML document</dt>
+<dd>
+<p>Add new data to an existing XML document; for instance, add a
+new entry to a BLOG or a data log.</p>
+</dd>
+<dt class="label">2.4 Updating XML registries</dt>
+<dd>
+<p>Perform updates on configuration files, user profiles, or
+administrative logs represented in XML.</p>
+</dd>
+<dt class="label">2.5 Creating edited copies</dt>
+<dd>
+<p>Create a new copy of an XML document or subtree that differs
+from the original in the way specified by the update. For instance,
+updates could be used to modify a web message in order to add new
+information and change headers to reflect the modified status.</p>
+</dd>
+<dt class="label">2.6 Modifying XML views</dt>
+<dd>
+<p>Modifying XML views of non-XML sources, such as a <a href=
+"#sqlxml">[SQL/XML]</a> view of a SQL database.</p>
+</dd>
+</dl>
+</div>
+<div class="div1">
+<h2><a name="d3e236" id="d3e236"></a>3 Requirements</h2>
+<div class="div2">
+<h3><a name="d3e239" id="d3e239"></a>3.1 Terminology</h3>
+<p>The following key words are used throughout the document to
+specify the extent to which an item is a requirement for the work
+of the XML Query Working Group:</p>
+<dl>
+<dt class="label"><a name="terminology-must" id=
+"terminology-must"></a>MUST</dt>
+<dd>
+<p>This word means that the item is an absolute requirement.</p>
+</dd>
+<dt class="label"><a name="terminology-should" id=
+"terminology-should"></a>SHOULD</dt>
+<dd>
+<p>This word means that there may exist valid reasons not to treat
+this item as a requirement, but the full implications should be
+understood and the case carefully weighed before discarding this
+item.</p>
+</dd>
+<dt class="label"><a name="terminology-may" id=
+"terminology-may"></a>MAY</dt>
+<dd>
+<p>This word means that an item deserves attention, but further
+study is needed to determine whether the item should be treated as
+a requirement.</p>
+</dd>
+</dl>
+<p>When the words <a href="#terminology-must">MUST</a>, <a href=
+"#terminology-should">SHOULD</a>, or <a href=
+"#terminology-may">MAY</a> are used in this technical sense, they
+occur as a hyperlink to these definitions. These words will also be
+used with their conventional English meaning, in which case there
+is no hyperlink. For instance, the phrase "the full implications
+should be understood" uses the word "should" in its conventional
+English sense, and therefore occurs without the hyperlink.</p>
+</div>
+<div class="div2">
+<h3><a name="d3e274" id="d3e274"></a>3.2 General Requirements</h3>
+<dl>
+<dt class="label">3.2.1 Query Update Syntax</dt>
+<dd>
+<p>The syntax for updates <a href="#terminology-may">MAY</a> have
+more than one syntax binding. One syntax <a href=
+"#terminology-must">MUST</a> be convenient for humans to read and
+write.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+<p>One syntax <a href="#terminology-must">MUST</a> be expressed in
+XML in a way that reflects the underlying structure of the
+operations.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+<dt class="label">3.2.2 Declarativity</dt>
+<dd>
+<p>The XQuery Update Facility <a href="#terminology-must">MUST</a>
+be declarative. Notably, it <a href="#terminology-must">MUST</a> be
+independent of any particular evaluation strategy.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+<dt class="label">3.2.3 Protocol Independence</dt>
+<dd>
+<p>The XQuery Update Facility <a href="#terminology-must">MUST</a>
+be defined independently of any protocols with which it is
+used.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+<dt class="label">3.2.4 Error Conditions</dt>
+<dd>
+<p>The XQuery Update Facility <a href="#terminology-must">MUST</a>
+define standard error conditions that can occur during the
+execution of an update.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+<dt class="label">3.2.5 Static Type Checking</dt>
+<dd>
+<p>The XQuery Update Facility <a href=
+"#terminology-should">SHOULD</a> provide an optional static type
+checking feature.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+</dl>
+</div>
+<div class="div2">
+<h3><a name="d3e377" id="d3e377"></a>3.3 Relationship to XQuery
+1.0</h3>
+<dl>
+<dt class="label">3.3.1 Based on Data Model</dt>
+<dd>
+<p>The XQuery Update Facility <a href="#terminology-must">MUST</a>
+be defined on the <a href="#xpath-datamodel">[XQuery 1.0 and XPath
+2.0 Data Model]</a>.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+<div class="note">
+<p class="prefix"><b>Note:</b></p>
+<p>The properties of a Data Model instance that can be modified by
+the XQuery Update Facility are discussed in <a href=
+"#id-update-functionality"><b>3.4 XML Query Update
+Functionality</b></a>.</p>
+</div>
+</dd>
+<dt class="label">3.3.2 Based on XQuery</dt>
+<dd>
+<p>The XQuery Update Facility <a href="#terminology-must">MUST</a>
+be based on <a href="#xquery">[XQuery 1.0]</a>. The XQuery Update
+Facility <a href="#terminology-must">MUST</a> use XQuery to
+identify items to be updated. The XQuery Update Facility <a href=
+"#terminology-must">MUST</a> use XQuery to specify items used in
+the updates.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+</dl>
+</div>
+<div class="div2">
+<h3><a name="id-update-functionality" id=
+"id-update-functionality"></a>3.4 XML Query Update
+Functionality</h3>
+<dl>
+<dt class="label">3.4.1 Locus of modifications</dt>
+<dd>
+<p>The XQuery Update Facility <a href="#terminology-must">MUST</a>
+be able to change the properties of existing nodes while preserving
+their identity. The XQuery Update Facility <a href=
+"#terminology-must">MUST</a> be able to create a new copy of a node
+with a specific set of changes.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+<dt class="label">3.4.2 Delete</dt>
+<dd>
+<p>The XQuery Update Facility <a href="#terminology-must">MUST</a>
+be able to delete nodes.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+<dt class="label">3.4.3 Insert</dt>
+<dd>
+<p>The XQuery Update Facility <a href="#terminology-must">MUST</a>
+be able to insert new nodes in specified positions.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+<dt class="label">3.4.4 Replace</dt>
+<dd>
+<p>The XQuery Update Facility <a href="#terminology-must">MUST</a>
+be able to replace a node.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+<dt class="label">3.4.5 Changing values</dt>
+<dd>
+<p>The XQuery Update Facility <a href="#terminology-must">MUST</a>
+be able to change the value returned by the typed-value accessor
+for a node.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+<dt class="label">3.4.6 Modifying properties</dt>
+<dd>
+<p>The XQuery Update Facility <a href=
+"#terminology-should">SHOULD</a> be able to modify some of the
+properties of a node such as the name, type, content, nilled,
+base-URI, etc.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been met.
+The base-URI can not be modified.</p>
+</dd>
+<dt class="label">3.4.7 Moving nodes</dt>
+<dd>
+<p>The XQuery Update Facility <a href="#terminology-may">MAY</a> be
+able to move a node from one location to another.</p>
+<p><img src="http://www.w3.org/Icons/red-ball.gif" alt=
+"red status" /> <em>Status:</em> this requirement has not been met.
+A node can be deleted, and a copy inserted in a new location, but
+it will have a new identity. The Working Group felt that this
+functionality would limit the environments in which the XQuery
+Update Facility could be implemented.</p>
+</dd>
+<dt class="label">3.4.8 Conditional updates</dt>
+<dd>
+<p>The XQuery Update Facility <a href="#terminology-must">MUST</a>
+be able to do conditional updates.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+<dt class="label">3.4.9 Iterative updates</dt>
+<dd>
+<p>The XQuery Update Facility <a href="#terminology-must">MUST</a>
+be able to iterate over nodes to do updates.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+</dd>
+<dt class="label">3.4.10 Validation</dt>
+<dd>
+<p>The XQuery Update Facility <a href="#terminology-may">MAY</a>
+support an explicit XML Schema validation operation that preserves
+node identity.</p>
+<p><img src="http://www.w3.org/Icons/yellow-ball.gif" alt=
+"yellow status" /> This requirement has not been met according to
+its original formulation; however, the revalidation mode can be set
+to ensure that type information is recovered and the resulting
+document is valid according to the governing schema.</p>
+<div class="note">
+<p class="prefix"><b>Note:</b></p>
+<p>The XQuery 1.0 validate expression creates a new copy of each
+validated node, with a new identity. This requirement involves
+preservation of identity.</p>
+</div>
+</dd>
+<dt class="label">3.4.11 Compositionality</dt>
+<dd>
+<p>The XQuery Update Facility <a href="#terminology-must">MUST</a>
+be able to compose update operators with other update
+operators.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+<p>The XQuery Update Facility <a href="#terminology-may">MAY</a> be
+compositional with respect to XQuery expressions; that is, it may
+be possible to use an update wherever an XQuery expression is
+used.</p>
+<p><img src="http://www.w3.org/Icons/red-ball.gif" alt=
+"red status" /> <em>Status:</em> this requirement has not been met
+Updating expressions are limited to specific syntactic
+contexts..</p>
+</dd>
+<dt class="label">3.4.12 Parameterization</dt>
+<dd>
+<p>The XQuery Update Facility <a href=
+"#terminology-should">SHOULD</a> provide a means to parameterize
+update operations.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been met.
+Updating functions and external variables may both be used to
+parameterize update operations.</p>
+</dd>
+</dl>
+</div>
+<div class="div2">
+<h3><a name="d3e646" id="d3e646"></a>3.5 Transaction
+characteristics</h3>
+<p>In this section, the terms Atomicity, Consistency, Isolation,
+and Durability are taken from the ACID model of transaction
+characteristics for databases, which is described in <a href=
+"#gray">[Transaction Processing Concepts and Techniques]</a>.</p>
+<dl>
+<dt class="label">3.5.1 Atomicity</dt>
+<dd>
+<p>The XQuery Update Facility <a href="#terminology-must">MUST</a>
+provide a set of atomic operations, and <a href=
+"#terminology-must">MUST</a> define a means to group atomic
+operations into an atomic execution unit.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been met.
+Multiple atomic operations can be done in a single query, which
+constitutes the atomic execution unit.</p>
+</dd>
+<dt class="label">3.5.2 Consistency</dt>
+<dd>
+<p>At the end of an outermost update operation (that is, an update
+operation invoked from the external environment), the data model
+<a href="#terminology-must">MUST</a> be consistent with respect to
+the constraints specified in the Data Model. In particular, all
+type annotations <a href="#terminology-must">MUST</a> be consistent
+with the content of the items they govern.</p>
+<p><img src="http://www.w3.org/Icons/green-ball.gif" alt=
+"green status" /> <em>Status:</em> this requirement has been
+met.</p>
+<p>The XQuery Update Facility <a href="#terminology-may">MAY</a>
+define additional levels of granularity at which Data Model
+constraints are enforced.</p>
+<p><img src="http://www.w3.org/Icons/red-ball.gif" alt=
+"red status" /> <em>Status:</em> this requirement has not been
+met.</p>
+</dd>
+<dt class="label">3.5.3 Isolation</dt>
+<dd>
+<p>The XQuery Update Facility <a href=
+"#terminology-should">SHOULD</a> define the means by which
+operations can be isolated from concurrent operations.</p>
+<p><img src="http://www.w3.org/Icons/yellow-ball.gif" alt=
+"yellow status" /> The XQuery Update Facility defines operations
+purely in terms of the XML Data Model. Propagation of XDM changes
+to an underlying persistent store or other software system is
+beyond the scope of this specification. This includes
+isolation.</p>
+</dd>
+<dt class="label">3.5.4 Durability</dt>
+<dd>
+<p>The XQuery Update Facility <a href="#terminology-must">MUST</a>
+define a means to control the durability of atomic operations and
+atomic execution units.</p>
+<p><img src="http://www.w3.org/Icons/yellow-ball.gif" alt=
+"yellow status" /> The XQuery Update Facility defines operations
+purely in terms of the XML Data Model. Propagation of XDM changes
+to an underlying persistent store or other software system is
+beyond the scope of this specification. This includes
+durability.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="back">
+<div class="div1">
+<h2><a name="d3e735" id="d3e735"></a>A References</h2>
+<dl>
+<dt class="label"><span><a name="gray" id="gray"></a>Transaction
+Processing Concepts and Techniques</span></dt>
+<dd>
+<div>Gray, J. and Reuter, A. 1994. <em>Transaction Processing
+Concepts and Techniques</em>. Morgan Kaufmann Publishers, San
+Mateo, CA</div>
+</dd>
+<dt class="label"><span><a name="sqlxml" id=
+"sqlxml"></a>SQL/XML</span></dt>
+<dd>
+<div>International Organization for Standardization (ISO).
+<em>ISO/IEC 9075-14:2008, Information Technology - Database
+Languages - SQL - Part 14, XML-Related Specifications
+(SQL/XML)</em>. (Available from American National Standards
+Institute, New York, NY 10036, (212) 642-4900.)</div>
+</dd>
+<dt class="label"><span><a name="xpath-datamodel" id=
+"xpath-datamodel"></a>XQuery 1.0 and XPath 2.0 Data
+Model</span></dt>
+<dd>
+<div><a href="http://www.w3.org/TR/xpath-datamodel/"><cite>XQuery
+1.0 and XPath 2.0 Data Model (XDM) (Second Edition)</cite></a>,
+Norman Walsh, Mary Fernández, Ashok Malhotra, <em>et. al.</em>,
+Editors. World Wide Web Consortium, 14 December 2010. This version
+is http://www.w3.org/TR/2010/REC-xpath-datamodel-20101214/. The
+<a href="http://www.w3.org/TR/xpath-datamodel/">latest version</a>
+is available at http://www.w3.org/TR/xpath-datamodel/.</div>
+</dd>
+<dt class="label"><span><a name="xquery" id="xquery"></a>XQuery
+1.0</span></dt>
+<dd>
+<div><a href="http://www.w3.org/TR/xquery/"><cite>XQuery 1.0: An
+XML Query Language (Second Edition)</cite></a>, Don Chamberlin,
+Anders Berglund, Scott Boag, <em>et. al.</em>, Editors. World Wide
+Web Consortium, 14 December 2010. This version is
+http://www.w3.org/TR/2010/REC-xquery-20101214/. The <a href=
+"http://www.w3.org/TR/xquery/">latest version</a> is available at
+http://www.w3.org/TR/xquery/.</div>
+</dd>
+</dl>
+</div>
+</div>
+</body>
+</html>

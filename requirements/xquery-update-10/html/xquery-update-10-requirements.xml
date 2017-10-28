@@ -1,0 +1,382 @@
+<!--XSLT Processor: SAXON 9.1.0.2 from Saxonica SAXON SA 9.1.0.2--><spec xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" w3c-doctype="wgnote"><header><title>XQuery Update Facility 1.0 Requirements</title><w3c-designation>NOTE-xquery-update-10-requirements</w3c-designation><w3c-doctype>W3C Working Group Note</w3c-doctype><pubdate><day>25</day><month>January</month><year>2011</year></pubdate><publoc>
+			<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/2011/NOTE-xquery-update-10-requirements-20110125/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://www.w3.org/TR/2011/NOTE-xquery-update-10-requirements-20110125/</loc>
+		</publoc><latestloc>
+			<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/xquery-update-10-requirements/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://www.w3.org/TR/xquery-update-10-requirements/</loc>
+		</latestloc><prevlocs>
+      <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/2008/CR-xquery-update-10-requirements-20080314/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest"/>
+		</prevlocs><authlist><author><name>Don Chamberlin</name><affiliation>IBM Almaden Research Center</affiliation><email xmlns:xlink="http://www.w3.org/1999/xlink" href="mailto:chamberlin@almaden.ibm.com" xlink:type="simple" xlink:show="new" xlink:actuate="onRequest">chamberlin@almaden.ibm.com</email></author><author><name>Jonathan Robie</name><affiliation>Red Hat</affiliation><email xmlns:xlink="http://www.w3.org/1999/xlink" href="mailto:jonathan.robie@redhat.com" xlink:type="simple" xlink:show="new" xlink:actuate="onRequest">jonathan.robie@redhat.com</email></author></authlist><!--* Common status section for QT specs.
+    * Use is currently not required, but it simplifies things.
+    * 
+    * Revisions:
+    * 2007-01-15 : CMSMcQ : made file, to simplify publication of Rec.
+    * 2008-02-15 : JimMelton : cloned from MSM's REC-only material
+                     to generalize for all stages
+    *--><status id="status"><!-- ************************************************************************** --><!-- * All Status sections must start with the standard boilerplate paragraph * --><!-- *   This entity is defined in status-entities.dtd                        * --><!-- ************************************************************************** --><p><emph>This section describes the status of this
+         document at the time of its publication.
+         Other documents may supersede this document.
+         A list of current W3C publications and the latest
+         revision of this technical report can be found in the
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">W3C technical reports index</loc>
+         at http://www.w3.org/TR/.</emph></p><!-- ************************************************************************** --><!-- * QT publishes suites of documents, which must be described in the       * --><!--     Status section of each document within such a suite.                 * --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><!-- ************************************************************************** --><!-- * There is a lot of detailed customization based on the document stage   * --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><p>This is a <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/2005/10/Process-20051014/tr.html#tr-end" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Working Group Note</loc> as described in the <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/2005/10/Process-20051014/tr.html" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Process Document</loc>. 
+It has been developed by the W3C <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/XML/Query/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XML Query Working Group</loc>,
+which is part of the <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/XML/Activity" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XML Activity</loc>.
+</p><!-- ************************************************************************** --><!-- * CR documents must cite features at risk                                * --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><!-- ************************************************************************** --><!-- * Every Status section must have a customized paragraph                  * --><!-- *   This entity is defined completely in the host document.              * --><!-- ************************************************************************** --><p>This document includes, for each requirement, a corresponding status, indicating the 
+current situation of the requirement in
+<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/TR/xquery-update-10/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">XQuery Update Facility 1.0</loc>
+at the time that it was issued as a final Recommendation on 22 February 2011. 
+Three status levels are used:</p><glist><gitem><label>"Green" status</label><def><p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/> This indicates that the requirement, according to its
+original formulation, has been completely met. Optional clarificatory text
+may follow.</p></def></gitem><gitem><label>"Yellow" status</label><def><p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/yellow-ball.gif" alt="yellow status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/> This indicates that the requirement has been partially met
+according to its original formulation. When this status is indicated,
+explanatory text is provided to better clarify the current scope of the
+requirement.</p></def></gitem><gitem><label>"Red" status</label><def><p><graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/red-ball.gif" alt="red status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/> This indicates that the requirement, according to its
+original formulation, has not been met. If this is the case, explanatory text
+is provided.</p></def></gitem></glist><!-- ************************************************************************** --><!-- * CR docs should, and PR docs must, have a pointer to an implementation  * --><!-- *   report.  We also want to point to the test suite.                    * --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><!-- ************************************************************************** --><!-- * The Status section should point to a changelog                         * --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><p>No substantive changes have been made to this specification
+since its publication as a Proposed Recommendation.</p><!-- ************************************************************************** --><!-- * The Status section must tell readers where to send comments            * --><!-- *   This entity is defined in status-entities.dtd                        * --><!-- ************************************************************************** --><p>Please report errors in this document using W3C's
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/Bugs/Public/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">public Bugzilla system</loc>
+         (instructions can be found at
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/XML/2005/04/qt-bugzilla" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://www.w3.org/XML/2005/04/qt-bugzilla</loc>).
+         If access to that system is not feasible, you may send your comments
+         to the W3C XSLT/XPath/XQuery public comments mailing list,
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="mailto:public-qt-comments@w3.org" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">public-qt-comments@w3.org</loc>.
+         It will be very helpful if you include the string 
+         “[UPDreq]”
+         in the subject line of your report, whether made in Bugzilla or in email.
+         Please use multiple Bugzilla entries (or, if necessary, multiple email messages)
+         if you have more than one comment to make.
+         Archives of the comments and responses are available at
+         <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://lists.w3.org/Archives/Public/public-qt-comments/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">http://lists.w3.org/Archives/Public/public-qt-comments/</loc>. </p><!-- ************************************************************************** --><!-- Status sections must state the stability (not stable, or REC) of the document --><!-- *   This entity is defined in the host document.                         * --><!-- ************************************************************************** --><p>Publication as a <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/2005/10/Process-20051014/tr.html#tr-end" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Working Group Note</loc>
+does not imply endorsement by the W3C Membership. 
+At the time of publication, work on this document
+was considered complete and no further revisions are anticipated. 
+It is a stable document and may be used as reference material or
+cited from another document. 
+However, this document may be updated, replaced, or made obsolete by
+other documents at any time.</p><!-- ************************************************************************** --><!-- * Finally, all Status sections must end with the appropriate IPR para    * --><!-- *   This entity is defined in status-entities.dtd                        * --><!-- ************************************************************************** --><p>This document was produced by a group operating under the
+  <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/Consortium/Patent-Policy-20040205/" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">5 February 2004
+  W3C Patent Policy</loc>.
+  W3C maintains a 
+  <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/2004/01/pp-impl/18797/status#disclosures" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">public list of any patent disclosures</loc>
+  made in connection with the deliverables of the group; 
+  that page also includes instructions for disclosing a patent.
+  An individual who has actual knowledge of a patent 
+  which the individual believes contains
+  <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/Consortium/Patent-Policy-20040205/#def-essential" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">Essential Claim(s)</loc>
+  must disclose the information in accordance with
+  <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.w3.org/Consortium/Patent-Policy-20040205/#sec-Disclosure" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">
+  section 6 of the W3C Patent Policy</loc>. </p></status><abstract><p>This document specifies goals and requirements for the XQuery Update Facility.</p></abstract><langusage><language id="en">English</language></langusage><revisiondesc><p>First internal draft.</p></revisiondesc></header><body><div1><head>Goals</head><p>This document describes the requirements for the XQuery Update Facility. <bibref ref="xquery"/> provides queries, but has no support for adding new values or
+				changing existing values. The XML Query Working Group intends to add support for
+				updates in a future version of XQuery.</p></div1><div1><head>Usage Scenarios</head><p>The following usage scenarios describe how the XQuery Update Facility may be used in
+				various environments, and represent a wide range of activities and needs that
+				illustrate the problem space to be addressed. They are intended to be used as design
+				cases during the development of the XQuery Update Facility, and should be reviewed
+				when critical decisions are made. These usage scenarios should also prove useful in
+				helping non-members of the XML Query Working Group understand the intent and goals
+				of the project.</p><glist role="req"><gitem><label>Updating persistent XML stores</label><def><p>Modify XML in persistent XML stores, including native XML databases, XML
+							files stored on a file system, or XML stored in SQL databases.</p></def></gitem><gitem><label>Modify XML messages</label><def><p>Modify XML messages to change status and add information created while
+							processing the message.</p></def></gitem><gitem><label>Add to existing XML document</label><def><p>Add new data to an existing XML document; for instance, add a new entry
+							to a BLOG or a data log.</p></def></gitem><gitem><label>Updating XML registries</label><def><p>Perform updates on configuration files, user profiles, or administrative
+							logs represented in XML.</p></def></gitem><gitem><label>Creating edited copies</label><def><p>Create a new copy of an XML document or subtree that differs from the
+							original in the way specified by the update. For instance, updates could
+							be used to modify a web message in order to add new information and
+							change headers to reflect the modified status.</p></def></gitem><gitem><label>Modifying XML views</label><def><p>Modifying XML views of non-XML sources, such as a <bibref ref="sqlxml"/>
+							view of a SQL database.</p></def></gitem></glist></div1><div1><head>Requirements</head><div2><head>Terminology</head><p>The following key words are used throughout the document to specify the extent to
+					which an item is a requirement for the work of the XML Query Working Group:</p><glist><gitem><label id="terminology-must">MUST</label><def><p>This word means that the item is an absolute requirement.</p></def></gitem><gitem><label id="terminology-should">SHOULD</label><def><p>This word means that there may exist valid reasons not to treat this
+								item as a requirement, but the full implications should be
+								understood and the case carefully weighed before discarding this
+								item.</p></def></gitem><gitem><label id="terminology-may">MAY</label><def><p>This word means that an item deserves attention, but further study is
+								needed to determine whether the item should be treated as a
+								requirement.</p></def></gitem></glist><p>When the words <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>, <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-should" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">SHOULD</loc>, or
+            <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-may" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MAY</loc> are used in this technical sense,
+            they occur as a hyperlink to these
+					definitions. These words will also be used with their conventional English
+					meaning, in which case there is no hyperlink. For instance, the phrase "the full
+					implications should be understood" uses the word "should" in its conventional
+					English sense, and therefore occurs without the hyperlink.</p></div2><div2><head>General Requirements</head><glist role="req"><gitem><label>Query Update Syntax</label><def><p>The syntax for updates <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-may" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MAY</loc> have
+							more than one syntax binding. One syntax <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> be convenient for humans to
+								read and write.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.</p><p>One syntax <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>
+								be expressed in XML in a way that reflects the underlying structure
+								of the operations.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.</p></def></gitem><gitem><label>Declarativity</label><def><p>The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>
+								be declarative. Notably, it <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>
+								be independent of any particular evaluation strategy.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.</p></def></gitem><gitem><label>Protocol Independence</label><def><p>The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>
+							be defined independently of any protocols with which it is used.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.</p></def></gitem><gitem><label>Error Conditions</label><def><p>The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>
+								define standard error conditions that can occur during the execution
+								of an update.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.</p></def></gitem><gitem><label>Static Type Checking</label><def><p>The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-should" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">SHOULD</loc> provide an optional static type checking feature.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.</p></def></gitem><!-- KILL KILL KILL
+					<gitem>
+						<label>Defined for Finite Instances</label>
+						<def>
+							<p>The XQuery Update Facility <loc href="#terminology-must">MUST</loc> be
+		   defined for finite instances of the data model. It <loc href="#terminology-may">MAY</loc> be defined for infinite
+		   instances.</p>
+						</def>
+					</gitem>
+--></glist></div2><div2><head>Relationship to XQuery 1.0</head><glist role="req"><gitem><label>Based on Data Model</label><def><p>The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>
+								be defined on the <bibref ref="xpath-datamodel"/>.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.</p><note><p>The properties of a Data Model instance that can be modified by
+									the XQuery Update Facility are discussed in <specref ref="id-update-functionality"/>.</p></note><!-- ### KILL ### - redundant with 'consistency'
+		   The XQuery Update Facility <loc href="#terminology-must">MUST</loc> ensure
+		   that Data Model constraints are not violated.
+--><!--           The Update language <loc href="#terminology-may">MAY</loc>
+		   be used to update atomic values not contained in a node in
+		   a Data Model instance.</p>
+							<note>
+								<p>We have not determined whether updates need to be
+		able to work on an arbitrary sequence.</p>
+							</note>
+							<note>
+								<p>"Aspect" might need better definition.</p>
+							</note>
+--></def></gitem><gitem><label>Based on XQuery</label><def><p>The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> be
+								based on <bibref ref="xquery"/>. The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> use XQuery to identify items
+								to be updated. The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> use XQuery to specify items
+									used in the updates.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.</p></def></gitem></glist></div2><div2 id="id-update-functionality"><head>XML Query Update Functionality</head><glist role="req"><gitem><label>Locus of modifications</label><def><p>The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>
+								be able to change the properties of existing nodes while preserving
+								their identity. The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> be able to create a new copy
+									of a node with a specific set of changes.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.</p></def><!--
+	   The XQuery Update Facility <loc href="#terminology-must">MUST</loc> allow the
+	   target environment to limit the changes allowed on a given
+	   instance.</p>
+						</def> --></gitem><!-- #### KILL KILL KILL
+	   <gitem>
+		   <label>Support for collections</label>
+
+		   <def><p>The XQuery Update Facility <loc href="#terminology-must">MUST</loc>
+		   support the addition, removal and modification of
+		   nodes/items in a collection identified in any of the
+		   following ways: a) by the doc() or collection() function,
+		   b) by means of a bound variable, c) by binding of the
+		   context item, or d) by a user-defined function.</p>
+
+	   <issue><p>We need to make sure we have "nodes/items"
+	   correct above.</p></issue>
+	   </def>
+	   </gitem>
+ --><gitem><label>Delete</label><def><p>The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>
+							be able to delete nodes.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.</p></def></gitem><gitem><label>Insert</label><def><p>The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>
+							be able to insert new nodes in specified positions.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.</p></def></gitem><gitem><label>Replace</label><def><p>The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>
+							be able to replace a node.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.</p></def></gitem><!--
+					<gitem>
+						<label>Merge</label>
+						<def>
+							<p>The XQuery Update Facility <loc href="#terminology-should">SHOULD</loc> be able to insert or
+		   replace a node depending on whether the node already exists
+		   (note: this operation is sometimes called upsert or
+		   merge).</p>
+						</def>
+					</gitem>
+--><gitem><label>Changing values</label><def><p>The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>
+								be able to change the value returned by the typed-value accessor for
+								a node.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.</p><!-- KILL KILL KILL <note> <p>The XQuery Update Facility can change
+	 the value returned by the typed-value accessor for a node by
+	 changing the properties of a node.</p> </note> --></def></gitem><gitem><label>Modifying properties</label><def><p>The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-should" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">SHOULD</loc> be able to modify some of the properties of a node
+								such as the name, type, content, nilled, base-URI, etc.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met. The base-URI can not be modified.</p></def></gitem><gitem><label>Moving nodes</label><def><p>The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-may" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MAY</loc> be
+							able to move a node from one location to another.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/red-ball.gif" alt="red          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has not been met. A node can be deleted, and a copy inserted
+							in a new location, but it will have a new identity.  The Working Group felt that this functionality would limit the
+							environments in which the XQuery Update Facility could be implemented.</p></def></gitem><gitem><label>Conditional updates</label><def><p>The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>
+							be able to do conditional updates.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.</p></def></gitem><gitem><label>Iterative updates</label><def><p>The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>
+							be able to iterate over nodes to do updates.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.</p></def></gitem><gitem><label>Validation</label><def><p>The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-may" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MAY</loc>
+								support an explicit XML Schema validation operation that preserves
+								node identity.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/yellow-ball.gif" alt="yellow          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/> This requirement has not  been met
+								according to its original formulation; however, the revalidation mode
+							             can be set to ensure that type information is recovered and the resulting
+							document is valid according to the governing schema.</p><note><p>The XQuery 1.0 validate expression creates a new copy of each
+									validated node, with a new identity. This requirement involves preservation of identity.</p></note></def></gitem><gitem><label>Compositionality</label><def><p>The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>
+							be able to compose update operators with other update operators.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.</p><p>The
+								XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-may" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MAY</loc> be
+								compositional with respect to XQuery expressions; that is, it may be
+								possible to use an update wherever an XQuery expression is used.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/red-ball.gif" alt="red         status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>
+								<emph>Status:</emph>
+								this
+								requirement
+								has
+								not
+								been
+								met
+								Updating
+								expressions
+								are
+								limited
+								to
+								specific
+								syntactic
+								contexts..</p></def></gitem><gitem><label>Parameterization</label><def><p>The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-should" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">SHOULD</loc> provide a means to parameterize update operations.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met. Updating functions
+							and external variables may both be used to parameterize update operations.</p></def></gitem></glist></div2><div2><head>Transaction characteristics</head><p>In this section, the terms Atomicity, Consistency, Isolation, and Durability are
+					taken from the ACID model of transaction characteristics for databases, which is
+					described in <bibref ref="gray"/>.</p><glist role="req"><gitem><label>Atomicity</label><def><p>The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>
+								provide a set of atomic operations, and <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> define a means to group
+									atomic operations into an atomic execution unit.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.  Multiple atomic operations
+							can be done in a single query, which constitutes the atomic execution unit.</p></def></gitem><gitem><label>Consistency</label><def><p>At the end of an outermost update operation (that is, an update
+								operation invoked from the external environment), the data model
+									<loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> be consistent with
+								respect to the constraints specified in the Data Model.
+								<!-- <xspecref spec="DM"
+	  ref="construction"/>.--> In particular,
+								all type annotations <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc> be
+								consistent with the content of the items they govern.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/green-ball.gif" alt="green          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has been met.</p><p>The XQuery
+								Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-may" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MAY</loc> define
+								additional levels of granularity at which Data Model constraints are
+								enforced.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/red-ball.gif" alt="red          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>  
+								<emph>Status:</emph> this requirement has not been met.</p></def></gitem><gitem><label>Isolation</label><def><p>The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-should" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">SHOULD</loc> define the means by which operations can be isolated
+								from concurrent operations.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/yellow-ball.gif" alt="yellow          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/> The XQuery Update Facility defines operations
+								purely in terms of the XML Data Model. Propagation of XDM changes to an underlying persistent store or other software 
+								system is beyond the scope of this specification.  This includes isolation. </p></def></gitem><gitem><label>Durability</label><def><p>The XQuery Update Facility <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="#terminology-must" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">MUST</loc>
+								define a means to control the durability of atomic operations and
+								atomic execution units.</p><p>
+								<graphic xmlns:xlink="http://www.w3.org/1999/xlink" source="http://www.w3.org/Icons/yellow-ball.gif" alt="yellow          status" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/> The XQuery Update Facility defines operations
+								purely in terms of the XML Data Model. Propagation of XDM changes to an underlying persistent store or other software 
+								system is beyond the scope of this specification.  This includes durability. </p></def></gitem><!-- #### KILL KILL KILL 
+	   <gitem>
+
+		   <label>Validity at transactional boundaries</label>
+
+		   <def><p>Updates <loc href="#terminology-must">MUST</loc>
+		   enforce schema validity at transactional boundaries. It
+		   <loc href="#terminology-may">MAY</loc> provide a means
+		   to allow this constraint to be relaxed.</p></def>
+
+	   </gitem>
+--></glist></div2></div1></body><!--
+Vocab:
+
+- Serializable
+
+3.5.1.
+- Simple update language operations MUST be atomic.
+- Complex update
+- Composed update
+
+# -> MUST provide a set of atomic operations.
+
+# -> MUST provide a means to group atomic operations into an
+atomic execution unit.
+
+3.5.2
+
+# -> At the end of an outermost update operation (that is, an update
+operation invoked from the external environment), the data model MUST
+be consistent.  ### In particular, all type annotations MUST be
+consistent with the content of the items they govern. ### The XQuery
+Updates specification MAY define additional levels of granularity at
+which Data Model constraints are enforced.
+
+3.5.3 Isolation
+
+# -> SHOULD define the means by which operations can be isolated
+from concurrent operations.
+
+3.5.4 Durability
+
+# -> There MUST be a means to control the durability of atomic
+operations and atomic execution units.
+
+3.5.5 Validity at transactional boundaries
+
+Version 5: Add to above 'consistency' text:
+
+# -> At the end of an outermost update operation (that is, an update
+operation invoked from the external environment), the data model MUST
+be consistent. ### In particular, all type annotations MUST be
+consistent with the content of the items they govern. ### The XQuery
+Updates specification MAY define additional levels of granularity at
+which Data Model constraints are enforced.
+
+
+
+
+
+#-> Modify XML in persistent XML stores, including native XML
+	databases, XML files stored on a file system, or XML stored in
+	SQL databases.
+
+
+ 3.4.12 Validation
+
+	Updates MAY support an explicit or implicit in-place XML Schema
+	validation (i.e. no XQuery Schema validation copy semantics).
+
+#-> Updates MAY support an explicit XML Schema validation operation
+	that preserves node identity.
+
+========================================================================
+
+s/Updates/"The XQuery Update facility"
+
+#-> MUST, SHOULD - isolate on separate lines for the ball exercise.
+
+
+
+
+3.4.11 Compositionality
+
+	The XQuery Update Facility MUST be able to compose update
+	operators with other update operators. 
+
+	The XQuery Update Facility MAY be compositional with respect to
+	XQuery expressions; that is, it may be possible to use an update
+	wherever an XQuery expression is used.
+
+	if ($foo)
+	  then update asdf
+	  else ()
+
+	if ($foo)
+	  then <foo>This is a foo</foo>
+	  else ()
+
+The XQuery Update facility SHOULD provide a means to parameterize
+update operations.
+
+The XQuery Update Facility SHOULD provide an optional static type
+checking feature.
+
+--><back><div1><head>References</head><blist><bibl xmlns:xlink="http://www.w3.org/1999/xlink" key="Transaction Processing Concepts and Techniques" id="gray" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest"> Gray, J. and
+					Reuter, A. 1994. <emph>Transaction Processing Concepts and Techniques</emph>.
+					Morgan Kaufmann Publishers, San Mateo, CA </bibl><bibl xmlns:xlink="http://www.w3.org/1999/xlink" key="SQL/XML" id="sqlxml" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">International Organization for Standardization
+					(ISO). <emph>ISO/IEC 9075-14:2008, Information Technology - Database Languages -
+						SQL - Part 14, XML-Related Specifications (SQL/XML)</emph>. (Available from
+					American National Standards Institute, New York, NY 10036, (212) 642-4900.)</bibl><bibl xmlns:xlink="http://www.w3.org/1999/xlink" key="XQuery 1.0 and XPath 2.0 Data Model" id="xpath-datamodel" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest"/><bibl xmlns:xlink="http://www.w3.org/1999/xlink" key="XQuery 1.0" id="xquery" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest"/></blist></div1></back></spec>

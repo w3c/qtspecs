@@ -1,0 +1,186 @@
+<xsd:schema
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+     xmlns:xqx="http://www.w3.org/2005/XQueryX"
+     xmlns:xqxuf="http://www.w3.org/2007/xquery-update-10"
+     xmlns:xqxsx="http://www.w3.org/2008/xquery-sx-10"
+     targetNamespace="http://www.w3.org/2008/xquery-sx-10"
+     elementFormDefault="qualified" 
+     attributeFormDefault="unqualified">
+
+<!-- Initial creation                  2008-03-01: Jim Melton -->
+<!-- Added FunctionDecl redefinition   2008-03-11: Jim Melton -->
+<!-- Updated to new WD grammar         2008-11-25: Jim Melton -->
+<!-- Reviewed, cleaned, corrections    2009-08-17: Jim Melton -->
+<!-- Updated to recent grammar changes 2010-02-15: Jim Melton -->
+<!-- Several changes to fix bug 9532   2010-05-12: Jim Melton -->
+<!-- Import XQUF schema, not redef one 2010-05-13: Jim Melton -->
+
+<!-- TEMPORARY CHANGE so we can import the schema document from a local file instead of the web -->
+  <xsd:import namespace="http://www.w3.org/2007/xquery-update-10"
+     schemaLocation="file:///e:/w3ccvs/WWW/XML/Group/qtspecs/specifications/xquery-update-11/src/xquery-update-11-xqueryx.xsd"/>
+<!-- TEMPORARY CHANGE so we can import the schema document from a local file instead of the web
+  <xsd:import namespace="http://www.w3.org/2007/xquery-update-10"
+     schemaLocation="http://www.w3.org/2010/xquery-update-11/xquery-update-11-xqueryx.xsd"/>
+END OF TEMPORARY CHANGE so we can import the schema document from a local file instead of the web -->
+
+<!-- TEMPORARY CHANGE so we can import the schema document from a local file instead of the web -->
+  <xsd:import namespace="http://www.w3.org/2005/XQueryX"
+     schemaLocation="file:///e:/w3ccvs/WWW/XML/Group/qtspecs/specifications/xqueryx-11/src/xqueryx.xsd"/>
+<!-- TEMPORARY CHANGE so we can import the schema document from a local file instead of the web
+  <xsd:import namespace="http://www.w3.org/2005/XQueryX"/>
+END OF TEMPORARY CHANGE so we can import the schema document from a local file instead of the web -->
+
+
+
+  <!-- Declare new type for constant declarations             -->
+  <!-- Corresponds to the following grammar productions:      -->
+  <!-- VarDecl ::= "declare" ([un]assignable variable)        -->
+  <!--               "$" QName TypeDeclaration?               -->
+  <!--               ((":=" ExprSingle) | "external")         -->
+  <xsd:complexType name="constDecl">
+    <xsd:sequence>
+      <xsd:element name="constName" type="xqx:QName"/>
+      <xsd:element ref="xqx:typeDeclaration" minOccurs="0"/>
+      <xsd:choice>
+        <xsd:element name="varValue" type="xqx:exprWrapper"/>
+        <xsd:element name="external" type="xqx:emptyContent"/>
+      </xsd:choice>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="constDecl" type="xqxsx:constDecl"
+               substitutionGroup="xqx:prologPartTwoItem"/>
+
+
+  <!-- Create substitution grp for scripting extension exprs  -->
+  <xsd:complexType name="expr">
+    <xsd:complexContent>
+      <xsd:extension base="xqxuf:expr"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- Make scripting extension subst grp part of expr grp    -->
+  <xsd:element name="expr" type="xqxsx:expr" abstract="true"
+               substitutionGroup="xqxuf:expr"/>
+
+
+  <!-- AssignmentExpr:                                        -->
+  <!--   AssignmentExpr ::= "$" VarName ":=" ExprSingle       -->
+  <xsd:complexType name="assignmentExpr">
+    <xsd:complexContent>
+      <xsd:extension base="xqxsx:expr">
+        <xsd:sequence>
+          <xsd:element ref="xqx:positionalVariableBinding"/>
+          <xsd:element name="assignedExpr" type="xqx:exprWrapper"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="assignmentExpr" type="xqxsx:assignmentExpr"
+               substitutionGroup="xqxsx:expr"/>
+
+
+  <!-- Block (1 of 3):                                        -->
+  <!--   BlockExpr ::= "block" Block                          -->
+  <!--   Block ::= "{" BlockDecls BlockBody "}"               -->
+  <!--   BlockDecls ::= (BlockVarDecl ";")*                   -->
+  <xsd:complexType name="block">
+    <xsd:complexContent>
+      <xsd:extension base="xqxsx:expr">
+        <xsd:sequence>
+          <xsd:element ref="xqxsx:blockVarDecl"
+                       minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element ref="xqxsx:blockBody"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="block" type="xqxsx:block"
+               substitutionGroup="xqxsx:expr"/>
+
+  <!-- Block (2 of 3):                                        -->
+  <!--   BlockVarDecl ::=                                     -->
+  <!--     "declare" "$" VarName TypeDeclaration?             -->
+  <!--             (":=" ExprSingle)?                         -->
+  <!--          ("," "$" VarName TypeDeclaration?             -->
+  <!--             (":=" ExprSingle)? )*                      -->
+  <xsd:complexType name="blockVarDecl">
+      <xsd:sequence minOccurs="1" maxOccurs="unbounded">
+        <xsd:element name="varName" type="xqx:QName"/>
+        <xsd:element ref="xqx:typeDeclaration" minOccurs="0"/>
+        <xsd:element name="varValue" type="xqx:exprWrapper"
+                     minOccurs="0"/>
+      </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="blockVarDecl" type="xqxsx:blockVarDecl"/>
+
+  <!-- Block (3 of 3):                                        -->
+  <!--   BlockBody ::= Expr                                   -->
+  <xsd:complexType name="blockBody">
+    <xsd:sequence>
+      <xsd:element ref="xqxsx:applyExpr"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="blockBody" type="xqxsx:blockBody"/>
+
+
+  <!-- ExitExpr:                                              -->
+  <!--   ExitExpr ::= "exit" "returning" ExprSingle           -->
+  <xsd:complexType name="exitExpr">
+    <xsd:complexContent>
+      <xsd:extension base="xqx:expr">
+        <xsd:sequence>
+          <xsd:element ref="xqx:expr"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="exitExpr" type="xqxsx:exitExpr"
+               substitutionGroup="xqx:expr"/>
+
+
+  <!-- WhileExpr:                                             -->
+  <!--   WhileExpr ::= "while" "(" ExprSingle ")" WhileBody   -->
+  <!--   WhileBody ::= Block                                  -->
+  <xsd:complexType name="whileExpr">
+    <xsd:complexContent>
+      <xsd:extension base="xqxsx:expr">
+        <xsd:sequence>
+          <xsd:element name="whileTest" type="xqx:exprWrapper"/>
+          <xsd:element ref="xqxsx:block"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="whileExpr" type="xqxsx:whileExpr"
+               substitutionGroup="xqxsx:expr"/>
+
+
+  <!-- ApplyExpr:                                             -->
+  <!--   ApplyExpr ::= (ConcatExpr ";")+                      -->
+  <xsd:complexType name="applyExpr">
+    <xsd:complexContent>
+      <xsd:extension base="xqxsx:expr">
+        <xsd:sequence>
+          <xsd:element name="concatExpr" maxOccurs="unbounded">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element ref="xqx:expr" maxOccurs="unbounded"/>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="applyExpr" type="xqxsx:applyExpr"
+               substitutionGroup="xqxsx:expr"/>
+
+</xsd:schema>

@@ -1,0 +1,173 @@
+<!-- *********************************************************************
+      Section 1. Introduction
+     ********************************************************************* -->
+
+<div1 id="introduction">
+  <head>Introduction</head>
+
+  <p>This document defines the formal semantics of XQuery 3.0 and
+  XPath 3.0. The present document is part of a set of documents that
+  together define the XQuery 3.0 and XPath 3.0 languages:</p>
+
+  <ulist>
+    <item>
+      <p>&xq_xquerydoc; introduces the XQuery 3.0 language, defines
+      its capabilities from a user-centric view, and defines the
+      language syntax.</p>
+    </item>
+    <item>
+      <p>&xq_xpath; introduces the XPath 3.0 language, defines its
+      capabilities from a user-centric view, and defines the language
+      syntax.</p>
+    </item>
+    <item>
+      <p>&xq_functions; lists the functions and operators defined for
+      the &language; language and specifies the required types of their 
+      parameters and return value.  </p>
+    </item>
+    <item>
+      <p>&xq_datamodel; formally specifies the data model used by
+      &language; to represent the content of XML documents.  The
+      &language; language is formally defined by operations on this
+      data model.</p>
+    </item>
+    <item>
+      <p>&xq_datamodel_serialization; specifies how &language; data
+      model values are serialized into XML.</p>
+    </item>
+  </ulist>
+
+  <p>The scope and goals for the &language; language are discussed in
+  the charter of the &working-group; and in the &language;
+  requirements &xq_xqreqs;.</p>
+
+  <p>This document defines the semantics of &language; by giving a
+  precise formal meaning to each of the expressions of the &language;
+  specification in terms of the &language; data model. This document
+  assumes that the reader is already familiar with the &language;
+  language. This document defines the formal semantics for XPath 3.0
+  only when the XPath 1.0 backward compatibility rules are not in
+  effect.</p>
+
+  <p>Two important design aspects of &language; are that it is
+  <emph>functional</emph> and that it is <emph>typed</emph>. These two
+  aspects play an important role in the &language; Formal
+  Semantics.</p>
+
+  <p><term>&language; is a functional language</term>. &language; is
+  built from expressions, rather than statements. Every construct in
+  the language (except for the XQuery query prolog) is an expression
+  and expressions can be composed arbitrarily. The result of one
+  expression can be used as the input to any other expression, as long
+  as the type of the result of the former expression is compatible
+  with the input type of the latter expression with which it is
+  composed. Another characteristic of a functional language is that
+  variables are always passed by value, and a variable's value cannot
+  be modified through side effects.</p>
+
+  <p><term>&language; is a typed language</term>. Types can be
+  imported from one or more XML Schemas that describe the input
+  documents and the output document, and the &language; language can
+  then perform operations based on these types. In addition,
+  &language; supports <emph>static type analysis</emph>.  Static type
+  analysis infers the output type of an expression based on the type
+  of its input expressions.  In addition to inferring the type of an
+  expression for the user, static typing allows early detection of
+  type errors, and can be used as the basis for certain classes of
+  optimization. The &language; type system captures most of the
+  features of &xq_xmlschema1;, including global and local element and
+  attribute declarations, complex and simple type definitions, named
+  and anonymous types, derivation by restriction, extension, list and
+  union, substitution groups, and wildcard types. It does not model
+  uniqueness constraints and facet constraints on simple types.</p>
+
+  <p>This document is organized as follows. <specref
+  ref="sec_preliminaries"/> introduces the notations used to define
+  the &language; Formal Semantics.  These include the formal notations
+  for values in the &language; data model and for types in XML Schema.
+  The next three sections: <specref ref="id-basics"/>, <specref
+  ref="id-expressions"/>, and <specref ref="id-query-prolog"/> have
+  the same structure as the corresponding sections in the
+  &xq_xquerydoc; and &xq_xpath; documents.  This allows the reader to
+  quickly find the formal definition of a particular language
+  construct.  <specref ref="id-basics"/> defines the semantics for
+  basic &language; concepts, and <specref ref="id-expressions"/>
+  defines the dynamic and static semantics of each &language;
+  expression.  <specref ref="id-query-prolog"/> defines the semantics
+  of the &language; prolog.
+
+  <specref ref="sec_special_functions"/> defines the static semantics
+  of several functions in &xq_functions; and gives the dynamic and
+  static semantics of several supporting functions used in this
+  document.  The remaining sections, <specref
+  ref="sec_auxiliary_judgments"/> and <specref
+  ref="sec_importing_schema"/>, contain material that supports the
+  formal semantics of &language;.  <specref
+  ref="sec_auxiliary_judgments"/> defines formal judgments that relate
+  data model values to types, that relate types to types, and that
+  support the formal definition of validation.  These judgments are
+  used in the definition of expressions in <specref
+  ref="id-expressions"/>.
+
+  Lastly, <specref
+  ref="sec_importing_schema"/>, specifies how XML Schema documents are
+  imported into the &language; type system and relates XML Schema
+  types to the &language; type system.</p>
+
+  <div2 id="id-normativity"><head>Normative and Informative
+  Sections</head>
+
+  <p>Certain aspects of language processing are described in this
+  specification as <term>implementation-defined</term> or
+  <term>implementation-dependent</term>.</p>
+
+  <ulist>
+    <item>
+      <p><termdef id="dt-implementation-defined" term="implementation
+      defined"><term>Implementation-defined</term> indicates an aspect
+      that may differ between implementations, but must be specified
+      by the implementor for each particular
+      implementation.</termdef></p>
+    </item>
+    <item>
+      <p><termdef id="dt-implementation-dependent"
+      term="implementation
+      dependent"><term>Implementation-dependent</term> indicates an
+      aspect that may differ between implementations, is not specified
+      by this or any W3C specification, and is not required to be
+      specified by the implementor for any particular
+      implementation.</termdef></p>
+    </item>
+  </ulist>
+
+  <p role="xpath">A language aspect described in this specification as
+  <term>implementation-defined</term> or <term>implementation
+  dependent</term> may be further constrained by the specifications of
+  a host language in which XPath or XQuery is embedded.</p>
+
+  <p>This document contains the normative static semantics of
+  &language;. The static semantics rules in <specref
+  ref="id-basics"/>, <specref ref="id-expressions"/>, <specref
+  ref="id-query-prolog"/>, and <specref ref="sec_special_functions"/>
+  are normative. <specref ref="static_context"/> is normative, because
+  it defines the static context used in the static typing rules.
+  <specref ref="sec_auxiliary_judgments"/> is normative, because it
+  contains all the judgments necessary for defining SequenceType
+  Matching.</p>
+
+  <p>The dynamic semantics of &language; are normatively defined in
+  &xq_xquerydoc; and &xq_xpath;. In this document, the dynamic
+  semantic rules in <specref ref="id-basics"/>, <specref
+  ref="id-expressions"/>, and <specref ref="id-query-prolog"/>, the
+  examples, and the material labeled as "Note" are provided for
+  explanatory purposes and are not normative.</p>
+
+  <p>The mapping rules from XML Schema to the XQuery type system
+  provided in <specref ref="sec_importing_schema"/>, and the formal
+  semantics of XML Schema validation in <specref
+  ref="sec_validation_judgments"/> are informative and do not handle
+  every feature of XML Schema.</p>
+</div2>
+
+</div1>
+

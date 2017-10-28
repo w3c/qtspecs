@@ -1,0 +1,1675 @@
+<inform-div1 id="sec_validation_judgments">
+  <head>Auxiliary Judgments for Validation</head>
+
+  <div2 id="sec_validate">
+    <head>Judgments for the validate expression</head>
+
+    <p>XQuery supports XML Schema validation using the validate
+    expression. This section gives a non-normative formal semantics of XML Schema
+    validation, solely for the purpose of specifying its usage in XQuery.</p>
+
+    <p>Specifying XML Schema validation requires a fairly large number
+    of auxiliary judgments. There are two main judgments used to
+    describe the semantics of validation.</p>
+
+    <ulist>
+      <item>
+        <p>The <quote>erase</quote> judgment takes a value and removes
+        all type information from it. This operation is necessary
+        since, in XQuery, validation can occur both on well-formed or
+        already validated documents.</p>
+      </item>
+      <item>
+        <p>The <quote>annotate</quote> operation takes an untyped
+        value and a type and either fails or succeeds by returning a
+        new -validated- value.</p>
+      </item>
+    </ulist>
+
+    <p>Before defining these two judgments, we first introduce the
+    auxiliary judgments used to describe specific parts of XML
+    Schema's semantics.</p>
+
+    <div3 id="sec_type_resolution">
+      <head>Type resolution</head>
+
+      <smnotation>
+        <p id="jd_resolves_to">The judgments</p>
+
+        <display>
+          <clause>
+          <environment>&xq_stat_env;</environment>
+          <expression>&gr_TypeReference;
+          &jd_resolves_to; &gr_TypeName; { &gr_Type; }</expression>
+          </clause>
+        </display>
+
+        <p>and</p>
+
+        <display>
+          <clause>
+          <environment>&xq_stat_env;</environment>
+          <expression>&gr_TypeDerivation;
+          &jd_resolves_to; &gr_TypeName; { &gr_Type; }</expression>
+          </clause>
+        </display>
+
+        <p>hold when a type reference (resp. a type derivation)
+        resolves to the given type name and type content.</p>
+      </smnotation>
+
+      <smrules>     
+        <p>Those judgments are specified by the following rules.</p>
+
+	<p>If the type is omitted, it is resolved as the empty
+	sequence type.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>
+               <phrase diff='del' at='E036'>&gr_Derivation;?</phrase>
+               <phrase diff='add' at='E036'>&gr_OptDerivation;</phrase>
+               &gr_OptMixed; { empty } &jd_resolves_to; &gr_TypeName; { &gr_Type; }
+             </expression>
+            </clause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>
+               <phrase diff='del' at='E036'>&gr_Derivation;?</phrase>
+               <phrase diff='add' at='E036'>&gr_OptDerivation;</phrase>
+               &gr_OptMixed; { } &jd_resolves_to; &gr_TypeName; { &gr_Type; }
+             </expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>In case of a type reference, then the type name is the name
+        of that type, and the type is taken by resolving the type
+        declaration of the global type.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+            <multiclause>
+          <clause>
+           <environment>&xq_stat_env;</environment>
+           <expression>
+             &gr_TypeName; &jd_elem_qname_expands_to; &xd_qname;
+           </expression>
+          </clause>
+            </multiclause>
+            <multiclause>
+
+             <clause>
+              <expression>
+                &xq_type_defn;(&xd_qname;) = define type
+                &gr_TypeName; &gr_TypeDerivation;
+              </expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&gr_TypeDerivation; &jd_resolves_to;
+              &gr_BaseTypeName; { &gr_Type; }</expression>
+             </clause>
+            </multiclause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>of type &gr_TypeName; &jd_resolves_to; &gr_TypeName; { &gr_Type; }</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>In the above inference rule, note that &gr_BaseTypeName; is
+        the base type of the type referred to. So this is indeed the
+        original type name, &gr_TypeName;, which must be returned, and
+        eventually used to annotated the corresponding element or
+        attribute. However, the type needs to be obtained through a
+        second application of the &jd_resolves_to; judgment.</p>
+
+        <p>If the type derivation is a restriction, then the type name
+        is the name of the base type, and the type is taken from the
+        type derivation.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&gr_OptMixed; &gr_Type; &jd_adjusts_to; &gr_AdjustedType;</expression>
+            </clause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>restricts &gr_TypeName; &gr_OptMixed; {
+             &gr_Type; } &jd_resolves_to; &gr_TypeName; {
+             &gr_AdjustedType; }</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>If the type derivation is an extension, then the type name
+        is the name of the base type, and the type is the base type
+        extended by the type in the type derivation.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+            <multiclause>
+          <clause>
+           <environment>&xq_stat_env;</environment>
+           <expression>
+             &gr_TypeName; &jd_elem_qname_expands_to; &xd_qname;
+           </expression>
+          </clause>
+            </multiclause>
+            <multiclause>
+
+             <clause>
+              <expression>
+                &xq_type_defn;(&xd_qname;) = define type
+                &gr_TypeName;
+                <phrase diff='del' at='E036'>&gr_Derivation;?</phrase>
+                <phrase diff='add' at='E036'>&gr_OptDerivation;</phrase>
+                &gr_BaseOptMixed; {
+                &gr_BaseType;? }
+              </expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&gr_BaseType;? &jd_extended_by; &gr_Type;
+              &jd_extended_by_is; &gr_ExtendedType;</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&gr_OptMixed; &gr_ExtendedType;
+              &jd_adjusts_to; &gr_AdjustedType;</expression>
+             </clause>
+            </multiclause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>extends &gr_TypeName; &gr_OptMixed; { &gr_Type;
+             } &jd_resolves_to; &gr_TypeName; { &gr_AdjustedType; }</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+  
+      </smrules>
+    </div3>
+
+    <div3 id="sec_interleaving">
+      <head>Interleaving</head>
+
+      <smnotation>
+        <p id="jd_interleave">The judgment</p>
+
+        <display>
+          <clause>
+          <environment>&xq_stat_env;</environment>
+          <expression>&gr_Value1; &jd_interleave; &gr_Value2;
+          &jd_interleave_yields; &gr_Value3;</expression>
+          </clause>
+        </display>
+
+        <p>holds if some interleaving of &gr_Value1; and &gr_Value2;
+        yields &gr_Value3;.  Interleaving is non-deterministic; it is
+        used for processing all groups.</p>
+      </smnotation>
+
+      <smrules>
+        <p>This judgment is specified by the following rules.</p>
+
+        <p>Interleaving two empty sequences yields the empty
+        sequence.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>() &jd_interleave; () &jd_interleave_yields;
+             ()</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>Otherwise, pick an item from the head of one of the
+        sequences, and recursively interleave the remainder.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&gr_Value1; &jd_interleave; &gr_Value2;
+             &jd_interleave_yields; &gr_Value3;</expression>
+            </clause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&gr_Item;,&gr_Value1; &jd_interleave;
+             &gr_Value2; &jd_interleave_yields;
+             &gr_Item;,&gr_Value3;</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <infergr>
+          <infer>
+           <prejudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&gr_Value1; &jd_interleave; &gr_Value2;
+             &jd_interleave_yields; &gr_Value3;</expression>
+            </clause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&gr_Value1; &jd_interleave;
+             &gr_Item;,&gr_Value2; &jd_interleave_yields;
+             &gr_Item;,&gr_Value3;</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+      </smrules>
+
+    </div3>
+
+    <div3 id="sec_jd_filter">
+      <head>Attribute filtering</head>
+
+      <smintro>
+        <p>Finally, we introduce an auxiliary judgment which extracts
+        the value of a given attribute if it exists. This judgment is
+        not used in the semantics of step expressions, but in <specref
+        ref="sec_type_matching"/>, and is based on the other filter
+        judgments.</p>
+      </smintro>
+
+      <smnotation>
+        <p id="jd_filter">The judgment</p>
+
+        <display>
+          <clause>
+          <expression>&gr_Value; &jd_filter; @&gr_QName; &jd_filter_arrow; &jd_filter_absent;</expression>
+          </clause>
+        </display>
+
+        <p>holds if there are no occurrences of the attribute
+        &gr_QName; in &gr_Value;. The judgment</p>
+
+        <display>
+          <clause>
+          <expression>&gr_Value; &jd_filter; @&gr_QName; &jd_filter_arrow; &gr_SimpleValue;</expression>
+          </clause>
+        </display>
+
+        <p>holds if there is one occurrence of the attribute
+        &gr_QName; in &gr_Value;, and the value of that attribute is
+        &gr_SimpleValue;.</p>
+
+      </smnotation>
+
+      <smrules>
+        <p>The &jd_filter; judgments are defined as follows.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+            <multiclause>
+             <clause>
+              <environment>&xq_dyn_env;</environment>
+              <expression>&jd_axis; attribute:: &jd_axis_of; &gr_Value1;
+              &jd_axis_arrow; &gr_Value2;</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <environment>&xq_dyn_env;</environment>
+              <expression>&jd_test; &gr_QName; &jd_test_with; attribute
+              &jd_test_of; &gr_Value2; &jd_test_arrow;
+              ()</expression>
+             </clause>
+            </multiclause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <expression>&gr_Value1; &jd_filter; @&gr_QName;
+              &jd_filter_arrow; &jd_filter_absent;</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <infergr>
+          <infer>
+           <prejudge>
+            <multiclause>
+             <clause>
+              <environment>&xq_dyn_env;</environment>
+              <expression>&jd_axis; attribute:: &jd_axis_of; &gr_Value1; 
+              &jd_axis_arrow; &gr_Value2;</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <environment>&xq_dyn_env;</environment>
+              <expression>&jd_test; &gr_QName; &jd_test_with; attribute
+              &jd_test_of; &gr_Value2; &jd_test_arrow;
+              &gr_Value3;</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <expression>&gr_Value3; = attribute &gr_QName; {
+              &gr_SimpleValue; }</expression>
+             </clause>
+            </multiclause>
+           </prejudge>
+           <postjudge>
+            <clause>
+              <expression>&gr_Value1; &jd_filter; @&gr_QName;
+              &jd_filter_arrow; &gr_SimpleValue;</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+      </smrules>
+    </div3>
+  <div3 id="sec_erasure">
+    <head>Erasure</head>
+
+    <div4 id="sec_simply_erases">
+      <head>Simply erases</head>
+
+      <smnotation>
+        <p id="jd_simply_erases_to">To define erasure, an auxiliary
+        judgment is needed.  The judgment</p>
+
+        <display>
+          <clause>
+          <expression>&gr_SimpleValue; &jd_simply_erases_to;
+          &gr_String;</expression>
+          </clause>
+        </display>
+
+        <p>holds when &gr_SimpleValue; erases to the string
+        &gr_String;.</p>
+
+      </smnotation>
+
+      <smrules>
+
+        <p>This judgment is specified by the following rules.</p>
+
+        <p>The empty sequence erases to the empty string.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <expression>() &jd_simply_erases_to; ""</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>The concatenation of two non-empty sequences of values
+        erases to the concatenation of their erasures with a
+        separating space.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+            <multiclause>
+             <clause>
+              <expression>&gr_SimpleValue1; &jd_simply_erases_to;
+              &gr_String1;</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <expression>&gr_SimpleValue1; != ()</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <expression>&gr_SimpleValue2; &jd_simply_erases_to;
+              &gr_String2;</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <expression>&gr_SimpleValue2; != ()</expression>
+             </clause>
+            </multiclause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <expression>&gr_SimpleValue1;,&gr_SimpleValue2;
+             &jd_simply_erases_to; &fn_concat;(&gr_String1;,"
+             ",&gr_String2;)</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>An atomic value erases to its string representation as an
+        instance of &xs_untypedAtomic;.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <expression>&gr_AtomicValueContent; of type &gr_AtomicTypeName;
+             &jd_simply_erases_to;
+             &dm_stringvalue;(&gr_AtomicValueContent;)</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+      </smrules>
+    </div4>
+
+    <div4 id="sec_erases">
+      <head>Erases</head>
+
+      <smnotation>
+        <p id="jd_erases_to">The &jd_erases_to; judgment is used in
+        the definition of the dynamic semantics of validation.  The
+        normative dynamic semantics of validation is specified in
+        <xspecref spec="XQ" ref="id-validate"/>.
+
+        The effect of the validate expression is equivalent to:
+        <ulist>
+          <item><p>serialization of the data model, as described in
+          &xq_datamodel_serialization;, followed by </p></item>
+          <item><p>validation of the serialized value into a
+          Post-Schema Validated Infoset, as described in
+          &xq_xmlschema1;, followed by</p></item>
+          <item><p>construction of a new data model value, as
+          described in &xq_datamodel;.</p></item>
+        </ulist>
+
+        Erasure is the formal equivalent of serialization followed by
+        construction of a new data model value in which all element
+        nodes are labeled with &xs_untyped; and all attribute nodes
+        with &xs_untypedAtomic;.</p>
+
+        <p>The judgment</p>
+
+        <display>
+          <clause>
+          <expression>&gr_Value1; &jd_erases_to; &gr_Value2;</expression>
+          </clause>
+        </display>
+
+        <p>holds when the erasure of &gr_Value1; is &gr_Value2;.</p>
+
+      </smnotation>
+
+      <smrules>
+        <p>This judgment is specified by the following rules.</p>
+
+        <p>The empty sequence erases to itself.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <expression>() &jd_erases_to; ()</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>The erasure of the concatenation of two values is the
+        concatenation of their erasure, so long as neither of the two
+        original values is simple.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+            <multiclause>
+             <clause>
+              <expression>&gr_Value1; &jd_erases_to;
+              &gr_Value1;'</expression>
+             </clause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&gr_Value1; not a simple value</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <expression>&gr_Value2; &jd_erases_to;
+              &gr_Value2;'</expression>
+             </clause>
+             <clause>
+              <expression>&gr_Value2; not a simple value</expression>
+             </clause>
+            </multiclause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <expression>&gr_Value1;,&gr_Value2; &jd_erases_to;
+             &gr_Value1;',&gr_Value2;'</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>The erasure of an element is an element that has the same
+        name and the type &xs_untyped; and the erasure of the original
+        content.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+            <multiclause>
+             <clause>
+              <expression>&gr_Value1; &jd_erases_to; &gr_Value2;</expression>
+             </clause>
+            </multiclause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <expression>element &gr_ElementName; of type
+             &gr_TypeName; { &gr_Value1; } &jd_erases_to; element
+             &gr_ElementName; of type &xs_untyped; { &gr_Value2;
+             }</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>The erasure of an attribute is an attribute that has the
+        same name and the type &xs_untypedAtomic; and the simple erasure
+        of the original content labeled with &xs_untypedAtomic;.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+            <multiclause>
+             <clause>
+              <expression>&gr_SimpleValue; &jd_simply_erases_to;
+              &gr_String;</expression>
+             </clause>
+            </multiclause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <expression>attribute &gr_AttributeName; of type
+             &gr_TypeName; { &gr_SimpleValue; } &jd_erases_to; attribute
+             &gr_AttributeName; of type &xs_untypedAtomic; { &gr_String;
+             of type &xs_untypedAtomic; }</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>The erasure of a document is a document with the erasure of
+        the original content.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+            <multiclause>
+             <clause>
+              <expression>&gr_Value1; &jd_erases_to;
+              &gr_Value2;</expression>
+             </clause>
+            </multiclause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <expression>document { &gr_Value1; } &jd_erases_to;
+             document { &gr_Value2; }</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>The erasure of a text or comment or processing-instruction node is itself.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <expression>text
+             { &gr_String; } &jd_erases_to; text { &gr_String;
+             }</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <infergr>
+          <infer>
+           <prejudge>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <expression>comment
+             { &gr_String; } &jd_erases_to; comment { &gr_String;
+             }</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <infergr>
+          <infer>
+           <prejudge>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <expression>processing-instruction &gr_NCName;
+             { &gr_String; } &jd_erases_to; processing-instruction &gr_NCName; { &gr_String;
+             }</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>The erasure of a simple value is the corresponding text
+        node.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+            <multiclause>
+             <clause>
+              <expression>&gr_SimpleValue; &jd_simply_erases_to;
+              &gr_String;</expression>
+             </clause>
+            </multiclause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <expression>&gr_SimpleValue; &jd_erases_to; text {
+             &gr_String; }</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+      </smrules>
+
+    </div4>
+
+  </div3>
+
+  <div3 id="sec_jd_annotate">
+    <head>Annotate</head>
+
+<p>The &jd_annotate_as; judgment is used in the definition of the dynamic
+semantics of validation. 
+The normative dynamic semantics of validation is specified in 
+<xspecref spec="XQ" ref="id-validate"/>.
+The effect of the validate expression is equivalent to:
+<ulist>
+<item><p>serialization of the data model, as described in
+&xq_datamodel_serialization;, followed by</p> </item>
+<item><p>parsing of the serialized value into the Infoset</p></item>
+<item><p>validation of the Infoset into a Post-Schema
+Validated Infoset, as described in &xq_xmlschema1;, followed by</p></item>
+<item><p>construction of a new data model value, as described in
+&xq_datamodel;.</p></item>
+</ulist>
+Annotation is the formal equivalent of schema validation of an Infoset
+value into the PSVI followed by construction of a new data model
+value.   Because the Formal Semantics is defined on data model values,
+not the Infoset, annotation is applied to data model values in which
+all element nodes are labeled with &xs_untyped; and all attribute
+nodes with &xs_untypedAtomic; -- that is, the result of erasure. 
+</p>
+
+    <div4 id="sec_simply_annotate">
+      <head>Simply annotate</head>
+  
+        <smnotation>
+          <p id="jd_cast_as">The judgment</p>
+  
+          <display>
+          <clause>
+          <environment>&xq_stat_env;</environment>
+            <expression>&jd_cast_as; &gr_SimpleType; ( &gr_SimpleValue;
+            ) &jd_cast_as_arrow; &gr_SimpleValue2;</expression>
+          </clause>
+          </display>
+  
+          <p>holds if the result of casting the &gr_SimpleValue1; to
+          &gr_SimpleType; is &gr_SimpleValue2;.</p>
+  
+        </smnotation>
+  
+        <smrules>
+          <p>This judgment is specified by the following rules.</p>
+  
+          <p>Simply annotating a simple value to a union type yields the
+          result of simply annotating the simple value to either the
+          first or second type in the union. Note that simply annotating
+          to the second type is attempted only if simply annotating to
+          the first type <emph>fails</emph>.</p>
+  
+          <infergr>
+            <infer>
+             <prejudge>
+              <multiclause>
+               <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>&jd_cast_as; &gr_SimpleType1;
+                (&gr_SimpleValue1;) &jd_cast_as_arrow;
+                &gr_SimpleValue2;</expression>
+               </clause>
+              </multiclause>
+             </prejudge>
+             <postjudge>
+              <clause>
+               <environment>&xq_stat_env;</environment>
+               <expression>&jd_cast_as;
+               &gr_SimpleType1;|&gr_SimpleType2; (&gr_SimpleValue1;)
+               &jd_cast_as_arrow; &gr_SimpleValue2;</expression>
+              </clause>
+             </postjudge>
+            </infer>
+          </infergr>
+  
+          <infergr>
+            <infer>
+             <prejudge>
+              <multiclause>
+               <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>&jd_not;(&jd_cast_as; &gr_SimpleType1;
+                (&gr_SimpleValue1;) &jd_cast_as_arrow; &gr_SimpleValue2;)</expression>
+               </clause>
+              </multiclause>
+              <multiclause>
+               <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>&jd_cast_as; &gr_SimpleType2;
+                (&gr_SimpleValue1;) &jd_cast_as_arrow;
+                &gr_SimpleValue2;</expression>
+               </clause>
+              </multiclause>
+             </prejudge>
+             <postjudge>
+              <clause>
+               <environment>&xq_stat_env;</environment>
+               <expression>&jd_cast_as;
+               &gr_SimpleType1;|&gr_SimpleType2; (&gr_SimpleValue1;)
+               &jd_cast_as_arrow; &gr_SimpleValue2;</expression>
+              </clause>
+             </postjudge>
+            </infer>
+          </infergr>
+  
+          <p>The simple annotation rules for ?, +, * are similar.</p>
+  
+          <infergr>
+            <infer>
+             <prejudge>
+             </prejudge>
+             <postjudge>
+              <clause>
+               <environment>&xq_stat_env;</environment>
+               <expression>&jd_cast_as; &gr_SimpleType;? ( () )
+               &jd_cast_as_arrow; ()</expression>
+              </clause>
+             </postjudge>
+            </infer>
+          </infergr>
+  
+          <infergr>
+            <infer>
+             <prejudge>
+              <multiclause>
+               <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>&jd_cast_as; &gr_SimpleType;
+                (&gr_SimpleValue1;) &jd_cast_as_arrow;
+                &gr_SimpleValue2;</expression>
+               </clause>
+              </multiclause>
+             </prejudge>
+             <postjudge>
+              <clause>
+               <environment>&xq_stat_env;</environment>
+               <expression>&jd_cast_as; &gr_SimpleType;?
+               (&gr_SimpleValue1;) &jd_cast_as_arrow;
+               &gr_SimpleValue2;</expression>
+              </clause>
+             </postjudge>
+            </infer>
+          </infergr>
+  
+          <infergr>
+            <infer>
+             <prejudge>
+             </prejudge>
+             <postjudge>
+              <clause>
+               <environment>&xq_stat_env;</environment>
+               <expression>&jd_cast_as; &gr_SimpleType;* ( () )
+               &jd_cast_as_arrow; ()</expression>
+              </clause>
+             </postjudge>
+            </infer>
+          </infergr>
+  
+          <infergr>
+            <infer>
+             <prejudge>
+              <multiclause>
+               <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>&jd_cast_as; &gr_SimpleType;
+                (&gr_SimpleValue1;) &jd_cast_as_arrow;
+                &gr_SimpleValue1;'</expression>
+               </clause>
+</multiclause>
+<multiclause>
+               <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>&jd_cast_as; &gr_SimpleType;*
+                (&gr_SimpleValue2;) &jd_cast_as_arrow;
+                &gr_SimpleValue2;'</expression>
+               </clause>
+              </multiclause>
+             </prejudge>
+             <postjudge>
+              <clause>
+               <environment>&xq_stat_env;</environment>
+               <expression>&jd_cast_as; &gr_SimpleType;*
+               (&gr_SimpleValue1;,&gr_SimpleValue2;) &jd_cast_as_arrow;
+               &gr_SimpleValue1;',&gr_SimpleValue2;'</expression>
+              </clause>
+             </postjudge>
+            </infer>
+          </infergr>
+  
+          <infergr>
+            <infer>
+             <prejudge>
+              <multiclause>
+               <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>&jd_cast_as; &gr_SimpleType;
+                (&gr_SimpleValue1;) &jd_cast_as_arrow;
+                &gr_SimpleValue1;'</expression>
+               </clause>
+</multiclause>
+<multiclause>
+               <clause>
+                <environment>&xq_stat_env;</environment>
+                <expression>&jd_cast_as; &gr_SimpleType;*
+                (&gr_SimpleValue2;) &jd_cast_as_arrow;
+                &gr_SimpleValue2;'</expression>
+               </clause>
+              </multiclause>
+             </prejudge>
+             <postjudge>
+              <clause>
+               <environment>&xq_stat_env;</environment>
+               <expression>&jd_cast_as; &gr_SimpleType;+
+               (&gr_SimpleValue1;,&gr_SimpleValue2;) &jd_cast_as_arrow;
+               &gr_SimpleValue1;',&gr_SimpleValue2;'</expression>
+              </clause>
+             </postjudge>
+            </infer>
+          </infergr>
+  
+          <p>Simply annotating an atomic value to &xs_string; yields its
+          string representation.</p>
+  
+          <infergr>
+            <infer>
+             <prejudge>
+             </prejudge>
+             <postjudge>
+              <clause>
+               <environment>&xq_stat_env;</environment>
+               <expression>&jd_cast_as; &xs_string; (&gr_AtomicValue;)
+               &jd_cast_as_arrow;
+               <emph>dm:</emph>string-value(&gr_AtomicValue;)</expression>
+              </clause>
+             </postjudge>
+            </infer>
+          </infergr>
+  
+          <p>Simply annotating an atomic value to &xs_decimal; yields
+          the decimal that results from parsing its string
+          representation.</p>
+  
+          <infergr>
+            <infer>
+             <prejudge>
+             </prejudge>
+             <postjudge>
+              <clause>
+               <environment>&xq_stat_env;</environment>
+               <expression>&jd_cast_as; &xs_decimal; (&gr_AtomicValue;)
+               &jd_cast_as_arrow;
+               &xs_decimal;(&dm_stringvalue;(&gr_AtomicValue;))</expression>
+              </clause>
+             </postjudge>
+            </infer>
+          </infergr>
+  
+          <p>Similar rules are assumed for the rest of the 19 XML Schema
+          primitive types.</p>
+  
+      </smrules>
+    </div4>
+
+    <div4 id="sec_nil_annotate">
+      <head>Nil-annotate</head>
+
+      <smnotation>
+        <p id="jd_nil_annotate_as">The judgment</p>
+
+        <display>
+          <clause>
+          <environment>&xq_stat_env;</environment>
+          <expression>&jd_nil_annotate_as; &gr_OptNillable; &gr_Type; (
+          &gr_Value1; ) &jd_nil_annotate_as_arrow;
+          &gr_Value2;</expression>
+          </clause>
+        </display>
+
+        <p>holds if it is possible to annotate value &gr_Value1; as if
+        it had the nillable type &gr_Type; and &gr_Value2; is the
+        corresponding annotated value.</p>
+
+      </smnotation>
+
+      <smrules>
+        <p>This judgment is specified by the following rules.</p>
+
+        <p>If the type is not nillable, then the xsi:nil attribute
+        must not appear in the value, and it must be possible to
+        annotate value &gr_Value; as if it had the type &gr_Type;.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+            <multiclause>
+             <clause>
+              <expression>&gr_Value1; &jd_filter; @xsi:nil
+              &jd_filter_arrow; &jd_filter_absent;</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&jd_annotate_as; &gr_Type; ( &gr_Value1; )
+              &jd_annotate_as_arrow; &gr_Value2;</expression>
+             </clause>
+            </multiclause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&jd_nil_annotate_as; &gr_Type; ( &gr_Value1; )
+             &jd_nil_annotate_as_arrow; &gr_Value2;</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>If the type is nillable, and the xsi:nil attribute does not
+        appear or is false, then it must be possible to annotate value
+        &gr_Value1; as if it had the type &gr_Type;.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+            <multiclause>
+             <clause>
+              <expression>&gr_Value1; &jd_filter; @xsi:nil
+              &jd_filter_arrow; &gr_SimpleValue;</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <expression>&gr_SimpleValue; &jd_isin; { (), false }</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&jd_annotate_as; &gr_Type; ( &gr_Value1; )
+              &jd_annotate_as_arrow; &gr_Value2;</expression>
+             </clause>
+            </multiclause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&jd_nil_annotate_as; nillable &gr_Type; (
+             &gr_Value1; ) &jd_nil_annotate_as_arrow;
+             &gr_Value2;</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>If the type is nillable, and the xsi:nil attribute is true,
+        then it must be possible to annotate value &gr_Value1; as if
+        it had a type where the attributes in the type are kept and
+        the element content of the type is ignored.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+            <multiclause>
+             <clause>
+              <expression>&gr_Value1; &jd_filter; @xsi:nil
+              &jd_filter_arrow; true</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&jd_annotate_as; &gr_AttributeModel; (
+              &gr_Value1; ) &jd_annotate_as_arrow;
+              &gr_Value2;</expression>
+             </clause>
+            </multiclause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&jd_nil_annotate_as; nillable
+             (&gr_AttributeModel;, &gr_ElementModel;) ( &gr_Value1; )
+             &jd_nil_annotate_as_arrow; &gr_Value2;</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+      </smrules>
+
+    </div4>
+
+    <div4 id="sec_annotate">
+      <head>Annotate</head>
+
+
+        <p id="jd_annotate_as">
+The &jd_annotate_as; judgment is used in the definition of the dynamic
+semantics of validation. 
+The normative dynamic semantics of validation is specified in 
+<xspecref spec="XQ" ref="id-validate"/>.
+The effect of the validate expression is equivalent to:
+<ulist>
+<item><p>serialization of the data model, as described in
+&xq_datamodel_serialization;, followed by</p> </item>
+<item><p>parsing of the serialized value into the Infoset</p></item>
+<item><p>validation of the Infoset into a Post-Schema
+Validated Infoset, as described in &xq_xmlschema1;, followed by</p></item>
+<item><p>construction of a new data model value, as described in
+&xq_datamodel;.</p></item>
+</ulist>
+Erasure is the formal equivalent of serialization followed by
+construction of a new data model value in which all element nodes are labeled with &xs_untyped; and all attribute nodes with &xs_untypedAtomic;.
+</p>
+
+      <smnotation>
+        <p>The judgment</p>
+
+        <display>
+          <clause>
+          <environment>&xq_stat_env;</environment>
+          <expression>&jd_annotate_as; &gr_Type; ( &gr_Value1; )
+          &jd_annotate_as_arrow; &gr_Value2;</expression>
+          </clause>
+        </display>
+
+        <p>holds if it is possible to annotate value &gr_Value1; as if
+        it had type &gr_Type; and &gr_Value2; is the corresponding
+        annotated value.</p>
+
+      </smnotation>
+
+      <smnote>
+        <p>Assume an XML Infoset instance X1 is validated against an
+        XML Schema S, yielding PSVI instance X2. Then if X1
+        corresponds to &gr_Value1; and S corresponds to &gr_Type; and
+        X2 corresponds to &gr_Value2;, the following should hold:
+        &jd_annotate_as; &gr_Type; ( &gr_Value1; )
+        &jd_annotate_as_arrow; &gr_Value2;.</p>
+      </smnote>
+
+      <smrules>
+        <p>This judgment is specified by the following rules.</p>
+
+        <p>Annotating the empty sequence as the empty type yields the
+        empty sequence.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&jd_annotate_as; empty (())
+             &jd_annotate_as_arrow; ()</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>Annotating a concatenation of values as a concatenation of
+        types yields the concatenation of the annotated values.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+            <multiclause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&jd_annotate_as; &gr_Type1; (&gr_Value1;)
+              &jd_annotate_as_arrow; &gr_Value1;'</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&jd_annotate_as; &gr_Type2; (&gr_Value2;)
+              &jd_annotate_as_arrow; &gr_Value2;'</expression>
+             </clause>
+            </multiclause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&jd_annotate_as; &gr_Type1;,&gr_Type2;
+             (&gr_Value1;,&gr_Value2;) &jd_annotate_as_arrow;
+             &gr_Value1;',&gr_Value2;'</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>Annotating a value as a choice type yields the result of
+        annotating the value as either the first or second type in the
+        choice.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&jd_annotate_as; &gr_Type1; (&gr_Value1;)
+              &jd_annotate_as_arrow; &gr_Value2;</expression>
+             </clause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&jd_annotate_as; &gr_Type1;|&gr_Type2;
+             (&gr_Value1;) &jd_annotate_as_arrow;
+             &gr_Value2;</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <infergr>
+          <infer>
+           <prejudge>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&jd_annotate_as; &gr_Type2; (&gr_Value1;)
+              &jd_annotate_as_arrow; &gr_Value2;</expression>
+             </clause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&jd_annotate_as; &gr_Type1;|&gr_Type2;
+             (&gr_Value1;) &jd_annotate_as_arrow;
+             &gr_Value2;</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>Annotating a value as an all group uses interleaving to
+        decompose the original value and recompose the annotated
+        value.</p>
+
+        <ednote>
+          <edtext>Jerome and Phil: Note that this may reorder the
+          original sequence.  Perhaps we should disallow such
+          reordering. Specifying that formally is not as easy as we
+          would like.</edtext>
+        </ednote>
+
+        <infergr>
+          <infer>
+           <prejudge>
+            <multiclause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&jd_annotate_as; &gr_Type1; ( &gr_Value1; )
+              &jd_annotate_as_arrow; &gr_Value1;'</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&jd_annotate_as; &gr_Type2; ( &gr_Value2; )
+              &jd_annotate_as_arrow; &gr_Value2;'</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&gr_Value1; &jd_interleave; &gr_Value2;
+              &jd_interleave_yields; &gr_Value;</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&gr_Value1;' &jd_interleave; &gr_Value2;'
+              &jd_interleave_yields; &gr_Value;'</expression>
+             </clause>
+            </multiclause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&jd_annotate_as; &gr_Type1; &amp; &gr_Type2;
+             ( &gr_Value; ) &jd_annotate_as_arrow;
+             &gr_Value;'</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>The annotation rules for ?, +, * are similar.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&jd_annotate_as; (&gr_Type; |
+              empty)(&gr_Value1;) &jd_annotate_as_arrow;
+              &gr_Value2;</expression>
+             </clause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&jd_annotate_as; &gr_Type;? (&gr_Value1;)
+             &jd_annotate_as_arrow; &gr_Value2;</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <infergr>
+          <infer>
+           <prejudge>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&jd_annotate_as; &gr_Type; (&gr_Value1;)
+              &jd_annotate_as_arrow; &gr_Value1;'</expression>
+             </clause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&jd_annotate_as; &gr_Type;* (&gr_Value2;)
+              &jd_annotate_as_arrow; &gr_Value2;'</expression>
+             </clause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&jd_annotate_as; &gr_Type;+
+             (&gr_Value1;,&gr_Value2;) &jd_annotate_as_arrow;
+             (&gr_Value1;',&gr_Value2;')</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <infergr>
+          <infer>
+           <prejudge>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&jd_annotate_as; &gr_Type;* ( () )
+             &jd_annotate_as_arrow; ()</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <infergr>
+          <infer>
+           <prejudge>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&jd_annotate_as; &gr_Type; (&gr_Value1;)
+              &jd_annotate_as_arrow; &gr_Value1;'</expression>
+             </clause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&jd_annotate_as; &gr_Type;* (&gr_Value2;)
+              &jd_annotate_as_arrow; &gr_Value2;'</expression>
+             </clause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&jd_annotate_as; &gr_Type;*
+             (&gr_Value1;,&gr_Value2;) &jd_annotate_as_arrow;
+             (&gr_Value1;',&gr_Value2;')</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>To annotate an element with no xsi:type attribute, first
+        look up the element type, next resolve the resulting type
+        reference, then annotate the value against the resolved type,
+        and finally return a new element with the name of the original
+        element, the resolved type name, and the annotated value.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+            <multiclause>
+             <clause>
+              <expression>&gr_Value; &jd_filter; @xsi:type
+              &jd_filter_arrow; ()</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&gr_ElementName; &jd_lookup;
+              &gr_ElementType; &jd_lookup_yields; &gr_OptNillable;
+              &gr_TypeReference;</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&gr_TypeReference; &jd_resolves_to;
+              &gr_TypeName; { &gr_Type; }</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&jd_nil_annotate_as;
+              &gr_OptNillable; &gr_Type; (&gr_Value;) &jd_nil_annotate_as_arrow;
+              &gr_Value;'</expression>
+             </clause>
+            </multiclause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&jd_annotate_as; &gr_ElementType; ( element
+             &gr_ElementName; of type &xs_anyType; { &gr_Value; } )
+             &jd_annotate_as_arrow; element &gr_ElementName; of type
+             &gr_TypeName; { &gr_Value;' }</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>To annotate an element with an xsi:type attribute, define a
+        type reference corresponding to the xsi:type.  Look up the
+        element type, yielding a type reference, and check that the
+        xsi:type reference derives from this type reference.  Resolve
+        the xsi:type reference, then annotate the value against the
+        resolved type, and finally return a new element with the name
+        of the original element, the resolved type name, and the
+        annotated value.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+            <multiclause>
+             <clause>
+              <expression>&gr_Value; &jd_filter; @xsi:type
+              &jd_filter_arrow; &gr_TypeName;</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <expression>&gr_XsiTypeReference; = of type
+              &gr_TypeName;</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&gr_ElementName; &jd_lookup;
+              &gr_ElementType; &jd_lookup_yields; &gr_OptNillable;
+              of type &gr_BaseTypeName;</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&gr_TypeName;
+              &jd_derives_from;
+              &gr_BaseTypeName;</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&gr_XsiTypeReference; &jd_resolves_to;
+              &gr_TypeName; { &gr_Type; }</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&jd_nil_annotate_as;
+              &gr_OptNillable; &gr_Type; (&gr_Value;) &jd_nil_annotate_as_arrow;
+              &gr_Value;'</expression>
+             </clause>
+            </multiclause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&jd_annotate_as; &gr_ElementType; ( element
+             &gr_ElementName; of type &xs_anyType; { &gr_Value; } )
+             &jd_annotate_as_arrow; element &gr_ElementName; of type
+             &gr_TypeName; { &gr_Value;' }</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+<!--
+        <ednote>
+          <edtext>Issue: the treatment of xsi:type in the
+          &xq_xquerydoc; document and in the formal semantics document
+          still differ. See Issue 485 (FS-Issue-0142).</edtext>
+        </ednote>
+-->
+        <p>The rule for attributes is similar to the first rule for
+        elements.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+            <multiclause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&gr_AttributeName; &jd_attribute_lookup;
+              &gr_AttributeType; &jd_attribute_lookup_yields;
+              &gr_TypeReference;</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&gr_TypeReference; &jd_resolves_to;
+              &gr_TypeName; { &gr_Type; }</expression>
+             </clause>
+            </multiclause>
+            <multiclause>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&jd_nil_annotate_as;
+              &gr_OptNillable; &gr_Type; (&gr_SimpleValue1;) &jd_nil_annotate_as_arrow;
+              &gr_SimpleValue2;</expression>
+             </clause>
+            </multiclause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&jd_annotate_as; &gr_AttributeType; (
+             attribute &gr_AttributeName; of type &xs_anySimpleType; {
+             &gr_SimpleValue1; } ) &jd_annotate_as_arrow; attribute
+             &gr_AttributeName; of type &gr_TypeName; { &gr_SimpleValue2;
+             }</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>Annotating a document node yields a document with the
+        annotation of its contents.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&jd_annotate_as; &gr_Type; (&gr_Value;)
+              &jd_annotate_as_arrow; &gr_Value;'</expression>
+             </clause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&jd_annotate_as; document { &gr_Type; } (
+             document { &gr_Value; } ) &jd_annotate_as_arrow; document
+             { &gr_Value;' }</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>Annotating a text node as text yields itself.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&jd_annotate_as; text (text { &gr_String; })
+             &jd_annotate_as_arrow; text { &gr_String; }</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>Annotating a text nodes as a simple type is identical to
+        casting.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&jd_cast_as; &gr_SimpleType; ( &gr_String; ) &jd_cast_as_arrow;
+              &gr_SimpleValue;'</expression>
+             </clause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&jd_annotate_as; &gr_SimpleType; ( text {
+             &gr_String; } ) &jd_annotate_as_arrow;
+             &gr_SimpleValue;'</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+
+        <p>Annotating a simple value as a simple type is identical to
+        casting.</p>
+
+        <infergr>
+          <infer>
+           <prejudge>
+             <clause>
+              <environment>&xq_stat_env;</environment>
+              <expression>&jd_cast_as; &gr_SimpleType; (
+              &gr_SimpleValue; ) &jd_cast_as_arrow;
+              &gr_SimpleValue;'</expression>
+             </clause>
+           </prejudge>
+           <postjudge>
+            <clause>
+             <environment>&xq_stat_env;</environment>
+             <expression>&jd_annotate_as; &gr_SimpleType; (
+             &gr_SimpleValue; ) &jd_annotate_as_arrow;
+             &gr_SimpleValue;'</expression>
+            </clause>
+           </postjudge>
+          </infer>
+        </infergr>
+      </smrules>
+     </div4>
+   </div3>
+  </div2>
+</inform-div1>

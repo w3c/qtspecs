@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<div1 id="id-xquery-update-conformance">
+    <head>Conformance</head>
+    <p>This section defines the conformance criteria for an XQuery processor. In this section, the
+        following terms are used to indicate the requirement levels defined in
+        <bibref ref="RFC2119"/>. <termdef id="must" term="must">
+            <term>MUST</term> means that the item is an absolute requirement of the specification.</termdef>
+        <termdef id="may" term="may">
+            <term>MAY</term> means that an item is truly optional.</termdef>
+        <termdef id="should" term="should">
+            <term>SHOULD</term> means that there may exist valid reasons in particular circumstances
+            to ignore a particular item, but the full implications must be understood and carefully
+            weighed before choosing a different course.</termdef>
+    </p>
+   
+    <p>An XQuery processor that claims to conform to this specification
+        <termref def="must">MUST</termref> include a claim of Minimal Conformance as defined in
+        <specref ref="id-minimal-conformance"/>. In addition to a claim of Minimal Conformance, it
+        <termref def="may">MAY</termref> claim conformance to one or more optional features
+        defined in <specref ref="id-conform-optional-features"/>.</p>
+
+    <div2 id="id-minimal-conformance">
+        <head>Minimal Conformance</head>
+        <p>Minimal Conformance to this specification <termref def="must">MUST</termref> include all
+            of the following items:</p>
+        <olist>
+            <item>
+                <p>Minimal Conformance to <bibref ref="xquery"/>.</p>
+            </item>
+            <item>
+                <p>Support for everything specified in this document
+                except those features specified in <specref
+                ref="id-conform-optional-features"/> to be optional
+                and <specref ref="id-xquf-xqueryx"/>. If an
+                implementation does not provide a given optional
+                feature, it <termref def="must">MUST</termref>
+                implement any requirements specified in <specref
+                ref="id-conform-optional-features"/> for
+                implementations that do not provide that feature.</p>
+	    </item>
+	    <item>
+	      <p>A definition of every item specified to be implementation-defined,
+	      unless that item is part of an optional feature that is
+	      not supported by the implementation. A list of implementation-defined
+	      items can be found in <specref ref="id-impl-defs"/>.</p>
+                <note>
+                    <p>Implementations are not required to define
+                    items specified to be implementation-dependent.</p>
+                </note>
+            </item>
+<!--
+
+Keeping in comments because we will likely add it later.
+
+	    <item diff="add">
+		<p>Support for all functions defined in  <bibref ref="FunctionsAndOperators"/>.</p>
+                <note>
+                    <p>In <loc href="http://www.w3.org/TR/2009/PER-xpath-functions-20090421/">XQuery 1.0 and XPath 2.0 Functions and Operators (Second Edition)</loc> <code>fn:element-with-id()</code>, which is a <loc href="http://www.w3.org/2004/02/Process-20040205/tr.html#ProposedEditedRec">Proposed Edited Recommendation</loc>, we have added a function called <loc href="http://www.w3.org/TR/2009/PER-xpath-functions-20090421/#func-element-with-id">fn:element-with-id()</loc>. If this becomes a <loc href="http://www.w3.org/2004/02/Process-20040205/tr.html#RecsW3C">Recommendation</loc>, then we plan to say that new processors <termref def="must">SHOULD</termref> implement it; it will be optional only to avoid making existing processors non-conformant. It is likely that this function will be required in XQuery 1.1.</p>
+                </note>
+	    </item> -->
+        </olist>
+    </div2>
+    <div2 id="id-conform-optional-features">
+        <head>Optional Features</head>
+	    <p>An implementation of XQuery that includes the Update
+	    Facility   <termref def="may">MAY</termref> also support the Optional Features of <bibref
+	    ref="xquery"/>. These are Schema Import Feature, Schema
+	    Validation Feature, Static Typing Feature, Full Axis
+	    Feature, Module Feature, and Serialization Feature.</p>
+
+	    <p>If an implementation claims support of the Static
+	    Typing Feature, then it   <termref def="may">MAY</termref> also claim support of the
+	    Update Facility Static Typing Feature.</p>
+
+
+        <div3 id="id-update-facility-static-typing-feature">
+            <head>Update Facility Static Typing Feature</head> 
+
+                <p>
+                <termdef id="upd-static-typing-feature"
+                term="static typing feature">The <term>Update
+                Facility Static Typing Feature</term> provides support
+                for the static semantics defined in <specref ref="id-update-static"/>,
+                and requires implementations to detect and report type errors
+                during the static analysis phase.</termdef>
+                </p>
+
+
+            <p>If an implementation does not support the <termref
+            def="upd-static-typing-feature">Update Static Typing
+            Feature</termref>, but can nevertheless determine during
+            the static analysis phase that an expression, if
+            evaluated, will necessarily raise a type error at run
+            time, the implementation <termref def="may">MAY</termref>
+            raise that error during the static analysis phase. The
+            choice of whether to raise such an error at analysis time
+            is implementation-dependent.</p>
+
+            <note>
+                <p>An implementation that does not support the
+                <termref def="upd-static-typing-feature">Update Static Typing
+                Feature</termref> is not required to raise type errors
+                during the static analysis phase; however, it <termref
+                def="must">MUST</termref> detect and raise
+                non-type-related static errors during the static
+                analysis phase.</p>
+            </note>
+	
+        </div3>
+    </div2>
+
+</div1>
+
+<div1 id="id-xqueryx-update-conformance">
+<head>XQueryX Conformance</head>
+
+<p>This section defines the conformance criteria for an XQueryX processor 
+that includes the Update Facility.</p>
+
+<p>In this section, the terms <termref def="must">MUST</termref>, <termref
+def="may">MAY</termref>, and <termref def="should">SHOULD</termref> are used as
+defined in <specref ref="id-xquery-update-conformance"/>.</p>
+
+<p>An XQueryX processor that claims to conform to this specification
+<termref def="must">MUST</termref> implement the XQueryX syntax as defined
+in <specref ref="id-xquf-xqueryx"/> and include a claim of Minimal
+Conformance as defined in <specref ref="id-minimal-conformance"/>. 
+In addition to a claim of
+Minimal Conformance, it <termref def="may">MAY</termref> claim conformance to one or more optional
+features defined in <specref ref="id-conform-optional-features"/>.</p>
+</div1>

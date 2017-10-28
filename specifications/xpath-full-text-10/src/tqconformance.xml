@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<div1 id="id-tq-conformance">
+  <head>Conformance</head>
+  <p>This section defines the conformance criteria for a &language;
+       processor.
+  </p>
+		
+  <p>In this section, the following terms are used to indicate the
+     requirement levels defined in <bibref ref="RFC2119"/>.
+      <termdef id="must" term="must">
+          <term>MUST</term> means that the item is an absolute requirement of the specification.</termdef>
+      <termdef id="may" term="may">
+          <term>MAY</term> means that an item is truly optional.</termdef>
+      <termdef id="should" term="should">
+          <term>SHOULD</term> means that there may exist valid reasons in particular circumstances
+          to ignore a particular item, but the full implications must be understood and carefully
+          weighed before choosing a different course.</termdef>
+  </p>
+
+  <p>An &language; processor that claims to conform to 
+     this specification <termref def="must">MUST</termref>
+     include a claim of Minimal Conformance as defined in 
+     <specref ref="id-minimal-conformance"/>.
+     In addition to a claim of Minimal Conformance, 
+     it <termref def="may">MAY</termref>
+     claim conformance to one or more optional features defined in 
+     <specref ref="id-conform-optional-features"/>
+  </p>
+
+  <div2 id="id-minimal-conformance">
+    <head>Minimal Conformance</head>
+    <p>Minimal Conformance to this specification 
+    <termref def="must">MUST</termref> include all of the following items:</p>
+    <olist>
+      <item>
+        <p>Minimal support for XQuery 1.0 <bibref ref="xquery"/>
+        or XPath 2.0 <bibref ref="xpath20"/>. 
+        The optional features of XQuery 1.0 <bibref ref="xquery"/> or
+        XPath 2.0 <bibref ref="xpath20"/> <termref def="may">MAY</termref>
+        be supported.</p>
+      </item>
+      <item>
+        <p>Support for everything specified in this document except those
+          operators and match options specified in 
+          <specref ref="id-conform-optional-features"/> to be optional.
+          If an implementation does not provide a given optional operator or
+          match option, it  <termref def="must">MUST</termref>
+          implement any requirements specified in 
+          <specref ref="id-conform-optional-features"/>
+          for implementations that do not provide that operator or match
+          option.</p> 
+       </item>
+       <item>
+         <p>A definition of every item specified to be 
+           &ref-implementation-defined; in 
+           <specref ref="impl-def"/>.</p>
+           <note>
+             <p>Implementations are not required to define items specified to
+              be &ref-implementation-dependent;</p>
+           </note>
+       </item>
+     </olist>
+  </div2>
+  <div2 id="id-conform-optional-features">
+    <head>Optional Features</head>
+    <div3 id="id-ftmildnot-option">
+      <head>FTMildNot Operator</head>
+      <p>It is optional whether the implementation supports the FTMildNot. If
+        it does not support FTMildNot and encounters one in a full-text
+        query, then it <termref def="must">MUST</termref> raise
+        an error <errorref class="ST" code="0001"/>.</p>
+    </div3>
+    <div3 id="id-unary-not-option">
+      <head>FTUnaryNot Operator</head> 
+      <p>The unrestricted form of negation in FTUnaryNot,
+         that can negate every kind of FTSelection, is
+         optional. Implementations may choose to support the negation
+         operation in a restricted form, enforcing one or both of the
+         following restrictions.</p>
+      <ulist>
+      <item>
+        <p>
+        <termdef id="id-Negation-Restriction-1" term="Negation Restriction 1">
+        <term>Negation Restriction 1.</term> An <nt def="FTUnaryNot">FTUnaryNot</nt>
+        expression may only appear as a direct right operand of an
+        "ftand" (<nt def="FTAnd">FTAnd</nt>) operation.</termdef>
+        </p>
+      </item>
+      <item>
+        <p>
+        <termdef id="id-Negation-Restriction-2" term="Negation Restriction 2">
+        <term>Negation Restriction 2.</term> An <nt def="FTUnaryNot">FTUnaryNot</nt>
+        expression may not appear as a descendant of an 
+        <nt def="FTOr">FTOr</nt> that is modified by an 
+        <nt def="FTPosFilter">FTPosFilter</nt>. (An
+        FTOr is modified by an FTPosFilter, if it is derived using
+        the production for <nt def="FTSelection">FTSelection</nt> 
+         together with that FTPosFilter.)</termdef>
+        </p>
+      </item>
+      </ulist>
+      <p>Consider the following example FTSelections.</p>
+
+<eg><![CDATA[
+1. ftnot "web"
+
+2. "web" ftand ( ftnot "information" ftor "retrieval" )
+
+3. "web" ftand ftnot("information" ftand "retrieval")
+
+4. "web" ftand ftnot("information" ftand "retrieval" window 5 words)
+
+5. "web" ftand ("information" ftand ftnot "retrieval" window 5 words)
+]]></eg> 
+
+      <p>The first two FTSelections both violate restriction 1, while the third and 
+the fourth are conform with both restrictions. The fifth one violates 
+restriction 2, while obeying restriction 1. Note that in the last example 
+the FTSelection to which the window operation is applied is 
+<code>"information" ftand ftnot "retrieval"</code>, which contains an FTUnaryNot 
+expression.</p>
+
+      <p>If the implementation does enforce
+           one or both of these restrictions on FTUnaryNot and encounters a
+           full-text query that does not obey the restriction then it 
+           <termref def="must">MUST</termref>
+           raise an error <errorref class="ST" code="0002"/>.</p>
+    </div3>
+    <div3 id="id-ftunit-option">
+      <head>FTUnit and FTBigUnit</head>
+      <p>Support for the "sentences" alternative of <nt def="FTUnit">FTUnit</nt>
+        and the "sentence" alternative of <nt def="FTBigUnit">FTBigUnit</nt> is
+        optional. Similarly, support for the "paragraphs" alternative of FTUnit
+        and the "paragraph" alternative of FTBigUnit is optional.
+        If an implementation does not support one or
+        more choices of FTUnit or FTBigUnit and encounters an unsupported
+        FTUnit or FTBigUnit in a full-text query, then it 
+        <termref def="must">MUST</termref> raise an error
+        <errorref class="ST" code="0003"/>.</p>
+    </div3>
+    <div3 id="id-ftorder-option">
+      <head>FTOrder Operator</head>
+      <p>The unrestricted form of the FTOrder postfix operator, that can be 
+        applied to any kind of FTSelection, is optional.
+        Implementations may choose to enforce the following
+        restriction on the use of FTOrder.</p>
+      <p><termdef id="id-Order-Operator-Restriction" term="Order Operator Restriction">
+        <term>Order Operator Restriction.</term> FTOrder may only appear directly succeeding 
+        an FTWindow or an FTDistance operator.</termdef>
+      </p>
+      <p>If the implementation does enforce this restriction and encounters a
+        full-text query that does not obey the restriction then it 
+        <termref def="must">MUST</termref>
+        raise an error <errorref class="ST" code="0010"/>.</p>
+    </div3>
+    <div3 id="id-ftscope-option">
+      <head>FTScope Operator</head>
+      <p>It is optional whether the implementation supports the FTScope
+      operator.  If it does not support FTScope and encounters one in a
+      full-text query, then it <termref def="must">MUST</termref> raise an
+      error <errorref class="ST" code="0004"/>.</p>
+    </div3>
+    <div3 id="id-ftwindow-option">
+      <head>FTWindow Operator</head>
+      <p>The unrestricted form of the FTWindow postfix operator, that can be 
+        applied to any kind of FTSelection, is optional.
+        Implementations may choose to enforce the following
+        restriction on the use of FTWindow.</p>
+      <p><termdef id="id-Window-Operator-Restriction" term="Window Operator Restriction">
+        <term>Window Operator Restriction.</term> FTWindow can only be applied to an FTOr that
+        is either a single FTWords or a combination of FTWords involving only the 
+        operators ftand and ftor.</termdef>
+      </p>
+      <p>If the implementation does enforce this restriction and encounters a
+        full-text query that does not obey the restriction then it 
+        <termref def="must">MUST</termref>
+        raise an error <errorref class="ST" code="0011"/>.</p>
+    </div3>
+    <div3 id="id-ftdistance-option">
+      <head>FTDistance Operator</head>
+      <p>The unrestricted form of the FTDistance postfix operator, that can be 
+        applied to any kind of FTSelection, is optional.
+        Implementations may choose to enforce the following
+        restriction on the use of FTDistance.</p>
+      <p><termdef id="id-Distance-Operator-Restriction" term="Distance Operator Restriction">
+        <term>Distance Operator Restriction.</term> FTDistance can only be applied to an FTOr that
+        is either a single FTWords or a combination of FTWords involving only the 
+        operators ftand and ftor.</termdef>
+      </p>
+      <p>If the implementation does enforce this restriction and encounters a
+        full-text query that does not obey the restriction then it 
+        <termref def="must">MUST</termref>
+        raise an error <errorref class="ST" code="0011"/>.</p>
+    </div3>
+    <div3 id="id-fttimes-option">
+      <head>FTTimes Operator</head>
+      <p>It is optional whether the implementation supports the FTTimes
+        operator. If it does not support FTTimes and encounters one in a
+        full-text query, then it <termref def="must">MUST</termref> raise an
+        error <errorref class="ST" code="0005"/>.</p>
+    </div3>
+    <div3 id="id-ftcontent-option">
+      <head>FTContent Operator</head>
+      <p>It is optional whether the implementation supports the FTContent
+      operator.  If it does not support FTContent and encounters one in a
+      full-text query, then it <termref def="must">MUST</termref> raise an
+      error <errorref class="ST" code="0012"/>.</p>
+    </div3>
+    <div3 id="id-ftcase-option">
+    <head>FTCaseOption</head>
+    <p>It is optional whether the implementation supports the
+    "lowercase" and "uppercase" choices for the
+    FTCaseOption.  If it does not support these choices for the FTCaseOption
+    and encounters an unsupported choice in a full-text query, then it 
+        <termref def="must">MUST</termref> raise an error
+        <errorref class="ST" code="0015"/>.
+    </p>
+    </div3>
+    <div3 id="id-ftstopword-option">
+      <head>FTStopWordOption</head>
+      <p>It is optional whether the implementation supports the
+        FTStopWordOption. If it does not support FTStopWordOption and
+        encounters one in a full-text query, then it 
+        <termref def="must">MUST</termref> raise an
+        error <errorref class="ST" code="0006"/>.</p>
+     <p>It is optional whether the implementation supports the
+        FTStopWordOption in the body of the query. If it supports
+        FTStopWordOption in the prolog, but not in the body of a query, and
+        encounters one in the body of a query it 
+        <termref def="must">MUST</termref> raise an
+        error <errorref class="ST" code="0006"/>.</p>
+      <p>It is optional whether the implementation supports the StringLiteral
+        alternative of <nt def="FTStopWords">FTStopWords</nt> in the 
+        FTStopWordOption. If it does not support the StringLiteral alternative
+        of FTStopWords and encounters such an alternative in a full-text query,
+        then it <termref def="must">MUST</termref> raise an
+        error <errorref class="ST" code="0006"/>.</p>
+    </div3>
+    <div3 id="id-ftlanguage-option">
+      <head>FTLanguageOption</head>
+      <p>It is optional whether the implementation supports the unrestricted form 
+        of FTLanguageOption. Implementations may choose to enforce the following 
+        restriction on the use of FTLanguageOption.</p>
+      <p><termdef id="id-Single-Language-Restriction" term="Single Language Restriction">
+        <term>Single Language Restriction.</term> If a full-text query contains more than one
+        FTLanguageOption in its body and the prolog, then the languages specified 
+        must be the same.</termdef>
+      </p>
+      <p>If the implementation does enforce this restriction and encounters a
+        full-text query that does not obey the restriction then it 
+        <termref def="must">MUST</termref>
+        raise an error <errorref class="ST" code="0013"/>.</p>
+    </div3>
+    <div3 id="id-ftignore-option">
+      <head>FTIgnoreOption</head>
+      <p>The implementation may constrain the set of ignored nodes.
+      If the operand of <nt def="FTIgnoreOption">FTIgnoreOption</nt> violates
+      the &ref-implementation-defined; restriction on that operand, it 
+      <termref def="must">MUST</termref> raise an
+      error <errorref class="ST" code="0007"/>.</p>
+    </div3>
+    <div3 id="id-scoring-option">
+      <head>Scoring</head>
+      <p>The implementation may restrict the allowable expressions used to
+      compute scores.  The restrictions are &ref-implementation-defined;.
+      </p>
+      <p>If the implementation does enforce such restrictions and encounters a
+        full-text query that does not obey the restriction then it 
+        <termref def="must">MUST</termref>
+        raise an error <errorref class="ST" code="0014"/>.</p>
+    </div3>
+    <div3 id="id-weights-conf">
+    <head>Weights</head>
+    <p>An implementation may constrain the range of valid weights to
+    non-negative values. If an implementation does enforce this restriction and
+    encounters a full-text query that uses a negative weight, it 
+    <termref def="must">MUST</termref> raise an
+    error <errorref class="DY" code="0016"/>.
+    </p>
+    </div3>
+  </div2>
+</div1>
+
+<div1 diff="add" id="id-xqueryx-full-text-conformance">
+<head>XQueryX Conformance</head>
+
+<p>This section defines the conformance criteria for an XQueryX processor 
+that includes the Full Text capability.</p>
+
+<p>In this section, the terms <termref def="must">MUST</termref>, <termref
+def="may">MAY</termref>, and <termref def="should">SHOULD</termref> are used as
+defined in <specref ref="id-tq-conformance"/>.</p>
+
+<p>An XQueryX processor that claims to conform to this specification
+<termref def="must">MUST</termref> implement the XQueryX syntax as defined
+in <specref ref="id-xqft-xqueryx"/> and include a claim of Minimal
+Conformance as defined in <specref ref="id-minimal-conformance"/>. 
+In addition to a claim of
+Minimal Conformance, it <termref def="may">MAY</termref> claim conformance to one or more optional
+features defined in <specref ref="id-conform-optional-features"/>.</p>
+</div1>

@@ -1,0 +1,3125 @@
+<!DOCTYPE HTML>
+
+<!--XSLT Processor: Saxonica SAXON HE 9.6.0.7--><html lang="en">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <title>XQuery 3.1 Requirements and Use Cases</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><style type="text/css">
+/* from xsl:query.xsl (C) */          
+code           { font-family: monospace; }
+
+div.constraint,
+div.issue,
+div.note,
+div.notice     { margin-left: 2em; }
+
+div.issue
+p.title        { margin-left: -2em; }
+
+ol.enumar      { list-style-type: decimal; }
+ol.enumla      { list-style-type: lower-alpha; }
+ol.enumlr      { list-style-type: lower-roman; }
+ol.enumua      { list-style-type: upper-alpha; }
+ol.enumur      { list-style-type: upper-roman; }
+
+li p           { margin-top: 0.3em;
+                 margin-bottom: 0.3em; }
+
+sup small      { font-style: italic;
+                 color: #8F8F8F;
+               }
+    
+/* from xsl:query.xsl (D) */          
+div.exampleInner pre { margin-left: 1em;
+                       margin-top: 0em; margin-bottom: 0em}
+                       
+pre.small { font-size: small }                       
+div.exampleOuter {border: 4px double gray;
+                  margin: 0em; padding: 0em}
+div.exampleInner { background-color: #d5dee3;
+                   padding: 4px; margin: 0em }
+                   
+div.exampleInner table { border: 0;
+                         border-spacing: 0;
+                       }
+                   
+div.exampleInner td { vertical-align: baseline;
+                      padding: 0;
+                    }
+                   
+div.exampleWrapper { margin: 4px }
+div.exampleHeader { font-weight: bold;
+                    margin: 4px}
+                    
+div.proto { border: 0;
+            border-spacing: 0; 
+          }
+
+div.issue { border-bottom-color: black;
+            border-bottom-style: solid;
+	    border-bottom-width: 1pt;
+	    margin-bottom: 20pt;
+}
+
+th.issue-toc-head { border-bottom-color: black;
+                    border-bottom-style: solid;
+                    border-bottom-width: 1pt;
+}
+
+      
+/* from xsl-query.xsl (B) */    
+table.small                             { 
+                                          font-size: x-small; 
+                                          border-collapse: collapse;
+                                        }
+table.small td                          { 
+                                          border: 1px solid #000000;
+                                          padding: 5px;
+                                        }
+table.small th                          { 
+                                          border: 1px solid #000000;
+                                          padding: 5px;
+                                          text-align: center;
+                                        }
+
+table.medium                            { 
+                                          font-size: smaller;
+                                          border-collapse: collapse; 
+                                        }
+table.medium td                         { 
+                                          border: 1px solid #000000;
+                                          padding: 5px;
+                                        }
+table.medium th                         { 
+                                          border: 1px solid #000000;
+                                          padding: 5px;
+                                          text-align: center;
+                                        }
+                                        
+table.no-code-break code {
+  white-space: nowrap;
+}
+
+table.longlastcol td {
+  vertical-align: baseline;
+  text-align: left;
+}
+
+a.judgment:visited, a.judgment:link     { font-family: sans-serif;
+                              	          color: black; 
+                              	          text-decoration: none }
+a.processing:visited, a.processing:link { color: black; 
+                              		        text-decoration: none }
+a.env:visited, a.env:link               { color: black; 
+                                          text-decoration: none }</style><link rel="stylesheet" type="text/css" href="https://www.w3.org/StyleSheets/TR/2016/W3C-WG-NOTE.css">
+   </head>
+   <body>
+      <div class="head">
+         <p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt="W3C" height="48" width="72"></a></p>
+         
+         <h1><a id="title"></a>XQuery 3.1 Requirements and Use Cases
+         </h1>
+         
+         <h2><a id="w3c-doctype"></a>W3C Working Group Note 13 December 2016
+         </h2>
+         <dl>
+            <dt>This version:</dt>
+            <dd>
+               			<a href="https://www.w3.org/TR/2016/NOTE-xquery-31-requirements-20161213/">https://www.w3.org/TR/2016/NOTE-xquery-31-requirements-20161213/</a>
+               		
+            </dd>
+            <dt>Latest version:</dt>
+            <dd>
+               <a href="https://www.w3.org/TR/xquery-31-requirements/">https://www.w3.org/TR/xquery-31-requirements/</a>
+               		
+            </dd>
+            <dt>Previous version:</dt>
+            <dd><a href="https://www.w3.org/TR/2015/NOTE-xquery-31-requirements-20150811/">https://www.w3.org/TR/2015/NOTE-xquery-31-requirements-20150811/</a></dd>
+            <dt>Editor:</dt>
+            <dd>Jonathan Robie, EMC Corporation</dd>
+         </dl>
+         <p class="copyright"><a href="https://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a>&nbsp;©&nbsp;2016&nbsp;<a href="https://www.w3.org/"><abbr title="World Wide Web Consortium">W3C</abbr></a><sup>®</sup> (<a href="https://www.csail.mit.edu/"><abbr title="Massachusetts Institute of Technology">MIT</abbr></a>, <a href="https://www.ercim.eu/"><abbr title="European Research Consortium for Informatics and Mathematics">ERCIM</abbr></a>, <a href="https://www.keio.ac.jp/">Keio</a>, <a href="http://ev.buaa.edu.cn/">Beihang</a>). W3C <a href="https://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="https://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="https://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.
+         </p>
+         <hr>
+      </div>
+      <div>
+         
+         <h2><a id="abstract"></a>Abstract
+         </h2>
+         <p>This document specifies goals and requirements for XQuery 3.1. 
+            			
+         </p>
+      </div>
+      <div>
+         
+         <h2><a id="status"></a>Status of this Document
+         </h2>
+         <p><em>This section describes the status of this
+               document at the time of its publication.
+               Other documents may supersede this document.
+               A list of current W3C publications and the latest
+               revision of this technical report can be found in the
+               <a href="https://www.w3.org/TR/">W3C technical reports index</a>
+               at https://www.w3.org/TR/.</em></p>
+         <p>This document is governed by the
+            <a id="w3c_process_revision" href="https://www.w3.org/2015/Process-20150901/">1 September 2015 W3C Process Document</a>. 
+         </p>
+         <p>This is a <a href="https://www.w3.org/2015/Process-20150901/#Note">Working Group Note</a> as described in the <a href="https://www.w3.org/2015/Process-20150901/">Process Document</a>. 
+            It was developed by the W3C <a href="https://www.w3.org/XML/Query/">XML Query Working Group</a>,
+            which is part of the <a href="https://www.w3.org/XML/Activity">XML Activity</a>.
+            
+         </p>
+         <p>These Requirements identify extensions to the
+            <a href="https://www.w3.org/TR/xquery-30/">XQuery 3.0 Recommendation</a>,
+            published 04 April 2014, that have been requested by WG participants
+            and by reviewers who do not participate in the W3C activities. 
+            The XML Query WG has not yet fully reviewed these requirements.
+         </p>
+         <p>Please report errors in this document using W3C's
+            <a href="https://www.w3.org/Bugs/Public/">public Bugzilla system</a>
+            (instructions can be found at
+            <a href="https://www.w3.org/XML/2005/04/qt-bugzilla">https://www.w3.org/XML/2005/04/qt-bugzilla</a>).
+            If access to that system is not feasible, you may send your comments
+            to the W3C XSLT/XPath/XQuery public comments mailing list,
+            <a href="mailto:public-qt-comments@w3.org">public-qt-comments@w3.org</a>.
+            It will be very helpful if you include the string 
+            “[XQuery31Req]”
+            in the subject line of your report, whether made in Bugzilla or in email.
+            Please use multiple Bugzilla entries (or, if necessary, multiple email messages)
+            if you have more than one comment to make.
+            Archives of the comments and responses are available at
+            <a href="https://lists.w3.org/Archives/Public/public-qt-comments/">https://lists.w3.org/Archives/Public/public-qt-comments/</a>. 
+         </p>
+         <p>Publication as a <a href="https://www.w3.org/2015/Process-20150901/#Note">Working Group Note</a>
+            does not imply endorsement by the W3C Membership. 
+            This is a draft document and may be updated, replaced or obsoleted
+            by other documents at any time. 
+            It is inappropriate to cite this document as other than work in progress.
+         </p>
+         <p>This document was produced by a group operating under the
+            <a href="https://www.w3.org/Consortium/Patent-Policy-20040205/">5 February 2004
+               W3C Patent Policy</a>.
+            W3C maintains a 
+            <a href="https://www.w3.org/2004/01/pp-impl/18797/status#disclosures" rel="disclosure">public list of any patent disclosures</a>
+            made in connection with the deliverables of the group; 
+            that page also includes instructions for disclosing a patent.
+            An individual who has actual knowledge of a patent 
+            which the individual believes contains
+            <a href="https://www.w3.org/Consortium/Patent-Policy-20040205/#def-essential">Essential Claim(s)</a>
+            must disclose the information in accordance with
+            <a href="https://www.w3.org/Consortium/Patent-Policy-20040205/#sec-Disclosure">
+               section 6 of the W3C Patent Policy</a>. 
+         </p>
+      </div>
+      <nav id="toc">
+         
+         <h2><a id="contents"></a>Table of Contents
+         </h2>
+         <ol class="toc">
+            <li><a href="#goals"><span class="secno">1 </span><span class="content">Goals</span></a>
+               
+               <ol class="toc"></ol>
+            </li>
+            <li><a href="#Requirements"><span class="secno">2 </span><span class="content">Requirements</span></a>
+               
+               <ol class="toc">
+                  <li><a href="#terminology"><span class="secno">2.1 </span><span class="content">Terminology</span></a></li>
+                  <li><a href="#general-requirements"><span class="secno">2.2 </span><span class="content">General Requirements</span></a><ol class="toc">
+                        <li><a href="#backward-compatibility"><span class="secno">2.2.1 </span><span class="content">Backward compatibility</span></a></li>
+                        <li><a href="#extension-compatibility"><span class="secno">2.2.2 </span><span class="content">Extension compatibility</span></a></li>
+                     </ol>
+                  </li>
+                  <li><a href="#json"><span class="secno">2.3 </span><span class="content">Maps, Arrays, Nulls, and JSON</span></a><ol class="toc">
+                        <li><a href="#json.maps"><span class="secno">2.3.1 </span><span class="content">Maps</span></a></li>
+                        <li><a href="#arrays"><span class="secno">2.3.2 </span><span class="content">Arrays</span></a></li>
+                        <li><a href="#nulls"><span class="secno">2.3.3 </span><span class="content">Nulls</span></a></li>
+                        <li><a href="#serialization"><span class="secno">2.3.4 </span><span class="content">Serialization</span></a></li>
+                     </ol>
+                  </li>
+                  <li><a href="#usability"><span class="secno">2.4 </span><span class="content">Usability Features</span></a><ol class="toc">
+                        <li><a href="#scientific-notation"><span class="secno">2.4.1 </span><span class="content">Scientific Notation</span></a></li>
+                        <li><a href="#type-aliases"><span class="secno">2.4.2 </span><span class="content">Type Aliases</span></a></li>
+                        <li><a href="#xslt-function-libraries"><span class="secno">2.4.3 </span><span class="content">Invoking XSLT Transformations</span></a></li>
+                        <li><a href="#collations"><span class="secno">2.4.4 </span><span class="content">Collations</span></a></li>
+                     </ol>
+                  </li>
+               </ol>
+            </li>
+            <li><a href="#use-cases"><span class="secno">3 </span><span class="content">Use Cases</span></a>
+               
+               <ol class="toc">
+                  <li><a href="#grouping"><span class="secno">3.1 </span><span class="content">XSLT 3.0 Streaming Use Cases</span></a><ol class="toc">
+                        <li><a href="#streaming-query1"><span class="secno">3.1.1 </span><span class="content">Simple Grouping</span></a><a href="#streaming-query1-solution-30"><span class="secno">3.1.1.1 </span><span class="content">Solution in XQuery 3.0</span></a>
+                           <a href="#streaming-query1-solution-31"><span class="secno">3.1.1.2 </span><span class="content">Solution in XQuery 3.1</span></a>
+                           
+                        </li>
+                        <li><a href="#streaming-query2"><span class="secno">3.1.2 </span><span class="content">Simultaneous Grouping</span></a><a href="#streaming-query2-solution-30"><span class="secno">3.1.2.1 </span><span class="content">Solution in XQuery 3.0</span></a>
+                           <a href="#streaming-query2-solution-31"><span class="secno">3.1.2.2 </span><span class="content">Solution in XQuery 3.1</span></a>
+                           
+                        </li>
+                        <li><a href="#streaming-query3"><span class="secno">3.1.3 </span><span class="content">Word Count by Lemma</span></a><a href="#streaming-query3-data"><span class="secno">3.1.3.1 </span><span class="content">Input Data</span></a>
+                           <a href="#streaming-query3-result"><span class="secno">3.1.3.2 </span><span class="content">Result</span></a>
+                           <a href="#streaming-query3-solution-30"><span class="secno">3.1.3.3 </span><span class="content">Solution in XQuery 3.0:</span></a>
+                           <a href="#streaming-query3-solution-31"><span class="secno">3.1.3.4 </span><span class="content">Solution in XQuery 3.1:</span></a>
+                           
+                        </li>
+                     </ol>
+                  </li>
+                  <li><a href="#complex"><span class="secno">3.2 </span><span class="content">Compound Values</span></a><ol class="toc">
+                        <li><a href="#complex-query1"><span class="secno">3.2.1 </span><span class="content">Complex Number Library</span></a><a href="#complex-solution-31"><span class="secno">3.2.1.1 </span><span class="content">Solution in XQuery 3.1</span></a>
+                           
+                        </li>
+                     </ol>
+                  </li>
+                  <li><a href="#indexes"><span class="secno">3.3 </span><span class="content">Manual Indexing</span></a><ol class="toc">
+                        <li><a href="#indexes-query1"><span class="secno">3.3.1 </span><span class="content">Simple Manual Join</span></a><a href="#indexes-data"><span class="secno">3.3.1.1 </span><span class="content">Input Data</span></a>
+                           <a href="#indexes-solution-31"><span class="secno">3.3.1.2 </span><span class="content">Solution in XQuery 3.1:</span></a>
+                           
+                        </li>
+                     </ol>
+                  </li>
+                  <li><a href="#interface"><span class="secno">3.4 </span><span class="content">Interface / Implementation Pattern</span></a><ol class="toc">
+                        <li><a href="#interface-query1"><span class="secno">3.4.1 </span><span class="content">Data Variety</span></a><a href="#interface-data1"><span class="secno">3.4.1.1 </span><span class="content">Input Data</span></a>
+                           <a href="#interface-query1-solution-31"><span class="secno">3.4.1.2 </span><span class="content">Solution in XQuery 3.1</span></a>
+                           
+                        </li>
+                        <li><a href="#interface-query2"><span class="secno">3.4.2 </span><span class="content">Search and Snippeting</span></a><a href="#interface-query2-solution-31"><span class="secno">3.4.2.1 </span><span class="content">Solution in XQuery 3.1:</span></a>
+                           
+                        </li>
+                        <li><a href="#interface-query3"><span class="secno">3.4.3 </span><span class="content">Abstracting Document Structure</span></a><a href="#interface-query3-id-31"><span class="secno">3.4.3.1 </span><span class="content">Solution in XQuery 3.1:</span></a>
+                           
+                        </li>
+                     </ol>
+                  </li>
+                  <li><a href="#parameter"><span class="secno">3.5 </span><span class="content">Parameter Passing</span></a><ol class="toc">
+                        <li><a href="#parameter-query1"><span class="secno">3.5.1 </span><span class="content">XSLT Stylesheet Parameters</span></a><a href="#parameter-query1-solution-31"><span class="secno">3.5.1.1 </span><span class="content">Solution in XQuery 3.1:</span></a>
+                           
+                        </li>
+                        <li><a href="#parameter-query2"><span class="secno">3.5.2 </span><span class="content">Function Options</span></a><a href="#parameter-query2-solution-31"><span class="secno">3.5.2.1 </span><span class="content">Solution in XQuery 3.1</span></a>
+                           
+                        </li>
+                        <li><a href="#parameter-query3"><span class="secno">3.5.3 </span><span class="content">Translation</span></a><a href="#parameter-query3-solution-31"><span class="secno">3.5.3.1 </span><span class="content">Solution in XQuery 3.1:</span></a>
+                           
+                        </li>
+                     </ol>
+                  </li>
+                  <li><a href="#natural-language-processing"><span class="secno">3.6 </span><span class="content">Natural Language Processing</span></a><ol class="toc">
+                        <li><a href="#natural-language-processing-data"><span class="secno">3.6.1 </span><span class="content">Input Data</span></a></li>
+                        <li><a href="#natural-language-processing-solution-1"><span class="secno">3.6.2 </span><span class="content">Convert Part of Speech Data to XML</span></a></li>
+                        <li><a href="#arrays-to-maps"><span class="secno">3.6.3 </span><span class="content">Converting arrays to maps</span></a></li>
+                        <li><a href="#group-by-part-of-speech"><span class="secno">3.6.4 </span><span class="content">Group by Part of Speech</span></a></li>
+                        <li><a href="#trigrams"><span class="secno">3.6.5 </span><span class="content">Trigrams</span></a></li>
+                        <li><a href="#partitioning-with-filters"><span class="secno">3.6.6 </span><span class="content">Partitioning using filters</span></a></li>
+                     </ol>
+                  </li>
+                  <li><a href="#ocr"><span class="secno">3.7 </span><span class="content">Comparing Sequences in Optical Character Recognition</span></a></li>
+                  <li><a href="#graphics-transforms"><span class="secno">3.8 </span><span class="content">Transforms for Graphics</span></a></li>
+                  <li><a href="#json-use-cases"><span class="secno">3.9 </span><span class="content">JSON</span></a><ol class="toc">
+                        <li><a href="#json-query1"><span class="secno">3.9.1 </span><span class="content">Information Retrieval</span></a><a href="#json-query1-data"><span class="secno">3.9.1.1 </span><span class="content">Input Data</span></a>
+                           <a href="#json-query1-solution-31"><span class="secno">3.9.1.2 </span><span class="content">Solution in XQuery 3.1</span></a>
+                           <a href="#json-query1-result"><span class="secno">3.9.1.3 </span><span class="content">Result</span></a>
+                           
+                        </li>
+                        <li><a href="#json-query2"><span class="secno">3.9.2 </span><span class="content">Converting JSON to XML</span></a><a href="#json-query2-data"><span class="secno">3.9.2.1 </span><span class="content">Input Data</span></a>
+                           <a href="#json-query2-result"><span class="secno">3.9.2.2 </span><span class="content">Result</span></a>
+                           <a href="#json-query2-solution-31"><span class="secno">3.9.2.3 </span><span class="content">Solution in XQuery 3.1</span></a>
+                           
+                        </li>
+                        <li><a href="#json-query3"><span class="secno">3.9.3 </span><span class="content">Update by Copying</span></a><a href="#json-query3-data"><span class="secno">3.9.3.1 </span><span class="content">Input Data</span></a>
+                           <a href="#json-query3-solution-31"><span class="secno">3.9.3.2 </span><span class="content">Solution in XQuery 3.1</span></a>
+                           
+                        </li>
+                        <li><a href="#json.joins"><span class="secno">3.9.4 </span><span class="content">Joins</span></a><a href="#json.joins.data"><span class="secno">3.9.4.1 </span><span class="content">Input Data</span></a>
+                           <a href="#json.joins.solution31"><span class="secno">3.9.4.2 </span><span class="content">Solution in XQuery 3.1</span></a>
+                           
+                        </li>
+                        <li><a href="#jsongrouping"><span class="secno">3.9.5 </span><span class="content">Grouping Queries for JSON</span></a><a href="#jsongrouping.data"><span class="secno">3.9.5.1 </span><span class="content">Input Data</span></a>
+                           <a href="#jsongrouping.result"><span class="secno">3.9.5.2 </span><span class="content">Result</span></a>
+                           <a href="#jsongrouping.query31"><span class="secno">3.9.5.3 </span><span class="content">Solution in XQuery 3.1</span></a>
+                           
+                        </li>
+                        <li><a href="#jsongrouping2"><span class="secno">3.9.6 </span><span class="content">More Complex Grouping Queries for JSON</span></a><a href="#jsongrouping2.data"><span class="secno">3.9.6.1 </span><span class="content">Input Data</span></a>
+                           <a href="#jsongrouping2.result"><span class="secno">3.9.6.2 </span><span class="content">Result</span></a>
+                           <a href="#jsongrouping2.solution.31"><span class="secno">3.9.6.3 </span><span class="content">Solution in XQuery 3.1</span></a>
+                           
+                        </li>
+                        <li><a href="#json2json"><span class="secno">3.9.7 </span><span class="content">JSON to JSON Transformations</span></a><a href="#json2json.data"><span class="secno">3.9.7.1 </span><span class="content">Input Data</span></a>
+                           <a href="#json2json.result"><span class="secno">3.9.7.2 </span><span class="content">Result</span></a>
+                           <a href="#json2json.query.31"><span class="secno">3.9.7.3 </span><span class="content">Solution in XQuery 3.1</span></a>
+                           
+                        </li>
+                        <li><a href="#wikipedia.example"><span class="secno">3.9.8 </span><span class="content">Converting XML to JSON</span></a><a href="#wikipedia.data"><span class="secno">3.9.8.1 </span><span class="content">Input Data</span></a>
+                           <a href="#wikipedia.result"><span class="secno">3.9.8.2 </span><span class="content">Result</span></a>
+                           <a href="#wikipedia.query.31"><span class="secno">3.9.8.3 </span><span class="content">Solution in XQuery 3.1</span></a>
+                           
+                        </li>
+                        <li><a href="#svg.example"><span class="secno">3.9.9 </span><span class="content">Transforming JSON to SVG</span></a><a href="#svg.data"><span class="secno">3.9.9.1 </span><span class="content">Input Data</span></a>
+                           <a href="#svg.solution.31"><span class="secno">3.9.9.2 </span><span class="content">Solution in XQuery 3.1</span></a>
+                           
+                        </li>
+                        <li><a href="#html.example"><span class="secno">3.9.10 </span><span class="content">Transforming Arrays to HTML Tables</span></a><a href="#html.data"><span class="secno">3.9.10.1 </span><span class="content">Input Data</span></a>
+                           <a href="#html.query.31"><span class="secno">3.9.10.2 </span><span class="content">Solution in XQuery 3.1</span></a>
+                           
+                        </li>
+                        <li><a href="#windowing.example"><span class="secno">3.9.11 </span><span class="content">Windowing Queries</span></a><a href="#windowing.data"><span class="secno">3.9.11.1 </span><span class="content">Input Data</span></a>
+                           <a href="#windowing.result"><span class="secno">3.9.11.2 </span><span class="content">Result</span></a>
+                           <a href="#windowing.solution"><span class="secno">3.9.11.3 </span><span class="content">Solution in XQuery 3.1</span></a>
+                           
+                        </li>
+                        <li><a href="#rdb.example"><span class="secno">3.9.12 </span><span class="content">JSON views in middleware</span></a><a href="#rdb.data"><span class="secno">3.9.12.1 </span><span class="content">Input Data</span></a>
+                           <a href="#rdb.solution"><span class="secno">3.9.12.2 </span><span class="content">Solution in XQuery 3.1</span></a>
+                           
+                        </li>
+                        <li><a href="#update.example"><span class="secno">3.9.13 </span><span class="content">In-Place Updates</span></a><a href="#update.data"><span class="secno">3.9.13.1 </span><span class="content">Input Data</span></a>
+                           <a href="#update.solution"><span class="secno">3.9.13.2 </span><span class="content">Solution in XQuery 3.1 with Updates</span></a>
+                           
+                        </li>
+                        <li><a href="#data.transformation"><span class="secno">3.9.14 </span><span class="content">Data Transformations</span></a><a href="#data.transformation.data"><span class="secno">3.9.14.1 </span><span class="content">Input Data</span></a>
+                           <a href="#data.transformation.query"><span class="secno">3.9.14.2 </span><span class="content">Solution in XQuery 3.1</span></a>
+                           
+                        </li>
+                     </ol>
+                  </li>
+               </ol>
+            </li>
+            <li><a href="#references"><span class="secno">A </span><span class="content">References</span></a>
+               
+               <ol class="toc"></ol>
+            </li>
+         </ol>
+         <p class="toc"><a href="#endnotes">End Notes</a></p>
+      </nav>
+      <hr>
+      <div class="body">
+         <div class="div1">
+            
+            <h2><a id="goals"></a>1 Goals
+            </h2>
+            <p>The primary goal of XML Query 3.1 is to
+               			extend XML Query 3.0 with support for JSON
+               			maps and arrays, and to leverage these
+               			structures to make XQuery more useful. These
+               			data structures are also part of XPath 3.1,
+               			and are used in XSLT as well as XQuery.
+            </p>
+            <p>Other features that improve usability or
+               			compatibility will be considered as time
+               			permits.
+            </p>
+            <p>Satisfying these goals may require changes to the set of seven documents that have
+               progressed to Recommendation together (Data Model 3.1, Functions and Operators 3.1,
+               Serialization 3.1, XPath 3.1, XQuery 3.1, XQueryX 3.1, and XSLT 3.0).
+            </p>
+         </div>
+         <div class="div1">
+            
+            <h2><a id="Requirements"></a>2 Requirements
+            </h2>
+            <div class="div2">
+               
+               <h3><a id="terminology"></a>2.1 Terminology
+               </h3>
+               <p>The following keywords are used
+                  				throughout the document to specify the
+                  				extent to which an item is a
+                  				requirement for the work of the XML
+                  				Query Working Group:
+               </p>
+               <dl>
+                  <dt class="label"><a id="terminology-must"></a>MUST
+                  </dt>
+                  <dd>
+                     <p>The item is an absolute requirement.</p>
+                  </dd>
+                  <dt class="label"><a id="terminology-must-not"></a>MUST NOT
+                  </dt>
+                  <dd>
+                     <p>The item is an absolute prohibition.</p>
+                  </dd>
+                  <dt class="label"><a id="terminology-should"></a>SHOULD
+                  </dt>
+                  <dd>
+                     <p>There may exist valid reasons not to treat this item as a requirement,
+                        but the full implications should be understood and the case carefully weighed before
+                        discarding this item.
+                     </p>
+                  </dd>
+                  <dt class="label"><a id="terminology-should-not"></a>SHOULD NOT
+                  </dt>
+                  <dd>
+                     <p>There may exist valid reasons when the
+                        particular behavior is acceptable or even useful, but the full
+                        implications should be understood and the case carefully weighed
+                        before implementing any behavior described with this label.
+                     </p>
+                  </dd>
+                  <dt class="label"><a id="terminology-may"></a>MAY
+                  </dt>
+                  <dd>
+                     <p>An item deserves attention, but further study is needed to determine whether the item
+                        should be treated as a requirement.
+                     </p>
+                  </dd>
+               </dl>
+               <p>When the words  <a href="#terminology-must">MUST</a>, <a href="#terminology-should">SHOULD</a>, or <a href="#terminology-may">MAY</a>
+                  are used in this technical sense [<a href="http://www.ietf.org/rfc/rfc2119.txt">IETF RFC 2119</a>], they occur as a hyperlink to these definitions. 
+                  These words will also be used with their conventional English meaning, in which case
+                  there is no hyperlink. 
+                  For instance, the phrase "the full implications should be understood" uses the word
+                  "should" in its conventional English sense,
+                  and therefore occurs without the hyperlink.
+               </p>
+               <p id="req-status">Each requirement also includes a status section,
+                  				indicating its current situation in the XQuery/XPath/XSLT family of specifications.
+                  				Three status levels are used:
+               </p>
+               <dl>
+                  <dt class="label">"Green" status</dt>
+                  <dd>
+                     <p>
+                        					<img src="https://www.w3.org/Icons/green-ball.gif" alt="green                   status"> This indicates that the requirement, according to its
+                        					original formulation, has been completely met. Optional clarifying text
+                        				  may follow.
+                     </p>
+                  </dd>
+                  <dt class="label">"Yellow" status</dt>
+                  <dd>
+                     <p>
+                        					<img src="https://www.w3.org/Icons/yellow-ball.gif" alt="yellow                    status"> This indicates that the requirement has been partially met
+                        					according to its original formulation. When this happens, explanatory text is
+                        					provided to better clarify the current scope of the
+                        				  requirement.
+                     </p>
+                  </dd>
+                  <dt class="label">"Red" status</dt>
+                  <dd>
+                     <p>
+                        					<img src="https://www.w3.org/Icons/red-ball.gif" alt="red                 status"> This indicates that the requirement, according to its
+                        					original formulation, has not been met. If this is the case, explanatory text
+                        				is provided.
+                     </p>
+                  </dd>
+               </dl>
+            </div>
+            <div class="div2">
+               
+               <h3><a id="general-requirements"></a>2.2 General Requirements
+               </h3>
+               <div class="div3">
+                  
+                  <h4><a id="backward-compatibility"></a>2.2.1 Backward compatibility
+                  </h4>
+                  <dl>
+                     <dt class="label"></dt>
+                     <dd>
+                        <p>XQuery 3.1 <a href="#terminology-must">MUST</a> be backward compatible with <a href="#xquery-30">[XQuery 3.0]</a>. 
+                        </p>
+                        <p>Every valid XQuery 3.0 expression <a href="#terminology-must">MUST</a> be valid in XQuery 3.1 and
+                           it <a href="#terminology-must">MUST</a> evaluate to the same result.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                                                  status">  
+                           <em>Status:</em> this requirement has been met.
+                        </p>
+                     </dd>
+                  </dl>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="extension-compatibility"></a>2.2.2 Extension compatibility
+                  </h4>
+                  <dl>
+                     <dt class="label"></dt>
+                     <dd>
+                        <p>XQuery 3.1 <a href="#terminology-must">MUST</a> be compatible with XQuery 3.0 extensions developed by the
+                           <a href="https://www.w3.org/XML/Query/">XML Query Working Group</a>, including <a href="#xquery-update-30">[XQuery Update Facility 3.0]</a>
+                           and <a href="#xpath-full-text-30">[XQuery and XPath Full Text 3.0]</a>.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                                            status">  
+                           <em>Status:</em> this requirement has been met.
+                        </p>
+                     </dd>
+                  </dl>
+               </div>
+            </div>
+            <div class="div2">
+               
+               <h3><a id="json"></a>2.3 Maps, Arrays, Nulls, and JSON
+               </h3>
+               <div class="div3">
+                  
+                  <h4><a id="json.maps"></a>2.3.1 Maps
+                  </h4>
+                  <dl>
+                     <dt class="label"></dt>
+                     <dd>
+                        <p>XQuery 3.1 <a href="#terminology-must">MUST</a> support collections of name / value pairs, which we call maps. 
+                           In JSON, they are called objects, in other languages they are sometimes called records,
+                           structs, dictionaries,
+                           hash tables, keyed lists, or associative arrays).
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                    status">  
+                           <em>Status:</em> this requirement has been met.
+                        </p>
+                        <p>The map feature  <a href="#terminology-must">MUST</a> provide a convenient syntax for creating maps.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                    status">  
+                           <em>Status:</em> this requirement has been met.
+                        </p>
+                        <p>The map feature  <a href="#terminology-must">MUST</a> provide a convenient syntax for returning the value associated with a key.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                    status">  
+                           <em>Status:</em> this requirement has been met.
+                        </p>
+                        <p>The map feature  <a href="#terminology-must">MUST</a> provide a convenient way to enumerate the keys in a map.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                    status">  
+                           <em>Status:</em> this requirement has been met (using functions).
+                        </p>
+                        <p>The map feature  <a href="#terminology-must">MUST</a> provide a convenient way to create modified copies of maps, e.g. by adding or deleting
+                           entries.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                    status">  
+                           <em>Status:</em> this requirement has been met (using functions).
+                        </p>
+                        <p>The map feature  <a href="#terminology-must-not">MUST NOT</a> preclude in-situ updates analogous to updates in the XQuery Update Facility.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                     status">  
+                           <em>Status:</em> this requirement has been met.
+                        </p>
+                        <p>A map <a href="#terminology-should">SHOULD</a> allow any atomic value as a key. 
+                           The map feature <a href="#terminology-should">SHOULD</a> allow keys of various types to be used as keys in the same map.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                    status">  
+                           <em>Status:</em> this requirement has been met.
+                        </p>
+                        <p>A map <a href="#terminology-should">SHOULD</a> allow any XDM sequence as a value. 
+                           A map <a href="#terminology-must">MUST</a> allow any XDM item, map, or array as a value.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                    status">  
+                           <em>Status:</em> this requirement has been met.
+                        </p>
+                        <p>A map <a href="#terminology-must">MUST</a> be allowed as a member of an XDM sequence.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                    status">  
+                           <em>Status:</em> this requirement has been met.
+                        </p>
+                        <p>It <a href="#terminology-may">MAY</a> be possible to use a map as a function.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                    status">  
+                           <em>Status:</em> this requirement has been met.
+                        </p>
+                        <p>For the sake of optimizability, a map  <a href="#terminology-should-not">SHOULD NOT</a> expose identity via the
+                           <code>is</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code>, <code>union</code>, <code>intersect</code>,
+                           or <code>except</code> operators, or any operation that exposes document order.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                    status">  
+                           <em>Status:</em> this requirement has been met.
+                        </p>
+                     </dd>
+                  </dl>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="arrays"></a>2.3.2 Arrays
+                  </h4>
+                  <dl>
+                     <dt class="label"></dt>
+                     <dd>
+                        <p>XQuery 3.1 <a href="#terminology-must">MUST</a> support arrays, which can nest.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                    status">  
+                           <em>Status:</em> this requirement has been met.
+                        </p>
+                        <p>XQuery 3.1  <a href="#terminology-must">MUST</a> provide a convenient syntax for creating arrays.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                    status">  
+                           <em>Status:</em> this requirement has been met.
+                        </p>
+                        <p>Arrays  <a href="#terminology-must">MUST</a> provide a convenient syntax for returning the value found in a given position.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                    status">  
+                           <em>Status:</em> this requirement has been met (using function call syntax).
+                        </p>
+                        <p>Arrays <a href="#terminology-should">SHOULD</a> provide a convenient way to create modified copies of an array, e.g. by adding or
+                           deleting entries.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                    status">  
+                           <em>Status:</em> this requirement has been met (using functions).
+                        </p>
+                        <p>Arrays  <a href="#terminology-must-not">MUST NOT</a> preclude in-situ updates analogous to updates in the XQuery Update Facility.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                     status">  
+                           <em>Status:</em> this requirement has been met.
+                        </p>
+                        <p>An array <a href="#terminology-must">MUST</a> allow any XDM item, array, or map as a member of an array.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                    status">  
+                           <em>Status:</em> this requirement has been met.
+                        </p>
+                        <p>An array <a href="#terminology-must">MUST</a> be allowed as a member of an XDM sequence.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                    status">  
+                           <em>Status:</em> this requirement has been met.
+                        </p>
+                        <p>It <a href="#terminology-may">MAY</a> be possible to use an array as a function.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                    status">  
+                           <em>Status:</em> this requirement has been met.
+                        </p>
+                        <p>For the sake of optimizability, an array  <a href="#terminology-should-not">SHOULD NOT</a> expose identity via the
+                           <code>is</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code>, <code>union</code>, <code>intersect</code>,
+                           or <code>except</code> operators, or any operation that exposes document order.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                    status">  
+                           <em>Status:</em> this requirement has been met.
+                        </p>
+                     </dd>
+                  </dl>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="nulls"></a>2.3.3 Nulls
+                  </h4>
+                  <dl>
+                     <dt class="label"></dt>
+                     <dd>
+                        <p>XQuery 3.1 <a href="#terminology-must">MUST</a> support nulls. It  <a href="#terminology-may">MAY</a> represent nulls using the empty sequence, or it  <a href="#terminology-may">MAY</a> represent nulls with a new item.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                                           status">  
+                           <em>Status:</em> this requirement has been met.  
+                           
+                           <span>Nulls are represented by empty sequences.</span></p>
+                     </dd>
+                  </dl>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="serialization"></a>2.3.4 Serialization
+                  </h4>
+                  <dl>
+                     <dt class="label"></dt>
+                     <dd>
+                        <p>XQuery 3.1 <a href="#terminology-must">MUST</a> support JSON serialization.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                                                  status">  
+                           <em>Status:</em> this requirement has been met.
+                        </p>
+                        <p>XQuery 3.1 <a href="#terminology-may">MAY</a> support serialization to multiple resources from a single query.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/red-ball.gif" alt="red                                                                                                                                  status">  
+                           <em>Status:</em> this requirement has not been met.
+                           	<span>However, the <a href="http://expath.org/spec/file">EXPath File Module</a> provides this functionality for implementations that support it.</span></p>
+                     </dd>
+                  </dl>
+               </div>
+            </div>
+            <div class="div2">
+               
+               <h3><a id="usability"></a>2.4 Usability Features
+               </h3>
+               <div class="div3">
+                  
+                  <h4><a id="scientific-notation"></a>2.4.1 Scientific Notation
+                  </h4>
+                  <dl>
+                     <dt class="label"></dt>
+                     <dd>
+                        <p>XQuery 3.1 <a href="#terminology-must">MUST</a> provide support for numbers in scientific notation.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                                                  status">  
+                           <em>Status:</em> this requirement has been met.
+                        </p>
+                     </dd>
+                  </dl>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="type-aliases"></a>2.4.2 Type Aliases
+                  </h4>
+                  <dl>
+                     <dt class="label"></dt>
+                     <dd>
+                        <p>XQuery 3.1 <a href="#terminology-may">MAY</a> support aliases for types.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/red-ball.gif" alt="red                                                                                                                          status">  
+                           <em>Status:</em> this requirement has not been met.
+                        </p>
+                     </dd>
+                  </dl>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="xslt-function-libraries"></a>2.4.3 Invoking XSLT Transformations
+                  </h4>
+                  <dl>
+                     <dt class="label"></dt>
+                     <dd>
+                        <p>XQuery 3.1 <a href="#terminology-must">MUST</a> provide a means to invoke XSLT transformations.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green                                                                                                                           status">  
+                           <em>Status:</em> this requirement has  been met. <span><code>fn:transform()</code> invokes an XSLT transformation.</span></p>
+                     </dd>
+                  </dl>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="collations"></a>2.4.4 Collations
+                  </h4>
+                  <dl>
+                     <dt class="label"></dt>
+                     <dd>
+                        <p>XQuery 3.1 <a href="#terminology-may">MAY</a> provide a standard mechanism for referring to collations.
+                        </p>
+                        <p><img src="https://www.w3.org/Icons/green-ball.gif" alt="green status">  
+                           <em>Status:</em> this requirement has been met.
+                        </p>
+                     </dd>
+                  </dl>
+               </div>
+            </div>
+         </div>
+         <div class="div1">
+            
+            <h2><a id="use-cases"></a>3 Use Cases
+            </h2>
+            <p>The solutions provided for the following Use Cases use the XQuery
+               3.1 query language, and frequently create maps rather than XML. In
+               some cases, XQuery 3.0 solutions that create XML are also provided
+               for comparison.  Every XQuery 3.0 solution provided is also a valid
+               XQuery 3.1 solution.
+            </p>
+            <div class="div2">
+               
+               <h3><a id="grouping"></a>3.1 XSLT 3.0 Streaming Use Cases
+               </h3>
+               <p>These use cases were originally proposed for XSLT 3.0
+                  streaming.  In XQuery, they are done using grouping.  In these use
+                  cases, we assume that the user is using maps as a lightweight
+                  structure to represent the results of grouping.
+               </p>
+               <div class="div3">
+                  
+                  <h4><a id="streaming-query1"></a>3.1.1 Simple Grouping
+                  </h4>
+                  <p>Find the highest earning employee in each department.</p>
+                  <div class="div4">
+                     
+                     <h5><a id="streaming-query1-solution-30"></a>3.1.1.1 Solution in XQuery 3.0
+                     </h5>
+                     <div class="exampleInner"><pre>for $e in doc("employees.xml")/employees/employee,
+    $d in $e/department
+group by $d
+return
+   &lt;department name="{$d}"&gt;
+     {
+       let $max := max($e/salary)
+       return $e[salary=$max]
+     }
+   &lt;/department&gt;</pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="streaming-query1-solution-31"></a>3.1.1.2 Solution in XQuery 3.1
+                     </h5>
+                     <div class="exampleInner"><pre>for $e in doc("employees.xml")/employees/employee,
+    $d in $e/department
+group by $d
+return
+   map {
+     "department" : $d,
+     "highest paid employee" :
+       let $max := max($e/salary)
+       return $e[salary=$max]
+   } 
+</pre></div>
+                  </div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="streaming-query2"></a>3.1.2 Simultaneous Grouping
+                  </h4>
+                  <p>Find both the highest earning employee in each department, and the total number of
+                     employees to job-type across all departments.
+                  </p>
+                  <div class="div4">
+                     
+                     <h5><a id="streaming-query2-solution-30"></a>3.1.2.1 Solution in XQuery 3.0
+                     </h5>
+                     <div class="exampleInner"><pre>
+for $employee in doc("employees.xml")/*/employee
+let $salary := $employee/salary
+group by $department := $employee/department
+let $max-salary := max($salary)
+let $highest-earners := $employee[salary = $max-salary]
+return
+   &lt;department name="{$department}"&gt;{ $highest-earners }&lt;/department&gt;,
+
+for $employee in doc("employees.xml")/*/employee
+let $salary := $employee/salary
+group by $job-type := $employee/job-type
+let $totals := count($employee)
+return
+   &lt;total-by-job-type type="{$job-type}"&gt;{ $totals }&lt;/total-by-job-type&gt;
+
+	  </pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="streaming-query2-solution-31"></a>3.1.2.2 Solution in XQuery 3.1
+                     </h5>
+                     <div class="exampleInner"><pre>
+for $employee in doc("employees.xml")/*/employee
+let $salary := $employee/salary
+group by $department := $employee/department
+let $max-salary := max($salary)
+let $highest-earners := $employee[salary = $max-salary]
+return
+   map { 
+     "department" : $department,
+     "highest earners" : $highest-earners 
+   }
+,
+for $employee in doc("employees.xml")/*/employee
+let $salary := $employee/salary
+group by $job-type := $employee/job-type
+let $totals := count($employee)
+return
+   map {
+      "job type" : $job-type,
+      "count(employee)" : $totals
+   }
+</pre></div>
+                  </div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="streaming-query3"></a>3.1.3 Word Count by Lemma
+                  </h4>
+                  <p>Calculate the word count by lemma of the verbs in the following document.</p>
+                  <div class="div4">
+                     
+                     <h5><a id="streaming-query3-data"></a>3.1.3.1 Input Data
+                     </h5>
+                     <p>The XML document, gnt.xml.</p>
+                     <div class="exampleInner"><pre>
+&lt;gnt&gt;
+&lt;s&gt;
+ &lt;w pos="PP"&gt;I&lt;/w&gt;
+ &lt;w pos="V" lemma="go"&gt;go&lt;/w&gt;
+ &lt;pu&gt;.&lt;/pu&gt;
+&lt;/s&gt;
+&lt;s&gt;
+ &lt;w pos="PP"&gt;She&lt;/w&gt;
+ &lt;w pos="V" lemma="go"&gt;went&lt;/w&gt;
+ &lt;pu&gt;.&lt;/pu&gt;
+&lt;/s&gt;
+&lt;s&gt;
+ &lt;w pos="PP"&gt;He&lt;/w&gt;
+ &lt;w pos="V" lemma="go"&gt;goes&lt;/w&gt;
+ &lt;pu&gt;.&lt;/pu&gt;
+&lt;/s&gt;
+&lt;s&gt;
+ &lt;w pos="PP"&gt;I&lt;/w&gt;
+ &lt;w pos="V" lemma="see"&gt;see&lt;/w&gt;
+ &lt;pu&gt;.&lt;/pu&gt;
+&lt;/s&gt;
+&lt;s&gt;
+ &lt;w pos="PP"&gt;She&lt;/w&gt;
+ &lt;w pos="V" lemma="see"&gt;sees&lt;/w&gt;
+ &lt;pu&gt;.&lt;/pu&gt;
+&lt;/s&gt;
+&lt;s&gt;
+ &lt;w pos="PP"&gt;I&lt;/w&gt;
+ &lt;w pos="V" lemma="have"&gt;have&lt;/w&gt;
+ &lt;pu&gt;.&lt;/pu&gt;
+&lt;/s&gt;
+&lt;s&gt;
+ &lt;w pos="PP"&gt;She&lt;/w&gt;
+ &lt;w pos="V" lemma="have"&gt;has&lt;/w&gt;
+ &lt;pu&gt;.&lt;/pu&gt;
+&lt;/s&gt;
+&lt;/gnt&gt;
+</pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="streaming-query3-result"></a>3.1.3.2 Result
+                     </h5>
+                     <div class="exampleInner"><pre>
+&lt;verb lemma="go" count="3"/&gt;
+&lt;verb lemma="see" count="2"/&gt;
+&lt;verb lemma="have" count="2"/&gt;
+</pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="streaming-query3-solution-30"></a>3.1.3.3 Solution in XQuery 3.0:
+                     </h5>
+                     <p>A solution just using grouping, without maps.</p>
+                     <div class="exampleInner"><pre>
+for $word in doc("gnt.xml")//w
+let $lemma := $word/@lemma
+where m:is-verb($word)
+group by $lemma
+order by count($word) descending
+return
+  &lt;verb lemma="{ $lemma }" count="{count($word)}" /&gt;
+</pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="streaming-query3-solution-31"></a>3.1.3.4 Solution in XQuery 3.1:
+                     </h5>
+                     <div class="exampleInner"><pre>
+for $word in doc("gnt.xml")//w
+let $lemma := $word/@lemma
+where m:is-verb($word)
+group by $lemma
+order by count($word) descending
+return
+  map { 
+   "lemma" :  $lemma,
+   "count" : count($word)
+  }
+</pre></div>
+                  </div>
+               </div>
+            </div>
+            <div class="div2">
+               
+               <h3><a id="complex"></a>3.2 Compound Values
+               </h3>
+               <div class="div3">
+                  
+                  <h4><a id="complex-query1"></a>3.2.1 Complex Number Library
+                  </h4>
+                  <p>
+                     Implement a complex number library for XQuery or XSLT 3.0. Complex numbers should
+                     be represented as a single item, so they
+                     can themselves be manipulated like regular numbers by returning sequences of them
+                     etc.
+                     
+                  </p>
+                  <p>In this library, the complex number <code>2 + 3i</code> is represented 
+                     as the map <code>{ "true" : 2, "false" : 3 }</code></p>
+                  <div class="div4">
+                     
+                     <h5><a id="complex-solution-31"></a>3.2.1.1 Solution in XQuery 3.1
+                     </h5>
+                     <div class="exampleInner"><pre>
+declare function i:complex(
+  $real as xs:double,
+  $imaginary as xs:double
+) as map(xs:boolean, xs:double)
+{
+  map { true() : $real, false() : $imaginary }
+};
+
+declare function i:real(
+  $complex as map(xs:boolean, xs:double)
+) as xs:double
+{
+  $complex(true())
+};
+
+declare function i:imaginary(
+  $complex as map(xs:boolean, xs:double)
+) as xs:double
+{
+  $complex(false())
+};
+
+declare function i:add(
+  $arg1 as map(xs:boolean, xs:double),
+  $arg2 as map(xs:boolean, xs:double)
+) as map(xs:boolean, xs:double)
+}
+  i:complex(i:real($arg1)+i:real($arg2),
+  i:imaginary($arg1)+i:imaginary($arg2))
+};
+
+declare function i:multiply(
+  $arg1 as map(xs:boolean, xs:double),
+  $arg2 as map(xs:boolean, xs:double)
+) as map(xs:boolean, xs:double)
+{
+  i:complex(
+    i:real($arg1)*i:real($arg2) - i:imaginary($arg1)*i:imaginary($arg2),
+    i:real($arg1)*i:imaginary($arg2) + i:imaginary($arg1)*i:real($arg2))
+};
+</pre></div>
+                     <p>Here is a query that uses this library:</p>
+                     <div class="exampleInner"><pre>i:add(i:complex(2, 3), i:complex(1, -6)),
+i:multiply(i:complex(2, -1), i:complex(3, 4))</pre></div>
+                     <p>Here is the result of the above query:</p>
+                     <div class="exampleInner"><pre>
+{ "true" : 3, "false" : -3 },
+{ "true" : 10, "false" : 5 }
+</pre></div>
+                  </div>
+               </div>
+            </div>
+            <div class="div2">
+               
+               <h3><a id="indexes"></a>3.3 Manual Indexing
+               </h3>
+               <p>Build an index to manually optimize retrieval of books in a catalog by their ISBN
+                  number.
+               </p>
+               <div class="div3">
+                  
+                  <h4><a id="indexes-query1"></a>3.3.1 Simple Manual Join
+                  </h4>
+                  <p>Construct a list of all authors, and the books they have written.</p>
+                  <div class="div4">
+                     
+                     <h5><a id="indexes-data"></a>3.3.1.1 Input Data
+                     </h5>
+                     <p>Book elements of the form:</p>
+                     <div class="exampleInner"><pre>
+&lt;book&gt;
+&lt;isbn&gt;0470192747&lt;/isbn&gt;
+&lt;publisher&gt;Wiley&lt;/publisher&gt;
+&lt;title&gt;XSLT 2.0 and XPath 2.0 Programmer's Reference&lt;/title&gt;
+&lt;/book&gt;
+</pre></div>
+                     <p>Author elements of the form:</p>
+                     <div class="exampleInner"><pre>
+&lt;author&gt;
+&lt;name&gt;Michael H. Kay&lt;/name&gt;
+&lt;isbn&gt;0470192747&lt;/isbn&gt;
+&lt;isbn&gt;...&lt;/isbn&gt;
+&lt;/author&gt;
+</pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="indexes-solution-31"></a>3.3.1.2 Solution in XQuery 3.1:
+                     </h5>
+                     <div class="exampleInner"><pre>
+declare variable $index := map:merge( //book ! map { isbn : . });
+
+&lt;table&gt;{
+  for $a in //author
+  return &lt;tr&gt;
+    &lt;td&gt;{ $a/name/string() }&lt;/td&gt;
+    &lt;td&gt;{ string-join($a/isbn ! $index(.)/title/string(), ", ") }&lt;/td&gt;
+  &lt;/tr&gt;
+}&lt;/table&gt;
+</pre></div>
+                  </div>
+               </div>
+            </div>
+            <div class="div2">
+               
+               <h3><a id="interface"></a>3.4 Interface / Implementation Pattern
+               </h3>
+               <p>As in Javascript, a map whose keys are strings and whose associated
+                  values are function items can be used in a similar way to a class in
+                  object-oriented programming languages.
+               </p>
+               <div class="div3">
+                  
+                  <h4><a id="interface-query1"></a>3.4.1 Data Variety
+                  </h4>
+                  <p>Suppose an application needs to handle customer order
+                     information that may arrive in three different formats, with
+                     different hierarchic arrangement.
+                  </p>
+                  <p>An application can isolate itself from these differences by defining a
+                     set of functions to navigate the relationships between customers,
+                     orders, and products: orders-for-customer, orders-for-product,
+                     customer-for-order, product-for-order. These functions can be
+                     implemented in different ways for the three different input formats.
+                  </p>
+                  <div class="div4">
+                     
+                     <h5><a id="interface-data1"></a>3.4.1.1 Input Data
+                     </h5>
+                     <p>Flat structure:</p>
+                     <div class="exampleInner"><pre>
+&lt;customer id="c123"&gt;...&lt;/customer&gt;
+&lt;product id="p789"&gt;...&lt;/product&gt;
+&lt;order customer="c123" product="p789"&gt;...&lt;/order&gt;
+</pre></div>
+                     <p>Orders within customer elements:</p>
+                     <div class="exampleInner"><pre>
+&lt;customer id="c123"&gt;
+&lt;order product="p789"&gt;...&lt;/order&gt;
+&lt;/customer&gt;
+&lt;product id="p789"&gt;...&lt;/product&gt;
+</pre></div>
+                     <p>Orders within product elements:</p>
+                     <div class="exampleInner"><pre>
+&lt;customer id="c123"&gt;...&lt;/customer&gt;
+&lt;product id="p789"&gt;
+&lt;order customer id="c123"&gt;...&lt;/order&gt;
+&lt;/product&gt;
+</pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="interface-query1-solution-31"></a>3.4.1.2 Solution in XQuery 3.1
+                     </h5>
+                     <p>For example, with the first format the implementation might be:</p>
+                     <div class="exampleInner"><pre>
+declare variable $flat-input-functions := 
+  map {
+    'orders-for-customer' : 
+       function($c as element(customer)) as element(order)* { $c/../order[@customer=$c/@id] },
+    'orders-for-product' : 
+       function($p as element(product)) as element(order)* { $p/../order[@product=$p/@id] },
+    'customer-for-order' : 
+       function($o as element(order)) as element(customer) { $o/../customer[@id=$o/@customer] },
+    'product-for-order' : 
+       function($o as element(order)) as element(product) { $o/../product[@id=$o/@product] }
+  };
+</pre></div>
+                  </div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="interface-query2"></a>3.4.2 Search and Snippeting
+                  </h4>
+                  <p>Create a general interface that takes as input some words, does a
+                     full-text search for them, and returns snippets of the top 10 results,  
+                     ordered
+                     by score, where the nodes to search, their structure, how to construct  
+                     snippets
+                     and how to score them differ for different data sets.
+                  </p>
+                  <div class="div4">
+                     
+                     <h5><a id="interface-query2-solution-31"></a>3.4.2.1 Solution in XQuery 3.1:
+                     </h5>
+                     <p>Create a template method and use a map of functions to define the
+                        implementation of the plug-in points.
+                     </p>
+                     <div class="exampleInner"><pre>
+(: General interface module :)
+
+module namespace this="http://example.com/search-interface/";
+
+declare function this:search(
+    $words as xs:string*, $collection as map(xs:string, function(*)))
+{
+  for $d in $collection('select')[. contains text {$words} any word]
+  order by $collection('score', $d, $words)
+  count $c
+  where $c &lt;= 10
+  return $collection('snippet', $d, $words)
+};
+
+(: Specific implementation example :)
+
+import module namespace s="http://example.com/search-interface/";
+
+declare variable $twitter as map(xs:string, function(*)) :=
+  map {
+    'select' : 
+       function() as node()* { collection("twitter") },
+    'score' : 
+       function($n as node(), $words as xs:string*) as xs:double
+        { 
+          let score $s1 := $n contains text {$words} any word
+          let score $s2 := $n contains text {$words} all words
+          return $s1 + $s2
+        },
+    'snippet' : 
+       function($node as node(), $words as xs:string*) as node() { $node }
+  };
+
+declare variable $blog as map(xs:string, function(*)) :=
+  map {
+    'select' : 
+       function() as node()* { collection("blogs")/body },
+    'score' : 
+       function($n as node(), $words as xs:string*) as xs:double
+        {
+          let $s1 := avg(
+            for $p score $s in $n/para[. contains text {$words} any word]
+            return $s
+          )
+          let $s2 := avg(
+            for $p score $s in $n/comment[. contains text {$words} weight 0.5 any word]
+            return $s
+          )
+          let score $s3 := $n/title contains text {$words} weight 5.0 any word
+          return $s1 + $s2 + $s3
+        },
+    'snippet' : 
+       function($node as node(), $words as xs:string*) as node()
+        { 
+          &lt;result&gt;
+           {
+             $node/title, $node/para[1], $node/comment[1]
+           }
+          &lt;/result&gt;  
+        }
+  };
+
+declare variable $books as map(xs:string, function(*)) :=
+  map {
+   'select' : 
+      function() as node()* { collection()//chapter },
+   'score' : 
+      function($n as node(), $words as xs:string*) as xs:double
+        { 
+          let score $s1 := $n contains text {$words} any word
+          let score $s2 := $n/title contains text {$words} weight 5.0 any word
+          return $s1 + $s2
+          },
+   'snippet' : 
+      function($node as node(), $words as xs:string*) as node()
+       { 
+         &lt;result&gt;
+          {
+            $node/title,
+            ((for $p score $s in $node/p[. contains text {$words} all words]
+              order by $s
+              return $p),
+             (for $p score $s in $node/p[. contains text {$words} any word]
+              order by $s
+              return $p))[1]
+          }
+         &lt;/result&gt; 
+       }
+  };
+
+(: Get top 10 from various sources :)
+s:search(("fire","earthquake"),$books),
+s:search(("fire","earthquake"),$twitter),
+s:search(("fire","earthquake"),$blog)
+</pre></div>
+                  </div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="interface-query3"></a>3.4.3 Abstracting Document Structure
+                  </h4>
+                  <p>Provide access to various pieces of metadata to application,  
+                     insulating that application code from variations in document structure.
+                  </p>
+                  <div class="div4">
+                     
+                     <h5><a id="interface-query3-id-31"></a>3.4.3.1 Solution in XQuery 3.1:
+                     </h5>
+                     <p>Define the metadata interface through a map of functions.</p>
+                     <div class="exampleInner"><pre>
+(: Specific implementations :)
+declare namespace xh="http://www.w3.org/1999/xhtml";
+declare variable $xhtml as map(xs:string, function(*)) :=
+  map {
+    'title' : 
+       function($n as document-node()) as xs:string? { $n/xh:head/xh:title },
+    'author' : 
+       function($n as document-node()) as xs:string? { $n/xh:head/xh:meta[@name='author']/@content },
+    'pubdate' : 
+       function($n as document-node()) as xs:string? { $n/xh:head/xh:meta[@name='created']/@content },
+    'publisher' : 
+       function($n as document-node()) as xs:string? { () }
+    };
+
+declare variable $medline-citation as map(xs:string, function(*)) :=
+  map {
+    'title' : 
+       function($n as document-node()) as xs:string? 
+        { 
+          $n/MedlineCitation/Article/ArticleTitle 
+        },
+    'author': 
+       function($n as document-node()) as xs:string?
+        {
+          string-join(
+            for $a in $n/MedlineCitation//Author 
+            return concat($a/LastName, ", ", $a/ForeName) 
+            , 
+            "; "
+          )
+        },
+    'pubdate' : 
+       function($n as document-node()) as xs:string?
+        {
+          let $d := $n/MedlineCitation/Article/PubDate
+          return string-join(($d/Day,$d/Month,$d/Year), " ")
+        },
+    'publisher' : 
+       function($n as document-node()) as xs:string?
+        {  
+          $n/MedlineCitation/MedlineJournalIngo/MedlineTA 
+        }
+  };
+</pre></div>
+                  </div>
+               </div>
+            </div>
+            <div class="div2">
+               
+               <h3><a id="parameter"></a>3.5 Parameter Passing
+               </h3>
+               <p>Often library functions may have a large number of optional arguments, which are awkward
+                  or impossible to
+                  provide using the existing mechanism of variable arity functions.
+               </p>
+               <div class="div3">
+                  
+                  <h4><a id="parameter-query1"></a>3.5.1 XSLT Stylesheet Parameters
+                  </h4>
+                  <p>Pass the list of parameter names and values to the xdmp:xslt-invoke() function, which
+                     invokes
+                     an XSLT stylesheet.
+                  </p>
+                  <div class="div4">
+                     
+                     <h5><a id="parameter-query1-solution-31"></a>3.5.1.1 Solution in XQuery 3.1:
+                     </h5>
+                     <div class="exampleInner"><pre>
+declare function xdmp:xslt-invoke($path as xs:string, $input as node(),
+  $params as map(xs:QName, item()*)) as document-node()* external;
+
+let $params := map {
+  xs:QName("toc") := true(),
+  xs:QName("index") := doc("index_terms.xml")
+}
+return xdmp:xslt-invoke("my-stylesheet.xsl", doc("my-doc.xml"), $params)
+</pre></div>
+                  </div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="parameter-query2"></a>3.5.2 Function Options
+                  </h4>
+                  <p>Provide a mechanism to supply (otherwise defaulted) option values to the my:doc()
+                     function, which control aspects of it's behaviour, including:
+                     
+                  </p>
+                  <ul>
+                     <li>
+                        <p>Parsing of external entities</p>
+                     </li>
+                     <li>
+                        <p>DTD validation</p>
+                     </li>
+                     <li>
+                        <p>XML Schema validation</p>
+                     </li>
+                     <li>
+                        <p>Lax (XML Schema) validation</p>
+                     </li>
+                     <li>
+                        <p>Whitespace stripping</p>
+                     </li>
+                     <li>
+                        <p>URI resolution</p>
+                     </li>
+                  </ul>
+                  <p>Using maps in this scenario brings benefits over using XML structure, including:</p>
+                  <ul>
+                     <li>
+                        <p>Nodes are not copied; <span>their</span> identity is retained
+                        </p>
+                     </li>
+                     <li>
+                        <p>Atomic items are not serialized, and retain their specific type</p>
+                     </li>
+                     <li>
+                        <p>Functions can be passed in as options - the relevant example in this case being the
+                           URI resolver.
+                        </p>
+                     </li>
+                  </ul>
+                  <div class="div4">
+                     
+                     <h5><a id="parameter-query2-solution-31"></a>3.5.2.1 Solution in XQuery 3.1
+                     </h5>
+                     <div class="exampleInner"><pre>
+declare function my:doc($uri as xs:string, $options as map(xs:string, item()*)) as document-node()? external;
+
+(: Enable lax XML Schema validation :)
+my:doc("validate-me.xml", map {
+  "schema-validation" : true(),
+  "lax-validation" : true()
+}),
+
+(: Enable whitespace stripping, and a custom URI resolution :)
+my:doc("../relative-uri.xml", map {
+  "strip-whitespace" : true(),
+  "uri-resolver" : resolve-uri(?, base-uri())
+})
+</pre></div>
+                  </div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="parameter-query3"></a>3.5.3 Translation
+                  </h4>
+                  <p>Design a language-agnostic game (here just the core), which allows a translation function
+                     or map as a parameter.
+                  </p>
+                  <div class="div4">
+                     
+                     <h5><a id="parameter-query3-solution-31"></a>3.5.3.1 Solution in XQuery 3.1:
+                     </h5>
+                     <div class="exampleInner"><pre>
+declare function local:play(
+  $secret-number as xs:integer,
+  $guessed-number as xs:integer,
+  $translator as function(xs:string) as xs:string)
+{
+  switch (true())
+  case $guessed-number eq $secret-number
+    return $translator("You won!")
+  case $guessed-number lt $secret-number
+    return $translator("The secret number is greater.")
+  default (: $guessed-number gt $secret-number :)
+    return $translator("The secret number is lower.")
+};
+
+local:play(76, 86, function($x) { $x }), (: Keep English :)
+
+local:play(76, 86, map {
+  "You won!" : "Du hast gewonnen!",
+  "The secret number is greater." : "Die geheime Zahl ist groesser.",
+  "The secret number is lower." :  Die geheime Zahl ist kleiner." }
+),
+
+local:play(76, 86, $automated-translator-based-on-natural-language-processing)
+</pre></div>
+                  </div>
+               </div>
+            </div>
+            <div class="div2">
+               
+               <h3><a id="natural-language-processing"></a>3.6 Natural Language Processing
+               </h3>
+               <p>Software used for natural language processing and text
+                  analytics frequently uses data structures like maps and
+                  arrays. For instance, the Python Natural Language Toolkit (NLTK)
+                  uses lists and tuples extensively. In this use case, we use a
+                  library that invokes NLTK to perform simple natural language
+                  processing, returning results in a format very similar to that used by NLTK,
+                  and perform a variety of simple tasks.
+               </p>
+               <div class="div3">
+                  
+                  <h4><a id="natural-language-processing-data"></a>3.6.1 Input Data
+                  </h4>
+                  <p>In this use case, we are using the Gutenberg edition of
+                     	Jane Austin's "Emma", as packaged in NLTK. To return the
+                     	sentences of a text, we use the <code>nltk:sentences()</code>
+                     	function, which returns sentences using the same data
+                     	structures as NLTK.
+                  </p>
+                  <p>Here are a few sentences resulting from the function call
+                     	<code>nltk:sentences('austin-emma.txt')</code>, using arrays to
+                     	represent Python's list structures:
+                  </p>
+                  <p><em>Sentence Representation</em>:
+                  </p>
+                  <div class="exampleInner"><pre>
+[
+  ['I', 'must', 'put', 'on', 'a', 'few', 'ornaments', 'now', ',', 'because', 'it', 'is', 'expected', 'of', 'me', '.'],
+  ['A', 'bride', ',', 'you', 'know', ',', 'must', 'appear', 'like', 'a', 'bride', ',', 'but', 'my', 'natural', 'taste', 
+   'is', 'all', 'for', 'simplicity', ';', 'a', 'simple', 'style', 'of', 'dress', 'is', 'so', 'infinitely', 'preferable', 
+   'to', 'finery', '.'],
+  ['But', 'I', 'am', 'quite', 'in', 'the', 'minority', ',', 'I', 'believe', ';', 'few', 'people', 'seem', 'to', 'value', 
+   'simplicity', 'of', 'dress', ',--', 'show', 'and', 'finery', 'are', 'every', 'thing', '.']
+]
+      </pre></div>
+                  <p>NLTK has multiple representations of sentences. If <code>$s</code> is bound to the second sentence in the above data structure, then <code>nltk:pos-tag($s)</code> returns the following:
+                  </p>
+                  <p><em>Part of Speech Representation</em>:
+                  </p>
+                  <div class="exampleInner"><pre>
+[['A', 'DT'], ['bride', 'NN'], [',', ','], ['you', 'PRP'], ['know', 'VBP'], [',', ','], ['must', 'MD'], 
+ ['appear', 'VB'], ['like', 'IN'], ['a', 'DT'], ['bride', 'NN'], [',', ','], ['but', 'CC'], ['my', 'PRP$'], 
+ ['natural', 'JJ'], ['taste', 'NN'], ['is', 'VBZ'], ['all', 'DT'], ['for', 'IN'], ['simplicity', 'NN'], [';', ':'], 
+ ['a', 'DT'], ['simple', 'JJ'], ['style', 'NN'], ['of', 'IN'], ['dress', 'NN'], ['is', 'VBZ'], 
+ ['so', 'RB'], ['infinitely', 'RB'], ['preferable', 'JJ'], ['to', 'TO'], ['finery', 'VB'], ['.', '.']
+]
+      </pre></div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="natural-language-processing-solution-1"></a>3.6.2 Convert Part of Speech Data to XML
+                  </h4>
+                  <p>If $s is bound to a part of speech representation, we can
+                     convert it to an XML format using the following query:
+                  </p>
+                  <div class="exampleInner"><pre>
+&lt;s&gt;
+ {
+  for $w in $s?*
+  return &lt;w pos="{ $w(2) }"&gt;{ $w(1) }&lt;/w&gt;
+ }
+&lt;/s&gt;
+      </pre></div>
+                  <p>Or if we prefer to use meaningful names instead of the
+                     numeric positions, we can create an index that maps between
+                     names and positions and use it as follows:
+                  </p>
+                  <div class="exampleInner"><pre>
+declare variable $index := map { "pos" : 2, "lemma" : 1 };
+
+&lt;s&gt;
+ {
+  for $w in $s?*
+  return &lt;w pos="{ $w($index("pos")) }"&gt;{ $w($index("lemma")) }&lt;/w&gt;
+ }
+&lt;/s&gt;
+      </pre></div>
+                  <p>Both queries have the same result:</p>
+                  <div class="exampleInner"><pre>
+&lt;s&gt;
+  &lt;w pos="DT"&gt;A&lt;/w&gt;
+  &lt;w pos="NN"&gt;bride&lt;/w&gt;
+  &lt;w pos=","&gt;,&lt;/w&gt;
+  &lt;w pos="PRP"&gt;you&lt;/w&gt;
+  &lt;w pos="VBP"&gt;know&lt;/w&gt;
+  &lt;w pos=","&gt;,&lt;/w&gt;
+  &lt;w pos="MD"&gt;must&lt;/w&gt;
+  &lt;w pos="VB"&gt;appear&lt;/w&gt;
+  &lt;w pos="IN"&gt;like&lt;/w&gt;
+  &lt;w pos="DT"&gt;a&lt;/w&gt;
+  &lt;w pos="NN"&gt;bride&lt;/w&gt;
+  &lt;w pos=","&gt;,&lt;/w&gt;
+  &lt;w pos="CC"&gt;but&lt;/w&gt;
+  &lt;w pos="PRP$"&gt;my&lt;/w&gt;
+  &lt;w pos="JJ"&gt;natural&lt;/w&gt;
+  &lt;w pos="NN"&gt;taste&lt;/w&gt;
+  &lt;w pos="VBZ"&gt;is&lt;/w&gt;
+  &lt;w pos="DT"&gt;all&lt;/w&gt;
+  &lt;w pos="IN"&gt;for&lt;/w&gt;
+  &lt;w pos="NN"&gt;simplicity&lt;/w&gt;
+  &lt;w pos=":"&gt;;&lt;/w&gt;
+  &lt;w pos="DT"&gt;a&lt;/w&gt;
+  &lt;w pos="JJ"&gt;simple&lt;/w&gt;
+  &lt;w pos="NN"&gt;style&lt;/w&gt;
+  &lt;w pos="IN"&gt;of&lt;/w&gt;
+  &lt;w pos="NN"&gt;dress&lt;/w&gt;
+  &lt;w pos="VBZ"&gt;is&lt;/w&gt;
+  &lt;w pos="RB"&gt;so&lt;/w&gt;
+  &lt;w pos="RB"&gt;infinitely&lt;/w&gt;
+  &lt;w pos="JJ"&gt;preferable&lt;/w&gt;
+  &lt;w pos="TO"&gt;to&lt;/w&gt;
+  &lt;w pos="VB"&gt;finery&lt;/w&gt;
+  &lt;w pos="."&gt;.&lt;/w&gt;
+&lt;/s&gt;
+      
+      </pre></div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="arrays-to-maps"></a>3.6.3 Converting arrays to maps
+                  </h4>
+                  <p>If $s is bound to a sentence in part of speech representation, the following query
+                     converts it to a map with meaningful property names:
+                  </p>
+                  <div class="exampleInner"><pre>
+array {
+  for $w in $s?*
+  return map { "pos" : $w(2), "lemma" : $w(1) }
+}
+       </pre></div>
+                  <p>Here is the output of the above query:</p>
+                  <div class="exampleInner"><pre>
+[ { "pos" : "DT", "lemma" : "A" }, 
+  { "pos" : "NN", "lemma" : "bride" }, 
+  { "pos" : ",", "lemma" : "," }, 
+  { "pos" : "PRP", "lemma" : "you" }, 
+  { "pos" : "VBP", "lemma" : "know" }, 
+  { "pos" : ",", "lemma" : "," }, 
+  { "pos" : "MD", "lemma" : "must" }, 
+  { "pos" : "VB", "lemma" : "appear" }, 
+  { "pos" : "IN", "lemma" : "like" }, 
+  { "pos" : "DT", "lemma" : "a" }, 
+  { "pos" : "NN", "lemma" : "bride" }, 
+  { "pos" : ",", "lemma" : "," }, 
+  { "pos" : "CC", "lemma" : "but" }, 
+  { "pos" : "PRP$", "lemma" : "my" }, 
+  { "pos" : "JJ", "lemma" : "natural" }, 
+  { "pos" : "NN", "lemma" : "taste" }, 
+  { "pos" : "VBZ", "lemma" : "is" }, 
+  { "pos" : "DT", "lemma" : "all" }, 
+  { "pos" : "IN", "lemma" : "for" }, 
+  { "pos" : "NN", "lemma" : "simplicity" }, 
+  { "pos" : ":", "lemma" : ";" }, 
+  { "pos" : "DT", "lemma" : "a" }, 
+  { "pos" : "JJ", "lemma" : "simple" }, 
+  { "pos" : "NN", "lemma" : "style" }, 
+  { "pos" : "IN", "lemma" : "of" }, 
+  { "pos" : "NN", "lemma" : "dress" }, 
+  { "pos" : "VBZ", "lemma" : "is" }, 
+  { "pos" : "RB", "lemma" : "so" }, 
+  { "pos" : "RB", "lemma" : "infinitely" }, 
+  { "pos" : "JJ", "lemma" : "preferable" }, 
+  { "pos" : "TO", "lemma" : "to" }, 
+  { "pos" : "VB", "lemma" : "finery" }, 
+  { "pos" : ".", "lemma" : "." } 
+]
+       </pre></div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="group-by-part-of-speech"></a>3.6.4 Group by Part of Speech
+                  </h4>
+                  <p>If $s is bound to a sentence in part of speech
+                     	representation, the following query groups words by part of
+                     	speech, selecting parts of speech particularly illustrative of
+                     	Jane Austen's writing style.
+                  </p>
+                  <div class="exampleInner"><pre>
+for $word in $s?*
+let $pos := $word(2)
+let $lexeme := $word(1)
+where $pos = ("JJ", "NN", "RB", "VB")
+group by $pos
+order by $pos
+return 
+  &lt;pos name="{$pos}"&gt;
+    { 
+      for $l in distinct-values($lexeme)
+      return &lt;lexeme&gt;{ $l }&lt;/lexeme&gt;
+    }
+  &lt;/pos&gt;
+      </pre></div>
+                  <p>Here is the output of the above query:</p>
+                  <div class="exampleInner"><pre>
+&lt;pos name="JJ"&gt;
+&lt;lexeme&gt;natural&lt;/lexeme&gt;
+&lt;lexeme&gt;simple&lt;/lexeme&gt;
+&lt;lexeme&gt;preferable&lt;/lexeme&gt;
+&lt;/pos&gt;
+&lt;pos name="NN"&gt;
+  &lt;lexeme&gt;bride&lt;/lexeme&gt;
+  &lt;lexeme&gt;taste&lt;/lexeme&gt;
+  &lt;lexeme&gt;simplicity&lt;/lexeme&gt;
+  &lt;lexeme&gt;style&lt;/lexeme&gt;
+  &lt;lexeme&gt;dress&lt;/lexeme&gt;
+&lt;/pos&gt;
+&lt;pos name="RB"&gt;
+  &lt;lexeme&gt;so&lt;/lexeme&gt;
+  &lt;lexeme&gt;infinitely&lt;/lexeme&gt;
+&lt;/pos&gt;
+&lt;pos name="VB"&gt;
+  &lt;lexeme&gt;appear&lt;/lexeme&gt;
+  &lt;lexeme&gt;finery&lt;/lexeme&gt;
+&lt;/pos&gt;
+      </pre></div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="trigrams"></a>3.6.5 Trigrams
+                  </h4>
+                  <p>In corpus linguistics, n-grams are the basis for certain
+                     	  statistical techniques used to explore and compare texts;
+                     	  for instance, they are used to determine authorship of
+                     	  texts.  If $s is bound to a sentence in sentence notation,
+                     	  the following query computes trigrams for a text:
+                  </p>
+                  <div class="exampleInner"><pre>
+declare function local:words-only($s)
+{
+  for $w in $s
+  where not($w(2) = (".", ",", ";", ":"))
+  return $w(1)
+};
+
+for sliding window $w in local:words-only($s?*)
+    start at $i when true()
+    only end at $j when $j - $i eq 2
+return 
+    array { $w }</pre></div>
+                  <p>Here is the result for a sentence used in an earlier example:</p>
+                  <div class="exampleInner"><pre>
+[ "A", "bride", "you" ], 
+[ "bride", "you", "know" ], 
+[ "you", "know", "must" ], 
+[ "know", "must", "appear" ], 
+[ "must", "appear", "like" ], 
+[ "appear", "like", "a" ], 
+[ "like", "a", "bride" ], 
+[ "a", "bride", "but" ], 
+[ "bride", "but", "my" ], 
+[ "but", "my", "natural" ], 
+[ "my", "natural", "taste" ], 
+[ "natural", "taste", "is" ], 
+[ "taste", "is", "all" ], 
+[ "is", "all", "for" ], 
+[ "all", "for", "simplicity" ], 
+[ "for", "simplicity", "a" ], 
+[ "simplicity", "a", "simple" ], 
+[ "a", "simple", "style" ], 
+[ "simple", "style", "of" ], 
+[ "style", "of", "dress" ], 
+[ "of", "dress", "is" ], 
+[ "dress", "is", "so" ], 
+[ "is", "so", "infinitely" ], 
+[ "so", "infinitely", "preferable" ], 
+[ "infinitely", "preferable", "to" ], 
+[ "preferable", "to", "finery" ]
+	  </pre></div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="partitioning-with-filters"></a>3.6.6 Partitioning using filters
+                  </h4>
+                  <p>Filters can be used to partition the words of a sentence in a variety of ways. In
+                     this simple example, we use filters to distinguish verbs from other parts of speech.
+                     In NLTK, parse codes that start with the string <code>VB</code> denote verb forms.
+                  </p>
+                  <p>In this example, the variable <code>$s</code> is bound to sentence in parsed format, e.g.
+                  </p>
+                  <div class="exampleInner"><pre>[
+ ['A', 'DT'], ['bride', 'NN'], [',', ','], ['you', 'PRP'], ['know', 'VBP'], [',', ','], ['must', 'MD'], 
+ ['appear', 'VB'], ['like', 'IN'], ['a', 'DT'], ['bride', 'NN'], [',', ','], ['but', 'CC'], ['my', 'PRP$'], 
+ ['natural', 'JJ'], ['taste', 'NN'], ['is', 'VBZ'], ['all', 'DT'], ['for', 'IN'], ['simplicity', 'NN'], [';', ':'], 
+ ['a', 'DT'], ['simple', 'JJ'], ['style', 'NN'], ['of', 'IN'], ['dress', 'NN'], ['is', 'VBZ'], 
+ ['so', 'RB'], ['infinitely', 'RB'], ['preferable', 'JJ'], ['to', 'TO'], ['finery', 'VB'], ['.', '.']
+]</pre></div>
+                  <p>The filter function takes a boolean function, and returns one array with those items
+                     that satisfy the function, and a second array with those items that do not.
+                  </p>
+                  <div class="exampleInner"><pre>
+declare function local:filter($s as item()*, $p as function(item()) as xs:boolean)
+{
+  array { $s[$p(.)] },   array { $s[not($p(.))] }
+};
+        </pre></div>
+                  <p>We can call it with the <code>starts-with()</code> function to partition a sentence.
+                  </p>
+                  <div class="exampleInner"><pre>
+let $f := function($a) { starts-with($a(2), "VB") }
+return
+  local:filter($s?*, $f)
+       </pre></div>
+                  <p>Here is the output of the query for the sentence shown above.</p>
+                  <div class="exampleInner"><pre>[ [ "know", "VBP" ], [ "appear", "VB" ], [ "is", "VBZ" ], [ "is", "VBZ" ], 
+[ "finery", "VB" ] ],
+
+[ [ "A", "DT" ], [ "bride", "NN" ], [ ",", "," ], [ "you", "PRP" ], 
+  [ ",", "," ], [ "must", "MD" ], [ "like", "IN" ], [ "a", "DT" ], 
+  [ "bride", "NN" ], [ ",", "," ], [ "but", "CC" ], [ "my", "PRP$" ], 
+  [ "natural", "JJ" ], [ "taste", "NN" ], [ "all", "DT" ], [ "for", "IN" ], 
+  [ "simplicity", "NN" ], [ ";", ":" ], [ "a", "DT" ], [ "simple", "JJ" ], 
+  [ "style", "NN" ], [ "of", "IN" ], [ "dress", "NN" ], [ "so", "RB" ], 
+  [ "infinitely", "RB" ], [ "preferable", "JJ" ], [ "to", "TO"], 
+  [ ".", "." ] ]
+       </pre></div>
+                  <p>A programmer might choose to represent filter results using a map instead of an array,
+                     as shown in the following code.
+                  </p>
+                  <div class="exampleInner"><pre>
+declare function local:filter($s as item()*, $p as function(item()) as xs:boolean)
+{
+  {
+    true() : array { $s[$p(.)] },   
+    false() : array { $s[not($p(.))] }
+  }
+};
+
+
+let $f := function($a) { starts-with($a(2), "VB") }
+return
+  local:filter($s?*, $f)
+      </pre></div>
+                  <p>Here is the output of the above query using the same data.</p>
+                  <div class="exampleInner"><pre>
+{ 
+
+  "true" : 
+             [ [ "know", "VBP" ], [ "appear", "VB" ], [ "is", "VBZ" ],
+               ["is", "VBZ" ], [ "finery", "VB" ] ],
+
+  "false" :  
+
+             [ [ "A", "DT" ], ["bride", "NN" ], [ ",", "," ], 
+	       [ "you", "PRP" ], [ ",", "," ], [ "must", "MD" ], 
+	       [ "like", "IN" ], [ "a", "DT" ], [ "bride", "NN" ], 
+	       [ ",", "," ], [ "but", "CC" ], [ "my", "PRP$" ], 
+	       [ "natural", "JJ" ], [ "taste", "NN" ], [ "all", "DT"],
+	       [ "for", "IN" ], [ "simplicity", "NN" ], [ ";", ":" ],
+	       [ "a", "DT" ], [ "simple", "JJ" ], [ "style", "NN" ], 
+	       [ "of", "IN" ], [ "dress", "NN" ], [ "so", "RB" ], 
+	       [ "infinitely", "RB" ], [ "preferable", "JJ" ], 
+	       [ "to", "TO" ], [ ".", "." ] ] 
+}
+      </pre></div>
+               </div>
+            </div>
+            <div class="div2">
+               
+               <h3><a id="ocr"></a>3.7 Comparing Sequences in Optical Character Recognition
+               </h3>
+               <p>When Rigaudon optical character recognition software is used
+                  for multilingual texts, languages are identified by character set
+                  if possible, and formatted in hocr format. For instance, the text
+                  "the other possible derivation from ἡ ἐπιοῦσα, dies crastinus",
+                  which contains English, Greek, and Latin, might be represented as
+                  follows in raw OCR output (the format is simplified somewhat for
+                  the sake of presentation).
+               </p>
+               <div class="exampleInner"><pre>
+&lt;span class="ocr_word" title="bbox 1388 430 1461 474"&gt;the&lt;/span&gt; 
+&lt;span class="ocr_word" title="bbox 1514 433 1635 476"&gt;other&lt;/span&gt;
+&lt;span class="ocr_word" title="bbox 133 498 317 554"&gt;pcssible&lt;/span&gt; 
+&lt;span class="ocr_word" title="bbox 354 498 590 541"&gt;derivation&lt;/span&gt; 
+&lt;span class="ocr_word" title="bbox 631 497 738 538"&gt;from&lt;/span&gt; 
+&lt;span class="ocr_word" title="bbox 772 495 799 547" lang="grc" xml:lang="grc"&gt;ἡ&lt;/span&gt; 
+&lt;span class="ocr_word" title="bbox 835 495 1019 538" lang="grc" xml:lang="grc"&gt;ἐπιοῦσα&lt;/span&gt; 
+&lt;span class="ocr_word" title="bbox 134 567 220 607"&gt;dies&lt;/span&gt; 
+&lt;span class="ocr_word" title="bbox 257 566 462 607"&gt;erastinus&lt;/span&gt;
+    </pre></div>
+               <p>In the above output, two words were not correctly recognized,
+                  the English word "possible" and the Latin word "crastinus".
+                  Rigaudon uses multilingual spell checkers to find the nearest
+                  likely word in a one of the languages likely to be used in a given
+                  text. For this particular text, we expect to find English, Greek,
+                  and Latin.
+               </p>
+               <p>In this use case, we take the above hocr as input and call the
+                  spellcheck function, implemented as an external function, to
+                  identify which words are likely in each candidate language.
+                  Having done so, we combine the results to construct the most
+                  likely text.
+               </p>
+               <p>The following function extracts the text from the above data.</p>
+               <div class="exampleInner"><pre>
+declare function local:extract-text($spans)
+{
+  for $s in $spans return string($s)
+};
+    </pre></div>
+               <p>Here is the output of the function for the data shown above.</p>
+               <div class="exampleInner"><pre>
+"the", "other", "pcssible", "derivation", "from", "ἡ", "ἐπιοῦσα", "dies", "erastinus"
+    </pre></div>
+               <p>The following function performs a spellcheck in a set of languages, creating a map
+                  that identifies the original and each language.
+               </p>
+               <div class="exampleInner"><pre>
+declare variable $languages := ("English", "Greek", "Latin");
+
+declare function local:spellcheck($languages, $text)
+{
+  map:merge (
+     map { "languages" : $languages },
+     map { "raw" : $text  },
+
+     for $l in $languages
+     return { 
+       $l : array {
+         for $w in $text
+         return ext:sc($l, $w)
+       }
+     }
+  )
+};
+
+let $t := local:extract-text($spans)
+return local:spellcheck($languages, $t)
+    </pre></div>
+               <p>Here is the output of the above query.</p>
+               <div class="exampleInner"><pre>
+{ 
+   "languages" : ( "English", "Greek", "Latin" ), 
+   "raw" :     [ "the", "other", "pcssible", "derivation", "from", "ἡ", "ἐπιοῦσα", "dies", "erastinus" ], 
+   "English" : [ "the", "other", "possible", "derivation", "from", null, null, "dies", null ], 
+   "Greek" :   [ null, null, null, null, null, "ἡ", "ἐπιοῦσα", null, null ],
+   "Latin" :   [ null, null, null, null, null, null, null, "dies", "crastinus" ]
+}
+    </pre></div>
+               <p>The following function merges lookup results in the above
+                  format. The first parameter lists a set of languages, in
+                  preference order. For each word, the function picks the non-null
+                  lookup result for the most preferred language available, or the
+                  original "raw" word if all lookups return null.  In this code, we
+                  assume that <code>$m</code> is bound to the data structure shown
+                  above.
+               </p>
+               <div class="exampleInner"><pre>
+declare variable $languages := ("English", "Greek", "Latin");
+
+declare function local:merge($languages, $m)
+{
+  let $size := count($m("raw")?*)
+  for $i in 1 to $size
+  let $candidates := ($languages ! $m(.)($i)[ . ne null] , $m("raw")($i))
+  return $candidates[1]
+};
+
+local:merge($languages, $m)
+    </pre></div>
+               <p>Here is the result of the query:</p>
+               <div class="exampleInner"><pre>the other possible derivation from ἡ ἐπιοῦσα dies crastinus</pre></div>
+            </div>
+            <div class="div2">
+               
+               <h3><a id="graphics-transforms"></a>3.8 Transforms for Graphics
+               </h3>
+               <p>This use case uses rotation matrices to rotate a shape in three dimensions.</p>
+               <p>The following library implements three-dimensional rotation in XQuery</p>
+               <div class="exampleInner"><pre>
+declare function local:rotate-x( $theta )
+{
+   [
+     [ 1, 0, 0 ],
+     [ 0, cosine($theta), - sine($theta) ],
+     [ 0, sine($theta), cosine($theta) ]
+   ]
+}; 
+
+declare function local:rotate-y( $theta )
+{
+   [
+     [ cosine($theta), 0, sine($theta) ],
+     [ 0, 1, 0],
+     [ - sine($theta), 0, cosine($theta) ]
+   ]
+}; 
+
+declare function local:rotate-z( $theta )
+{
+   [
+     [ cosine($theta), - sine($theta), 0 ],
+     [ sine($theta), cosine($theta), 0 ],
+     [ 0, 0, 1]
+   ]
+}; 
+
+declare function local:rotate($pitch as xs:double, $yaw as xs:double, $roll as xs:double)
+{
+   let $p := local:rotate-x($pitch)
+   let $y := local:rotate-y($yaw)
+   let $r := local:rotate-z($roll)
+   let $py :=local:mult($p, $y)
+   return local:mult($py, $r)
+};
+
+declare function local:mult( $matrix1, $matix2 )
+{
+  if (length($matrix1) != length($matrix2(1))
+  then error("Matrices must be m*n and n*p to multiply!")
+  else array {
+     for $i in 1 to length($matrix1)
+     return array {
+         for $j in 1 to length($matrix2(1))
+	 return
+	    sum (
+           for $k in 1 to length($matrix2)
+	       return $matrix1($i)($k) * $matrix2($k)($j)
+	    )
+     }
+  }
+};
+
+let $rect := [[0, 0, 0], [10, 0, 0], [10, 10, 0], [0, 10, 0], [0, 0, 0]]
+let $rot := for $r in $rect()
+            return local:mult($r, local:rotate( 10, 10, 10 )
+return img:render( $rot )
+                        
+        </pre></div>
+            </div>
+            <div class="div2">
+               
+               <h3><a id="json-use-cases"></a>3.9 JSON
+               </h3>
+               <p>JSON is becoming an important data format that many XQuery and XSLT users have to
+                  deal with.
+                  Tasks performed can include importing JSON, processing it, and exporting JSON.
+               </p>
+               <div class="div3">
+                  
+                  <h4><a id="json-query1"></a>3.9.1 Information Retrieval
+                  </h4>
+                  <p>Import a JSON document and retrieve the mobile phone number from it.</p>
+                  <p>
+                     The fn:parse-json() function parses a JSON document into an XDM value as follows:
+                     
+                  </p>
+                  <ol class="enumar">
+                     <li>
+                        <p>A JSON object is converted into a map of type map(xs:string, item()?).</p>
+                     </li>
+                     <li>
+                        <p>A JSON array is converted into a map of type map(xs:integer, item()?).</p>
+                     </li>
+                     <li>
+                        <p>A JSON string is converted into an xs:string atomic value.</p>
+                     </li>
+                     <li>
+                        <p>A JSON number is converted into an xs:double atomic value.</p>
+                     </li>
+                     <li>
+                        <p>A JSON boolean is converted into an xs:boolean atomic value.</p>
+                     </li>
+                     <li>
+                        <p>A JSON null is converted into the empty sequence.</p>
+                     </li>
+                  </ol>
+                  <div class="div4">
+                     
+                     <h5><a id="json-query1-data"></a>3.9.1.1 Input Data
+                     </h5>
+                     <p>The JSON document, mildred.json:</p>
+                     <div class="exampleInner"><pre>
+{
+     "firstname": "Mildred",
+     "lastname": "Moore",
+     "age": 32,
+     "address":
+     {
+         "street": "91 High Street",
+         "town": "Biscester",
+         "county": "Oxfordshire",
+         "postcode": "OX6 3PD"
+     },
+     "phone":
+     [
+         {
+           "type": "home",
+           "number": "01869 378073"
+         },
+         {
+           "type": "mobile",
+           "number": "07356 740756"
+         }
+     ]
+}</pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="json-query1-solution-31"></a>3.9.1.2 Solution in XQuery 3.1
+                     </h5>
+                     <div class="exampleInner"><pre>
+        json-doc("mildred.json")?phone?*[?type = 'mobile']?number
+</pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="json-query1-result"></a>3.9.1.3 Result
+                     </h5>
+                     <div class="exampleInner"><pre>
+"07356 740756"
+</pre></div>
+                  </div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="json-query2"></a>3.9.2 Converting JSON to XML
+                  </h4>
+                  <p>Convert a JSON data file to XML.</p>
+                  <div class="div4">
+                     
+                     <h5><a id="json-query2-data"></a>3.9.2.1 Input Data
+                     </h5>
+                     <p>The JSON document, employees.json:</p>
+                     <div class="exampleInner"><pre>
+{ "accounting" : [
+      { "firstName" : "John",
+        "lastName"  : "Doe",
+        "age"       : 23 },
+
+      { "firstName" : "Mary",
+        "lastName"  : "Smith",
+        "age"       : 32 }
+                 ],
+  "sales"     : [
+      { "firstName" : "Sally",
+        "lastName"  : "Green",
+        "age"       : 27 },
+
+      { "firstName" : "Jim",
+        "lastName"  : "Galley",
+        "age"       : 41 }
+                  ]
+}</pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="json-query2-result"></a>3.9.2.2 Result
+                     </h5>
+                     <div class="exampleInner"><pre>
+&lt;department name="accounting"&gt;
+  &lt;employee&gt;
+    &lt;firstName&gt;John&lt;/firstName&gt;
+    &lt;lastName&gt;Doe&lt;/lastName&gt;
+    &lt;age&gt;23&lt;/age&gt;
+  &lt;/employee&gt;
+  &lt;employee&gt;
+    &lt;firstName&gt;Mary&lt;/firstName&gt;
+    &lt;lastName&gt;Smith&lt;/lastName&gt;
+    &lt;age&gt;32&lt;/age&gt;
+  &lt;/employee&gt;
+&lt;/department&gt;
+&lt;department name="sales"&gt;
+  &lt;employee&gt;
+    &lt;firstName&gt;Sally&lt;/firstName&gt;
+    &lt;lastName&gt;Green&lt;/lastName&gt;
+    &lt;age&gt;27&lt;/age&gt;
+  &lt;/employee&gt;
+  &lt;employee&gt;
+    &lt;firstName&gt;Jim&lt;/firstName&gt;
+    &lt;lastName&gt;Galley&lt;/lastName&gt;
+    &lt;age&gt;41&lt;/age&gt;
+  &lt;/employee&gt;
+&lt;/department&gt;
+</pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="json-query2-solution-31"></a>3.9.2.3 Solution in XQuery 3.1
+                     </h5>
+                     <div class="exampleInner"><pre>
+let $input := json-doc('employees.json')
+for $k in map:keys($input)
+return
+  &lt;department name="{ $k }"&gt;
+    {
+    let $array := $input($k)
+    for $i in 1 to array:size($array)
+    let $emp := $array($i)
+    return
+      &lt;employee&gt;
+        &lt;firstName&gt;{ $emp('firstName') }&lt;/firstName&gt;
+        &lt;lastName&gt;{ $emp('lastName') }&lt;/lastName&gt;
+        &lt;age&gt;{ $emp('age') }&lt;/age&gt;
+      &lt;/employee&gt;
+    }
+  &lt;/department&gt;
+</pre></div>
+                  </div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="json-query3"></a>3.9.3 Update by Copying
+                  </h4>
+                  <p>Update the first name of the author "Dan Suciu" to "John" in the "bookinfo.json" document.</p>
+                  <div class="div4">
+                     
+                     <h5><a id="json-query3-data"></a>3.9.3.1 Input Data
+                     </h5>
+                     <p>The JSON document, bookinfo.json:</p>
+                     <div class="exampleInner"><pre>
+{
+    "book": {
+        "title": "Data on the Web",
+        "year": 2000,
+        "author": [
+            {
+                "last": "Abiteboul",
+                "first": "Serge"
+            },
+            {
+                "last": "Buneman",
+                "first": "Peter"
+            },
+            {
+                "last": "Suciu",
+                "first": "Dan"
+            }
+        ],
+        "publisher": "Morgan Kaufmann Publishers",
+        "price": 39.95
+    }
+}</pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="json-query3-solution-31"></a>3.9.3.2 Solution in XQuery 3.1
+                     </h5>
+                     <div class="exampleInner"><pre>
+declare function local:deep-put($input as item()*, $key as xs:string, $value as item()*) as item()* 
+{                                                             
+  let $mf := function($k, $v) {
+                if ($k eq $key) 
+                then map{$k : $value} 
+                else map{$k : local:deep-put($v, $key, $value)} 
+             }
+  for $i in $input 
+  return
+    if ($i instance of map(*))
+    then map:merge(map:for-each($i, $mf))
+    else if ($i instance of array(*))
+    then array{ local:deep-put($i?*, $key, $value) }
+    else $i
+};
+
+local:deep-put(json-doc("bookinfo.json"), "first", "John")
+</pre></div>
+                     <div class="note">
+                        <p class="prefix"><b>Note:</b></p>
+                        <p>Extending the Update Facility to allow updating maps would allow a simpler solution.</p>
+                     </div>
+                  </div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="json.joins"></a>3.9.4 Joins
+                  </h4>
+                  <div class="div4">
+                     
+                     <h5><a id="json.joins.data"></a>3.9.4.1 Input Data
+                     </h5>
+                     <p>The following queries are based on a social media site that allows users to interact
+                        with their friends. <code>collection("users")</code> contains data on users and their friends:
+                     </p>
+                     <div class="exampleInner"><pre>{
+  "name" : "Sarah",
+  "age" : 13,
+  "gender" : "female",
+  "friends" : [ "Jim", "Mary", "Jennifer"]
+}
+
+{
+  "name" : "Jim",
+  "age" : 13,
+  "gender" : "male",
+  "friends" : [ "Sarah" ]
+}
+          </pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="json.joins.solution31"></a>3.9.4.2 Solution in XQuery 3.1
+                     </h5>
+                     <p>The following query performs a join on Sarah's friend list to return the Object representing
+                        each of her friends:
+                     </p>
+                     <div class="exampleInner"><pre>for $sarah in collection("users"),
+    $friend in collection("users")
+where $sarah("name") = "Sarah"
+  and $friend("name") = $sarah("friends")?*
+return $friend </pre></div>
+                  </div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="jsongrouping"></a>3.9.5 Grouping Queries for JSON
+                  </h4>
+                  <div class="note">
+                     <p class="prefix"><b>Note:</b></p>
+                     <p>These queries are based on similar queries in the XQuery 3.0 Use Cases.</p>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="jsongrouping.data"></a>3.9.5.1 Input Data
+                     </h5>
+                     <p>The input is a sequence (whose order is of no concern) that contains the following
+                        sales data, 
+                        represented here in JSON notation:
+                     </p>
+                     <div class="exampleInner"><pre>{ "product" : "broiler", "store number" : 1, "quantity" : 20  },
+{ "product" : "toaster", "store number" : 2, "quantity" : 100 },
+{ "product" : "toaster", "store number" : 2, "quantity" : 50 },
+{ "product" : "toaster", "store number" : 3, "quantity" : 50 },
+{ "product" : "blender", "store number" : 3, "quantity" : 100 },
+{ "product" : "blender", "store number" : 3, "quantity" : 150 },
+{ "product" : "socks", "store number" : 1, "quantity" : 500 },
+{ "product" : "socks", "store number" : 2, "quantity" : 10 },
+{ "product" : "shirt", "store number" : 3, "quantity" : 10 }
+</pre></div>
+                     <p>We want to group sales by product, across stores.</p>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="jsongrouping.result"></a>3.9.5.2 Result
+                     </h5>
+                     <div class="exampleInner"><pre>{
+  "blender" : 250,
+  "broiler" : 20,
+  "shirt" : 10,
+  "socks" : 510,
+  "toaster" : 200
+  }       </pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="jsongrouping.query31"></a>3.9.5.3 Solution in XQuery 3.1
+                     </h5>
+                     <p>We assume a function collection("sales") that returns a sequence of items representing
+                        the rows in this table.
+                     </p>
+                     <p>Query:</p>
+                     <div class="exampleInner"><pre>map:merge((
+  for $sales in collection("sales")
+  let $pname := $sales("product")
+  group by $pname
+  return map { $pname : sum(for $s in $sales return $s("quantity")) }
+))    </pre></div>
+                  </div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="jsongrouping2"></a>3.9.6 More Complex Grouping Queries for JSON
+                  </h4>
+                  <p>Now let's do a more complex grouping query, showing sales by category within each
+                     state. We need further data to describe the categories of products and the location
+                     of stores.
+                  </p>
+                  <div class="div4">
+                     
+                     <h5><a id="jsongrouping2.data"></a>3.9.6.1 Input Data
+                     </h5>
+                     <p>collection("products") contains the following data:</p>
+                     <div class="exampleInner"><pre>{ "name" : "broiler", "category" : "kitchen", "price" : 100, "cost" : 70 },
+{ "name" : "toaster", "category" : "kitchen", "price" : 30, "cost" : 10 },
+{ "name" : "blender", "category" : "kitchen", "price" : 50, "cost" : 25 },
+{ "name" : "socks", "category" : "clothes", "price" : 5, "cost" : 2 },
+{ "name" : "shirt", "category" : "clothes", "price" : 10, "cost" : 3 }</pre></div>
+                     <p>collection("stores") contains the following data:</p>
+                     <div class="exampleInner"><pre>{ "store number" : 1, "state" : CA },
+{ "store number" : 2, "state" : CA },
+{ "store number" : 3, "state" : MA },
+{ "store number" : 4, "state" : MA }
+        </pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="jsongrouping2.result"></a>3.9.6.2 Result
+                     </h5>
+                     <div class="exampleInner"><pre>
+            [
+              { "CA" : 
+                [
+                  {"kitchen" : { "broiler" : 20, "toaster" : 150 }},
+                  {"clothes" : { "socks" : 510 }}
+                ]
+              },
+              { "MA" : 
+                [ 
+                  { "kitchen" : { "blender" : 250, "toaster" : 50 }},
+                  { "clothes" : { "shirt" : 10 }}
+                ]
+              }
+            ]
+        </pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="jsongrouping2.solution.31"></a>3.9.6.3 Solution in XQuery 3.1
+                     </h5>
+                     <p>The following query groups by state, then by category, then lists individual products
+                        and the sales associated with each.
+                     </p>
+                     <p>Query:</p>
+                     <div class="exampleInner"><pre>array {
+  for $store in json-doc('stores.json') ? *
+  let $state := $store?state
+  group by $state
+  return
+    map {
+      $state :  array {
+        for $product in json-doc('products.json') ? *
+        let $category := $product?category
+        group by $category
+        return
+          map {
+            $category :  map:merge((
+              for $sales in json-doc('sales.json') ? *
+              where $sales?("store number") = $store?("store number") and $sales?product = $product?name
+              let $pname := $sales?product
+              group by $pname
+              return map { $pname :  sum(for $s in $sales return $s?quantity)}
+            ))
+          }
+      }
+   }
+}
+        </pre></div>
+                  </div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="json2json"></a>3.9.7 JSON to JSON Transformations
+                  </h4>
+                  <p>The following query takes satellite data, and summarizes
+                     which satellites are visible. The data for the query is a
+                     simplified version of a Stellarium file that contains this
+                     information.
+                  </p>
+                  <div class="div4">
+                     
+                     <h5><a id="json2json.data"></a>3.9.7.1 Input Data
+                     </h5>
+                     <div class="exampleInner"><pre>{
+  "creator" : "Satellites plugin version 0.6.4",
+  "satellites" : {
+    "AAU CUBESAT" : {
+      "tle1" : "1 27846U 03031G 10322.04074654  .00000056  00000-0  45693-4 0  8768",
+      "visible" : false
+    },
+    "AJISAI (EGS)" : {
+      "tle1" : "1 16908U 86061A 10321.84797408 -.00000083  00000-0  10000-3 0  3696",
+      "visible" : true
+    },
+    "AKARI (ASTRO-F)" : {
+      "tle1" : "1 28939U 06005A 10321.96319841  .00000176  00000-0  48808-4 0  4294",
+      "visible" : true
+    }
+  }
+}</pre></div>
+                     <p>We want to query this data to return a summary that looks like this.</p>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="json2json.result"></a>3.9.7.2 Result
+                     </h5>
+                     <div class="exampleInner"><pre>{
+  "visible" : [
+     "AJISAI (EGS)",
+     "AKARI (ASTRO-F)"
+  ],
+  "invisible" : [
+     "AAU CUBESAT"
+  ]
+}       </pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="json2json.query.31"></a>3.9.7.3 Solution in XQuery 3.1
+                     </h5>
+                     <p>The following is a query that returns the desired result.</p>
+                     <p><em>Query:</em></p>
+                     <div class="exampleInner"><pre>let $sats := json-doc("satellites.json")("satellites")
+return map {
+  "visible" : array {
+     map:keys($sats)[$sats(.)("visible")]
+  },
+  "invisible" : array {
+     map:keys($sats)[not($sats(.)("visible"))]
+  }
+}</pre></div>
+                  </div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="wikipedia.example"></a>3.9.8 Converting XML to JSON
+                  </h4>
+                  <p>JSON programmers frequently need to convert XML to JSON. The following query is based
+                     on a Wikipedia XML export format, using data from the category "Origami". Here is
+                     an excerpt of this data:
+                  </p>
+                  <div class="div4">
+                     
+                     <h5><a id="wikipedia.data"></a>3.9.8.1 Input Data
+                     </h5>
+                     <div class="exampleInner"><pre>&lt;mediawiki&gt;
+  &lt;siteinfo&gt;
+    &lt;sitename&gt;Wikipedia&lt;/sitename&gt;
+
+    &lt;page&gt;
+      &lt;title&gt;Kawasaki's theorem&lt;/title&gt;
+      &lt;id&gt;14511776&lt;/id&gt;
+      &lt;revision&gt;
+        &lt;id&gt;435519187&lt;/id&gt;
+        &lt;timestamp&gt;2011-06-21T20:08:56Z&lt;/timestamp&gt;
+        &lt;contributor&gt;
+          &lt;username&gt;Some jerk on the Internet&lt;/username&gt;
+          &lt;id&gt;6636894&lt;/id&gt;
+        &lt;/contributor&gt;
+
+!!! SNIP !!!
+
+    &lt;page&gt;
+      &lt;title&gt;Origami techniques&lt;/title&gt;
+      &lt;id&gt;193590&lt;/id&gt;
+      &lt;revision&gt;
+        &lt;id&gt;447687387&lt;/id&gt;
+        &lt;timestamp&gt;2011-08-31T17:21:49Z&lt;/timestamp&gt;
+        &lt;contributor&gt;
+          &lt;username&gt;Dmcq&lt;/username&gt;
+          &lt;id&gt;3784322&lt;/id&gt;
+        &lt;/contributor&gt;
+
+!!! SNIP !!!
+
+    &lt;page&gt;
+      &lt;title&gt;Mathematics of paper folding&lt;/title&gt;
+      &lt;id&gt;232840&lt;/id&gt;
+      &lt;revision&gt;
+        &lt;id&gt;440970828&lt;/id&gt;
+        &lt;timestamp&gt;2011-07-23T09:10:42Z&lt;/timestamp&gt;
+        &lt;contributor&gt;
+          &lt;username&gt;Tabletop&lt;/username&gt;
+          &lt;id&gt;173687&lt;/id&gt;
+        &lt;/contributor&gt;
+       </pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="wikipedia.result"></a>3.9.8.2 Result
+                     </h5>
+                     <div class="exampleInner"><pre>[
+ {
+  "title" : "Kawasaki's theorem",
+  "id" : "14511776",
+  "timestamp" : "2011-06-21T20:08:56Z",
+  "authors" : ["Some jerk on the Internet" ]
+ },
+ {
+  "title" : "Origami techniques",
+  "id" : "193590",
+  "timestamp" : "2011-08-31T17:21:49Z",
+  "authors" : ["Dmcq" ]
+ },
+ {
+  "title" : "Mathematics of paper folding",
+  "id" : "232840",
+  "timestamp" : "2011-07-23T09:10:42Z",
+  "authors" : ["Tabletop" ]
+ }
+]
+          </pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="wikipedia.query.31"></a>3.9.8.3 Solution in XQuery 3.1
+                     </h5>
+                     <p>The following query converts this data to JSON:</p>
+                     <p>Query:</p>
+                     <div class="exampleInner"><pre>array {
+ for $page in doc("Wikipedia-Origami.xml")//page
+ return map {
+  "title": string($page/title),
+  "id" : string($page/id),
+  "last updated" : string($page/revision[1]/timestamp),
+  "authors" : array {
+       for $a in $page/revision/contributor/username
+       return string($a)
+  }
+ }
+}          </pre></div>
+                  </div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="svg.example"></a>3.9.9 Transforming JSON to SVG
+                  </h4>
+                  <p>Suppose a JavaScript implementation provides an interface for queries, and a JavaScript
+                     program contains the following data <sup>[<a id="FN-ANCH-d3e1409" href="#d3e1409">1</a>]</sup>:
+                  </p>
+                  <div class="div4">
+                     
+                     <h5><a id="svg.data"></a>3.9.9.1 Input Data
+                     </h5>
+                     <div class="exampleInner"><pre>var data = {
+   "color" : "blue",
+   "closed" : true,
+   "points" : [[10,10], [20,10], [20,20], [10,20]]
+   };
+          </pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="svg.solution.31"></a>3.9.9.2 Solution in XQuery 3.1
+                     </h5>
+                     <p>This data can be converted to SVG by placing the text of a query in a JavaScript variable
+                        and calling the appropriate JavaScript function to invoke the query:
+                     </p>
+                     <div class="exampleInner"><pre>
+var query =
+ "declare variable stroke := attribute stroke { $data("color") };
+  declare variable points := attribute points { $data("points")?*?* };
+  if (closed) then
+    &lt;svg&gt;&lt;polygon&gt;{ $stroke, $points }&lt;/polygon&gt;&lt;/svg&gt;
+  else
+    &lt;svg&gt;&lt;polyline&gt;{ $stroke, $points }&lt;/polyline&gt;&lt;/svg&gt;" </pre></div>
+                     <p>This query can be invoked with a JavaScript API call:</p>
+                     <div class="exampleInner"><pre>
+jsoniq(data, query)
+          </pre></div>
+                     <p>Here is the result of the above query:</p>
+                     <div class="exampleInner"><pre>&lt;svg&gt;&lt;polygon stroke="blue" points="10 10 20 10 20 20 10 20" /&gt;&lt;/svg&gt;</pre></div>
+                  </div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="html.example"></a>3.9.10 Transforming Arrays to HTML Tables
+                  </h4>
+                  <p>The data in a JSON array is frequently displayed using HTML tables. The following
+                     query shows how to transform from the former to the latter.
+                  </p>
+                  <div class="div4">
+                     
+                     <h5><a id="html.data"></a>3.9.10.1 Input Data
+                     </h5>
+                     <p>The following Object contains the labels desired for columns and rows, as well as
+                        the data for the table.
+                     </p>
+                     <div class="exampleInner"><pre>{
+  "col labels" : ["singular", "plural"],
+  "row labels" : ["1p", "2p", "3p"],
+  "data" :
+     [
+        ["spinne", "spinnen"],
+        ["spinnst", "spinnt"],
+        ["spinnt", "spinnen"]
+     ]
+}</pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="html.query.31"></a>3.9.10.2 Solution in XQuery 3.1
+                     </h5>
+                     <p>The following query creates an HTML table, using the column headings and row labels
+                        as well as the data in the Object shown above.
+                     </p>
+                     <div class="exampleInner"><pre>&lt;html&gt;
+  &lt;body&gt;
+
+    &lt;table&gt;
+      &lt;tr&gt; (: Column headings :)
+         {
+            &lt;th&gt; &lt;/th&gt;,
+            for $th in json-doc("table.json")("col labels")?*
+            return &lt;th&gt;{ $th }&lt;/th&gt;
+         }
+      &lt;/tr&gt;
+      {  (: Data for each row :)
+         for $r at $i in json-doc("table.json")("data")?*
+         return
+            &lt;tr&gt;
+             {
+               &lt;th&gt;{ json-doc("table.json")("row labels")[$i]) }&lt;/th&gt;,
+               for $c in $r?*
+               return &lt;td&gt;{ $c }&lt;/td&gt;
+             }
+            &lt;/tr&gt;
+      }
+    &lt;/table&gt;
+
+  &lt;/body&gt;
+&lt;/html&gt;    </pre></div>
+                  </div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="windowing.example"></a>3.9.11 Windowing Queries
+                  </h4>
+                  <p>XQuery provides support for both sliding windows and
+                     	  tumbling windows, frequently used to analyze event streams
+                     	  or other sequential data. This simple windowing example
+                     	  converts a sequence of items to a table with three columns
+                     	  (using as many rows as necessary), and assigns a row number
+                     	  to each row.
+                  </p>
+                  <div class="div4">
+                     
+                     <h5><a id="windowing.data"></a>3.9.11.1 Input Data
+                     </h5>
+                     <div class="exampleInner"><pre>[
+  { "color" : "Green" },
+  { "color" : "Pink" },
+  { "color" : "Lilac" },
+  { "color" : "Turquoise" },
+  { "color" : "Peach" },
+  { "color" : "Opal" },
+  { "color" : "Champagne" }
+}
+	  </pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="windowing.result"></a>3.9.11.2 Result
+                     </h5>
+                     <p>Result:</p>
+                     <div class="exampleInner"><pre>&lt;table&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Green&lt;/td&gt;
+    &lt;td&gt;Pink&lt;/td&gt;
+    &lt;td&gt;Lilac&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Turquoise&lt;/td&gt;
+    &lt;td&gt;Peach&lt;/td&gt;
+    &lt;td&gt;Opal&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Champagne&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+	  </pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="windowing.solution"></a>3.9.11.3 Solution in XQuery 3.1
+                     </h5>
+                     <p>Query:</p>
+                     <div class="exampleInner"><pre>
+&lt;table&gt;{
+  for tumbling window $w in json-doc("colors.json")?*
+    start at $x when fn:true()
+    end at $y when $y - $x = 2
+  return
+    &lt;tr&gt;{
+      for $i in $w
+      return
+        &lt;td&gt;{ $i }&lt;/td&gt;
+    }&lt;/tr&gt;
+}&lt;/table&gt;
+	  </pre></div>
+                  </div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="rdb.example"></a>3.9.12 JSON views in middleware
+                  </h4>
+                  <p>This example assumes a middleware system that presents relational tables as JSON arrays.
+                     The following two tables are used as sample data.
+                  </p>
+                  <div class="div4">
+                     
+                     <h5><a id="rdb.data"></a>3.9.12.1 Input Data
+                     </h5>
+                     <table style="border:1px solid">
+                        <caption>Users</caption>
+                        <thead>
+                           <tr>
+                              <td>userid</td>
+                              <td>firstname</td>
+                              <td>lastname</td>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <tr>
+                              <td>W0342</td>
+                              <td>Walter</td>
+                              <td>Denisovich</td>
+                           </tr>
+                           <tr>
+                              <td>M0535</td>
+                              <td>Mick</td>
+                              <td>Goulish</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                     <p>The JSON representation this particular implementation provides for the above table
+                        looks like this:
+                     </p>
+                     <div class="exampleInner"><pre>[
+  { "userid" : "W0342", "firstname" : "Walter", "lastname" : "Denisovich" },
+  { "userid" : "M0535", "firstname" : "Mick", "lastname" : "Goulish" }
+]       </pre></div>
+                     <table style="border:1px solid">
+                        <caption>Holdings</caption>
+                        <thead>
+                           <tr>
+                              <td>userid</td>
+                              <td>ticker</td>
+                              <td>shares</td>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <tr>
+                              <td>W0342</td>
+                              <td>DIS</td>
+                              <td>153212312</td>
+                           </tr>
+                           <tr>
+                              <td>M0535</td>
+                              <td>DIS</td>
+                              <td>10</td>
+                           </tr>
+                           <tr>
+                              <td>M0535</td>
+                              <td>AIG</td>
+                              <td>23412</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                     <p>The JSON representation this particular implementation provides for the above table
+                        looks like this:
+                     </p>
+                     <div class="exampleInner"><pre>[
+  { "userid" : "W0342", "ticker" : "DIS", "shares" : 153212312 },
+  { "userid" : "M0535", "ticker" : "DIS", "shares" : 10 },
+  { "userid" : "M0535", "ticker" : "AIG", "shares" : 23412 }
+]       </pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="rdb.solution"></a>3.9.12.2 Solution in XQuery 3.1
+                     </h5>
+                     <p>The following query uses the fictitious vendor's <code>vendor:table()</code> function to retrieve the values from a table, and creates an Object for each user,
+                        with a list of the user's holdings in the value of that Object.
+                     </p>
+                     <div class="exampleInner"><pre>array {
+  for $u in vendor:table("Users")
+  order by $u("userid")
+  return map {
+    "userid" : $u("userid"),
+    "first" :  $u("firstname"),
+    "last" :   $u("lastname"),
+    "holdings" : array {
+         for $h in vendor:table("Holdings")
+         where $h("userid") = $u("userid")
+         order by $h("ticker")
+         return {
+            "ticker" : $u("ticker"),
+            "share" : $u("shares")
+         }
+    }
+  }
+}       </pre></div>
+                  </div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="update.example"></a>3.9.13 In-Place Updates
+                  </h4>
+                  <p>The XQuery Update Facility allows XML data to be
+                     updated. These use cases explore what it means to update JSON
+                     in the same way. They are based on use cases for JSONiq's
+                     updating functions.
+                  </p>
+                  <p>Suppose an application receives an order that contains a credit card number, and needs
+                     to put the user on probation.
+                  </p>
+                  <div class="div4">
+                     
+                     <h5><a id="update.data"></a>3.9.13.1 Input Data
+                     </h5>
+                     <p>Data for an order:</p>
+                     <div class="exampleInner"><pre>{
+  "user" : "Deadbeat Jim",
+  "credit card" : VISA 4111 1111 1111 1111,
+  "product" : "lottery tickets",
+  "quantity" : 243
+}
+        </pre></div>
+                     <p>collection("users") contains the data for each individual user:</p>
+                     <div class="exampleInner"><pre>{
+  "name" : "Deadbeat Jim",
+  "address" : "1 E 161st St, Bronx, NY 10451",
+  "risk tolerance" : "high"
+}
+        </pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="update.solution"></a>3.9.13.2 Solution in XQuery 3.1 with Updates
+                     </h5>
+                     <p>The following query adds the pair <code>"status" : "credit card declined"</code> to the user's record.
+                     </p>
+                     <div class="exampleInner"><pre>let $dbj := collection("users")[ .("name") = "Deadbeat Jim" ]
+return insert map { "status" : "credit card declined" } into $dbj
+        </pre></div>
+                     <p>After the update is finished, the user's record looks like this:</p>
+                     <div class="exampleInner"><pre>{
+  "name" : "Deadbeat Jim",
+  "address" : "1 E 161st St, Bronx, NY 10451",
+  "status" : "credit card declined",
+  "risk tolerance" : "high"
+}
+        </pre></div>
+                  </div>
+               </div>
+               <div class="div3">
+                  
+                  <h4><a id="data.transformation"></a>3.9.14 Data Transformations
+                  </h4>
+                  <p>Many applications need to modify data before forwarding it to another source. The
+                     XQuery Update Facility provides an expression called a tranform expression that can
+                     be used to create modified copies. The transform expression uses updating expressions
+                     to perform a transformation.
+                  </p>
+                  <div class="div4">
+                     
+                     <h5><a id="data.transformation.data"></a>3.9.14.1 Input Data
+                     </h5>
+                     <p>Suppose an application make videos available using feeds from Youtube. The following
+                        data comes from one such feed:
+                     </p>
+                     <div class="exampleInner"><pre>{
+    "encoding" : "UTF-8",
+    "feed" : {
+        "author" : [
+            {
+                "name" : {
+                    "$t" : "YouTube"
+                },
+                "uri" : {
+                    "$t" : "http://www.youtube.com/"
+                }
+            }
+        ],
+        "category" : [
+            {
+                "scheme" : "http://schemas.google.com/g/2005#kind",
+                "term" : "http://gdata.youtube.com/schemas/2007#video"
+            }
+        ],
+        "entry" : [
+            {
+                "app$control" : {
+                    "yt$state" : {
+                        "$t" : "Syndication of this video was restricted by its owner.",
+                        "name" : "restricted",
+                        "reasonCode" : "limitedSyndication"
+                    }
+                },
+                "author" : [
+                    {
+                        "name" : {
+                            "$t" : "beyonceVEVO"
+                        },
+                        "uri" : {
+                            "$t" : "http://gdata.youtube.com/feeds/api/users/beyoncevevo"
+                        }
+                    }
+                ]
+!!! SNIP !!!         </pre></div>
+                  </div>
+                  <div class="div4">
+                     
+                     <h5><a id="data.transformation.query"></a>3.9.14.2 Solution in XQuery 3.1
+                     </h5>
+                     <p>The following query creates a modified copy of the feed by removing all entries that
+                        restrict syndication.
+                     </p>
+                     <div class="exampleInner"><pre>let $feed := json-doc("incoming.json")
+return
+  if ($entry("app$control")("yt$state")("name") = "restricted")
+     map:remove($feed, "entry")
+  else
+     $feed</pre></div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="back">
+         <div class="div1">
+            
+            <h2><a id="references"></a>A References
+            </h2>
+            <dl>
+               <dt class="label"><span><a id="RFC2119"></a>RFC 2119</span></dt>
+               <dd>
+                  <div>
+                     	  S. Bradner. <em>Key Words for use in RFCs to Indicate Requirement Levels.</em> IETF
+                     	  RFC 2119.  See <a href="http://www.ietf.org/rfc/rfc2119.txt">http://www.ietf.org/rfc/rfc2119.txt</a>.
+                     	
+                  </div>
+               </dd>
+               <dt class="label"><span><a id="xquery-30"></a>XQuery 3.0</span></dt>
+               <dd>
+                  <div>
+                     <a href="https://www.w3.org/TR/xquery-30/"><cite>XQuery 3.0: An XML Query Language</cite></a>,
+                     Jonathan Robie, Don Chamberlin, Michael Dyck, John Snelson, Editors.
+                     World Wide Web Consortium,
+                     08 April 2014. 
+                     This version is https://www.w3.org/TR/2014/REC-xquery-30-20140408/.
+                     The <a href="https://www.w3.org/TR/xquery-30/">latest version</a>
+                     is available at https://www.w3.org/TR/xquery-30/.
+                  </div>
+               </dd>
+               <dt class="label"><span><a id="xpath-datamodel-31"></a>XQuery and XPath Data Model 3.1</span></dt>
+               <dd>
+                  <div>
+                     <a href="https://www.w3.org/TR/xpath-datamodel-31/"><cite>XQuery and XPath Data Model (XDM) 3.1</cite></a>,
+                     Norman Walsh, John Snelson, Andrew Coleman, Editors.
+                     World Wide Web Consortium,
+                     13 December 2016. 
+                     This version is https://www.w3.org/TR/2016/CR-xpath-datamodel-31-20161213/.
+                     The <a href="https://www.w3.org/TR/xpath-datamodel-31/">latest version</a>
+                     is available at https://www.w3.org/TR/xpath-datamodel-31/.
+                  </div>
+               </dd>
+               <dt class="label"><span><a id="xpath-31"></a>XPath 3.1</span></dt>
+               <dd>
+                  <div>
+                     <a href="https://www.w3.org/TR/xpath-31/"><cite>XML Path Language (XPath) 3.1</cite></a>,
+                     Jonathan Robie, Michael Dyck and Josh Spiegel, Editors.
+                     World Wide Web Consortium,
+                     13 December 2016. 
+                     This version is https://www.w3.org/TR/2016/CR-xpath-31-20161213/.
+                     The <a href="https://www.w3.org/TR/xpath-31/">latest version</a>
+                     is available at https://www.w3.org/TR/xpath-31/.
+                  </div>
+               </dd>
+               <dt class="label"><span><a id="xquery-31"></a>XQuery 3.1</span></dt>
+               <dd>
+                  <div>
+                     <a href="https://www.w3.org/TR/xquery-31/"><cite>XQuery 3.1: An XML Query Language</cite></a>,
+                     Jonathan Robie, Michael Dyck and Josh Spiegel, Editors.
+                     World Wide Web Consortium,
+                     13 December 2016. 
+                     This version is https://www.w3.org/TR/2016/CR-xquery-31-20161213/.
+                     The <a href="https://www.w3.org/TR/xquery-31/">latest version</a>
+                     is available at https://www.w3.org/TR/xquery-31/.
+                  </div>
+               </dd>
+               <dt class="label"><span><a id="xslt-30"></a>XSLT 3.0</span></dt>
+               <dd>
+                  <div>
+                     <a href="https://www.w3.org/TR/xslt-30/"><cite>XSL Transformations (XSLT) Version 3.0</cite></a>,
+                     Michael Kay, Editor.
+                     World Wide Web Consortium,
+                     19 November 2015. 
+                     This version is https://www.w3.org/TR/2015/CR-xslt-30-20151119/.
+                     The <a href="https://www.w3.org/TR/xslt-30/">latest version</a>
+                     is available at https://www.w3.org/TR/xslt-30/.
+                  </div>
+               </dd>
+               <dt class="label"><span><a id="xquery-update-30"></a>XQuery Update Facility 3.0</span></dt>
+               <dd>
+                  <div>
+                     <a href="https://www.w3.org/TR/xquery-update-30/"><cite>XQuery Update Facility 3.0</cite></a>,
+                     John Snelson, Editor.
+                     World Wide Web Consortium,
+                     19 February 2015. 
+                     This version is https://www.w3.org/TR/2015/WD-xquery-update-30-20150219/.
+                     The <a href="https://www.w3.org/TR/xquery-update-30/">latest version</a>
+                     is available at https://www.w3.org/TR/xquery-update-30/.
+                  </div>
+               </dd>
+               <dt class="label"><span><a id="xpath-full-text-30"></a>XQuery and XPath Full Text 3.0</span></dt>
+               <dd>
+                  <div>
+                     <a href="https://www.w3.org/TR/xpath-full-text-30/"><cite>XQuery and XPath Full Text 3.0</cite></a>,
+                     Mary Holstege, Jim Melton, Editors.
+                     World Wide Web Consortium,
+                     24 November 2015. 
+                     This version is https://www.w3.org/TR/2015/REC-xpath-full-text-30-20151124/.
+                     The <a href="https://www.w3.org/TR/xpath-full-text-30/">latest version</a>
+                     is available at https://www.w3.org/TR/xpath-full-text-30/.
+                  </div>
+               </dd>
+               <dt class="label"><span><a id="JSONiq"></a>JSONiq</span></dt>
+               <dd>
+                  <div>
+                     	  Jonathan Robie, Matthias Brantner, Daniela Florescu, Ghislain Fourny, Till Westmann.
+                     <em>JSONiq: XQuery for JSON, JSON for XQuery</em>. See
+                     	  <a href="http://www.jsoniq.org/docs/JSONiqExtensionToXQuery/pdf/Language_Specification-0.4.42-JSONiq-en-US.pdf">http://www.jsoniq.org/docs/JSONiqExtensionToXQuery/pdf/Language_Specification-0.4.42-JSONiq-en-US.pdf</a>.
+                     	
+                  </div>
+               </dd>
+               <dt class="label"><span><a id="JSONiq-UseCases"></a>JSONiq Use Cases</span></dt>
+               <dd>
+                  <div>
+                     	  Jonathan Robie, Matthias Brantner, Daniela Florescu, Ghislain Fourny, Till Westmann.
+                     <em>JSONiq Use Cases</em>. See
+                     <a href="http://www.jsoniq.org/docs/JSONiq-usecases/html-single/">http://www.jsoniq.org/docs/JSONiq-usecases/html-single/</a>.
+                     	
+                  </div>
+               </dd>
+            </dl>
+         </div>
+      </div>
+      <hr>
+      <div class="endnotes">
+         
+         <h3><a id="endnotes"></a>End Notes
+         </h3>
+         <dl>
+            <dt>[<a id="d3e1409" href="#FN-ANCH-d3e1409">1</a>]
+            </dt>
+            <dd>
+               <p>This example is based on an example on Stefan Goessner's JSONT site (<a href="http://goessner.net/articles/jsont/">http://goessner.net/articles/jsont/</a>).
+               </p>
+            </dd>
+         </dl>
+      </div><script src="//www.w3.org/scripts/TR/2016/fixup.js"></script></body>
+</html>
