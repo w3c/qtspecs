@@ -184,6 +184,9 @@
       <xsl:variable name="t1" select="replace($etc-bibl/@key, 'https://www\.w3\.org/TR/', concat('https://www.w3.org/TR/', substring($raw-date, 1, 4)))"/>
       <xsl:sequence select="replace($t1, '/$', concat('-', $raw-date, '/'))"/> 
     </xsl:variable>
+    
+    <xsl:message>$etc-bibl/@key - <xsl:value-of select="$etc-bibl/@key"/></xsl:message>
+    <xsl:message>$dated-loc - <xsl:value-of select="$dated-loc"/></xsl:message>
 
     <rddl:resource xmlns:rddl="http://www.rddl.org/"
       xlink:title="{$etc-bibl/@key}"
@@ -191,7 +194,7 @@
       xlink:arcrole="http://www.rddl.org/purposes#normative-reference"
       xlink:href="{$etc-bibl/titleref/@href}">
       <p>
-        <a href="{$etc-bibl/@key}">
+        <a href="{$etc-bibl/titleref/@href}">
           <xsl:value-of select="$etc-bibl/@key"/> 
         </a>
         (<xsl:value-of select="format-date($cooked-date, '[D1] [MNn] [Y0001]')"/> version)
