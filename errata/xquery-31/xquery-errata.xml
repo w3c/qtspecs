@@ -1,0 +1,175 @@
+<?xml version="1.0"?>
+<er:errata spec="XQ31" xmlns:er="http://www.w3.org/2007/04/qt-errata"  
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+           xsi:schemaLocation="http://www.w3.org/2007/04/qt-errata ../build/errata.xsd"> 
+  <er:base-documents> 
+  	<er:document name="main-xml" href="../../specifications/xquery-31/html/xquery-31.xml" media-type="application/xml"/>
+	<er:document name="main-html" href="http://www.w3.org/TR/xquery-31/" media-type="text/html"/>
+	<er:document name="dated-html" href="http://www.w3.org/TR/2017/REC-xquery-31-20170321/" media-type="text/html"/>
+  </er:base-documents>
+  <er:authlist> 
+	<er:author> 
+		<er:author-name>Michael Kay</er:author-name>
+		<er:author-affiliation>Saxonica</er:author-affiliation>
+		<er:author-uri>http://www.saxonica.com/</er:author-uri>
+	</er:author>
+  </er:authlist>
+  <er:erratum id="E1" category="editorial">
+    <er:description>
+		  <p>The introductory section on Atomizations mentions that FOTY0012 can be raised, but other errors (for example, FOTY0013) 
+		  	are also possible.</p>
+    </er:description>
+    <er:bugzilla bug="30153"/> 
+	<er:history>
+	  <er:event status="proposed" date="2017-10-13" author="mike@saxonica.com"/>
+    </er:history>
+	<er:impact>
+	  <er:affects object="error" name="FOTY0012"/>
+	  <er:affects object="error" name="FOTY0013"/>
+    </er:impact>
+	<er:change>
+	  <er:old-text ref="id-atomization" select="p[1]" action="replace"/>
+		<er:new-text version="3.1">
+			<p>The semantics of some XQuery 3.1 operators depend on a process called <termref
+				def="dt-atomization">atomization</termref>. Atomization is applied to a value
+				when the value is used in a context in which a sequence of atomic values is
+				required. The result of atomization is either a sequence of atomic values or 
+				<phrase diff="change" at="E1">a type error</phrase>. <termdef id="dt-atomization"
+					term="atomization">
+					<term>Atomization</term> of a sequence is defined as the result of invoking the
+					<code>fn:data</code> function, as defined in <xspecref spec="FO31"
+							ref="func-data"/>.
+					
+				</termdef>
+			</p>
+	 </er:new-text>
+	</er:change>
+  </er:erratum>
+	
+	<er:erratum id="E2" category="editorial">
+		<er:description>
+			<p>The term "Query Environment" (used in the definition of external functions) is not explained; furthermore it
+				is used in XPath as well as XQuery. This erratum fixes the problem by defining external functions without
+			reference to the concept.</p>
+		</er:description>
+		<er:bugzilla bug="30155"/> 
+		<er:history>
+			<er:event status="proposed" date="2017-10-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<!--<er:affects object="error" name="FOTY0012"/>
+			<er:affects object="error" name="FOTY0013"/>-->
+		</er:impact>
+		<er:change>
+			<er:old-text ref="eval_context" select=".//item/p[.//term='Named functions']" action="replace"/>
+			<er:new-text version="3.1">
+				<p>
+					<termdef term="named functions" id="dt-named-functions">
+						<term>Named functions</term>. This is a mapping from (expanded QName,
+						arity) to <xtermref spec="DM31" ref="dt-function-item"
+							>function</xtermref>. </termdef> It supplies a function for each
+					signature in <termref def="dt-known-func-signatures"> statically known
+						function signatures </termref> and may supply other functions (see
+					<specref ref="id-consistency-constraints"/>). Named functions can include
+					
+						<termref def="dt-external-function">external functions</termref>.
+					<phrase diff="chg" at="E2">
+						<termdef id="dt-external-function" term="external function">
+							An <term>external function</term> is any function that 
+							is neither specified as part of the language specifications (typically, in 
+							<bibref ref="xpath-functions-31"/>), nor defined using the features of the 
+							XQuery language.</termdef></phrase> For example, an
+						implementation might provide a set of <termref
+							def="dt-implementation-defined">implementation-defined</termref>
+						external functions in addition to the core function library described in
+						<bibref ref="xpath-functions-31"/>. <termdef
+							id="dt-implementation-defined-function"
+							term="implementation-defined function">An <term>implementation-defined
+								function</term> is an <termref def="dt-external-function"
+									>external function</termref> that is
+							<termref def="dt-implementation-defined"
+								>implementation-defined</termref>
+						</termdef>. 
+				</p>
+			</er:new-text>
+		</er:change>
+	</er:erratum>
+	
+	<er:erratum id="E3" category="editorial">
+		<er:description>
+			<p>The definition of "pure union types" is unnecessarily complex.</p>
+		</er:description>
+		<er:bugzilla bug="30169"/> 
+		<er:history>
+			<er:event status="proposed" date="2017-10-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<!--<er:affects object="error" name="FOTY0012"/>
+			<er:affects object="error" name="FOTY0013"/>-->
+		</er:impact>
+		<er:change>
+			<er:old-text ref="id-types" select="p[5]" action="replace"/>
+			<er:new-text version="3.1">
+				<p>
+					<termdef id="dt-pure-union-type" term="pure union type">A <term>pure union
+						type</term> is a simple type that satisfies the following
+						constraints: (1) <code>{variety}</code> is <code>union</code>, (2) 
+						<code>{facets}</code> is empty, (3) each type in its transitive
+						membership is a <termref def="dt-generalized-atomic-type"/>.</termdef></p>
+				<note><p>The term <term>transitive membership</term> is defined in [XML Schema 1.1 Part 2]; the
+				definition is equally applicable to XSD 1.0.</p></note>
+			</er:new-text>
+		</er:change>
+	</er:erratum>
+	
+	<er:erratum id="E4" category="editorial">
+		<er:description>
+			<p>Some examples in the section concerned with the unary lookup operator are actually
+				examples of postfix lookup.</p>
+		</er:description>
+		<er:bugzilla bug="30175"/> 
+		<er:history>
+			<er:event status="proposed" date="2017-10-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<!--<er:affects object="error" name="FOTY0012"/>
+			<er:affects object="error" name="FOTY0013"/>-->
+		</er:impact>
+		<er:change>
+			<er:old-text ref="id-unary-lookup" select=".//ulist/item[9]" action="delete"/>
+		</er:change>
+		<er:change>
+			<er:old-text ref="id-unary-lookup" select=".//ulist/item[10]" action="delete"/>
+		</er:change>
+		<er:change>
+			<er:old-text ref="id-unary-lookup" select=".//ulist/item[11]" action="delete"/>
+		</er:change>
+		<er:change>
+			<er:old-text ref="id-postfix-lookup" select="(.//ulist)[2]" action="insert-as-last"/>
+			<er:new-text version="3.1">
+				<item>
+					<p>If <code>$m</code> is bound to the weekdays map described in <specref
+						ref="id-maps"/>, then <code>$m?*</code> returns the values
+						<code>("Sunday","Monday","Tuesday","Wednesday", "Thursday",
+							"Friday","Saturday")</code>, in <termref
+								def="dt-implementation-dependent">implementation-dependent</termref>
+						order.</p>
+				</item>
+				<item>
+					<p>
+						<code>[1, 2, 5, 7]?*</code> evaluates to <code>(1, 2, 5, 7)</code>.</p>
+				</item>
+				<item>
+					<p>
+						<code>[[1, 2, 3], [4, 5, 6]]?*</code> evaluates to <code>([1, 2, 3], [4,
+							5, 6])</code>
+					</p>
+				</item>
+			</er:new-text>
+		</er:change>
+	</er:erratum>
+	
+                                          
+  
+</er:errata>
+
