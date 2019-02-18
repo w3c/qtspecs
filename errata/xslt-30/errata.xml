@@ -95,6 +95,7 @@
 		<er:history>
 			<er:event status="proposed" date="2017-10-13" author="mike@saxonica.com"/>
 			<er:event status="accepted" date="2017-10-19" author="mike@saxonica.com"/>
+			<er:event status="amended" date="2019-02-13" author="mike@saxonica.com" note="two changes merged into erratum E42"/>
 		</er:history>
 		<er:impact>
 			<er:affects object="element" name="xsl:merge"/>
@@ -108,38 +109,7 @@
 					the <function>snapshot</function> function.</p>
 			</er:new-text>
 		</er:change>
-		<er:change>
-			<er:old-text ref="merge-keys" select="p[2]"/>
-			<er:new-text version="3.0">
-		      <p>The merge key for each type of input sequence (that is, for each
-			<elcode>xsl:merge-source</elcode> element) is defined by a sequence of
-			<elcode>xsl:merge-key</elcode> element children of the
-			<elcode>xsl:merge-source</elcode> element. Each <elcode>xsl:merge-key</elcode>
-			element defines one merge key component. The syntax and semantics of an
-			<elcode>xsl:merge-key</elcode> element are closely based on the rules for the
-			<elcode>xsl:sort</elcode> element (the only <phrase diff="chg" at="E3">difference in syntax</phrase> being the absence of the
-			<code>stable</code> attribute); the difference is that
-			<elcode>xsl:merge-key</elcode> elements do not cause a sort to take place, they
-			merely declare the existing sort order of the input sequence.</p>
-			</er:new-text>
-		</er:change>
-		<er:change>
-			<er:old-text ref="merge-keys" select="p[5]"/>
-			<er:new-text version="3.0">
-				<p>The value of <phrase diff="add" at="E3">the</phrase> <var>N</var>th merge key value of an item
-					<var>J</var> in a <termref def="dt-merge-input-sequence">merge input
-						sequence</termref>
-					<var>S</var> is the result of the expression in the <code>select</code> attribute of
-					the <var>N</var>th <elcode>xsl:merge-key</elcode> child of the corresponding
-					<elcode>xsl:merge-source</elcode> element, or in the absence of the
-					<code>select</code> attribute, the result of the contained <termref
-						def="dt-sequence-constructor"/>. This is evaluated with a <termref
-							def="dt-singleton-focus"/> based on <var>J</var>, or, if
-					<code>streamable=yes</code> is specified on the <elcode>xsl:merge-source</elcode>,
-					a <termref def="dt-singleton-focus"/> based on a <function>snapshot</function> of
-					<var>J</var> (see <specref ref="streamable-merging"/>).</p>
-			</er:new-text>
-		</er:change>
+		
 		
 		
 	</er:erratum>
@@ -294,11 +264,12 @@
 			pointing out that this is the default in the case where the top-level package is rooted at an <code>xsl:stylesheet</code>
 			or <code>xsl:transform</code> element.</p>
 		</er:description>
-		<er:bugzilla bug="30179"/> 
+		<er:bugzilla bug="30181"/> 
 		<er:history>
 			<er:event status="proposed" date="2017-10-13" author="mike@saxonica.com"/>
 			<er:event status="reviewed" date="2017-10-19" author="mike@saxonica.com"/>
 			<er:event status="amended" date="2017-10-29" author="mike@saxonica.com"/>
+			<er:event status="amended" date="2019-02-13" author="mike@saxonica.com" note="corrected the bugzilla reference"/>
 		</er:history>
 		<er:impact>
 			<er:affects object="error" name="XTDE0040"/>
@@ -425,8 +396,1366 @@
 		</er:manual-change>
 		
 	</er:erratum>
+	
+	<er:erratum id="E12" category="editorial">
+		<er:description>
+			<p>Various minor spelling and grammatical mistakes.</p>
+		</er:description>
+		<er:bugzilla bug="30191"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+		</er:impact>
 		
+		<er:change>
+			<er:old-text ref="streaming-other-types" select="p[3]"/>
+			<er:new-text version="3.0">
+				<p>Maps, however, play <phrase diff="chg" at="E12">an</phrase> important role in enabling streamed applications
+					to be written. For example, a map can be used as the data structure maintained
+					by an accumulator (see <specref ref="accumulators"/>) to remember information
+					that has been retrieved from a streamed document, given that it is not possible to
+					revisit the same nodes later. There is also a special streamability rule for
+					map constructor expressions (see <specref ref="maps-streaming"/>) that allows
+					such an expression to make multiple downward selections in the streamed input
+					document: for example one can write <code>map{'authors':data(author), 'editors':data(editor)}</code>,
+					which gathers the values of these <phrase diff="del" at="E12">these</phrase> two elements, or sets of elements, from the input
+					stream, regardless what order they appear in &#x2014; even if they are interleaved.</p>
+			</er:new-text>
+		</er:change>
+		<er:change>
+			<er:old-text ref="uca-collations" select="table[1]//tr[td='alternate']/td[3]"/>
+			<er:new-text version="3.0">
+				<td valign="top">Controls the handling of characters such as spaces and hyphens;
+					specifically, the &#x201c;noise&#x201d; characters in the groups selected by the <code>maxVariable</code> parameter. 
+					The value <code>non-ignorable</code>
+					indicates that such characters are treated as distinct at the primary level 
+					(so <code>data base</code> sorts before <code>datatype</code>);
+					<code>shifted</code> indicates that they <phrase diff="del" at="E12">are</phrase> are used to differentiate two strings only at the 
+					<code>quaternary</code> level,
+					and <code>blanked</code> indicates that they are taken into account only at the <code>identical</code> level.
+				</td>
+			</er:new-text>
+		</er:change>
+		
+		<er:change>
+			<er:old-text ref="posture" select="p[3]"/>
+			<er:new-text version="3.0">
+				<p>The characterization of an expression as striding, crawling, climbing, or
+					roaming applies only to the streamed nodes in the <phrase diff="del" at="E12">the</phrase> result of the expression. The result of the expression
+					may also contain non-streamed (grounded) nodes or atomic values. For example
+					if <code>/x/y</code> is a striding expression, then <code>(/x/y | $doc//x)</code> is also striding, given
+					that <code>$doc</code> contains non-streamed nodes. The assertion that the nodes in the result of a striding
+					expression are in document order and are peers thus applies only to the subset of the nodes that are streamed.</p>
+			</er:new-text>
+		</er:change>
+		
+		<er:change>
+			<er:old-text ref="streamability-of-union-expressions" select="olist/item[3]/p"/>
+			<er:new-text version="3.0">
+				<p>If both operands are <termref
+					def="dt-climbing"/>, then <termref def="dt-climbing"/> and <phrase diff="del" at="E12">and</phrase> the
+					wider of the sweeps of the two operands (Example: <code>parent::A | */ancestor::B</code>).</p>
+			</er:new-text>
+		</er:change>
+		
+		<er:change>
+			<er:old-text ref="streamability-analysis-examples" select="example[2]/olist[2]/item[1]/p[1]"/>
+			<er:new-text version="3.0">
+				<p>First establish that <phrase diff="del" at="E12">that</phrase> the expression <code>@currency='USD'</code> is
+					<termref def="dt-motionless"/>, as follows:</p>
+			</er:new-text>
+		</er:change>
+		
+		<er:change>
+			<er:old-text ref="streamability-analysis-examples" select="example[2]/olist[2]/item[2]/p[1]"/>
+			<er:new-text version="3.0">
+				<p>Now establish that <phrase diff="del" at="E12">that</phrase> the expression <code>@currency='USD'</code> is
+					<termref def="dt-non-positional-predicate">non-positional</termref>, as
+					follows:</p>
+			</er:new-text>
+		</er:change>
 
+		<er:change>
+			<er:old-text ref="options" select="olist/item[7]/p"/>
+			<er:new-text version="3.0">
+				<p>In cases where an option is list-valued, by convention the value may be supplied
+					either as a sequence or as an array. Accepting a sequence is convenient if the
+					value is generated programmatically using an XPath expression; while accepting an array 
+					allows the options to be held in an <phrase diff="del" at="E12">an</phrase> external file in JSON format, to be read using
+					a call on the <code>fn:json-doc</code> function.</p>
+			</er:new-text>
+		</er:change>
+		
+		<er:change>
+			<er:old-text ref="func-xml-to-json" select="glist/gitem[5]/def[1]/p[3]"/>
+			<er:new-text version="3.0">
+				<p>A dynamic error is raised <errorref spec="FO" class="JS" code="0007"/> if the value of
+					<code>$input</code> includes a string labeled with <code>escaped="true"</code>, or
+					a key labeled with <code>escaped-key="true"</code>, where the content of the string or key
+					contains an invalid JSON escape sequence: specifically, where it contains a backslash (<code>\</code>) that is not followed by one
+					of the characters <code>"</code>, <code>\</code>, <code>/</code>, <code>b</code>, <code>f</code>, <code>n</code>, 
+					<code>r</code>, <code>t</code>, or <code>u</code>, or <phrase diff="del" at="E12">or </phrase>where it contains the characters <code>\u</code>
+					not followed by four hexadecimal digits (that is <code>[0-9A-Fa-f]{4}</code>).
+				</p>
+			</er:new-text>
+		</er:change>
+		<er:change>
+			<er:old-text ref="changes-since-nov-2015" select=".//p[loc/@href='bug29978']"/>
+			<er:new-text version="3.0">
+				<p><loc href="bug29978"/>: Rules relating <phrase diff="chg" at="E12">to</phrase> the permitted children of <elcode>xsl:stylesheet</elcode> apply
+					also to <elcode>xsl:package</elcode>. (*)</p>
+			</er:new-text>
+		</er:change>
+		
+		<er:change>
+			<er:old-text ref="classifying-instructions" select="p[1]"/>
+			<er:new-text version="3.0">
+				<p>This section describes how <termref def="dt-instruction">instructions</termref>
+					are classified with respect to their streamability. The criteria are given first
+					for <termref def="dt-literal-result-element">literal result elements</termref> and
+					<termref def="dt-extension-instruction">extension instructions</termref>,<phrase diff="del" at="E12">,</phrase> then
+					for each XSLT instruction, listed alphabetically.</p>
+			</er:new-text>
+		</er:change>
+		
+		<er:change>
+			<er:old-text ref="streamability-of-instance-of-expressions" select="note[1]/p[2]"/>
+			<er:new-text version="3.0">
+				<p>An <code>ItemType</code> of the form <code>document-node(element(X))</code>
+					is <phrase diff="chg" at="E12">an</phrase> exception to this rule because it matches a document node only if it
+					has exactly one element node child, and this cannot be determined without
+					consuming the document. </p>
+			</er:new-text>
+		</er:change>
+		
+		<er:change>
+			<er:old-text ref="source-document-instruction" select="olist[1]/item[1]/p[1]"/>
+			<er:new-text version="3.0">
+				<p>The source document is read from the supplied URI and parsed to form <phrase diff="chg" at="E12">a</phrase>
+					tree of nodes in the XDM data model.</p>
+			</er:new-text>
+		</er:change>
+		
+		<er:change>
+			<er:old-text ref="applicability-of-accumulators" select="p[3]"/>
+			<er:new-text version="3.0">
+				<p>The value of the <phrase diff="chg" at="S-bug28129"
+					><code>use-accumulators</code></phrase> attribute of
+					<elcode>xsl:source-document</elcode>, <elcode>xsl:merge-source</elcode>,
+					or <phrase diff="add" at="T-bug29803"><elcode>xsl:mode</elcode></phrase> must 
+					either <phrase diff="add" at="E12">be</phrase> a
+					whitespace-separated list of <termref def="dt-eqname">EQNames</termref>, or the
+					special token <code>#all</code>. The list may be empty, and the default value is
+					an empty list. Every <code>EQName</code> in the list must be the name of an
+					accumulator, visible in the containing package, and declared with
+					<code>streamable="yes"</code>. The value <code>#all</code> indicates that all
+					accumulators that are visible in the containing package are applicable (except
+					that for a streamable input document, an accumulator is not applicable unless
+					it specifies <code>streamable="yes"</code>).</p>
+				
+			</er:new-text>
+		</er:change>
+		
+		<er:change>
+			<er:old-text ref="streamability-xsl-merge" select="olist[1]/item[2]/p"/>
+			<er:new-text version="3.0">
+				<p>Otherwise, the <elcode>xsl:merge</elcode> instruction <phrase diff="add" at="E12">is</phrase> <termref
+					def="dt-roaming"/> and <termref def="dt-free-ranging"/>.</p>
+			</er:new-text>
+		</er:change>
+		
+		<er:manual-change>
+			<p>The schema for XSLT 3.0 (in Appendix H.1) contains two references to XSLT 2.1 that should be to XSLT 3.0.</p>
+		</er:manual-change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E13" category="editorial">
+		<er:description>
+			<p>Error XTDE0555 can apply to any kind of item, not only to nodes.</p>
+		</er:description>
+		<er:bugzilla bug="30192"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="error" name="XTDE0555"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="built-in-templates-fail" select="p[4]"/>
+			<er:new-text version="3.0">
+				<p>
+					<error spec="XT" type="dynamic" class="DE" code="0555">
+						<p>It is a <termref def="dt-dynamic-error">dynamic error</termref> if
+							<elcode>xsl:apply-templates</elcode>, <elcode>xsl:apply-imports</elcode>
+							or <elcode>xsl:next-match</elcode> is used to process <phrase diff="chg" at="E13">an item</phrase> using a mode
+							whose declaration specifies <code>on-no-match="fail"</code> when there is no
+							<termref def="dt-template-rule"/> in the <termref def="dt-stylesheet"/>
+							whose match pattern matches that <phrase diff="chg" at="E13">item</phrase>. </p>
+					</error>
+				</p>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E14" category="substantive">
+		<er:description>
+			<p>There are inconsistencies and inaccuracies in the handling of <code>build-tree</code> and <code>item-separator</code>
+				serialization attributes.</p>
+			<olist>
+				<item><p>The note in section 26, stating that the <code>item-separator</code> attribute has no effect
+				if the effective value of <code>build-tree</code> is yes, is incorrect. If the raw result is a sequence of
+					items, then separators will be inserted regardless of the value of <code>build-tree</code>.</p></item>
+				<item><p>The sentence in section 2.3.6.1, stating that "sequence normalization is carried out regardless of 
+					any <code>method</code> attribute in the unnamed output definition", is misleading, in that some output methods
+				do not carry out sequence normalization.</p></item>
+				<item><p>The conformance rules are unclear as to whether a processor that does not support serialization
+				must take account of the <code>item-separator</code> property.</p></item>
+				<item><p>The effect of specifying <code>build-tree="no"</code> with <code>method="xml"</code> is unclear,
+				because the rules for the XML serialization method imply building a tree. The same is true of other methods
+				such as XHTML and HTML.</p></item>
+
+			</olist>
+		</er:description>
+		<er:bugzilla bug="30208"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="element" name="xsl:output"/>
+			<er:affects object="element" name="xsl:result-document"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="serialization" select="ulist[2]/item[10]/note"/>
+			<er:new-text version="3.0">
+				<note><p>The <code>item-separator</code> attribute has no
+					effect if the sequence being serialized contains only one item<phrase diff="del" at="E14">, which will
+					always be the case if the effective value of <code>build-tree</code> is
+					<code>yes</code></phrase>.</p></note>
+			</er:new-text>
+		</er:change>
+		
+		<er:change>
+			<er:old-text ref="result-tree-construction" select="p[1]"/>
+			<er:new-text version="3.0">
+				<p>If a result tree is to be constructed from the <termref def="dt-raw-result"/>, then this is done
+					by applying the rules for the process of <xtermref spec="SER30" ref="sequence-normalization"/> as defined in 
+					<bibref ref="xslt-xquery-serialization-30"/>. This process takes as input the serialization parameters defined in the
+					unnamed <termref def="dt-output-definition"/> of the <termref def="dt-top-level-package"/>; though the only parameter
+					that is actually used by this process is <code>item-separator</code>. <phrase diff="del" at="E14">In particular, sequence normalization is carried
+					out regardless of any <code>method</code> attribute in the unnamed <termref def="dt-output-definition"/></phrase>.</p>
+			</er:new-text>
+		</er:change>
+		
+		<er:change>
+			<er:old-text ref="serialization-feature" select="note[1]" />
+			<er:new-text version="3.0">
+				<note>
+					<p>A processor that does not claim conformance with the serialization feature
+						<rfc2119>may</rfc2119> offer alternative serialization capabilities, and these
+						<rfc2119>may</rfc2119> make use of the serialization parameters defined on
+						<elcode>xsl:output</elcode> and/or <elcode>xsl:result-document</elcode>.
+					<phrase diff="add" at="E14">Such a processor <rfc2119>may</rfc2119> implement selected
+					parts of the serialization capabilities defined in this specification. For example,
+					it <rfc2119>may</rfc2119> implement selected output methods, or selected serialization properties. 
+						It <rfc2119>may</rfc2119>
+					implement sequence normalization using the <code>item-separator</code> property even if it
+						has no other serialization capabilities.</phrase>
+	                </p>
+				</note>
+			</er:new-text>
+		</er:change>
+		
+		<er:change>
+			<er:old-text ref="creating-result-trees" select="p[4]"/>
+			<er:new-text version="3.0">
+				<p>If the result is not serialized, then the decision whether to
+					return the <termref def="dt-raw-result"/> or to construct a tree depends on the effective
+					value of the <code>build-tree</code> attribute. If the effective value of
+					the <code>build-tree</code> attribute is <code>yes</code>, then 
+						a <termref def="dt-final-result-tree"/> is created
+						by invoking the process of <xtermref spec="SER30" ref="sequence-normalization"/>.
+					<phrase diff="del" at="E14"> The default for the
+					<code>build-tree</code> attribute depends on the serialization method. For the
+					<code>xml</code>, <code>html</code>, <code>xhtml</code>, and <code>text</code>
+					methods the default value is <code>yes</code>. For
+						the <code>json</code> and <code>adaptive</code> methods (available only with XPath
+						3.1) the default value is <code>no</code>.</phrase>
+				<phrase diff="add" at="E14">Conversely, if the result <emph>is</emph> serialized, then the
+				decision whether or not to construct a tree depends on the choice of serialization method,
+				and the <code>build-tree</code> attribute is then ignored. For example, with <code>method="xml"</code>
+				a tree is always constructed, whereas with <code>method="json"</code> a tree is never constructed.</phrase></p>
+			</er:new-text>
+		</er:change>
+		
+		<er:change>
+			<er:old-text ref="serialization" select="p[starts-with(., 'The build-tree attribute')]"/>
+			<er:new-text version="3.0">
+				<p>If the result is not serialized, then the decision whether to
+					return the <termref def="dt-raw-result"/> or to construct a tree depends on the effective
+					value of the <code>build-tree</code> attribute. If the effective value of
+					the <code>build-tree</code> attribute is <code>yes</code>, then 
+					a <termref def="dt-final-result-tree"/> is created
+					by invoking the process of <xtermref spec="SER30" ref="sequence-normalization"/>.
+                    Conversely, if the result <emph>is</emph> serialized, then the
+						decision whether or not to construct a tree depends on the choice of serialization method,
+						and the <code>build-tree</code> attribute is then ignored. For example, with <code>method="xml"</code>
+						a tree is always constructed, whereas with <code>method="json"</code> a tree is never constructed.</p>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E15" category="substantive">
+		<er:description>
+			<p>It is unclear exactly what the scope of the <code>default-validation</code> attribute is.</p>
+			<olist>
+				<item><p>It is clearly intended that the attribute applies only within the subtree of the stylesheet
+					rooted at the element on which it appears, so the phrase "This default applies within the containing stylesheet module or package" could
+				be misinterpreted.</p></item>
+				<item><p>It is stated that the attribute "determines the validation applied to the implicit final result 
+					tree created in the absence of an xsl:result-document instruction", but if there
+				are several <code>default-validation</code> attributes, it's not clear which one of them applies; furthermore,
+				the implicit validation proposed here is inconsistent with the description in section 2.3.6.1, Result Tree Construction.</p></item>
+				
+				
+			</olist>
+		</er:description>
+		<er:bugzilla bug="30211"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="attribute" name="[xsl:]default-validation"/>
+			<er:affects object="element" name="xsl:result-document"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="validation" select="p[4]"/>
+			<er:new-text version="3.0">
+				<p diff="chg" at="P">The <code>[xsl:]default-validation</code> attribute defines the
+					default value of the <code>validation</code> attribute of all
+					<elcode>xsl:element</elcode>, <elcode>xsl:attribute</elcode>,
+					<elcode>xsl:copy</elcode>, <elcode>xsl:copy-of</elcode>,
+					<elcode>xsl:document</elcode>, and <elcode>xsl:result-document</elcode>
+					instructions, and of the <code>xsl:validation</code> attribute of all <termref
+						def="dt-literal-result-element">literal result elements</termref>,
+					<phrase diff="chg" at="E15"> appearing as descendants of the element on which the attribute appears,
+					unless there is an inner element that defines a different default</phrase>. <phrase diff="del" at="E15">It also determines
+					the validation applied to the implicit <termref def="dt-final-result-tree">final
+						result tree</termref> created in the absence of an
+					<elcode>xsl:result-document</elcode> instruction.</phrase> This default <phrase diff="del" at="E15">applies within the
+					containing <termref def="dt-stylesheet-module">stylesheet module</termref> or
+						<termref def="dt-package"/>: it </phrase> does not extend to included or imported stylesheet
+						modules or used packages. If the attribute is omitted, the default is
+					<code>strip</code>. The permitted values are <code>preserve</code> and
+					<code>strip</code>.</p>
+				
+				<p><phrase diff="add" at="E15">The <code>default-validation</code> attribute on the outermost element of the <termref def="dt-principal-stylesheet-module"/>
+					of the <termref def="dt-root-package"/> also determines the validation applied to the implicit <termref def="dt-final-result-tree">final
+						result tree</termref> created in the absence of an
+					<elcode>xsl:result-document</elcode> instruction.</phrase></p>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E16" category="substantive">
+		<er:description>
+			<p>The rules for the base URI of nodes generated using <code>xsl:copy-of</code> are unclear.</p>
+			<olist>
+				<item><p>The specification says that "The base URI of a node is copied...". It is unclear whether "a node"
+					here refers only to nodes that are explicitly selected, or whether it also applies to their descendants.</p></item>
+				<item><p>It is not stated clearly what happens to the base URI of descendant nodes. XQuery has clear
+				rules for this case, and XSLT should adopt them.</p></item>
+				
+			</olist>
+		</er:description>
+		<er:bugzilla bug="30222"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="attribute" name="xml:base"/>
+			<er:affects object="element" name="xsl:copy-of"/>
+			<er:affects object="feature" name="constructing complex content"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="copy-of" select="p[starts-with(., 'The base URI of a node is copied')]"/>
+			<er:new-text version="3.0">
+				<p>For any node <var>N</var> that is explicitly selected by the evaluation of the <code>select</code>
+				expression, the base URI of the new copy is as follows:</p>
+				
+				<ulist>
+					<item><p>If <var>N</var> is an element node having an <code>xml:base</code> attribute,
+						the base URI of the new node is taken as the value of the <code>xml:base</code> attribute,
+					resolved if it is relative against the static base URI of the <elcode>xsl:copy-of</elcode> instruction.</p></item>
+					<item><p>Otherwise, the base URI of the new copy is the same as the base URI of <var>N</var>.</p></item>
+				</ulist>
+				
+				<p>For any element or processing-instruction node that has <var>N</var> as an ancestor, the base URI
+				of the new copy is set to be the same as that of its new parent, with the following exception: if a copied
+				element has an <code>xml:base</code> attribute, then its base URI is set to the value of that attribute,
+				resolved if it is relative against the base URI of the new parent node.</p>
+				
+				<note><p>If two elements in a subtree have different base URIs for some reason unconnected with
+				<code>xml:base</code> attributes (for example, if they originated in different external entities),
+				then these differences are lost when the subtree is copied.</p></note>
+				
+				<note><p>As a consequence of rules specified elsewhere (see <specref ref="constructing-complex-content"/>),
+				if a node created using the <elcode>xsl:copy-of</elcode> instruction is subsequently attached as a child
+				to a new element or document node, the final copy of the node inherits its base URI from its new parent node,
+				unless this is overridden using an <code>xml:base</code> attribute.</p></note>
+				
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E17" category="substantive">
+		<er:description>
+			<p>Error XTDE0450 (which occurs when a function/map/array is added to the content of an element) should
+				be a type error rather than a dynamic error, so that it can be detected and reported statically.</p>
+		</er:description>
+		<er:bugzilla bug="30223"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="error" name="XTDE0450"/>
+			<er:affects object="feature" name="constructing complex content"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="constructing-complex-content" select="olist[1]/item[8]/p[6]"/>
+			<er:new-text version="3.0">
+				<p diff="add" at="C">
+					<error spec="XT" type="dynamic" class="DE" code="0450">
+						<p>It is a <termref def="dt-type-error"><phrase diff="chg" at="E17">type</phrase> error</termref> if the result
+							sequence contains a function item. </p>
+					</error>
+				</p>
+				<note><p>The error code reflects the fact that this error was at one time classified as a dynamic error
+				rather than a type error.</p></note>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E18" category="editorial">
+		<er:description>
+			<p>An oddity in the rules for patterns is that <code>doc('a.xml')/(id('abc'))</code> is permitted, whereas
+				<code>doc('a.xml')/id('abc')</code> is not. This is sufficiently strange that an explanatory note
+			is warranted.</p>
+		</er:description>
+		<er:bugzilla bug="30229"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="feature" name="pattern syntax"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="pattern-syntax" select="." action="insert-as-last"/>
+			<er:new-text version="3.0">
+				<note><p>A peculiarity of this grammar is that <code>doc('a.xml')/(id('abc'))</code>
+					is a valid pattern, while <code>doc('a.xml')/id('abc')</code> is not: the <code>/</code> 
+				operator must be followed either by a parenthesized expression, or by an axis step.</p></note>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	<!-- E19 not used -->
+	
+	<er:erratum id="E20" category="substantive">
+		<er:description>
+			<p>Section 25.4.1.2 states that the value of the <code>[xsl:]type</code> attribute is a QName;
+			the rules actually permit any EQName.</p>
+			<p>Moreover, in the description of error XTSE1520, the list of places where the <code>[xsl:]type</code>
+			attribute can appear is incomplete.</p>
+		</er:description>
+		<er:bugzilla bug="30234"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="error" name="XTSE1520"/>
+			<er:affects object="attribute" name="[xsl:]type"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="validation-xsl-type" select="p[1]"/>
+			<er:new-text version="3.0">
+				<p>The <code>[xsl:]type</code> attribute takes as its value an <phrase diff="chg" at="E20"><termref def="dt-eqname"
+					>EQName</termref></phrase>.
+					This <rfc2119>must</rfc2119> be the name of a type definition included in the
+					<termref def="dt-in-scope-schema-component">in-scope schema
+						components</termref> for the stylesheet. If the QName has no prefix, it is
+					expanded using the default namespace established using the effective
+					<code>[xsl:]xpath-default-namespace</code> attribute if there is one;
+					otherwise, it is taken as being a name in no namespace.</p>
+			</er:new-text>
+		</er:change>
+		
+		<er:change>
+			<er:old-text ref="validation-xsl-type" select="p[5]"/>
+			<er:new-text version="3.0">
+				<p>
+					<error spec="XT" type="static" class="SE" code="1520">
+						<p>It is a <termref def="dt-static-error">static error</termref> if the
+							value of the <code>type</code> attribute of an
+							<elcode>xsl:element</elcode>, <elcode>xsl:attribute</elcode>,
+							<elcode>xsl:copy</elcode>, <elcode>xsl:copy-of</elcode>,
+							<elcode>xsl:document</elcode>, <elcode>xsl:result-document</elcode>,
+							<phrase diff="add" at="E20"><elcode>xsl:source-document</elcode>, or <elcode>xsl:merge-source</elcode></phrase>
+							instruction, or the <code>xsl:type</code> attribute of a literal result
+							element, is not a valid <code>QName</code>, or if it uses a prefix that
+							is not defined in an in-scope namespace declaration, or if the QName is
+							not the name of a type definition included in the <termref
+								def="dt-in-scope-schema-component">in-scope schema
+								components</termref> for the <termref def="dt-package" diff="chg"
+									at="R-bug24763">package</termref>.</p>
+					</error>
+				</p>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E21" category="editorial">
+		<er:description>
+			<p>In the context of function conversion rules, a note in section 5.2 says that 
+				"Attempting to convert the string 2003-02-29 to a date is a dynamic error rather than a type error". 
+			In fact such a conversion will never be attempted by the function conversion rules; a clearer example
+			would be conversion of an <code>xs:untypedAtomic</code> value.</p>
+			
+		</er:description>
+		<er:bugzilla bug="30236"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="feature" name="function conversion rules"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="expressions" select="note[2]"/>
+			<er:new-text version="3.0">
+				<note><p>Note the distinction between the two kinds of error that may occur. Attempting to
+					convert an integer to a date is a type error, because such a conversion is never
+					possible. Type errors can be reported statically if they can be detected
+					statically, whether or not the construct in question is ever evaluated. Attempting
+					to convert the <phrase diff="chg" at="E21"><code>xs:untypedAtomic</code></phrase> value <code>"2003-02-29"</code> to a date is a dynamic error rather
+					than a type error, because the problem is with this particular value, not with its
+					type. Dynamic errors are reported only if the instructions or expressions that
+					cause them are actually evaluated.</p></note>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E22" category="editorial">
+		<er:description>
+			<p>The rules for <code>xsl:context-item</code> and <code>xsl:global-context-item</code> say that no
+				conversion is attempted to the declared type. But the error that occurs if the supplied
+			item is of the wrong type is <code>XTTE0590</code>, whose description assumes that a conversion
+			is taking place.</p>
+			
+		</er:description>
+		<er:bugzilla bug="30238"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="error" name="XTTE0590"/>
+			<er:affects object="element" name="xsl:context-item"/>
+			<er:affects object="element" name="xsl:global-context-item"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="parameter-type" select="p[4]"/>
+			<er:new-text version="3.0">
+				<p>
+					<error spec="XT" type="type" class="TE" code="0590">
+						<p>It is a <termref def="dt-type-error">type error</termref> if the 
+							<termref def="dt-supplied-value">supplied value</termref> of a parameter,
+							or of the context item, does not match the required type, after applying any permitted conversions.</p>
+					</error>
+				</p>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E23" category="editorial">
+		<er:description>
+			<p>In the rules for tunnel parameters, the phrase "When a template accesses the value of a tunnel 
+				parameter by declaring it with <code>&lt;xsl:param tunnel="yes"></code>" uses confusing language.</p>
+			
+		</er:description>
+		<er:bugzilla bug="30240"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="element" name="xsl:param"/>
+			<er:affects object="attribute" name="tunnel"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="tunnel-params" select="p[4]"/>
+			<er:new-text version="3.0">
+				<p>When a template specifies <code>&lt;xsl:param tunnel="yes"&gt;</code>, this declares its intention to make use of  
+					a <termref def="dt-tunnel-parameter">tunnel	parameter</termref>; it does not remove the parameter from the base set
+					of tunnel parameters that is passed on to any templates called by this template.</p>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E24" category="editorial">
+		<er:description>
+			<p>Section 5.3 should make it clear that it only defines the static and dynamic context for "ordinary" XPath
+			expressions in a stylesheet, and that the rules for (a) static expressions (for example <code>xsl:use-when</code>), and (b)
+			dynamically evaluated expressions (<code>xsl:evaluate</code>) are to be found elsewhere.</p>
+			
+		</er:description>
+		<er:bugzilla bug="30241"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="function" name="function-available"/>
+			<er:affects object="function" name="function-lookup"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="static-and-dynamic-context" select="p[1]" action="insert-after"/>
+			<er:new-text version="3.0">
+				<p>This section does not apply to <termref ref="dt-static-expression">static expressions</termref>
+				(whose context is defined in <specref ref="static-expression"/>), nor to XPath expressions evaluated
+				using <elcode>xsl:evaluate</elcode> (whose context is defined in <specref ref="evaluate-dynamic-context"/>).</p>
+			</er:new-text>
+		</er:change>
+	
+		
+	</er:erratum>
+	
+	<!-- No E25 -->
+
+	
+	<er:erratum id="E26" category="editorial">
+		<er:description>
+			<p>The specification defines default values for <code>media-type</code> with output
+			methods XML, HTML, etc, but not for JSON.</p>
+			
+		</er:description>
+		<er:bugzilla bug="30245"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="attribute" name="media-type"/>
+			<er:affects object="element" name="xsl:output"/>
+			<er:affects object="element" name="xsl:result-document"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="serialization" select=".//p[contains(., 'The value of the media-type attribute')]"/>
+			<er:new-text version="3.0">
+				<p>The value of the <code>media-type</code> attribute provides the value of the
+					<code>media-type</code> parameter to the serialization method. The default
+					value is <code>text/xml</code> in the case of the <code>xml</code> output method,
+					<code>text/html</code> in the case of the <code>html</code> and
+					<code>xhtml</code> output methods, and <code>text/plain</code> in the case of
+					the <code>text</code> output method. <phrase diff="add" at="E26">The default for the <code>json</code> output method
+				is <code>application/json</code>; the default for the <code>adaptive</code> output method
+				is <termref def="dt-implementation-defined"/>.</phrase></p>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E27" category="substantive">
+		<er:description>
+			<p>The function <code>map:find</code> depends on arrays, which are
+				only available with XPath 3.1.</p>
+			
+		</er:description>
+		<er:bugzilla bug="30253"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="function" name="map:find"/>
+			<er:affects object="feature" name="XPath 3.1"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="map-functions" select="p[1]"/>
+			<er:new-text version="3.0">
+				<p>XSLT 3.0 provides a number of functions that operate on maps, or that are useful in
+					conjunction with maps. These functions are specified in <bibref
+						ref="xpath-functions-31"/>. <phrase diff="add" at="E27">With the exception of <code>map:find</code></phrase>, 
+					they are available with XSLT 3.0 whether or not
+					the processor offers the <termref def="dt-xpath31-feature"/>.
+					<phrase diff="add" at="E27">The <code>map:find</code> function is defined to use arrays, and
+						is therefore only available when the processor offers the <termref def="dt-xpath31-feature"/>.</phrase></p>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+<!-- E28 omitted -->
+	
+	<er:erratum id="E29" category="editorial">
+		<er:description>
+			<p>The rules for consistency of merge keys in <code>xsl:merge</code> can be misread.</p>
+			
+		</er:description>
+		<er:bugzilla bug="30267"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="element" name="xsl:merge"/>
+			<er:affects object="element" name="xsl:merge-source"/>
+			<er:affects object="element" name="xsl:merge-key"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="merge-keys" select="ulist[2]/item[2]/p"/>
+			<er:new-text version="3.0">
+				<p>For each integer <var>J</var> in 1..<var>N</var>, consider the set <var>S</var> of
+					<elcode>xsl:merge-key</elcode> elements that are in position <var>J</var>
+					among the <elcode>xsl:merge-key</elcode> children of their parent
+					<elcode>xsl:merge-source</elcode> element. For each attribute <var>A</var> in the
+					set <code>lang</code>, <code>order</code>, <code>collation</code>,
+					<code>case-order</code>, and <code>data-type</code> it must be the case that for any
+					two elements <var>s/1</var> and <var>s/2</var> in <var>S</var>, the effective value
+					of attribute <var>A</var> on <var>s/1</var> is the same as the effective value
+					of attribute <var>A</var> on <var>s/2</var>, where two attributes are said to have
+					the same effective value if either (a) both attributes are absent, or (b) both attributes
+					are present and the results of evaluating them (they are attribute value templates) are codepoint-equal. 
+					Furthermore, in the case of the <code>collation</code>
+					attribute, the absolute collation URI must be the same after resolving against the base URI.</p>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E30" category="substantive">
+		<er:description>
+			<p>The stylesheet <code>xml-to-json.xsl</code> fails to declare the mode that it uses,
+				which is required because the default value of <code>declared-modes</code>
+				is true.</p>
+			
+		</er:description>
+		<er:bugzilla bug="30288"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="function" name="xml-to-json"/>
+			<er:affects object="attribute" name="declared-modes"/>
+		</er:impact>
+		
+		<er:manual-change>
+			<p>In the <code>xml-to-json.xsl</code> stylesheet listed in Appendix B.2, add the declaration 
+				<code>&lt;xsl:mode name="j:xml-to-json"/></code>.</p>
+		</er:manual-change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E31" category="substantive">
+		<er:description>
+			<p>The streamability rules for stylesheet functions with <code>streamability="ascent"</code>
+				are incorrect.</p>
+			
+		</er:description>
+		<er:bugzilla bug="30289"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="attribute" name="streamability"/>
+			<er:affects object="element" name="xsl:function"/>
+			<er:affects object="feature" name="streaming"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="category-ascent" select="olist/item[1]/p[1]"/>
+			<er:new-text version="3.0">
+				<p>Let <var>P0</var> and <var>S0</var> be the <termref def="dt-posture"/>
+					and <termref def="dt-sweep"/> obtained by assessing the function call
+					using the <termref def="dt-general-streamability-rules"/>, where the
+					operands are the arguments to the function call, with an <termref
+						def="dt-operand-usage"/> for the first argument of <phrase diff="chg" at="E31"><termref
+							def="dt-transmission"/></phrase>, and an <termref def="dt-operand-usage"/> for
+					arguments after the first being the <termref
+						def="dt-type-determined-usage"/> based on the declared type of the
+					corresponding <termref def="dt-function-parameter"/>.</p>
+			</er:new-text>
+		</er:change>
+		
+		<er:change>
+			<er:old-text ref="category-ascent" select="olist/item[6]" action="insert-after"/>
+			<er:new-text version="3.0">
+				<item><p>If the declared return type of the function does not permit nodes, then the function
+					call is <termref def="dt-grounded"/> and <termref def="dt-motionless"/>.</p></item>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E32" category="editorial">
+		<er:description>
+			<p>The rules for compatibility of overriding functions refer incorrectly to the <code>streamable</code>
+				attribute of <code>xsl:function</code>, rather than to the <code>streamability</code> attribute.</p>
+			
+		</er:description>
+		<er:bugzilla bug="30297"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="attribute" name="streamability"/>
+			<er:affects object="element" name="xsl:function"/>
+			<er:affects object="element" name="xsl:override"/>
+			<er:affects object="feature" name="streaming"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="package-overriding-components" select="ulist[1]/item[2]/olist[1]/item[4]/p"/>
+			<er:new-text version="3.0">
+				<p>If the overridden function has a <code>streamability</code> attribute with a value other than
+					<code>unspecified</code>, then the overriding function must have a <code>streamability</code>
+					attribute with the same value.</p>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+    <!-- E33 not used -->
+	
+	<er:erratum id="E34" category="editorial">
+		<er:description>
+			<p>The specification should clarify whether it is permissible to have two global variables with the same name,
+				one static and one non-static, at different import precedences.</p>
+			
+		</er:description>
+		<er:bugzilla bug="30301"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="attribute" name="static"/>
+			<er:affects object="element" name="xsl:variable"/>
+			<er:affects object="element" name="xsl:param"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="static-params" select="." action="insert-as-last"/>
+			<er:new-text version="3.0">
+				<note><p>It is not an error to have two global variables or parameters with the same name,
+				one static and one non-static, provided that they have different import precedence. If the static
+				variable has higher precedence, then it will be used as the selected binding for all global variable
+				references with this name, whether or not they appear in static expressions. If the non-static variable
+				has higher precedence, then the static variable will be used as the selected binding for variable
+				references appearing in static expressions, while the non-static variable will be used for variable
+				references in non-static expressions. The two variables may have different values. In the case of
+				global parameters, however, a transformation API <rfc2119>may</rfc2119> restrict them to have the
+				same value.</p>
+				
+				<p>If the two variable declarations have the same import precedence, and there is no declaration
+					with higher import precedence, then error condition 
+					<errorref spec="XT" class="SE" code="0630"/> applies.</p></note>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E35" category="substantive">
+		<er:description>
+			<p>The specification states that overriding variables must have an identical declared type; it fails
+			to say how this applies when one of the variables has no declared type.</p>
+			
+		</er:description>
+		<er:bugzilla bug="30313"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="attribute" name="static"/>
+			<er:affects object="element" name="xsl:variable"/>
+			<er:affects object="element" name="xsl:param"/>
+			<er:affects object="element" name="xsl:override"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="package-overriding-components" select="ulist[1]/item[contains(p, 'Two variables (including parameters)')]/olist[1]/item[1]/p[1]"/>
+			<er:new-text version="3.0">
+				<p>Their declared types are <termref def="dt-identical-types"
+					>identical</termref>. For this purpose, the declared type is the first of the following that applies:</p>
+				<olist>
+					<p>If there is an <code>as</code> attribute, then the type defined by that attribute.</p>
+					<p>If there is a <code>select</code> attribute, then <code>item()*</code>.</p>
+					<p>If there is a non-empty sequence constructor, then <code>document-node()</code>.</p>
+					<p>Otherwise, <code>xs:string</code>.</p>
+				</olist>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E36" category="editorial">
+		<er:description>
+			<p>It should be made more clear that in <elcode>xsl:accept</elcode> and <elcode>xsl:expose</elcode>,
+				a <code>NameTest</code> with no arity cannot be used to identify functions.</p>
+			
+		</er:description>
+		<er:bugzilla bug="30323"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="element" name="xsl:accept"/>
+			<er:affects object="element" name="xsl:expose"/>
+		</er:impact>
+		
+		<er:change>
+			<!-- TODO -->
+			<er:old-text ref="visibility" select="p[10]"/>
+			<er:new-text version="3.0">
+				<p>The value may be a <code>NamedFunctionRef</code> only in the case of stylesheet
+					functions, and distinguishes functions with the same name and different
+					arity. <phrase diff="add" at="E36">A <xnt spec="XP30" ref="prod-xpath30-NameTest">NameTest</xnt> 
+						on its own (that is, with no arity) cannot be used to identify a function.</phrase></p>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E37" category="substantive">
+		<er:description>
+			<p>The rules for the default priority of patterns do not cover patterns of the form <code>match="Q{uri}*</code>.</p>
+			
+		</er:description>
+		<er:bugzilla bug="30375"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="element" name="xsl:template"/>
+			<er:affects object="attribute" name="match"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="default-priority" select="olist[1]//p[code[.='*:']]"/>
+			<er:new-text version="3.0">
+				<p>If the pattern is a <nt def="PathExprP">PathExprP</nt> taking the form of an
+					<xnt spec="Names" ref="NT-NCName">NCName</xnt><code>:*</code><phrase diff="add" at="E37">, 
+						<xnt spec="XP30" ref="prod-xpath30-BracedURILiteral">BracedURILiteral</xnt><code>*</code>,</phrase> or
+					<code>*:</code><xnt spec="Names" ref="NT-NCName">NCName</xnt>, optionally
+					preceded by a <nt def="ForwardAxisP">ForwardAxisP</nt>, then the priority is
+					&#x2212;0.25.</p>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E38" category="substantive">
+		<er:description>
+			<p>The rules for handling errors in the evaluation of accumulators assume the use of <code>initial-value</code>
+				or <code>select</code> expressions, but the same rules should apply when the accumulator is evaluated
+				using a sequence constructor.</p>
+			
+		</er:description>
+		<er:bugzilla bug="30376"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="element" name="xsl:accumulator"/>
+			<er:affects object="element" name="xsl:accumulator-rule"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="errors-in-accumulators" select="p[1]"/>
+			<er:new-text version="3.0">
+				<p>If a dynamic error occurs when evaluating the <code>initial-value</code> expression
+					of <elcode>xsl:accumulator</elcode>, or the <code>select</code> expression of <elcode>xsl:accumulator-rule</elcode>,
+					<phrase diff="add" at="E38">or the sequence constructor contained in <elcode>xsl:accumulator-rule</elcode></phrase>,
+					then the error is signaled as an error from any subsequent call on <function>accumulator-before</function>
+					or <function>accumulator-after</function> that references the accumulator. If no such call on <function>accumulator-before</function>
+					or <function>accumulator-after</function> happens, then the error goes unreported.</p>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E39" category="substantive">
+		<er:description>
+			<p>The <code>xsl:merge</code> instruction is under-specified in cases where merge keys evaluate to
+				an empty sequence or to <code>NaN</code>.</p>
+			
+		</er:description>
+		<er:bugzilla bug="30377"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="element" name="xsl:merge"/>
+			<er:affects object="element" name="xsl:merge-key"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="merge-action" select="p[4]"/>
+			<er:new-text version="3.0">
+				<p><phrase diff="add" at="E39">Comparison of merge key values follows the rules for <elcode>xsl:sort</elcode>
+				given in <specref ref="comparing-sort-keys"/>. This means that except for special cases such as empty sequences and NaN,
+				</phrase> two sets of merge key values are distinct if any corresponding items in
+					the two sets of values do not compare equal under the rules for the XPath
+					<code>eq</code> operator, under the collating rules for the corresponding merge
+					key definition. In rare cases, when considering more than two sets of merge key
+					values, ambiguities may arise because of the non-transitivity of the <code>eq</code>
+					operator when applied across different numeric types. In this situation, the
+					partitioning of items into sets having distinct key values is handled in the same way
+					as for <elcode>xsl:for-each-group</elcode> (see <specref ref="non-transitivity"/>),
+					and is to some extent <termref def="dt-implementation-dependent"
+						>implementation-dependent</termref>. </p>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E40" category="substantive">
+		<er:description>
+			<p>In <code>xsl:merge</code>, error XTSE3195 does not consider the case where neither of the attributes
+				<code>for-each-source</code> or <code>for-each-item</code> is present.</p>
+			
+		</er:description>
+		<er:bugzilla bug="30265"/> 
+		<er:bugzilla bug="30378"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="element" name="xsl:merge"/>
+			<er:affects object="error" name="XTSE3195"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="merge-input-sequences" select="p[3]"/>
+			<er:new-text version="3.0">
+				<p><error spec="XT" class="SE" type="static" code="3195">
+					<p>If the <code>for-each-item</code> <phrase diff="add" at="E40">attribute</phrase> is present then the
+						<code>for-each-source</code>, <code>use-accumulators</code>, and <code>streamable</code> attributes
+						<rfc2119>must</rfc2119> <phrase diff="chg" at="E40">all</phrase> be absent. 
+						<phrase diff="chg" at="E40">If either or both of the 
+							<code>use-accumulators</code> or <code>streamable</code> attributes is present</phrase>
+						then the <code>for-each-source</code> attribute <rfc2119>must</rfc2119> be present. If the
+						<code>for-each-source</code> attribute is present then the
+						<code>for-each-item</code> attribute <rfc2119>must</rfc2119> be absent. </p>
+				</error></p>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E41" category="substantive">
+		<er:description>
+			<p>In <code>xsl:merge</code>, the effect of <code>sort-before-merge="yes"</code> is underspecified.</p>
+			
+		</er:description>
+		<er:bugzilla bug="30380"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="element" name="xsl:merge"/>
+			<er:affects object="element" name="xsl:merge-source"/>
+			<er:affects object="attribute" name="sort-before-merge"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="merge-input-sequences" select="example[1]/preceding-sibling::p[1]"/>
+			<er:new-text version="3.0">
+				<p>If the <code>sort-before-merge</code> attribute is absent or has
+					the value <code>no</code>, then each 
+					<phrase diff="add" at="E41">merge</phrase> input sequence <rfc2119>must</rfc2119> already
+					be in the correct order for merging (a dynamic error occurs if it is not). If the
+					attribute is present with the value <code>yes</code>, then each input sequence will
+					first be sorted to ensure that it is in the correct order. <phrase diff="add" at="E41">The
+					sorting is carried out as if by evaluating an <elcode>xsl:perform-sort</elcode> instruction
+					with <elcode>xsl:sort</elcode> children corresponding one-to-one with the <elcode>xsl:merge-key</elcode>
+					children of the <elcode>xsl:merge-source</elcode> element, differing only (a) in the change of element name,
+					and (b) in the addition of the attribute <code>stable="yes"</code> to the first such element.</phrase></p>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+		
+	
+	<er:erratum id="E42" category="substantive">
+		<er:description>
+			<p>In <code>xsl:merge-key</code>, the effect of having no <code>select</code> attribute and
+				no contained sequence constructor is underspecified.</p>
+						
+		</er:description>
+		<er:bugzilla bug="30130"/> 
+		<er:bugzilla bug="30382"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="element" name="xsl:merge-key"/>
+		</er:impact>
+		
+		
+		
+		<er:change>
+			<er:old-text ref="merge-keys" select="p[2]"/>
+			<er:new-text version="3.0">
+				<p>The merge key for each type of input sequence (that is, for each
+					<elcode>xsl:merge-source</elcode> element) is defined by a sequence of
+					<elcode>xsl:merge-key</elcode> element children of the
+					<elcode>xsl:merge-source</elcode> element. Each <elcode>xsl:merge-key</elcode>
+					element defines one merge key component. The syntax and semantics of an
+					<elcode>xsl:merge-key</elcode> element are closely based on the rules for the
+					<elcode>xsl:sort</elcode> element (<phrase diff="chg" at="E42">with minor exceptions noted below;
+					the only difference in syntax is the absence of the <code>stable</code> attribute</phrase>); 
+					the <phrase diff="add" at="E42">main</phrase> difference is that
+					<elcode>xsl:merge-key</elcode> elements do not cause a sort to take place, they
+					merely declare the existing sort order of the input sequence.</p>
+			</er:new-text>
+		</er:change>
+		
+		<er:change>
+			<er:old-text ref="merge-keys" select="p[5]"/>
+			<er:new-text version="3.0">
+				<p>The value of the <var>N</var>th item in the merge key of an item
+					<var>J</var> in a <termref def="dt-merge-input-sequence">merge input
+						sequence</termref>
+					<var>S</var> is computed as follows, where <var>K</var> is the <var>N</var>th
+					<elcode>xsl:merge-key</elcode> element of the relevant <elcode>xsl:merge-source</elcode>:</p>
+				
+				<olist>
+					<item>If <var>K</var> has a <code>select</code> attribute, then the result of
+					evaluating and atomizing that <code>select</code> expression;</item>
+					<item>If <var>K</var> contains a non-empty sequence constructor, then the result
+					of evaluating and atomizing that sequence constructor;</item>
+					<item>Otherwise, the result of atomizing the context item.</item>
+				</olist>
+				
+				<p>In each case the evaluation uses a <termref
+							def="dt-singleton-focus"/> based on <var>J</var>, or, if
+					<code>streamable=yes</code> is specified on the <elcode>xsl:merge-source</elcode> element,
+					a <termref def="dt-singleton-focus"/> based on a <function>snapshot</function> of
+					<var>J</var> (see <specref ref="streamable-merging"/>).</p>
+			</er:new-text>
+		</er:change>
+
+		
+	</er:erratum>
+	
+	<er:erratum id="E43" category="substantive">
+		<er:description>
+			<p>The effect of specifying <code>input-type-annotations="unspecified"</code> is unspecified.</p>
+			
+		</er:description>
+		<er:bugzilla bug="30383"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="element" name="xsl:stylesheet"/>
+			<er:affects object="element" name="xsl:transform"/>
+			<er:affects object="element" name="xsl:package"/>
+			<er:affects object="attribute" name="input-type-annotations"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="stripping-annotations" select="p[3]"/>
+			<er:new-text version="3.0">
+				<p>Such stripping of <termref def="dt-type-annotation">type annotations</termref> can be
+					requested by specifying <code>input-type-annotations="strip"</code> on the 
+					<elcode>xsl:package</elcode> element. This
+					attribute has three permitted values: <code>strip</code>, <code>preserve</code>, and
+					<code>unspecified</code>. The default value is <code>unspecified</code>. 
+					<phrase diff="add" at="E43"/>Specifying <code>unspecified</code> has the same effect
+					as omitting the attribute.</p>
+			</er:new-text>
+		</er:change>
+		
+		<er:change>
+			<er:old-text ref="stripping-annotations" select="p[5]" action="insert-after"/>
+			<er:new-text version="3.0">
+				<p>Type annotations are stripped from relevant source documents if at least
+					one <termref def="dt-stylesheet-module">stylesheet module</termref> in the
+					<termref def="dt-stylesheet">stylesheet</termref> specifies
+					<code>input-type-annotations="strip"</code> on the <elcode>xsl:package</elcode>,
+				    <elcode>xsl:stylesheet</elcode>, or <elcode>xsl:transform</elcode> element.</p>
+			</er:new-text>
+		</er:change>
+				
+		
+	</er:erratum>
+	
+	<er:erratum id="E44" category="substantive">
+		<er:description>
+			<p>In <elcode>xsl:merge-source</elcode>, the rules are defined by reference to <elcode>xsl:source-document</elcode>,
+				but the analogy is imperfect.</p>
+			
+			<p>In particular:</p>
+			
+			<ulist>
+				<item>The rules for validation refer to "an <elcode>xsl:source-document</elcode> instruction specifying
+					<code>streamable="yes"</code>; but the rules for validation in <elcode>xsl:source-document</elcode> do not
+				depend on the value of the <code>streamable</code> attribute.</item>
+				<item>Saying that the rules "are the same as" some other rules requires a rather more precise reference so that
+				the reader knows which rules apply and which do not. And since the rules for <elcode>xsl:source-document</elcode>
+				are themselves specified by reference to the rules for <elcode>xsl:copy-of</elcode>, there is plenty of scope
+				for misunderstanding of edge cases. In fact, this indirection appears to add nothing; the semantics can be equally
+				well defined by a direct reference to section 25.4.</item>
+			</ulist>
+			
+		</er:description>
+		<er:bugzilla bug="30384"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="element" name="xsl:merge"/>
+			<er:affects object="attribute" name="validation"/>
+			<er:affects object="feature" name="streaming"/>
+			<er:affects object="feature" name="schema-awareness"/>
+		</er:impact>
+		
+		<er:change>
+			<!-- TODO -->
+			<er:old-text ref="merge-input-sequences" select="note[1]/following-sibling::p[1]"/>
+			<er:new-text version="3.0">
+				<p>The attributes <code>validation</code> and
+					<code>type</code> are used to control schema validation of documents read by
+					virtue of their appearance in the result of the <code>for-each-source</code>
+					expression. These attributes are mutually exclusive <errorref spec="XT" class="SE"
+						code="1505"/>. <phrase diff="del" at="E44">The rules are the same as for an <elcode>xsl:source-document</elcode>
+					instruction specifying <code>streamable="yes"</code>.</phrase> 
+					If the <code>for-each-source</code> attribute is absent, then the
+					<code>validation</code> and <code>type</code> attributes <rfc2119>must</rfc2119>
+					both be absent. <phrase>The process of validation follows the rules defined in <specref ref="validation"/>.</phrase></p>
+			</er:new-text>
+		</er:change>
+		
+		
+	</er:erratum>
+	
+	<er:erratum id="E45" category="substantive">
+		<er:description>
+			<p>In <code>xsl:sort</code>, it needs to be made clear that the <code>collation</code>, <code>case-order</code>,
+				and <code>lang</code> attributes are ignored when <code>data-type="number"</code>; this is not an error.</p>
+			
+		</er:description>
+		<er:bugzilla bug="30386"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="element" name="xsl:sort"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="collating-sequences" select="." action="insert-as-last"/>
+			<er:new-text version="3.0">
+				<p>The <code>collation</code>, <code>case-order</code>,
+					and <code>lang</code> attributes are ignored when no string comparisons are performed
+				during the sorting process; this includes the cases where (a) the sequences to be sorted are empty,
+				(b) the sort keys are of a non-string type such as <code>xs:integer</code>, or (c) <code>data-type="number"</code>
+				is specified. In these cases, an implementation <rfc2119>may</rfc2119> report errors in the value
+				of these attributes, but is not <rfc2119>required</rfc2119> to do so. As always, an implementation
+				<rfc2119>may</rfc2119> issue warnings.</p>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	
+	
+	<er:erratum id="E47" category="editorial">
+		<er:description>
+			<p>Error XTSE3350 refers to "non-hidden accumulators"; but accumulators are never hidden.</p>
+			
+		</er:description>
+		<er:bugzilla bug="30394"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="element" name="xsl:accumulator"/>
+			<er:affects object="attribute" name="visibility"/>
+			<er:affects object="error" name="XTSE3350"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="accumulators-visibility-and-overriding" select="p[2]"/>
+			<er:new-text version="3.0">
+				<p diff="add" at="N">
+					<error spec="XT" type="static" class="SE" code="3350">
+						<p>It is a <termref def="dt-static-error">static error</termref> for a <termref
+							def="dt-package">package</termref> to contain two or more <phrase diff="del" at="E47">non-hidden</phrase>
+							accumulators with the same <termref def="dt-expanded-qname">expanded
+								QName</termref> and the same <termref def="dt-import-precedence">import
+									precedence</termref>, unless there is another accumulator with the same
+							<termref def="dt-expanded-qname">expanded QName</termref>, and a higher
+							import precedence.</p>
+					</error>
+				</p>
+				
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	<er:erratum id="E48" category="substantive">
+		<er:description>
+			<p>It is not stated whether <code>xsl:namespace-alias stylesheet-prefix="#default"</code>,
+				in the case where there is no default namespace, affects no-namespace attributes.</p>
+			
+		</er:description>
+		<er:bugzilla bug="30397"/> 
+		<er:history>
+			<er:event status="proposed" date="2019-02-13" author="mike@saxonica.com"/>
+		</er:history>
+		<er:impact>
+			<er:affects object="element" name="xsl:namespace-alias"/>
+		</er:impact>
+		
+		<er:change>
+			<er:old-text ref="namespace-aliasing" select="p[starts-with(., 'The default namespace')]"/>
+			<er:new-text version="3.0">
+				<p>The default namespace (as declared by <code>xmlns</code>) may be specified by
+					using <code>#default</code> instead of a prefix. If no default namespace is in
+					force, specifying <code>#default</code> denotes the null namespace URI. This
+					allows elements that are in no namespace in the stylesheet to acquire a namespace
+					in the result document, or vice versa. <phrase diff="add">Defining an alias for
+					the null namespace URI does not affect no-namespace attributes; these remain in no namespace.
+					However, where <code>result-prefix="#default"</code> is specified and 
+					no default namespace is in force, attributes whose namespace matches the
+					literal namespace URI are renamed to be in no namespace.</phrase></p>
+			</er:new-text>
+		</er:change>
+		
+	</er:erratum>
+	
+	
 	
 	
 </er:errata>

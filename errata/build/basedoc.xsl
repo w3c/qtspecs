@@ -232,6 +232,7 @@
 </xsl:template>
 
 <xsl:template name="href.target">
+  <xsl:param name="target"/>
   <span style="text-decoration: underline">
     <xsl:value-of select="."/>
   </span>

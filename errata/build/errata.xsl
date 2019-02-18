@@ -217,8 +217,15 @@
 	in the erratum text, but the links are not live.</p>
 
 	<p>A number of indexes appear at the end of the document.</p>
+    
+    <p>Since the XSL Working Group has ceased operations, these errata have been produced
+    by the Editor using an informal process of consultation with interested parties, and
+    they have no official standing. In cases where the changes a substantive (generally filling in gaps
+    where the published specifications leave behavior unspecified, or where they contain inconsistent normative statements,
+    the Editor has attempted to make minimal changes that in his opinion best reflect the original intent of the
+    Working Group.</p>
 		 	  
-    <p>Substantive corrections are proposed by the
+ <!--   <p>Substantive corrections are proposed by the
 	     <xsl:call-template name="appropriate-working-group"/>
          (part of the <a href="http://www.w3.org/XML/Activity">XML Activity</a>),
          where there is consensus that they are appropriate;
@@ -243,7 +250,7 @@
          Archives of the comments and responses are available at
          <a href="http://lists.w3.org/Archives/Public/public-qt-comments/">
          http://lists.w3.org/Archives/Public/public-qt-comments/</a>. 
-	</p>
+	</p>-->
 	</div>
 	<div>
       <h2><a name="status" id="status"/>Status of this Document</h2>
@@ -261,13 +268,10 @@
 	        </xsl:when>
 	      </xsl:choose>
 		  None of the errata reported in this document have been approved
-		  by a <a href="http://www.w3.org/2004/02/Process-20040205/tr.html#cfr-corrections">Call for Review of Proposed Corrections</a> or a
-		  <a href="http://www.w3.org/2004/02/Process-20040205/tr.html#cfr-edited">Call for Review of an Edited Recommendation</a>. 
+		  by any formal process. 
 		  As a consequence, they must not be considered to be normative.
 		  </p>
-		  <p>The Working Group does not intend to progress these errata to normative status; instead, it
-		  intends to publish a second edition of the Recommendation incorporating these errata, and to progress
-		  the second edition to normative status.</p>
+		  <p>Those errata published before the end of 2017 were reviewed by the Working Group prior to publication.</p>
         </xsl:otherwise>
 	   </xsl:choose>	  
 	  
@@ -311,7 +315,7 @@
 	    <a href="#{@id}">
 		  <xsl:value-of select="concat($specdoc, '.', @id)"/>
         </a>&#xa0;&#xa0;
-		<xsl:variable name="desc" select="normalize-space(string(er:description))"/>
+		<xsl:variable name="desc" select="normalize-space(string(er:description/p[1]))"/>
 		<xsl:value-of select="if (contains($desc, '. '))
 		                      then concat(substring-before($desc, '. '), '.')
 							  else $desc"/>
@@ -580,7 +584,7 @@
    <xsl:param name="section" as="element()"/>
    <xsl:param name="subsection" as="element()?"/>
    <xsl:choose>
-     <xsl:when test="empty($subsection) or ($subsection is $section)">
+     <xsl:when test="empty($subsection) or ($subsection is $section) or ($subsection/.. instance of document-node())">
 	   <xsl:sequence select="''"/>
      </xsl:when>
      <xsl:when test="count($subsection/../*) = 1">
@@ -716,17 +720,20 @@
 	   <xsl:if test="count(current-group()) gt 1">
 	     <xsl:variable name="id" select="(ancestor::*/@id)[last()]"/>
          <xsl:variable name="section" select="$spec/key('id',$id)"/>
-	     <xsl:variable name="section-number">
-	       <xsl:number select="$section" level="multiple" count="div1|div2|div3|div4"/>
-         </xsl:variable>
-	     <xsl:variable name="loc" select="er:location($section, .)"/>
-		 <p style="color:red">
-		   <xsl:text>WARNING: In </xsl:text>
-		   <xsl:value-of select="$section-number, $section/head"/>
-		   <xsl:text> (</xsl:text>
-		   <xsl:value-of select="$loc"/>
-		   <xsl:text>) Element is affected by more than one change</xsl:text>
-		 </p>
+	     <xsl:if test="exists($section)">
+	       
+  	     <xsl:variable name="section-number">
+  	       <xsl:number select="$section" level="multiple" count="div1|div2|div3|div4"/>
+           </xsl:variable>
+  	     <xsl:variable name="loc" select="er:location($section, .)"/>
+  		 <p style="color:red">
+  		   <xsl:text>WARNING: In </xsl:text>
+  		   <xsl:value-of select="$section-number, $section/head"/>
+  		   <xsl:text> (</xsl:text>
+  		   <xsl:value-of select="$loc"/>
+  		   <xsl:text>) Element is affected by more than one change</xsl:text>
+  		 </p>
+	     </xsl:if>
 	   </xsl:if>
 	 </xsl:for-each-group>
    </xsl:if>	   	   
@@ -741,11 +748,12 @@
 <xsl:function name="er:eval-all" as="element()*">
   <xsl:param name="in" as="element(er:old-text)*"/>
   <xsl:for-each select="$in">
-	<xsl:variable name="id" select="@ref"/>
-    <xsl:variable name="section" select="$spec/key('id',$id)"/>
-	<xsl:variable name="exp" select="@select"/>
-	<xsl:variable name="nodes" select="$section/saxon:evaluate($exp)"/>
-	<xsl:sequence select="$nodes"/>
+	  <xsl:variable name="id" select="@ref"/>
+      <xsl:variable name="section" select="$spec/key('id',$id)"/>
+	  <xsl:variable name="exp" select="@select"/>
+    <xsl:message select="string($exp)"/>
+	  <xsl:variable name="nodes" select="$section/saxon:evaluate($exp)"/>
+	  <xsl:sequence select="$nodes"/>
   </xsl:for-each>
 </xsl:function>
 
