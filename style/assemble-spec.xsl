@@ -308,7 +308,7 @@
 
   <xsl:template match="termdef">
     <xsl:choose>
-      <xsl:when test="starts-with(@id,'xpath-') or starts-with(@id,'xpath21-') or starts-with(@id,'xpath30-')">
+      <xsl:when test="starts-with(@id,'xpath-') or starts-with(@id,'xpath21-') or starts-with(@id,'xpath30-') or starts-with(@id,'xpath40-')">
         <xsl:message>Cleaning up termdef: <xsl:value-of select="@id"/></xsl:message>
         <termdef>
           <xsl:copy-of select="@*"/>

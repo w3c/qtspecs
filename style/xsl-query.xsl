@@ -324,17 +324,35 @@ a.env:visited, a.env:link               { color: black;
         <xsl:value-of select="'FO31'"/>
         <xsl:message>specdoc is FO31</xsl:message>
       </xsl:when>
-
+      
+      <xsl:when test="contains(/spec/header/title, 'Functions and Operators') and
+        contains(/spec/header/title, '4.0')">
+        <xsl:value-of select="'FO40'"/>
+        <xsl:message>specdoc is FO40</xsl:message>
+      </xsl:when>
+      
       <xsl:when test="contains(/spec/header/title, 'XPath') and
-                      contains(/spec/header/title, '3.1')">
+        contains(/spec/header/title, '3.1')">
         <xsl:value-of select="'XP31'"/>
         <xsl:message>specdoc is XP31</xsl:message>
+      </xsl:when>
+      
+      <xsl:when test="contains(/spec/header/title, 'XPath') and
+        contains(/spec/header/title, '4.0')">
+        <xsl:value-of select="'XP40'"/>
+        <xsl:message>specdoc is XP40</xsl:message>
       </xsl:when>
 
       <xsl:when test="contains(/spec/header/title, 'XQuery') and
                       contains(/spec/header/title, '3.1')">
         <xsl:value-of select="'XQ31'"/>
         <xsl:message>specdoc is XQ31</xsl:message>
+      </xsl:when>
+      
+      <xsl:when test="contains(/spec/header/title, 'XQuery') and
+        contains(/spec/header/title, '4.0')">
+        <xsl:value-of select="'XQ40'"/>
+        <xsl:message>specdoc is XQ40</xsl:message>
       </xsl:when>
 
       <xsl:when test="contains(/spec/header/title, 'XQueryX') and
@@ -403,6 +421,7 @@ a.env:visited, a.env:link               { color: black;
         <xsl:message>Title: <xsl:value-of select="/spec/header/title"/></xsl:message>
         <xsl:message terminate="yes">
           <xsl:text>xsl-query.xsl says: Failed to determine which specdoc this is: use specdoc parameter!</xsl:text>
+          <xsl:value-of select="'Title: ', /spec/header/title"/>
         </xsl:message>
       </xsl:otherwise>
     </xsl:choose>
