@@ -28,6 +28,7 @@
     <xsl:param name="STREAMABLE" static="yes" as="xs:boolean" select="true()"/>
     
     <xsl:mode name="j:xml-to-json"/> <!-- fixes erratum E30 for bug 30288 -->
+
     <xsl:mode name="indent" _streamable="{$STREAMABLE}" visibility="public"/>
     <xsl:mode name="no-indent" _streamable="{$STREAMABLE}" visibility="public"/>
     <xsl:mode name="key-attribute" streamable="false" on-no-match="fail" visibility="public"/>
