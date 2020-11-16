@@ -1088,6 +1088,25 @@ th.issue-toc-head { border-bottom-color: black;
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
+  
+  <xsl:template match="termref">
+    <message>Matching termref @def="<xsl:value-of select="@def"/> content="<xsl:value-of select="."/></message>
+    <a title="{key('ids', @def)/@term}" class="termref">
+      <xsl:attribute name="href">
+        <xsl:call-template name="href.target">
+          <xsl:with-param name="target" select="key('ids', @def)"/>
+        </xsl:call-template>
+      </xsl:attribute>
+      <xsl:choose>
+        <xsl:when test=". = ''">
+          <xsl:value-of select="key('ids', @def)/@term"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </a>
+  </xsl:template>
 
   <xsl:template match="xerrorref">
     <xsl:variable name="ref" select="@code"/>

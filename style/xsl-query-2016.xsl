@@ -590,6 +590,19 @@ th.issue-toc-head { border-bottom-color: black;
       </xsl:attribute>
     </link>
   </xsl:template>
+  
+  <xsl:template match="pubdate/day">
+    <xsl:value-of select="format-date(current-date(), '[D00]')"/>
+  </xsl:template>
+  
+  <xsl:template match="pubdate/month">
+    <xsl:value-of select="format-date(current-date(), '[MNn]')"/>
+  </xsl:template>
+  
+  <xsl:template match="pubdate/year">
+    <xsl:value-of select="format-date(current-date(), '[Y0000]')"/>
+  </xsl:template>
+  
 
   <xsl:template match="br">
     <br/>
@@ -1051,6 +1064,24 @@ th.issue-toc-head { border-bottom-color: black;
         <xsl:value-of select="$nt"/>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+  
+  <xsl:template match="termref">
+    <a title="{key('ids', @def)/@term}" class="termref">
+      <xsl:attribute name="href">
+        <xsl:call-template name="href.target">
+          <xsl:with-param name="target" select="key('ids', @def)"/>
+        </xsl:call-template>
+      </xsl:attribute>
+      <xsl:choose>
+        <xsl:when test=". = ''">
+          <xsl:value-of select="key('ids', @def)/@term"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </a>
   </xsl:template>
 
   <xsl:template match="xtermref">
