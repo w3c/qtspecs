@@ -1,3 +1,4 @@
+![stripofapps-2018-icon](https://github.com/w3c/qtspecs/assets/126361393/333ce684-9d91-497a-9d0b-aca574209aeb)
 # qtspecs
 XSLT and XQuery Specifications - the source used to build the specs, and the errata
 
